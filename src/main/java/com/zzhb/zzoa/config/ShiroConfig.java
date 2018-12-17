@@ -1,6 +1,7 @@
 package com.zzhb.zzoa.config;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
@@ -58,7 +59,7 @@ public class ShiroConfig {
 	}
 
 	@Bean
-	public RedisSessionDAO redisSessionDAO() {
+	public RedisSessionDAO sessionDAO() {
 		RedisSessionDAO redisSessionDAO = new RedisSessionDAO();
 		redisSessionDAO.setKeyPrefix("shiro:session");
 		redisSessionDAO.setSessionIdGenerator(new JavaUuidSessionIdGenerator());
@@ -67,7 +68,7 @@ public class ShiroConfig {
 	}
 
 	@Bean
-	public SimpleCookie simpleCookie() {
+	public SimpleCookie cookie() {
 		SimpleCookie cookie = new SimpleCookie("zzoa");
 		cookie.setPath("/");
 		cookie.setHttpOnly(true);
@@ -76,14 +77,14 @@ public class ShiroConfig {
 	}
 
 	@Bean
-	public DefaultWebSessionManager defaultWebSessionManager() {
+	public DefaultWebSessionManager sessionManager() {
 		DefaultWebSessionManager defaultWebSessionManager = new DefaultWebSessionManager();
 		defaultWebSessionManager.setGlobalSessionTimeout(props.getGlobalSessionTimeout());
 		defaultWebSessionManager.setDeleteInvalidSessions(true);
 		defaultWebSessionManager.setSessionIdUrlRewritingEnabled(false);
-		defaultWebSessionManager.setSessionDAO(redisSessionDAO());
+		defaultWebSessionManager.setSessionDAO(sessionDAO());
 		defaultWebSessionManager.setSessionIdCookieEnabled(true);
-		defaultWebSessionManager.setSessionIdCookie(simpleCookie());
+		defaultWebSessionManager.setSessionIdCookie(cookie());
 		List<SessionListener> list = new ArrayList<SessionListener>();
 		list.add(new ShiroSessionListener());
 		defaultWebSessionManager.setSessionListeners(list);
@@ -120,10 +121,10 @@ public class ShiroConfig {
 	}
 
 	@Bean
-	public DefaultWebSecurityManager defaultWebSecurityManager() {
+	public DefaultWebSecurityManager securityManager() {
 		DefaultWebSecurityManager defaultWebSecurityManager = new DefaultWebSecurityManager();
 		defaultWebSecurityManager.setCacheManager(redisCacheManager());
-		defaultWebSecurityManager.setSessionManager(defaultWebSessionManager());
+		defaultWebSecurityManager.setSessionManager(sessionManager());
 		defaultWebSecurityManager.setRealm(shiroRealm());
 		return defaultWebSecurityManager;
 	}
@@ -131,7 +132,7 @@ public class ShiroConfig {
 	@Bean
 	public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor() {
 		AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();
-		authorizationAttributeSourceAdvisor.setSecurityManager(defaultWebSecurityManager());
+		authorizationAttributeSourceAdvisor.setSecurityManager(securityManager());
 		return authorizationAttributeSourceAdvisor;
 	}
 
@@ -144,10 +145,9 @@ public class ShiroConfig {
 	@Bean(name = "shiroFilter")
 	public ShiroFilterFactoryBean shiroFilterFactoryBean() {
 		ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
-		shiroFilterFactoryBean.setSecurityManager(defaultWebSecurityManager());
+		shiroFilterFactoryBean.setSecurityManager(securityManager());
 		shiroFilterFactoryBean.setLoginUrl(props.getLoginUrl());
-		shiroFilterFactoryBean
-				.setFilterChainDefinitionMap(filterChainDefinitionMapBuilder().buildFilterChainDefinitionMap());
+		shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMapBuilder().buildFilterChainDefinitionMap());
 		return shiroFilterFactoryBean;
 	}
 }
