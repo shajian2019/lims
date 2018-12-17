@@ -25,12 +25,8 @@ import com.zzhb.zzoa.listener.ShiroSessionListener;
 import com.zzhb.zzoa.shiro.ShiroRealm;
 import com.zzhb.zzoa.shiro.filter.FilterChainDefinitionMapBuilder;
 
-
 @Configuration
 public class ShiroConfig {
-
-	@Autowired
-	Props props;
 
 	@Value("${spring.redis.host}")
 	private String host;
@@ -40,6 +36,9 @@ public class ShiroConfig {
 	private int port;
 	@Value("${spring.redis.timeout}")
 	private int timeout;
+
+	@Autowired
+	Props props;
 
 	@Bean
 	public RedisManager redisManager() {
@@ -79,7 +78,7 @@ public class ShiroConfig {
 	@Bean
 	public DefaultWebSessionManager defaultWebSessionManager() {
 		DefaultWebSessionManager defaultWebSessionManager = new DefaultWebSessionManager();
-		defaultWebSessionManager.setGlobalSessionTimeout(1800L);
+		defaultWebSessionManager.setGlobalSessionTimeout(props.getGlobalSessionTimeout());
 		defaultWebSessionManager.setDeleteInvalidSessions(true);
 		defaultWebSessionManager.setSessionIdUrlRewritingEnabled(false);
 		defaultWebSessionManager.setSessionDAO(redisSessionDAO());
@@ -92,7 +91,7 @@ public class ShiroConfig {
 	}
 
 	@Bean
-	public LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {
+	public static LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {
 		return new LifecycleBeanPostProcessor();
 	}
 
@@ -102,16 +101,16 @@ public class ShiroConfig {
 		defaultAdvisorAutoProxyCreator.setProxyTargetClass(true);
 		return defaultAdvisorAutoProxyCreator;
 	}
-	
+
 	@Bean
 	public HashedCredentialsMatcher credentialsMatcher() {
 		HashedCredentialsMatcher credentialsMatcher = new HashedCredentialsMatcher();
 		credentialsMatcher.setHashAlgorithmName("MD5");
 		credentialsMatcher.setStoredCredentialsHexEncoded(true);
-		
+
 		return credentialsMatcher;
 	}
-	
+
 	@Bean
 	public ShiroRealm shiroRealm() {
 		ShiroRealm shiroRealm = new ShiroRealm();
@@ -133,7 +132,7 @@ public class ShiroConfig {
 	public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor() {
 		AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();
 		authorizationAttributeSourceAdvisor.setSecurityManager(defaultWebSecurityManager());
-		return authorizationAttributeSourceAdvisor();
+		return authorizationAttributeSourceAdvisor;
 	}
 
 	@Bean
@@ -142,7 +141,7 @@ public class ShiroConfig {
 		return filterChainDefinitionMapBuilder;
 	}
 
-	@Bean
+	@Bean(name = "shiroFilter")
 	public ShiroFilterFactoryBean shiroFilterFactoryBean() {
 		ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
 		shiroFilterFactoryBean.setSecurityManager(defaultWebSecurityManager());

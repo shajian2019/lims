@@ -28,5 +28,4 @@ props:
   demo: demo
   loginUrl: /login
   globalSessionTimeout: 43200000 #session过期时间
-  sessionValidationInterval: 3600000#清除用户关闭浏览器后孤立的session
   cookemaxage: 43200000

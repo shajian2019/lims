@@ -12,7 +12,6 @@ public class Props {
 	private String loginUrl;
 
 	private Long globalSessionTimeout;
-	private Long sessionValidationInterval;
 	private int cookemaxage;
 
 	public String getDemo() {
@@ -37,14 +36,6 @@ public class Props {
 
 	public void setGlobalSessionTimeout(Long globalSessionTimeout) {
 		this.globalSessionTimeout = globalSessionTimeout;
-	}
-
-	public Long getSessionValidationInterval() {
-		return sessionValidationInterval;
-	}
-
-	public void setSessionValidationInterval(Long sessionValidationInterval) {
-		this.sessionValidationInterval = sessionValidationInterval;
 	}
 
 	public int getCookemaxage() {

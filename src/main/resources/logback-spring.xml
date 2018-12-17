@@ -140,10 +140,9 @@
 	</appender>
 	
 	<springProfile name="dev">
-		<root level="DEBUG">
+		<root level="INFO">
 			<appender-ref ref="CONSOLE" />
 			<appender-ref ref="FILEERROR" />
-			<appender-ref ref="FILEWARN" />
 			<appender-ref ref="FILEINFO" />
 		</root>
 	</springProfile>
