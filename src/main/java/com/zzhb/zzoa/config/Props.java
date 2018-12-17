@@ -7,20 +7,10 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "props")
 public class Props {
 
-	private String demo;
-
 	private String loginUrl;
 
 	private Long globalSessionTimeout;
 	private int cookemaxage;
-
-	public String getDemo() {
-		return demo;
-	}
-
-	public void setDemo(String demo) {
-		this.demo = demo;
-	}
 
 	public String getLoginUrl() {
 		return loginUrl;
