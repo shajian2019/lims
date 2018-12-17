@@ -20,8 +20,8 @@ public class ZzoaApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ZzoaApplication.class, args);
-		logger.info("ZzoaApplication===start success==");
-		logger.debug("ZzoaApplication===start success==");
+		logger.info("======ZzoaApplication===start success==");
+		logger.debug("======ZzoaApplication===start success==");
 	}
 
 }
