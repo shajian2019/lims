@@ -18,6 +18,7 @@ public class ApplicationStartUp implements InitializingBean {
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		logger.info("==============springboot启动================");
+		// freemarker 全局配置
 		logger.info("==============configuration================" + configuration);
 		configuration.setSharedVariable("name", "chenhj");
 	}
