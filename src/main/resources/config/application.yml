@@ -1,3 +1,19 @@
+#freemaker 配置
+spring: 
+  freemarker:
+    request-context-attribute: req
+    allow-request-override: false 
+    enabled: true
+    cache: false
+    check-template-location: true
+    charset: UTF-8
+    content-type: text/html
+    expose-request-attributes: false
+    expose-session-attributes: false
+    suffix: .html
+    template-loader-path: classpath:/templates/
+    expose-spring-macro-helpers: false
+
 #mybatis配置
 mybatis:
     config-location: classpath:mybatis-config.xml
@@ -23,7 +39,8 @@ logging:
   level:
     com.zzhb.zzoa.mapper: DEBUG
     org.springframework.scheduling: INFO
-    
+ 
+   
 props: 
   demo: demo
   loginUrl: /login
