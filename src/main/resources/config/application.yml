@@ -1,0 +1,28 @@
+#mybatis配置
+mybatis:
+    config-location: classpath:mybatis-config.xml
+    mapper-locations: classpath:mapper/*.xml
+    
+#pagehelper插件配置
+pagehelper:
+  helper-dialect: mysql
+  reasonable: "true"
+  support-methods-arguments: "true"
+  params: count=countSql
+  auto-runtime-dialect: "true"
+
+server:
+  tomcat:
+    max-threads: 1000
+    accept-count: 1100
+    min-spare-threads: 200
+    max-connections: 1000
+    uri-encoding: UTF-8
+    
+logging:
+  level:
+    com.zzhb.zzoa.mapper: DEBUG
+    org.springframework.scheduling: INFO
+    
+props: 
+  demo: demo
