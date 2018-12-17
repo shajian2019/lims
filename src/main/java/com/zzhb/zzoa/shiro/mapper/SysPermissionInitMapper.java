@@ -1,4 +1,4 @@
-package com.zzhb.zzoa.mapper;
+package com.zzhb.zzoa.shiro.mapper;
 
 import java.util.List;
 

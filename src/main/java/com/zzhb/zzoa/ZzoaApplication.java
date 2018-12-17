@@ -12,7 +12,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @EnableAsync
 @EnableCaching
-@MapperScan(value = "com.zzhb.zzoa.mapper")
+@MapperScan({"com.zzhb.zzoa.mapper","com.zzhb.zzoa.shiro.mapper"})
 @SpringBootApplication
 public class ZzoaApplication {
 
