@@ -2,7 +2,6 @@ package com.zzhb.zzoa.shiro.domain;
 
 public class SysPermissionInit {
 
-	private int id;
 	private String url;
 	private String qxlj;
 	private int sort;
@@ -15,14 +14,6 @@ public class SysPermissionInit {
 
 	public void setRemark(String remark) {
 		this.remark = remark;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 	public String getUrl() {
@@ -55,12 +46,6 @@ public class SysPermissionInit {
 
 	public void setQxlj(String qxlj) {
 		this.qxlj = qxlj;
-	}
-
-	@Override
-	public String toString() {
-		return "SysPermissionInit [id=" + id + ", url=" + url + ", qxlj=" + qxlj + ", sort=" + sort + ", sfsx=" + sfsx
-				+ "]";
 	}
 
 }
