@@ -44,4 +44,3 @@ logging:
 props: 
   loginUrl: /login
   globalSessionTimeout: 43200000 #session过期时间
-  cookemaxage: 43200000 #cooke最大存活时间

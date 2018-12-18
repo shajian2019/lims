@@ -2,24 +2,25 @@ package com.zzhb.zzoa.domain;
 
 public class Form {
 
-	private String username;
+	private String userName;
 	private String password;
-	private String yzm;
+	private String rememberMe;
+	private String validCode;
 
-	public String getYzm() {
-		return yzm;
+	public String getValidCode() {
+		return validCode;
 	}
 
-	public void setYzm(String yzm) {
-		this.yzm = yzm;
+	public void setValidCode(String validCode) {
+		this.validCode = validCode;
 	}
 
-	public String getUsername() {
-		return username;
+	public String getUserName() {
+		return userName;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
 	public String getPassword() {
@@ -30,9 +31,18 @@ public class Form {
 		this.password = password;
 	}
 
+	public String getRememberMe() {
+		return rememberMe;
+	}
+
+	public void setRememberMe(String rememberMe) {
+		this.rememberMe = rememberMe;
+	}
+
 	@Override
 	public String toString() {
-		return "Form [username=" + username + ", password=" + password + ", yzm=" + yzm + "]";
+		return "Form [username=" + userName + ", password=" + password + ", rememberMe=" + rememberMe + ", validCode="
+				+ validCode + "]";
 	}
 
 }

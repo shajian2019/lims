@@ -10,7 +10,6 @@ public class Props {
 	private String loginUrl;
 
 	private Long globalSessionTimeout;
-	private int cookemaxage;
 
 	public String getLoginUrl() {
 		return loginUrl;
@@ -27,13 +26,4 @@ public class Props {
 	public void setGlobalSessionTimeout(Long globalSessionTimeout) {
 		this.globalSessionTimeout = globalSessionTimeout;
 	}
-
-	public int getCookemaxage() {
-		return cookemaxage;
-	}
-
-	public void setCookemaxage(int cookemaxage) {
-		this.cookemaxage = cookemaxage;
-	}
-
 }
