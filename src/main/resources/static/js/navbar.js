@@ -206,9 +206,13 @@ layui.define(['layer', 'laytpl', 'element'], function(exports) {
                         that.bind(function(data) {
                             typeof callback === 'function' && callback(data);
                         });
-                        //关闭等待层
+                        //关闭 等待层
                         navbarLoadIndex && layer.close(navbarLoadIndex);
                     });
+                } else {
+                	clearInterval(tIndex);
+                	navbarLoadIndex && layer.close(navbarLoadIndex);
+                	_elem.html("");
                 }
             }, 50);
             return that;

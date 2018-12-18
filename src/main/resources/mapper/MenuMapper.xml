@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzhb.zzoa.mapper.MenuMapper">
+	
+	<select id="getMenus" resultType="com.zzhb.zzoa.domain.common.Menu" parameterType="java.util.Map">
+		SELECT
+			m_id id,
+			m_name title,
+			m_icon icon,
+			m_status status,
+			m_parentid parentid,
+			m_url url,
+			m_sort sort
+		FROM sys_t_menu
+		<where>
+			<if test="m_ids !=null and m_ids.size() != 0">
+				and m_id in 
+				<foreach collection="m_ids" item="m_id" open="(" separator="," close=")">
+           			#{m_id}
+        		</foreach>
+			</if>
+			<if test="m_ids !=null and m_ids.size() == 0">
+				and 1 = 2
+			</if>
+			<if test="m_status !=null and m_status !='' ">
+				and m_status = #{m_status}
+			</if>
+			<if test="m_parentid !=null and m_parentid !='' ">
+				and m_parentid = #{m_parentid}
+			</if>
+		</where>
+		ORDER BY m_parentid,m_sort		
+	</select>
+	
+	<select id="getIdByParentId" resultType="java.lang.String">
+			select m_id,m_parentid from (
+              select t1.m_id,t1.m_parentid,
+              if(find_in_set(m_parentid, @pids) > 0, @pids := concat(@pids, ',', m_id), 0) as ischild
+              from (
+                   select m_id,m_parentid from sys_t_menu t where t.m_status = 1 order by m_parentid, m_id
+                  ) t1,
+                  (select @pids := #{parentid}) t2
+             ) t3 where ischild != 0
+	</select>
+	
+</mapper>
