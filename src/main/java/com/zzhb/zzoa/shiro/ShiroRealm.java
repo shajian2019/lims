@@ -27,8 +27,8 @@ public class ShiroRealm extends AuthorizingRealm {
 		UsernamePasswordToken usertoken = (UsernamePasswordToken) token;
 		String account = usertoken.getUsername();
 		// TODO
-		Object credentials = "password";
-		Object principal = "user";
+		Object credentials = "a66abb5684c45962d887564f08346e8d";
+		Object principal = "admin";
 		String realmName = getName();
 		ByteSource credentialsSalt = ByteSource.Util.bytes(account);
 		SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(principal, credentials,
@@ -45,7 +45,7 @@ public class ShiroRealm extends AuthorizingRealm {
 	public static void main(String[] args) {
 		String hashAlgorithmName = "MD5";
 		Object credentials = "123456";
-		Object salt = ByteSource.Util.bytes("811148");
+		Object salt = ByteSource.Util.bytes("admin");
 		int hashIterations = 1;
 		// 盐值加密
 		Object result = new SimpleHash(hashAlgorithmName, credentials, salt, hashIterations);

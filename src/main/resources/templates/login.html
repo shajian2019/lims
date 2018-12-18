@@ -1,13 +1,55 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="shortcut icon" href="favicon.ico">
-<meta charset="UTF-8">
-<title>登陆页面</title>
+	<title>登录</title>
+	<meta charset="UTF-8">
+	<link rel="shortcut icon" href="favicon.ico">
+	<link href="../plugins/layui/css/layui.css" rel="stylesheet" />
+	<link href="../css/login.css" rel="stylesheet" />
+	<script>
+		if (window != window.top)
+			top.location.href = self.location.href;
+	</script>
 </head>
 <body>
-	登陆页面
-	${name}
-	<img alt="" src="../img/test.png">
+	<div class="login">
+		<div class="login_logo"></div>
+		<div class="login_box">
+			<div class="login_box_form">
+				<form class="layui-form">
+					<div class="layui-form-item">
+						<div class="layui-input-inline">
+							<span class="icon user_icon"></span>
+							<input type="text" name="username" lay-verify="required" autocomplete="on" placeholder="请输入账号" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<div class="layui-input-inline">
+							<span class="icon pass_icon"></span>
+							<input type="password" name="password" lay-verify="required" placeholder="请输入密码" autocomplete="on" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<div class="layui-input-inline verificationCode">
+							<span class="icon verCode_icon"></span>
+							<input type="text" name="yzm" lay-verify="required" placeholder="验证码" autocomplete="off" class="layui-input">
+							<img id="yzm" src="captcha">
+						</div>
+					</div>
+					<div class="login_bottom">
+						<button class="layui-btn layui-btn-primary" lay-submit lay-filter="login">登录</button>
+						<button class="layui-btn layui-btn-primary">重置</button>
+					</div>
+				</form>
+			</div>
+			<div class="login_box_picture">
+
+			</div>
+		</div>
+	</div>
+	<script src="../plugins/jquery-1.11.3.js"></script>
+	<script src="../plugins/ieLaceholder.js"></script>
+	<script src="../plugins/layui/layui.js"></script>
+	<script src="../js/login.js"></script>
 </body>
 </html>

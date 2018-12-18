@@ -1,0 +1,138 @@
+html,
+body {
+	width: 100%;
+	height: 100%;
+}
+
+.login {
+	width: 100%;
+	height: 100%;
+	background: url("../img/cclogin_bg.png") no-repeat center center;
+	background-size: cover;
+}
+
+.login_logo {
+	width: 137px;
+	height: 41px;
+	min-height: 41px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	margin: 25px auto 0;
+	background: url("../img/cc_logo.png") no-repeat center center;
+	background-size: cover;
+	z-index: 100;
+}
+
+.login_box {
+	background: url("../img/cc_login_box_bg.png") no-repeat center center;
+	width: 30rem;
+	min-width: 837px;
+	min-height: 323px;
+	height: 18rem;
+	position: absolute;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	margin: auto;
+	box-shadow: 0px 0px 45px 0px rgba(18, 21, 54, 0.1);
+	-moz-box-shadow: 0px 0px 45px 0px rgba(18, 21, 54, 0.1);
+	-webkit-box-shadow: 0px 0px 45px 0px rgba(18, 21, 54, 0.1);
+	box-shadow: 0px 0px 45px 0px rgba(18, 21, 54, 0.1);
+	border-radius: 10px;
+	padding: 77px 77px 50px 77px;
+}
+
+.login_box_form {
+	width: 50%;
+	height: 100%;
+	float: left;
+	position: relative;
+}
+
+.login_box_picture {
+	width: 50%;
+	height: 100%;
+	float: right;
+	/* background: url("../img/xbxblogin_box_picture.png") no-repeat center -16px;
+	background-size: 110%; */
+}
+
+.user_icon,
+.pass_icon,
+.verCode_icon {
+	width: 10%;
+	height: 38px;
+	background: yellow;
+	display: inline-block;
+	float: left;
+}
+
+.user_icon {
+	background: url("../img/cc_user.png") no-repeat center center;
+}
+
+.pass_icon {
+	background: url("../img/cc_pass.png") no-repeat center center;
+}
+
+.verCode_icon {
+	width: 10%;
+	background: url("../img/ccverCode.png") no-repeat center center;
+}
+
+.login_box_form .layui-form-item .layui-input-inline {
+	width: 100%;
+	border-bottom: 1px solid #eeeeee;
+}
+
+.login_box_form .layui-input {
+	width: 90%;
+	display: inline-block;
+	border: none;
+}
+
+.login_box_form .layui-form-item {
+	width: 70%;
+	margin-bottom: 40px;
+}
+
+
+.login_box_form .layui-form-item .verificationCode .layui-input {
+	width: 59%;
+}
+#yzm{
+	width:28%
+}
+.verificationCodePicture {
+	width: 100px;
+	height: 38px;
+	float: right;
+	background-color: dodgerblue;
+}
+@media (max-width: 1365px) {
+	 .login_logo{width: 137px;height: 41px;margin-top: 18px;} 
+	/* body{font-size: 12px;} */
+}  
+@media (min-width: 1366px) {
+	.login_logo{width: 137px;height: 41px;margin-top: 25px;}
+	body{font-size: 12px;}
+}  
+
+@media (min-width: 1440px) {
+	.login_logo{width: 170px;height: 43px;margin-top:48px;}
+	body{font-size: 16px;}
+} 
+
+@media (min-width: 1680px) {
+	.login_logo{width: 188px;height: 47px;margin-top:69px;}
+	body{font-size: 18px;}
+}
+
+@media (min-width: 1920px) {
+	.login_logo{width:200px;height:50px;margin-top:90px;}
+	body{font-size: 20px;}
+} 
