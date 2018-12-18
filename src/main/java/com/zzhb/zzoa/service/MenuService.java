@@ -21,14 +21,13 @@ public class MenuService {
 	MenuMapper menuMapper;
 
 	@Cacheable(value = "ONEMENU", key = "#rolename")
-	public List<Menu> getOneMenus(String rolename) {
+	public List<Menu> getOneMenusByRoleName(String rolename) {
 		Map<String, Object> params = new HashMap<>();
 		if ("admin".equals(rolename)) {
 			params.put("m_status", "1");
 			params.put("m_parentid", "0");
 			return menuMapper.getMenus(params);
 		} else {
-			// TODO
 			return null;
 		}
 	}
@@ -36,9 +35,10 @@ public class MenuService {
 	@SuppressWarnings("unchecked")
 	@Cacheable(value = "SECONDMENU", key = "#rolename")
 	public List<Map<String, Object>> getSecondMenu(String rolename, String parentid) {
-		List<String> idByParentId = menuMapper.getIdByParentId(parentid);
+		// 获取parentid下的所有子菜单ID
+		List<String> childIds = menuMapper.getIdByParentId(parentid);
 		Map<String, Object> params = new HashMap<>();
-		params.put("m_ids", idByParentId);
+		params.put("m_ids", childIds);
 		List<Menu> menus = menuMapper.getMenus(params);
 		Map<String, Map<String, Object>> json = new LinkedHashMap<>();
 		for (int i = 0; i < menus.size(); i++) {

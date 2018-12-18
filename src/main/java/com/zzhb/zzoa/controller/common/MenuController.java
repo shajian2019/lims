@@ -17,10 +17,10 @@ public class MenuController {
 	@Autowired
 	MenuService menuService;
 
-	@GetMapping("/oneMenu/get")
+	@GetMapping("/oneMenus/get")
 	@ResponseBody
 	public List<Menu> getOneMenus(String rolename) {
-		return menuService.getOneMenus(rolename);
+		return menuService.getOneMenusByRoleName(rolename);
 	}
 
 	@GetMapping("/secondMenu/get")

@@ -88,10 +88,6 @@ layui.define(['element', 'nprogress', 'form', 'table', 'loader', 'tab', 'navbar'
                         return true; //返回true则关闭
                     }
                 }).render();
-                //navbar加载方式一，直接绑定已有的dom元素事件                
-                navbar.bind(function(data) {
-                    tab.tabAdd(data);
-                });
 
                 //处理顶部一级菜单
                 var onelevel = layui.onelevel;
@@ -99,7 +95,7 @@ layui.define(['element', 'nprogress', 'form', 'table', 'loader', 'tab', 'navbar'
                     onelevel.set({
                     	elem:'#ds',
                         remote: {
-                            url: 'oneMenu/get?rolename=admin' //远程地址
+                            url: 'oneMenus/get?rolename=admin' //远程地址
                         },
                         onClicked: function(id) {
                         	navbar.set({
