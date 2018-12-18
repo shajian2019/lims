@@ -88,10 +88,12 @@ layui.define(['element', 'nprogress', 'form', 'table', 'loader', 'tab', 'navbar'
                         return true; //返回true则关闭
                     }
                 }).render();
+                
                 //navbar加载方式一，直接绑定已有的dom元素事件                
                 navbar.bind(function(data) {
                     tab.tabAdd(data);
                 });
+                
                 //navbar加载方式二，设置远程地址加载
                 // navbar.set({
                 //     remote: {
