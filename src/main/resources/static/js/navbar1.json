@@ -1,0 +1,24 @@
+[
+{
+    "id": "2",
+    "title": "组件",
+    "icon": "fa-cogs",
+    "spread": false,
+    "children": [{
+        "id": "12",
+        "title": "Navbar",
+        "icon": "fa-table",
+        "url": "navbar.html"
+    }, {
+        "id": "13",
+        "title": "Tab",
+        "icon": "&#xe658;",
+        "url": "tab.html"
+    }, {
+        "id": "14",
+        "title": "app.js主入口",
+        "icon": "&#xe658;",
+        "url": "app.html"
+    }]
+}
+]

@@ -4,14 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
-import org.apache.shiro.codec.Base64;
 import org.apache.shiro.session.SessionListener;
 import org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
-import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
-import org.apache.shiro.web.mgt.CookieRememberMeManager;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.servlet.SimpleCookie;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
@@ -71,10 +68,10 @@ public class ShiroConfig {
 
 	@Bean
 	public SimpleCookie sessionIdCookie() {
-		SimpleCookie cookie = new SimpleCookie("ZZOA");
+		SimpleCookie cookie = new SimpleCookie(props.getCookiename());
 		cookie.setPath("/");
 		cookie.setHttpOnly(true);
-		cookie.setMaxAge(-1);
+		cookie.setMaxAge(-1); // 浏览器关闭cookie失效
 		return cookie;
 	}
 

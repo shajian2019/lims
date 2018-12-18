@@ -43,4 +43,5 @@ logging:
    
 props: 
   loginUrl: /login
+  cookiename: ZZOA
   globalSessionTimeout: 43200000 #session过期时间

@@ -9,7 +9,17 @@ public class Props {
 
 	private String loginUrl;
 
+	private String cookiename;
+
 	private Long globalSessionTimeout;
+
+	public String getCookiename() {
+		return cookiename;
+	}
+
+	public void setCookiename(String cookiename) {
+		this.cookiename = cookiename;
+	}
 
 	public String getLoginUrl() {
 		return loginUrl;
