@@ -23,6 +23,7 @@ import com.github.bingoohuang.patchca.filter.predefined.MarbleRippleFilterFactor
 import com.github.bingoohuang.patchca.filter.predefined.WobbleRippleFilterFactory;
 import com.github.bingoohuang.patchca.utils.encoder.EncoderHelper;
 import com.zzhb.zzoa.utils.CaptchaFactory;
+import com.zzhb.zzoa.utils.Constant;
 
 @Controller
 public class CaptchaController {
@@ -48,7 +49,7 @@ public class CaptchaController {
 			setResponseHeaders(response);
 			Session session = SecurityUtils.getSubject().getSession();
 			String token = EncoderHelper.getChallangeAndWriteImage(cs, "png", response.getOutputStream());
-			session.setAttribute("CAPTCHA", token);
+			session.setAttribute(Constant.CAPTCHA, token);
 			logger.info("=========SessionID =========" + session.getId() + "，  验证码 = " + token);
 		} catch (IOException e) {
 			e.printStackTrace();

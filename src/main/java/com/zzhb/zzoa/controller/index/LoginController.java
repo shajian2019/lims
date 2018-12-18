@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
-import com.zzhb.zzoa.ZzoaApplication;
 import com.zzhb.zzoa.domain.Form;
+import com.zzhb.zzoa.utils.Constant;
 
 @Controller
 public class LoginController {
@@ -46,14 +46,14 @@ public class LoginController {
 	@PostMapping(value = "loginIn")
 	@ResponseBody
 	public JSONObject loginIn(Form form) {
-		logger.info("===post===login==");
+		logger.info("===post===loginIn==");
 		Subject currentUser = SecurityUtils.getSubject();
 		JSONObject result = new JSONObject();
 		String code = "";
 		String msg = "";
 		Session session = currentUser.getSession();
-		if (session.getAttribute("CAPTCHA") != null
-				&& session.getAttribute("CAPTCHA").equals(form.getValidCode().trim().toUpperCase())) {
+		if (session.getAttribute(Constant.CAPTCHA) != null
+				&& session.getAttribute(Constant.CAPTCHA).equals(form.getValidCode().trim().toUpperCase())) {
 			if (!currentUser.isAuthenticated()) {
 				UsernamePasswordToken token = new UsernamePasswordToken(form.getUserName(), form.getPassword());
 				boolean rememberMe = form.getRememberMe() != null ? true : false;
