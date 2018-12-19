@@ -10,7 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.zzhb.zzoa.domain.common.Menu;
+import com.zzhb.zzoa.domain.common.Result;
 import com.zzhb.zzoa.mapper.MenuMapper;
 import com.zzhb.zzoa.utils.Constant;
 
@@ -82,6 +86,18 @@ public class MenuService {
 		for (Map.Entry<String, Map<String, Object>> entry : json.entrySet()) {
 			result.add(entry.getValue());
 		}
+		return result;
+	}
+
+	public JSONObject getAllMenus(Integer page, Integer limit) {
+		JSONObject result = new JSONObject();
+		List<Menu> allMenus = menuMapper.getAllMenus();
+		result.put("code", 0);
+		result.put("msg", "");
+		result.put("count", allMenus.size());
+		result.put("is", true);
+		result.put("data", allMenus);
+		result.put("tip", "操作成功");
 		return result;
 	}
 

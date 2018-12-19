@@ -29,6 +29,7 @@ pagehelper:
   auto-runtime-dialect: "true"
 
 server:
+  context-path: /oa
   tomcat:
     max-threads: 1000
     accept-count: 1100

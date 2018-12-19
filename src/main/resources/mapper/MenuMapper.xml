@@ -62,4 +62,17 @@
 			</where>
 	</select>
 	
+	<select id="getAllMenus" resultType="com.zzhb.zzoa.domain.common.Menu" parameterType="java.util.Map">
+		SELECT
+			m_id id,
+			m_name title,
+			m_icon icon,
+			m_status status,
+			m_parentid parentid,
+			m_url url,
+			m_sort sort,
+			m_level level
+		FROM sys_t_menu
+	</select>
+	
 </mapper>

@@ -9,10 +9,12 @@ import com.zzhb.zzoa.domain.common.Menu;
 
 public interface MenuMapper {
 
+	public List<Menu> getAllMenus();
+
 	public List<Menu> getMenus(Map<String, Object> params);
 
 	public List<String> getIdByParentId(@Param("parentid") String parentid);
-	
+
 	public List<String> getIdByRoleID(Map<String, Object> params);
 
 }

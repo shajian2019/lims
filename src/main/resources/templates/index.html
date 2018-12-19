@@ -1,13 +1,14 @@
+<#assign ctx=req.contextPath />
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>KIT ADMIN</title>
-    <link rel="stylesheet" href="../plugins/layui/css/layui.css" media="all" />
-    <link rel="stylesheet" href="../plugins/font-awesome/css/font-awesome.min.css" media="all" />
-    <link rel="stylesheet" href="../css/app.css" media="all" />
-    <link rel="stylesheet" href="../css/themes/default.css" media="all" id="skin" kit-skin />
+    <link rel="stylesheet" href="${ctx}/plugins/layui/css/layui.css" media="all" />
+    <link rel="stylesheet" href="${ctx}/plugins/font-awesome/css/font-awesome.min.css" media="all" />
+    <link rel="stylesheet" href="${ctx}/css/app.css" media="all" />
+    <link rel="stylesheet" href="${ctx}/css/themes/default.css" media="all" id="skin" kit-skin />
 </head>
 
 <body class="kit-theme">
@@ -40,7 +41,7 @@
                         <dd><a href="javascript:;">安全设置</a></dd>
                     </dl>
                 </li>
-                <li class="layui-nav-item"><a href="/logout"><i class="fa fa-sign-out" aria-hidden="true"></i> 注销</a></li>
+                <li class="layui-nav-item"><a href="logout"><i class="fa fa-sign-out" aria-hidden="true"></i> 注销</a></li>
             </ul>
             
         </div>
@@ -65,11 +66,11 @@
         </div>
     </div>
     
-    <script src="../plugins/layui/layui.js"></script>
+    <script src="${ctx}/plugins/layui/layui.js"></script>
     <script>
         var message;
         layui.config({
-            base: '../js/',
+            base: '${ctx}/js/',
             version: '1.0.1'
         }).use(['app', 'message'], function() {
             var app = layui.app,
