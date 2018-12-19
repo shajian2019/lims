@@ -9,7 +9,7 @@ import com.zzhb.zzoa.domain.common.Menu;
 
 public interface MenuMapper {
 
-	public List<Menu> getAllMenus();
+	public List<Menu> getAllMenus(Map<String, String> params);
 
 	public List<Menu> getMenus(Map<String, Object> params);
 

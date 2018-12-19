@@ -9,9 +9,9 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-//@EnableScheduling
+@EnableScheduling
 @EnableAsync
-//@EnableCaching //TODO开发阶段
+@EnableCaching //TODO开发阶段
 @MapperScan({"com.zzhb.zzoa.mapper","com.zzhb.zzoa.shiro.mapper"})
 @SpringBootApplication
 public class ZzoaApplication {

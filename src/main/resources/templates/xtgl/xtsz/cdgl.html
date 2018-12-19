@@ -7,6 +7,7 @@
     <title>菜单管理</title>
     <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
     <script src="${ctx}/plugins/layui/layui.js"></script>
+    <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" />
 </head>
 <style>
     html,body{
@@ -19,26 +20,37 @@
         -ms-box-sizing: border-box; /*IE8*/
         box-sizing: border-box; /*W3C标准(IE9+，Safari5.1+,Chrome10.0+,Opera10.6+都符合box-sizing的w3c标准语法)*/
     }
+    .layui-form-item{
+        margin-bottom: 0px
+    }
 </style>
 <body class="layui-layout-body" style="padding: 10px">
-<div>
-	
-	<input type="text" name="title" required lay-verify="required" placeholder="菜单名称" autocomplete="off" class="layui-input"> 
-    <a class="layui-btn layui-btn-primary"  onclick="openAll();">展开/折叠</a>
-</div>
+<form class="layui-form">
+	<div class="layui-form-item">
+	        <div class="layui-inline">
+	        	<input class="layui-input" type="text" placeholder="菜单名称" name="title">		
+	        </div>
+	        <div class="layui-inline">
+	        	<button class="layui-btn layui-btn-primary" lay-submit="" lay-filter="query">查询</button>
+		 	 	<a class="layui-btn layui-btn-primary" onclick="openAll();">展开/折叠</a>
+		 	 	<a class="layui-btn layui-btn-primary" onclick="openAll();">保存排序</a>
+	        </div>
+	</div>
+</form>
 <div style="height:100%">
     <table class="layui-hidden" id="treeTable" lay-filter="treeTable"></table>
 </div>
 <script>
-    var editObj=null,ptable=null,treeGrid=null,tableId='treeTable',layer=null;
+    var editObj=null,ptable=null,treeGrid=null,tableId='treeTable',layer=null,form=null;
     layui.config({
         base: '${ctx}/plugins/layui/extend/'
     }).extend({
         treeGrid:'treeGrid'
-    }).use(['jquery','treeGrid','layer'], function(){
+    }).use(['jquery','treeGrid','layer','form'], function(){
         var $=layui.jquery;
         treeGrid = layui.treeGrid;//很重要
         layer=layui.layer;
+        form=layui.form;
         ptable=treeGrid.render({
             id:tableId
             ,elem: '#'+tableId
@@ -56,7 +68,7 @@
             ,cols: [[
                 {type:'numbers'}
                 ,{field:'title', width:500, title: '菜单名称',edit:'text'}
-                ,{field:'sort', width:300, title: '排序',edit:'text'}
+                ,{field:'sort', width:200, title: '排序',edit:'text'}
                 ,{field:'status', width:300, title: '状态',templet:function(d){
                 	 var html='';
                 	 if(d.status == 0){
@@ -66,14 +78,13 @@
                 	 }
                 	 return html
                 }}
-                ,{width:100,title: '操作', align:'center'/*toolbar: '#barDemo'*/
+                ,{width:150,title: '操作', align:'center'/*toolbar: '#barDemo'*/
                     ,templet: function(d){
                         var html='';
+                        	html +='<button class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit"><i class="fa fa-pencil"></i></button>';
+                        	html +='<button class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del"><i class="fa fa-trash-o"></i></button>';
                         if(d.level != '3'){
-                        	html +='<button class="layui-btn layui-btn-primary layui-btn-xs" lay-event="add"><i class="layui-icon">&#xe608;</i></button>';
-                        	html +='<button class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon">&#xe640;</i></button>';
-                        }else{
-                        	html +='<button class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon">&#xe640;</i></button>';
+                        	html +='<button class="layui-btn layui-btn-primary layui-btn-xs" lay-event="add"><i class="fa fa-plus-square-o"></i></button>';
                         }
                         return html;
                     }
@@ -95,9 +106,21 @@
                 del(obj);
             }else if(obj.event==="add"){//添加行
                 add(obj);
+            }else if(obj.event==="edit"){//编辑
+            	
             }
         });
+        
+        form.on('submit(query)', function(data){
+        	treeGrid.reload(tableId,{
+        		where:data.field
+            });
+            return false;
+        });
+        
     });
+    
+   
 
     function del(obj) {
         layer.confirm("你确定删除数据吗？如果存在下级节点则一并删除，此操作不能撤销！", {icon: 3, title:'提示'},
@@ -153,6 +176,7 @@
         treeGrid.reload(tableId,{
         });
     }
+    
     function query() {
         treeGrid.query(tableId,{
             where:{

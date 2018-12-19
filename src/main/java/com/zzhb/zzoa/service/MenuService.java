@@ -89,9 +89,9 @@ public class MenuService {
 		return result;
 	}
 
-	public JSONObject getAllMenus(Integer page, Integer limit) {
+	public JSONObject getAllMenus(Map<String, String> params) {
 		JSONObject result = new JSONObject();
-		List<Menu> allMenus = menuMapper.getAllMenus();
+		List<Menu> allMenus = menuMapper.getAllMenus(params);
 		result.put("code", 0);
 		result.put("msg", "");
 		result.put("count", allMenus.size());

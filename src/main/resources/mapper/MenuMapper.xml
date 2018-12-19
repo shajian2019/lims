@@ -73,6 +73,12 @@
 			m_sort sort,
 			m_level level
 		FROM sys_t_menu
+		<where>
+			<if test="title !=null and title !='' ">
+				<bind name="_title" value="'%'+title+'%'"/>
+				and m_name like #{_title}
+			</if>
+		</where>
 	</select>
 	
 </mapper>

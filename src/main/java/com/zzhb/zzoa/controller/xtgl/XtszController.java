@@ -1,9 +1,12 @@
 package com.zzhb.zzoa.controller.xtgl;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
@@ -24,7 +27,7 @@ public class XtszController {
 
 	@GetMapping("/xtsz/cdgl/getall")
 	@ResponseBody
-	public JSONObject getCd(Integer page, Integer limit) {
-		return menuService.getAllMenus(page, limit);
+	public JSONObject getCd(@RequestParam Map<String,String> params) {
+		return menuService.getAllMenus(params);
 	}
 }
