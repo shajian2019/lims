@@ -1,4 +1,4 @@
-package com.zzhb.zzoa.controller.index;
+package com.zzhb.zzoa.controller;
 
 import java.io.IOException;
 

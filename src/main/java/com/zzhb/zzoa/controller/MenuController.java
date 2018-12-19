@@ -1,4 +1,4 @@
-package com.zzhb.zzoa.controller.common;
+package com.zzhb.zzoa.controller;
 
 import java.util.List;
 import java.util.Map;
