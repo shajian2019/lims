@@ -92,12 +92,12 @@ layui.define(['element', 'nprogress', 'form', 'table', 'loader', 'tab', 'navbar'
                     onelevel.set({
                     	elem:'#ds',
                         remote: {
-                            url: 'oneMenus/get?r_id='+_config.r_id //远程地址
+                            url: 'menus/one/get?r_id='+_config.r_id //远程地址
                         },
                         onClicked: function(id) {
                         	navbar.set({
                                 remote: {
-                                    url: 'secondMenu/get?parentid='+id+'&r_id='+_config.r_id
+                                    url: 'menus/second/get?parentid='+id+'&r_id='+_config.r_id
                                 }
                             }).render(function(data) {
                                 tab.tabAdd(data);

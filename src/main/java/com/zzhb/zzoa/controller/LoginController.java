@@ -36,7 +36,6 @@ public class LoginController {
 
 	@GetMapping(value = { "/", "login" })
 	public String loginIn(HttpServletResponse response) {
-		logger.info("===get===login==");
 		Subject currentUser = SecurityUtils.getSubject();
 		if (currentUser.isAuthenticated()) {
 			try {
@@ -52,7 +51,6 @@ public class LoginController {
 	@PostMapping(value = "loginIn")
 	@ResponseBody
 	public JSONObject loginIn(Form form) {
-		logger.info("===post===loginIn==");
 		Subject currentUser = SecurityUtils.getSubject();
 		JSONObject result = new JSONObject();
 		String code = "";

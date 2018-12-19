@@ -36,13 +36,14 @@ public class MenuService {
 	@Cacheable(value = "SECONDMENU", key = "#r_id")
 	public List<Map<String, Object>> getSecondMenu(String r_id, String parentid) {
 		// 获取parentid下的所有子菜单ID
-		List<String> childIds = menuMapper.getIdByParentId(parentid);
+		List<String> childIds = menuMapper.getIdByParentId(parentid,r_id);
 		Map<String, Object> params = new HashMap<>();
 		if (Constant.SUPERADMIN.equals(r_id)) {
 			params.put("m_ids", childIds);
 		} else {
 			params.put("m_ids", childIds);
 			params.put("r_id", r_id);
+			// 根据当前角色ID 获取所拥有的子菜单ID
 			childIds = menuMapper.getIdByRoleID(params);
 			params.put("m_status", "1");
 		}

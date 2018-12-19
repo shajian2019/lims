@@ -41,7 +41,13 @@
               select t1.m_id,t1.m_parentid,
               if(find_in_set(m_parentid, @pids) > 0, @pids := concat(@pids, ',', m_id), 0) as ischild
               from (
-                   select m_id,m_parentid from sys_t_menu t where t.m_status = 1 order by m_parentid, m_id
+                   select m_id,m_parentid from sys_t_menu t 
+                   <where>
+	                   	<if test="r_id != null and r_id != 'superadmin' ">
+                   			 t.m_status = 1
+						</if> 
+                   </where>
+                    order by m_parentid, m_id
                   ) t1,
                   (select @pids := #{parentid}) t2
              ) t3 where ischild != 0

@@ -27,7 +27,12 @@ public class XtszController {
 
 	@GetMapping("/xtsz/cdgl/getall")
 	@ResponseBody
-	public JSONObject getCd(@RequestParam Map<String,String> params) {
+	public JSONObject getCd(@RequestParam Map<String, String> params) {
 		return menuService.getAllMenus(params);
+	}
+
+	@GetMapping("/xtsz/cdgl/edit")
+	public String edit(String action) {
+		return "xtgl/xtsz/edit";
 	}
 }
