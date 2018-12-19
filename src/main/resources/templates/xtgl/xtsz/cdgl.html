@@ -23,17 +23,7 @@
 <body class="layui-layout-body" style="padding: 10px">
 <div>
 	<input type="text" name="title" required lay-verify="required" placeholder="菜单名称" autocomplete="off" class="layui-input"> 
-	<a class="layui-btn layui-btn-primary" onclick="window.location.href='';">刷新</a>
-    <a class="layui-btn layui-btn-primary"  onclick="reload()">reload</a>
-    <a class="layui-btn layui-btn-primary"  onclick="query()">query</a>
-    <a class="layui-btn layui-btn-primary"  onclick="add(null);">新增一行</a>
-    <a class="layui-btn layui-btn-primary"  onclick="openorclose();">隐藏或打开香蕉节点</a>
-    <a class="layui-btn layui-btn-primary"  onclick="getCheckData();">获取选中行数据</a>
-    <a class="layui-btn layui-btn-primary"  onclick="getCheckLength();">获取选中数目</a>
-    <a class="layui-btn layui-btn-primary"  onclick="print();">打印缓存对象</a>
-    <a class="layui-btn layui-btn-primary"  onclick="openAll();">展开或折叠全部</a>
-    <a class="layui-btn layui-btn-primary"  onclick="radioStatus();">获取单选数据</a>
-    <a class="layui-btn layui-btn-primary"  onclick="test();">test</a>
+    <a class="layui-btn layui-btn-primary"  onclick="openAll();">展开/折叠</a>
 </div>
 <div style="height:100%">
     <table class="layui-hidden" id="treeTable" lay-filter="treeTable"></table>
