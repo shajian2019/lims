@@ -19,7 +19,6 @@ public class ZzoaApplicationTests {
 	@Test
 	public void contextLoads() {
 		
-		System.out.println(menuService.getSecondMenu("", "2"));
 	}
 
 }

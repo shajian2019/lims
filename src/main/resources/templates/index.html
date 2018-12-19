@@ -79,10 +79,11 @@
             message = layui.message;
             
             //主入口
-            var rolename = "${role.rolename}";
+            var r_id = "${(role.r_id)!'superadmin'}";
+            console.log(r_id)
             app.set({
                 type: 'iframe',
-                rolename:rolename
+                r_id:r_id
             }).init();
 
             $('dl.skin > dd').on('click', function() {

@@ -87,16 +87,17 @@ layui.define(['element', 'nprogress', 'form', 'table', 'loader', 'tab', 'navbar'
                 }).render();
                 //处理顶部一级菜单
                 var onelevel = layui.onelevel;
+                console.log("="+_config.r_id)
                 if (!onelevel.hasElem()) {
                     onelevel.set({
                     	elem:'#ds',
                         remote: {
-                            url: 'oneMenus/get?rolename='+_config.rolename //远程地址
+                            url: 'oneMenus/get?r_id='+_config.r_id //远程地址
                         },
                         onClicked: function(id) {
                         	navbar.set({
                                 remote: {
-                                    url: 'secondMenu/get?parentid='+id+'&rolename='+_config.rolename
+                                    url: 'secondMenu/get?parentid='+id+'&r_id='+_config.r_id
                                 }
                             }).render(function(data) {
                                 tab.tabAdd(data);

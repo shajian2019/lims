@@ -20,25 +20,28 @@ public class MenuService {
 	@Autowired
 	MenuMapper menuMapper;
 
-	@Cacheable(value = "ONEMENU", key = "#rolename")
-	public List<Menu> getOneMenusByRoleName(String rolename) {
+	@Cacheable(value = "ONEMENU", key = "#r_id")
+	public List<Menu> getOneMenusByRoleId(String r_id) {
 		Map<String, Object> params = new HashMap<>();
-		if ("admin".equals(rolename)) {
-			params.put("m_status", "1");
-			params.put("m_parentid", "0");
-			return menuMapper.getMenus(params);
-		} else {
-			return null;
-		}
+		params.put("r_id", r_id);
+		params.put("m_level", "1");
+		return menuMapper.getMenus(params);
 	}
 
 	@SuppressWarnings("unchecked")
-	@Cacheable(value = "SECONDMENU", key = "#rolename")
-	public List<Map<String, Object>> getSecondMenu(String rolename, String parentid) {
+	@Cacheable(value = "SECONDMENU", key = "#r_id")
+	public List<Map<String, Object>> getSecondMenu(String r_id, String parentid) {
 		// 获取parentid下的所有子菜单ID
 		List<String> childIds = menuMapper.getIdByParentId(parentid);
 		Map<String, Object> params = new HashMap<>();
-		params.put("m_ids", childIds);
+		if (Constant.SUPERADMIN.equals(r_id)) {
+			params.put("m_ids", childIds);
+		} else {
+			params.put("m_ids", childIds);
+			params.put("r_id", r_id);
+			childIds = menuMapper.getIdByRoleID(params);
+			params.put("m_status", "1");
+		}
 		List<Menu> menus = menuMapper.getMenus(params);
 		Map<String, Map<String, Object>> json = new LinkedHashMap<>();
 		for (int i = 0; i < menus.size(); i++) {

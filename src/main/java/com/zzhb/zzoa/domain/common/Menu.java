@@ -9,6 +9,15 @@ public class Menu {
 	private String status;
 	private String parentid;
 	private String sort;
+	private String level;
+
+	public String getLevel() {
+		return level;
+	}
+
+	public void setLevel(String level) {
+		this.level = level;
+	}
 
 	public String getId() {
 		return id;
@@ -69,7 +78,7 @@ public class Menu {
 	@Override
 	public String toString() {
 		return "Menu [id=" + id + ", title=" + title + ", icon=" + icon + ", url=" + url + ", status=" + status
-				+ ", parentid=" + parentid + ", sort=" + sort + "]";
+				+ ", parentid=" + parentid + ", sort=" + sort + ", level=" + level + "]";
 	}
 
 }

@@ -12,5 +12,7 @@ public interface MenuMapper {
 	public List<Menu> getMenus(Map<String, Object> params);
 
 	public List<String> getIdByParentId(@Param("parentid") String parentid);
+	
+	public List<String> getIdByRoleID(Map<String, Object> params);
 
 }

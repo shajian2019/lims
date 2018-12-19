@@ -19,13 +19,13 @@ public class MenuController {
 
 	@GetMapping("/oneMenus/get")
 	@ResponseBody
-	public List<Menu> getOneMenus(String rolename) {
-		return menuService.getOneMenusByRoleName(rolename);
+	public List<Menu> getOneMenus(String r_id) {
+		return menuService.getOneMenusByRoleId(r_id);
 	}
 
 	@GetMapping("/secondMenu/get")
 	@ResponseBody
-	public List<Map<String, Object>> getSecondMenu(String parentid, String rolename) {
-		return menuService.getSecondMenu(rolename, parentid);
+	public List<Map<String, Object>> getSecondMenu(String parentid, String r_id) {
+		return menuService.getSecondMenu(r_id, parentid);
 	}
 }
