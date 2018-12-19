@@ -96,6 +96,12 @@
 		</dependency>
 		
 		<dependency>
+            <groupId>net.mingsoft</groupId>
+            <artifactId>shiro-freemarker-tags</artifactId>
+            <version>0.1</version>
+        </dependency>
+		
+		<dependency>
 			<groupId>org.apache.shiro</groupId>
 			<artifactId>shiro-quartz</artifactId>
 			<version>${shiro.version}</version>

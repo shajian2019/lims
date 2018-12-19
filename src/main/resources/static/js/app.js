@@ -63,10 +63,7 @@ layui.define(['element', 'nprogress', 'form', 'table', 'loader', 'tab', 'navbar'
                         return true; //返回true则关闭
                     }
                 }).render();
-                //navbar加载方式一，直接绑定已有的dom元素事件                
-                navbar.bind(function(data) {
-                    tab.tabAdd(data);
-                });
+                
             }
             if (_config.type === 'iframe') {
                 tab.set({
@@ -88,19 +85,18 @@ layui.define(['element', 'nprogress', 'form', 'table', 'loader', 'tab', 'navbar'
                         return true; //返回true则关闭
                     }
                 }).render();
-
                 //处理顶部一级菜单
                 var onelevel = layui.onelevel;
                 if (!onelevel.hasElem()) {
                     onelevel.set({
                     	elem:'#ds',
                         remote: {
-                            url: 'oneMenus/get?rolename=admin' //远程地址
+                            url: 'oneMenus/get?rolename='+_config.rolename //远程地址
                         },
                         onClicked: function(id) {
                         	navbar.set({
                                 remote: {
-                                    url: 'secondMenu/get?parentid='+id+'&rolename=admin'
+                                    url: 'secondMenu/get?parentid='+id+'&rolename='+_config.rolename
                                 }
                             }).render(function(data) {
                                 tab.tabAdd(data);

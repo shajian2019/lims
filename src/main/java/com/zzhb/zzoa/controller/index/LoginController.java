@@ -13,6 +13,7 @@ import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,12 +22,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
 import com.zzhb.zzoa.domain.Form;
+import com.zzhb.zzoa.domain.User;
+import com.zzhb.zzoa.service.LoginService;
 import com.zzhb.zzoa.utils.Constant;
 
 @Controller
 public class LoginController {
 
 	private static Logger logger = LoggerFactory.getLogger(LoginController.class);
+
+	@Autowired
+	LoginService loginService;
 
 	@GetMapping(value = { "/", "login" })
 	public String loginIn(HttpServletResponse response) {
@@ -56,20 +62,20 @@ public class LoginController {
 				&& session.getAttribute(Constant.CAPTCHA).equals(form.getValidCode().trim().toUpperCase())) {
 			if (!currentUser.isAuthenticated()) {
 				UsernamePasswordToken token = new UsernamePasswordToken(form.getUserName(), form.getPassword());
-				boolean rememberMe = form.getRememberMe() != null ? true : false;
-				token.setRememberMe(rememberMe);
 				try {
 					currentUser.login(token);
+					User user = (User) currentUser.getPrincipal();
+					loginService.initLoginUser(user, session);
 					code = "0000";
 				} catch (UnknownAccountException e) {
 					code = "9999";
-					msg = "账号不存在";
+					msg = e.getMessage();
 				} catch (LockedAccountException e) {
 					code = "9999";
-					msg = "账号已锁定,请联系管理员";
+					msg = e.getMessage();
 				} catch (AuthenticationException e) {
 					code = "9999";
-					msg = "用户名或密码错误";
+					msg = "账号或密码错误";
 				}
 			} else {
 				code = "0000";

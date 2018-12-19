@@ -33,7 +33,7 @@
                 </li>
                 <li class="layui-nav-item">
                     <a href="javascript:;">
-                        <img src="http://m.zhengjinfan.cn/images/0.jpg" class="layui-nav-img"> Van
+                        <img src="http://m.zhengjinfan.cn/images/0.jpg" class="layui-nav-img"> ${user.nickname}
                     </a>
                     <dl class="layui-nav-child">
                         <dd><a href="javascript:;" kit-target data-options="{url:'basic.html',icon:'&#xe658;',title:'基本资料',id:'966'}"><span>基本资料</span></a></dd>
@@ -75,13 +75,14 @@
             var app = layui.app,
                 $ = layui.jquery,
                 layer = layui.layer;
-            
             //将message设置为全局以便子页面调用
             message = layui.message;
             
             //主入口
+            var rolename = "${role.rolename}";
             app.set({
-                type: 'iframe'
+                type: 'iframe',
+                rolename:rolename
             }).init();
 
             $('dl.skin > dd').on('click', function() {

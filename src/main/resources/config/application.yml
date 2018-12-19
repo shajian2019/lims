@@ -2,7 +2,8 @@
 spring: 
   freemarker:
     request-context-attribute: req
-    allow-request-override: false 
+    allow-request-override: false
+    allow-session-override: true 
     enabled: true
     cache: false
     check-template-location: true

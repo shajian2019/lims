@@ -17,10 +17,9 @@ layui.define(['jquery', 'element', 'nprogress', 'utils'], function(exports) {
             iframe: 'iframe'
         };
     var Tab = function() {
-    	console.log($(".layui-nav")[0])
         this.config = {
             elem: undefined,
-            mainUrl: 'main.html',
+            mainUrl: 'main',
             renderType: 'iframe',
             openWait: false
         };
