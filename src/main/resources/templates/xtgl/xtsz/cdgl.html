@@ -38,7 +38,7 @@
 	</div>
 </form>
 <div style="height:100%">
-    <table class="layui-hidden" id="treeTable" lay-filter="treeTable"></table>
+    <table class="layui-hidden layui-table" id="treeTable" lay-filter="treeTable"></table>
 </div>
 <script>
     var editObj=null,ptable=null,treeGrid=null,tableId='treeTable',layer=null,form=null;
@@ -60,7 +60,7 @@
             ,treeId:'id'//树形id字段名称
             ,treeUpId:'parentid'//树形父id字段名称
             ,treeShowName:'title'//以树形式显示的字段
-            ,height:'full-140'
+            ,height:'full-90'
             ,isFilter:false
             ,iconOpen:true//是否显示图标【默认显示】
             ,isOpenDefault:true//节点默认是展开还是折叠【默认展开】
@@ -100,14 +100,20 @@
                 console.log(index,o,"双击");
             }
         });
-
+        //点击行事件
         treeGrid.on('tool('+tableId+')',function (obj) {
             if(obj.event === 'del'){//删除行
                 del(obj);
             }else if(obj.event==="add"){//添加行
                 add(obj);
             }else if(obj.event==="edit"){//编辑
-            	
+            	layer.open({
+            		  type: 2,
+            		  area: ['700px', '450px'],
+            		  fixed: false, //不固定
+            		  maxmin: true,
+            		  content: 'test/iframe.html'
+            		});           	
             }
         });
         
@@ -117,7 +123,7 @@
             });
             return false;
         });
-        
+
     });
     
    

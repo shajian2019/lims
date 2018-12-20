@@ -1,0 +1,280 @@
+<#assign ctx=req.contextPath />
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>编辑</title>
+ <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
+ <style>
+ /* layui重置 */
+ .layui-form{width:800px;margin:10px auto 0;}
+ .layui-form-item .layui-inline, .layui-form-item .layui-input-block{
+    width:400px;
+ }
+ .layui-form-item .radio-box{border:1px solid #e6e6e6;}
+ .layui-btn-container{width:512px;text-align:center;}
+</style>
+</head>
+<body>
+<form class="layui-form layui-form-pane" lay-filter="edit">
+    <div class="layui-form-item">
+        <label class="layui-form-label">上级菜单:</label>
+        <div class="layui-inline">
+            <input type="text" id="tree" lay-filter="tree" class="layui-input">
+            <i class="la"></i>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">菜单名称:</label>
+        <div class="layui-inline">
+            <input class="layui-input" type="text" name="">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">链接(Href):</label>
+        <div class="layui-inline">
+            <input class="layui-input" type="text" name="">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">排序(升序):</label>
+        <div class="layui-inline">
+            <input class="layui-input" type="text" name="">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">菜单图标:</label>
+        <div class="layui-inline">
+            <input class="layui-input" type="text" name="">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">是否可见:</label>
+        <div class="layui-input-block radio-box">
+            <input type="radio" name="sex" value="显示" title="显示">
+            <input type="radio" name="sex" value="隐藏" title="隐藏" checked>
+        </div>
+    </div>
+<div class="layui-btn-container">
+  <a class="layui-btn layui-btn-sm layui-btn-primary" lay-submit lay-filter="save">保存</a>
+  <a class="layui-btn layui-btn-sm layui-bg-gray">取消</a>
+</div>
+</form>
+</body>
+</html>
+<script src="${ctx}/plugins/layui/layui.js"></script>
+<script type="text/javascript">
+var data=[
+    {
+        "id": 1,
+        "name": "zzz",
+        "open": true,
+        "children": [
+          {
+            "id": 2,
+            "name": "1",
+            "open": false,
+            "checked": true,
+            "children": [
+              {
+                "id": 22,
+                "name": "1-1",
+                "open": false,
+                "checked": true,
+                "children": [
+                  {
+                    "id": 32,
+                    "name": "1-1-1",
+                    "open": false,
+                    "checked": true
+                  },
+                  {
+                    "id": 33,
+                    "name": "1-1-2",
+                    "open": false,
+                    "checked": true
+          
+                  }
+                ]
+              },
+              {
+                "id": 23,
+                "name": "1-2",
+                "open": false,
+                "checked": true
+      
+              }
+            ]
+          },
+          {
+            "id": 3,
+            "name": "2",
+            "open": false,
+            "checked": true
+
+          },
+          {
+            "id": 17,
+            "name": "3z",
+            "open": false,
+            "checked": true
+          }
+        ],
+        "checked": true
+      },
+      {
+        "id": 4,
+        "name": "评论",
+        "open": false,
+        "children": [
+          {
+            "id": 5,
+            "name": "留言列表",
+            "open": false,
+            "checked": false
+          },
+          {
+            "id": 6,
+            "name": "发表留言",
+            "open": false,
+            "checked": false
+          },
+          {
+            "id": 333,
+            "name": "233333",
+            "open": false,
+            "checked": false
+          }
+        ],
+        "checked": false
+      },
+      {
+        "id": 10,
+        "name": "权限管理",
+        "open": false,
+        "children": [
+          {
+            "id": 8,
+            "name": "用户列表",
+            "open": false,
+            "children": [
+              {
+                "id": 40,
+                "name": "添加用户",
+                "open": false,
+                
+                "url": null,
+                "title": "40",
+                "checked": false,
+                "level": 2,
+                "check_Child_State": 0,
+                "check_Focus": false,
+                "checkedOld": false,
+                "dropInner": false,
+                "drag": false,
+                "parent": false
+              },
+              {
+                "id": 41,
+                "name": "编辑用户",
+                "open": false,
+                "checked": false
+              },
+              {
+                "id": 42,
+                "name": "删除用户",
+                "open": false,
+                "checked": false
+              }
+            ],
+            "checked": false
+          },
+          {
+            "id": 11,
+            "name": "角色列表",
+            "open": false,
+            "checked": false
+          },
+          {
+            "id": 13,
+            "name": "所有权限",
+            "open": false,
+            "children": [
+              {
+                "id": 34,
+                "name": "添加权限",
+                "open": false,
+                "checked": false
+              },
+              {
+                "id": 37,
+                "name": "编辑权限",
+                "open": false,
+                "checked": false
+              },
+              {
+                "id": 38,
+                "name": "删除权限",
+                "open": false,
+                "checked": false
+              }
+            ],
+            "checked": false
+          },
+          {
+            "id": 15,
+            "name": "操作日志",
+            "open": false,
+            "checked": false
+          }
+        ],
+        "checked": false
+      }
+    ]
+//加载formSelect模块
+layui.config({
+    base: "${ctx}/plugins/layui/extend/"
+	}).extend({
+	    treeSelect: "treeSelect"
+	});
+layui.use(['treeSelect','form','layer'],function(){
+	var $=layui.jquery,treeSelect=layui.treeSelect,form=layui.form,layer=layui.layer;
+    treeSelect.render({
+        // 选择器
+        elem: '#tree',
+        // 数据
+        data: data,
+        // 异步加载方式：get/post，默认get
+        type: 'get',
+        // 占位符
+        placeholder: '修改默认提示信息',
+        // 是否开启搜索功能：true/false，默认false
+        search: true,
+        // 一些可定制的样式
+        style: {
+            folder: {
+                enable: true
+            },
+            line: {
+                enable: true
+            }
+        },
+        // 点击回调
+        click: function(d){
+            console.log(d);
+        },
+        // 加载完成后的回调函数
+        success: function (d) {
+            console.log(d);
+//                选中节点，根据id筛选
+            treeSelect.checkNode('tree', 3);
+            console.log($('#tree').val());
+//                获取zTree对象，可以调用zTree方法
+           var treeObj = treeSelect.zTree('tree');
+           console.log(treeObj);
+//                刷新树结构
+           treeSelect.refresh('tree');
+        }
+    });	
+})
+</script>
