@@ -22,7 +22,7 @@ public class XtszController {
 
 	@GetMapping("/xtsz/cdgl")
 	public String cdgl() {
-		return "xtgl/xtsz/cdgl";
+		return "xtgl/xtsz/cdgl/cdgl";
 	}
 
 	@Autowired
@@ -43,7 +43,14 @@ public class XtszController {
 		Menu menu = menuMapper.getMenu(params);
 		mv.addObject("menu", menu);
 		mv.addObject("params", params);
-		mv.setViewName("xtgl/xtsz/edit");
+		mv.setViewName("xtgl/xtsz/cdgl/edit");
+		return mv;
+	}
+	
+	@GetMapping("/xtsz/cdgl/icon")
+	public ModelAndView icon(@RequestParam Map<String, String> params) {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("xtgl/xtsz/cdgl/icon");
 		return mv;
 	}
 }
