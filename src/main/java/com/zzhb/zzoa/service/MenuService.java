@@ -104,10 +104,7 @@ public class MenuService {
 			String m_id = menu.getId();
 			json.put("id", m_id);
 			json.put("name", menu.getTitle());
-			json.put("open", false);
-			if (i == 0) {
-				json.put("open", true);
-			}
+			json.put("open", true);
 			params.put("m_parentid", m_id);
 			JSONArray childrenS = new JSONArray();
 			List<Menu> secondMenus = menuMapper.getAllMenus(params);
