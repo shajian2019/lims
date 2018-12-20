@@ -41,13 +41,11 @@ layui.use(['element'], function(){
 	  var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
 	  var iconText= $(this).children('.name').text();
 	    parent.layui.$('#icon_input').val(iconText);
- 	    if(iconText.indexOf("fa")){
-	    	parent.layui.$('.fa').attr("class","fa "+iconText+"");
-	    }else if(iconText.indexOf("&#")){
-	    	var uncode=
-	    	parent.layui.$('.layui-icon').text(iconText);
-	    	console.log(iconText)
-	    } 
+ 	    if(iconText.indexOf("fa-") > 0){
+	    	parent.layui.$('.icon .fa').attr("class","fa "+iconText+"");
+	    }else if(iconText.indexOf("layui-icon") > 0){
+	    	parent.layui.$('.icon .layui-icon').attr("class","layui-icon "+iconText+"");
+	    }
 	    parent.layer.close(index);
 	  });
 });
