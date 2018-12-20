@@ -62,6 +62,7 @@ public class MenuService {
 				map.put("id", menu.getId());
 				map.put("title", menu.getTitle());
 				map.put("icon", menu.getIcon());
+				map.put("url", menu.getUrl());
 				if (i == 0) {
 					map.put("spread", true);
 				} else {
