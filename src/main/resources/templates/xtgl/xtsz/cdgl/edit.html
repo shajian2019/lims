@@ -181,13 +181,18 @@ layui.use(['treeSelect','form','layer'],function(){
 	
 	//图标
 	$("#icon_search").click(function(){
+		var level = ${menu.level};
+		var type = "0";
+		if(level == 3){
+			type = "1";
+		}
 		var index = layer.open({
 			  title:'图标库',
 			  type: 2,
-			  area: ['620px', '400px'],
+			  area: ['780px', '400px'],
 			  fixed: false, //不固定
 			  maxmin: true,
-			  content:'${ctx}/xtgl/xtsz/cdgl/icon',
+			  content:'${ctx}/xtgl/xtsz/cdgl/icon?type='+type,
 			  end: function(){
 				  
 			  }

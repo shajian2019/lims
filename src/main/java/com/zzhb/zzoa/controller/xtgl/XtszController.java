@@ -1,5 +1,6 @@
 package com.zzhb.zzoa.controller.xtgl;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.zzhb.zzoa.domain.common.Icon;
 import com.zzhb.zzoa.domain.common.Menu;
+import com.zzhb.zzoa.mapper.IconMapper;
 import com.zzhb.zzoa.mapper.MenuMapper;
 import com.zzhb.zzoa.service.MenuService;
 
@@ -31,6 +34,9 @@ public class XtszController {
 	@Autowired
 	MenuMapper menuMapper;
 
+	@Autowired
+	IconMapper iconMapper;
+
 	@GetMapping("/xtsz/cdgl/getall")
 	@ResponseBody
 	public JSONObject getCd(@RequestParam Map<String, String> params) {
@@ -46,10 +52,13 @@ public class XtszController {
 		mv.setViewName("xtgl/xtsz/cdgl/edit");
 		return mv;
 	}
-	
+
 	@GetMapping("/xtsz/cdgl/icon")
 	public ModelAndView icon(@RequestParam Map<String, String> params) {
 		ModelAndView mv = new ModelAndView();
+		List<Icon> icons = iconMapper.getIcons(params);
+		mv.addObject("icons", icons);
+		mv.addObject("type", params.get("type"));
 		mv.setViewName("xtgl/xtsz/cdgl/icon");
 		return mv;
 	}

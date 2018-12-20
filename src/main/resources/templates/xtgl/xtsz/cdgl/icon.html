@@ -15,50 +15,26 @@
 </style>
 </head>
 <body>
-<div class="layui-tab">
-  <ul class="layui-tab-title">
-    <li class="layui-this">网站设置</li>
-    <li>用户管理</li>
-  </ul>
-  <div class="layui-tab-content" style="height: 100px;">
-    <div class="layui-tab-item layui-show">
-        <div class="layui-row layui-col-md12">
-            <div class="layui-col-md3 layui-col-sm3">
-                <div class="item-box">
-                    <i class="fa fa-search"></i>
-                    <span class="name">&nbsp; fa-search</span>
-                </div>
-            </div>
-            <div class="layui-col-md3 layui-col-sm3">
-                <div class="item-box">
-                    <i class="fa fa-search"></i>
-                    <span class="name">&nbsp; fa-search</span>
-                </div>
-            </div>
-            <div class="layui-col-md3 layui-col-sm3">
-                <div class="item-box">
-                    <i class="fa fa-search"></i>
-                    <span class="name">&nbsp; fa-search</span>
-                </div>
-            </div>
-            <div class="layui-col-md3 layui-col-sm3">
-                <div class="item-box">
-                    <i class="fa fa-search"></i>
-                    <span class="name">&nbsp; fa-search</span>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="layui-tab-item">2</div>
-  </div>
+<div class="layui-show">
+	<div class="layui-row layui-col-md12">
+	<#list icons as icon>
+		<div class="layui-col-md3 layui-col-sm3">
+           <div class="item-box">
+           	   <#if type == '0'>
+	               <i class="fa ${icon.icon}"></i>
+	           <#else>
+	           	   <i class="layui-icon">${icon.icon}</i>
+               </#if>
+	           <span class="name">&nbsp; ${icon.icon?html}</span>
+           </div>
+	     </div>
+	</#list>
+	</div>
 </div>
 <script src="${ctx}/plugins/layui/layui.js"></script>
 <script>
-layui.use(['element','layer'], function(){
+layui.use(['element'], function(){
   var element = layui.element;
-  var layer = layui.layer;
-  
-  
 });
 </script>
 </body>

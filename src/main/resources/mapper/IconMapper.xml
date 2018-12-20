@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzhb.zzoa.mapper.IconMapper">
+	
+	<select id="getIcons" resultType="com.zzhb.zzoa.domain.common.Icon" parameterType="java.util.Map">
+		SELECT
+			i_id id,
+			i_type type,
+			i_name name,
+			i_icon icon,
+			i_sort sort
+		FROM sys_t_icon
+		<where>
+			<if test="type !=null and type !='' ">
+				and i_type = #{type}
+			</if>
+		</where>
+	</select>
+</mapper>
