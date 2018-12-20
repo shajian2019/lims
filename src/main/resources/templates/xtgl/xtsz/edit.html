@@ -8,12 +8,39 @@
  <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" />
  <style>
  /* layui重置 */
- .layui-form{width:800px;margin:10px auto 0;}
+ .layui-form{width:530px;margin:10px auto 0;}
  .layui-form-item .layui-inline, .layui-form-item .layui-input-block{
     width:400px;
  }
  .layui-form-item .radio-box{border:1px solid #e6e6e6;}
  .layui-btn-container{width:512px;text-align:center;}
+ /* 自定义 */
+ div.icon-box{
+    height: 36px;
+    border:1px solid #e6e6e6;
+    border-left:none;
+    background-color: #fff;
+    border-radius: 2px;
+ }
+ .icon-box .icon{
+ 	width: 36px;
+ 	height:36px;
+ 	text-align: center;
+ 	line-height: 36px;
+ 	border-right:1px solid #e6e6e6;
+ 	display: inline-block;
+ }
+ .icon-box .layui-inline-block{
+ 	display: flex;
+ 	align-items: center;
+ 	justify-content: space-between;
+ }
+ .icon-box .icon-input{
+ 	display: inline-block;
+ 	border:none; 
+ 	flex-grow: 1;
+ 	padding: 0 10px;
+ }
 </style>
 </head>
 <body>
@@ -48,14 +75,20 @@
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">菜单图标:</label>
-        <div class="layui-inline">
-        	<#if params.action != 'add'>
-	            <#if menu.level != '3'>
-	            	<i class="fa ${menu.icon} fa-fw"></i>
-	            <#else>
-	            	<i class="layui-icon">${menu.icon}</i> 
-	            </#if>
-        	</#if>
+        <div class="layui-inline icon-box">
+            <div class="layui-inline-block">
+            	<div class="icon">
+            	<#if params.action != 'add'>
+		             <#if menu.level != '3'>
+		                <i class="fa ${menu.icon} fa-fw"></i>
+		            <#else>
+		                <i class="layui-icon">${menu.icon}</i>
+		            </#if>
+		        </#if>
+            	</div>
+                <input type="text" name="icon"  class="icon-input">
+                <a class="layui-btn layui-btn-primary" id="icon_search" style="border-top:none;border-bottom: none;border-right:none;height:36px;line-height: 36px;padding: 0 15px;"><i class="fa fa-search"></i></a>
+            </div>
         </div>
     </div>
     <div class="layui-form-item">
@@ -70,7 +103,15 @@
   <a class="layui-btn layui-btn-sm layui-bg-gray">取消</a>
 </div>
 </form>
-
+<!-- 图标页面 -->
+<div class="icon-page layui-row" id="icon_page" style="display: none;">
+	<div class="col-md-3 col-sm-4">
+		<div class="item-box">
+			<i class="fa fa-search"></i>
+			<span class="name">&nbsp; fa-search</span>
+		</div>
+	</div>
+</div>
 <script src="${ctx}/plugins/layui/layui.js"></script>
 <script type="text/javascript">
 //加载formSelect模块
@@ -93,7 +134,7 @@ layui.use(['treeSelect','form','layer'],function(){
 	        style: {
 	            line: {
 	                enable: true
-	            } 
+	            }
 	        },
 	        click: function(d){
 	        	console.log(d);
@@ -147,6 +188,12 @@ layui.use(['treeSelect','form','layer'],function(){
 	     return false;
     });
 	
+})
+//图标
+$("#icon_search").click(function(){
+
+})
+
 })
 </script>
 </body>
