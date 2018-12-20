@@ -5,6 +5,7 @@
 <meta charset="UTF-8">
 <title>编辑</title>
  <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
+ <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" />
  <style>
  /* layui重置 */
  .layui-form{width:800px;margin:10px auto 0;}
@@ -17,42 +18,49 @@
 </head>
 <body>
 <form class="layui-form layui-form-pane" lay-filter="edit">
-    <div class="layui-form-item">
-        <label class="layui-form-label">上级菜单:</label>
-        <div class="layui-inline">
-            <input type="text" id="tree" lay-filter="tree" class="layui-input">
-            <i class="la"></i>
-        </div>
-    </div>
+	<#if menu.level != '1'>
+	    <div class="layui-form-item">
+	        <label class="layui-form-label">上级菜单:</label>
+	        <div class="layui-inline">
+	            <input type="text" id="tree" lay-filter="tree" class="layui-input">
+	        </div>
+	    </div>
+    </#if>
     <div class="layui-form-item">
         <label class="layui-form-label">菜单名称:</label>
         <div class="layui-inline">
-            <input class="layui-input" type="text" name="">
+            <input class="layui-input" type="text" name="title" value="${menu.title}">
         </div>
     </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label">链接(Href):</label>
-        <div class="layui-inline">
-            <input class="layui-input" type="text" name="">
-        </div>
-    </div>
+    <#if menu.level == '3'>
+	    <div class="layui-form-item">
+	        <label class="layui-form-label">链接(Href):</label>
+	        <div class="layui-inline">
+	            <input class="layui-input" type="text" name="url" value="${(menu.url)!''}">
+	        </div>
+	    </div>
+    </#if>
     <div class="layui-form-item">
         <label class="layui-form-label">排序(升序):</label>
         <div class="layui-inline">
-            <input class="layui-input" type="text" name="">
+            <input class="layui-input" type="text" name="sort" value="${menu.sort}">
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">菜单图标:</label>
         <div class="layui-inline">
-            <input class="layui-input" type="text" name="">
+            <#if menu.level != '3'>
+            	<i class="fa ${menu.icon} fa-fw"></i>
+            <#else>
+            	<i class="layui-icon">${menu.icon}</i> 
+            </#if>
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">是否可见:</label>
         <div class="layui-input-block radio-box">
-            <input type="radio" name="sex" value="显示" title="显示">
-            <input type="radio" name="sex" value="隐藏" title="隐藏" checked>
+            <input type="radio" name="sex" value="显示" title="显示"<#if menu.status == '1'>checked</#if>>
+            <input type="radio" name="sex" value="隐藏" title="隐藏"<#if menu.status == '0'>checked</#if>>
         </div>
     </div>
 <div class="layui-btn-container">
@@ -60,8 +68,7 @@
   <a class="layui-btn layui-btn-sm layui-bg-gray">取消</a>
 </div>
 </form>
-</body>
-</html>
+
 <script src="${ctx}/plugins/layui/layui.js"></script>
 <script type="text/javascript">
 //加载formSelect模块
@@ -69,45 +76,38 @@ layui.config({
     base: "${ctx}/plugins/layui/extend/"
 	}).extend({
 	    treeSelect: "treeSelect"
-	});
+});
 layui.use(['treeSelect','form','layer'],function(){
 	var $=layui.jquery,treeSelect=layui.treeSelect,form=layui.form,layer=layui.layer;
-    treeSelect.render({
-        // 选择器
-        elem: '#tree',
-        // 数据
-        data: "${ctx}/menus/tree/init",
-        // 异步加载方式：get/post，默认get
-        type: 'get',
-        // 占位符
-        placeholder: '修改默认提示信息',
-        // 是否开启搜索功能：true/false，默认false
-        search: true,
-        // 一些可定制的样式
-        style: {
-            folder: {
-                enable: true
-            },
-            line: {
-                enable: true
-            }
-        },
-        // 点击回调
-        click: function(d){
-            console.log(d);
-        },
-        // 加载完成后的回调函数
-        success: function (d) {
-            console.log(d);
-//                选中节点，根据id筛选
-            treeSelect.checkNode('tree', 3);
-            console.log($('#tree').val());
-//                获取zTree对象，可以调用zTree方法
-           var treeObj = treeSelect.zTree('tree');
-           console.log(treeObj);
-//                刷新树结构
-           treeSelect.refresh('tree');
-        }
-    });	
+	if(${menu.level} != 1){
+	    treeSelect.render({
+	        elem: '#tree',
+	        data: "${ctx}/menus/tree/init?level="+${menu.level},
+	        type: 'get',
+	        placeholder: '菜单名称',
+	        search: true,
+	        id: 'tree',
+	        style: {
+	            line: {
+	                enable: true
+	            } 
+	        },
+	        click: function(d){
+	        	console.log(d);
+	            console.log(d.treeId); // 得到组件的id
+	            console.log(d.current); // 得到点击节点的treeObj对象
+	            console.log(d.data); // 得到组成树的数据
+	        },
+	        success: function (d) {
+	      	   console.log(d)  	
+	           treeSelect.checkNode('tree', ${menu.parentid});
+	           var treeObj = treeSelect.zTree('tree');
+		       console.log("===="+treeObj);
+	           treeSelect.refresh('tree');
+	        }
+	    });
+	}
 })
 </script>
+</body>
+</html>

@@ -1,5 +1,6 @@
-
-layui.define(['form', 'jquery'], function (exports) { //提示：模块也可以依赖其它模块，如：layui.define('layer', callback);
+//https://wujiawei0926.gitee.io/treeselect/docs/doc.html#checknode
+layui.define(['form', 'jquery'], function (exports) { // 提示：模块也可以依赖其它模块，如：layui.define('layer',
+														// callback);
   var jQuery = layui.jquery,
       $ = jQuery,
       form = layui.form,
@@ -12,16 +13,14 @@ layui.define(['form', 'jquery'], function (exports) { //提示：模块也可以
 
 
 /*
- * JQuery zTree core v3.5.37
- * http://treejs.cn/
- *
+ * JQuery zTree core v3.5.37 http://treejs.cn/
+ * 
  * Copyright (c) 2010 Hunter.z
- *
+ * 
  * Licensed same as jquery - MIT License
  * http://www.opensource.org/licenses/mit-license.php
- *
- * email: hunter.z@263.net
- * Date: 2018-08-21
+ * 
+ * email: hunter.z@263.net Date: 2018-08-21
  */
 (function(r){var J,K,L,M,N,O,v,t={},w={},x={},P={treeId:"",treeObj:null,view:{addDiyDom:null,autoCancelSelected:!0,dblClickExpand:!0,expandSpeed:"fast",fontCss:{},nameIsHTML:!1,selectedMulti:!0,showIcon:!0,showLine:!0,showTitle:!0,txtSelectedEnable:!1},data:{key:{isParent:"isParent",children:"children",name:"name",title:"",url:"url",icon:"icon"},simpleData:{enable:!1,idKey:"id",pIdKey:"pId",rootPId:null},keep:{parent:!1,leaf:!1}},async:{enable:!1,contentType:"application/x-www-form-urlencoded",type:"post",
 dataType:"text",headers:{},xhrFields:{},url:"",autoParam:[],otherParam:[],dataFilter:null},callback:{beforeAsync:null,beforeClick:null,beforeDblClick:null,beforeRightClick:null,beforeMouseDown:null,beforeMouseUp:null,beforeExpand:null,beforeCollapse:null,beforeRemove:null,onAsyncError:null,onAsyncSuccess:null,onNodeCreated:null,onClick:null,onDblClick:null,onRightClick:null,onMouseDown:null,onMouseUp:null,onExpand:null,onCollapse:null,onRemove:null}},y=[function(a){var b=a.treeObj,c=g.event;b.bind(c.NODECREATED,
@@ -88,16 +87,14 @@ b,c){function e(){if(!c){var b=l(a,d).get(0);j.scrollIntoView(d,b)}}if(a&&h.uCan
 a),j.setNodeLineIcos(d,a),j.setNodeFontCss(d,a))}};a.treeTools=f;e.setZTreeTools(d,f);(c=e.nodeChildren(d,a))&&c.length>0?j.createNodes(d,0,c,null,-1):d.async.enable&&d.async.url&&d.async.url!==""&&j.asyncNode(d);return f}};var Q=r.fn.zTree,l=h.$,g=Q.consts})(jQuery);
 
 /*
- * JQuery zTree excheck v3.5.37
- * http://treejs.cn/
- *
+ * JQuery zTree excheck v3.5.37 http://treejs.cn/
+ * 
  * Copyright (c) 2010 Hunter.z
- *
+ * 
  * Licensed same as jquery - MIT License
  * http://www.opensource.org/licenses/mit-license.php
- *
- * email: hunter.z@263.net
- * Date: 2018-08-21
+ * 
+ * email: hunter.z@263.net Date: 2018-08-21
  */
 (function(n){var q,r,s,p={event:{CHECK:"ztree_check"},id:{CHECK:"_check"},checkbox:{STYLE:"checkbox",DEFAULT:"chk",DISABLED:"disable",FALSE:"false",TRUE:"true",FULL:"full",PART:"part",FOCUS:"focus"},radio:{STYLE:"radio",TYPE_ALL:"all",TYPE_LEVEL:"level"}},w={check:{enable:!1,autoCheckTrigger:!1,chkStyle:p.checkbox.STYLE,nocheckInherit:!1,chkDisabledInherit:!1,radioType:p.radio.TYPE_LEVEL,chkboxType:{Y:"ps",N:"ps"}},data:{key:{checked:"checked"}},callback:{beforeCheck:null,onCheck:null}};q=function(c,
 a){if(a.chkDisabled===!0)return!1;var b=e.getSetting(c.data.treeId);if(i.apply(b.callback.beforeCheck,[b.treeId,a],!0)==!1)return!0;var d=e.nodeChecked(b,a);e.nodeChecked(b,a,!d);f.checkNodeRelation(b,a);d=m(a,h.id.CHECK,b);f.setChkClass(b,d,a);f.repairParentChkClassWithSelf(b,a);b.treeObj.trigger(h.event.CHECK,[c,b.treeId,a]);return!0};r=function(c,a){if(a.chkDisabled===!0)return!1;var b=e.getSetting(c.data.treeId),d=m(a,h.id.CHECK,b);a.check_Focus=!0;f.setChkClass(b,d,a);return!0};s=function(c,
@@ -123,16 +120,14 @@ h.id.CHECK,this.setting);(e==!0||this.setting.check.chkStyle===h.radio.STYLE)&&f
 function(c,a,b,d,h,g,i){var m="";v&&(m=v.apply(f,arguments));d&&e.makeChkFlag(c,d);return m}})(jQuery);
 
 /*
- * JQuery zTree exedit v3.5.37
- * http://treejs.cn/
- *
+ * JQuery zTree exedit v3.5.37 http://treejs.cn/
+ * 
  * Copyright (c) 2010 Hunter.z
- *
+ * 
  * Licensed same as jquery - MIT License
  * http://www.opensource.org/licenses/mit-license.php
- *
- * email: hunter.z@263.net
- * Date: 2018-08-21
+ * 
+ * email: hunter.z@263.net Date: 2018-08-21
  */
 (function(B){var I={event:{DRAG:"ztree_drag",DROP:"ztree_drop",RENAME:"ztree_rename",DRAGMOVE:"ztree_dragmove"},id:{EDIT:"_edit",INPUT:"_input",REMOVE:"_remove"},move:{TYPE_INNER:"inner",TYPE_PREV:"prev",TYPE_NEXT:"next"},node:{CURSELECTED_EDIT:"curSelectedNode_Edit",TMPTARGET_TREE:"tmpTargetzTree",TMPTARGET_NODE:"tmpTargetNode"}},v={onHoverOverNode:function(a,b){var c=i.getSetting(a.data.treeId),d=i.getRoot(c);if(d.curHoverNode!=b)v.onHoverOutNode(a);d.curHoverNode=b;e.addHoverDom(c,b)},onHoverOutNode:function(a){var a=
 i.getSetting(a.data.treeId),b=i.getRoot(a);if(b.curHoverNode&&!i.isSelectedNode(a,b.curHoverNode))e.removeTreeDom(a,b.curHoverNode),b.curHoverNode=null},onMousedownNode:function(a,b){function c(a){if(m.dragFlag==0&&Math.abs(N-a.clientX)<f.edit.drag.minMoveSize&&Math.abs(O-a.clientY)<f.edit.drag.minMoveSize)return!0;var b,c,g,j;L.css("cursor","pointer");if(m.dragFlag==0){if(k.apply(f.callback.beforeDrag,[f.treeId,n],!0)==!1)return l(a),!0;for(b=0,c=n.length;b<c;b++){if(b==0)m.dragNodeShowBefore=[];
@@ -176,16 +171,14 @@ a;return this.refresh()}});var N=e.cancelPreSelectedNode;e.cancelPreSelectedNode
 function(a,b){var c=i.getRoot(a);if(c.curEditNode===b)c.curEditNode=null;K&&K.apply(e,arguments)};var P=e.selectNode;e.selectNode=function(a,b,c){var d=i.getRoot(a);if(i.isSelectedNode(a,b)&&d.curEditNode==b&&b.editNameFlag)return!1;P&&P.apply(e,arguments);e.addHoverDom(a,b);return!0};var U=k.uCanDo;k.uCanDo=function(a,b){var c=i.getRoot(a);if(b&&(k.eqs(b.type,"mouseover")||k.eqs(b.type,"mouseout")||k.eqs(b.type,"mousedown")||k.eqs(b.type,"mouseup")))return!0;if(c.curEditNode)e.editNodeBlur=!1,c.curEditInput.focus();
 return!c.curEditNode&&(U?U.apply(e,arguments):!0)}})(jQuery);
 /*
- * JQuery zTree exHideNodes v3.5.37
- * http://treejs.cn/
- *
+ * JQuery zTree exHideNodes v3.5.37 http://treejs.cn/
+ * 
  * Copyright (c) 2010 Hunter.z
- *
+ * 
  * Licensed same as jquery - MIT License
  * http://www.opensource.org/licenses/mit-license.php
- *
- * email: hunter.z@263.net
- * Date: 2018-08-21
+ * 
+ * email: hunter.z@263.net Date: 2018-08-21
  */
 (function(j){j.extend(!0,j.fn.zTree._z,{view:{clearOldFirstNode:function(c,a){for(var b=a.getNextNode();b;){if(b.isFirstNode){b.isFirstNode=!1;e.setNodeLineIcos(c,b);break}if(b.isLastNode)break;b=b.getNextNode()}},clearOldLastNode:function(c,a,b){for(a=a.getPreNode();a;){if(a.isLastNode){a.isLastNode=!1;b&&e.setNodeLineIcos(c,a);break}if(a.isFirstNode)break;a=a.getPreNode()}},makeDOMNodeMainBefore:function(c,a,b){a=d.isHidden(a,b);c.push("<li ",a?"style='display:none;' ":"","id='",b.tId,"' class='",
 l.className.LEVEL,b.level,"' tabindex='0' hidefocus='true' treenode>")},showNode:function(c,a){d.isHidden(c,a,!1);d.initShowForExCheck(c,a);k(a,c).show()},showNodes:function(c,a,b){if(a&&a.length!=0){var f={},g,i;for(g=0,i=a.length;g<i;g++){var h=a[g];if(!f[h.parentTId]){var u=h.getParentNode();f[h.parentTId]=u===null?d.getRoot(c):h.getParentNode()}e.showNode(c,h,b)}for(var j in f)a=d.nodeChildren(c,f[j]),e.setFirstNodeForShow(c,a),e.setLastNodeForShow(c,a)}},hideNode:function(c,a){d.isHidden(c,a,
@@ -330,8 +323,8 @@ function(c,a,b,f){(!a||!d.isHidden(c,a))&&s.apply(e,arguments)};var t=e.repairPa
         return a;
       },
       /**
-       * 展开/折叠下拉框
-       */
+		 * 展开/折叠下拉框
+		 */
       toggleSelect: function () {
         var item = '#' + TREE_SELECT_TITLE_ID;
         a.event('click', item, function (e) {
@@ -366,92 +359,115 @@ function(c,a,b,f){(!a||!d.isHidden(c,a))&&s.apply(e,arguments)};var t=e.repairPa
         a.fuzzySearch(item, null, true);
       },
       fuzzySearch: function (searchField, isHighLight, isExpand) {
-        var zTreeObj = TREE_OBJ;//get the ztree object by ztree id
+        var zTreeObj = TREE_OBJ;// get the ztree object by ztree id
         if (!zTreeObj) {
           alert("fail to get ztree object");
         }
-        var nameKey = zTreeObj.setting.data.key.name; //get the key of the node name
-        isHighLight = isHighLight === false ? false : true;//default true, only use false to disable highlight
+        var nameKey = zTreeObj.setting.data.key.name; // get the key of the
+														// node name
+        isHighLight = isHighLight === false ? false : true;// default true,
+															// only use false to
+															// disable highlight
         isExpand = isExpand ? true : false; // not to expand in default
-        zTreeObj.setting.view.nameIsHTML = isHighLight; //allow use html in node name for highlight use
+        zTreeObj.setting.view.nameIsHTML = isHighLight; // allow use html in
+														// node name for
+														// highlight use
 
-        var metaChar = '[\\[\\]\\\\\^\\$\\.\\|\\?\\*\\+\\(\\)]'; //js meta characters
-        var rexMeta = new RegExp(metaChar, 'gi');//regular expression to match meta characters
+        var metaChar = '[\\[\\]\\\\\^\\$\\.\\|\\?\\*\\+\\(\\)]'; // js meta
+																	// characters
+        var rexMeta = new RegExp(metaChar, 'gi');// regular expression to
+													// match meta characters
 
-        // keywords filter function 
+        // keywords filter function
         function ztreeFilter(zTreeObj, _keywords, callBackFunc) {
           if (!_keywords) {
-            _keywords = ''; //default blank for _keywords 
+            _keywords = ''; // default blank for _keywords
           }
 
           // function to find the matching node
           function filterFunc(node) {
             if (node && node.oldname && node.oldname.length > 0) {
-              node[nameKey] = node.oldname; //recover oldname of the node if exist
+              node[nameKey] = node.oldname; // recover oldname of the node if
+											// exist
             }
-            zTreeObj.updateNode(node); //update node to for modifications take effect
+            zTreeObj.updateNode(node); // update node to for modifications take
+										// effect
             if (_keywords.length == 0) {
-              //return true to show all nodes if the keyword is blank
+              // return true to show all nodes if the keyword is blank
               zTreeObj.showNode(node);
               zTreeObj.expandNode(node, isExpand);
               return true;
             }
-            //transform node name and keywords to lowercase
+            // transform node name and keywords to lowercase
             if (node[nameKey] && node[nameKey].toLowerCase().indexOf(_keywords.toLowerCase()) != -1) {
-              zTreeObj.showNode(node);//show node with matching keywords
-              return true; //return true and show this node
+              zTreeObj.showNode(node);// show node with matching keywords
+              return true; // return true and show this node
             }
 
             zTreeObj.hideNode(node); // hide node that not matched
-            return false; //return false for node not matched
+            return false; // return false for node not matched
           }
 
-          var nodesShow = zTreeObj.getNodesByFilter(filterFunc); //get all nodes that would be shown
-          processShowNodes(nodesShow, _keywords);//nodes should be reprocessed to show correctly
+          var nodesShow = zTreeObj.getNodesByFilter(filterFunc); // get all
+																	// nodes
+																	// that
+																	// would be
+																	// shown
+          processShowNodes(nodesShow, _keywords);// nodes should be
+													// reprocessed to show
+													// correctly
         }
 
         /**
-         * reprocess of nodes before showing
-         */
+		 * reprocess of nodes before showing
+		 */
         function processShowNodes(nodesShow, _keywords) {
           if (nodesShow && nodesShow.length > 0) {
-            //process the ancient nodes if _keywords is not blank
+            // process the ancient nodes if _keywords is not blank
             if (_keywords.length > 0) {
               $.each(nodesShow, function (n, obj) {
-                var pathOfOne = obj.getPath();//get all the ancient nodes including current node
+                var pathOfOne = obj.getPath();// get all the ancient nodes
+												// including current node
                 if (pathOfOne && pathOfOne.length > 0) {
-                  //i < pathOfOne.length-1 process every node in path except self
+                  // i < pathOfOne.length-1 process every node in path except
+					// self
                   for (var i = 0; i < pathOfOne.length - 1; i++) {
-                    zTreeObj.showNode(pathOfOne[i]); //show node 
-                    zTreeObj.expandNode(pathOfOne[i], true); //expand node
+                    zTreeObj.showNode(pathOfOne[i]); // show node
+                    zTreeObj.expandNode(pathOfOne[i], true); // expand node
                   }
                 }
               });
-            } else { //show all nodes when _keywords is blank and expand the root nodes
-              var rootNodes = zTreeObj.getNodesByParam('level', '0');//get all root nodes
+            } else { // show all nodes when _keywords is blank and expand the
+						// root nodes
+              var rootNodes = zTreeObj.getNodesByParam('level', '0');// get
+																		// all
+																		// root
+																		// nodes
               $.each(rootNodes, function (n, obj) {
-                zTreeObj.expandNode(obj, true); //expand all root nodes
+                zTreeObj.expandNode(obj, true); // expand all root nodes
               });
             }
           }
         }
 
-        //listen to change in input element
+        // listen to change in input element
         $(searchField).bind('input propertychange', function () {
           var _keywords = $(this).val();
-          searchNodeLazy(_keywords); //call lazy load
+          searchNodeLazy(_keywords); // call lazy load
         });
 
         var timeoutId = null;
-        // excute lazy load once after input change, the last pending task will be cancled  
+        // excute lazy load once after input change, the last pending task will
+		// be cancled
         function searchNodeLazy(_keywords) {
           if (timeoutId) {
-            //clear pending task
+            // clear pending task
             clearTimeout(timeoutId);
           }
           timeoutId = setTimeout(function () {
-            ztreeFilter(zTreeObj, _keywords); //lazy load ztreeFilter function 
-            $(searchField).focus();//focus input field again after filtering
+            ztreeFilter(zTreeObj, _keywords); // lazy load ztreeFilter
+												// function
+            $(searchField).focus();// focus input field again after filtering
           }, 500);
         }
       },
@@ -491,7 +507,8 @@ function(c,a,b,f){(!a||!d.isHidden(c,a))&&s.apply(e,arguments)};var t=e.repairPa
       configStyle: function () {
         if (style == undefined || style.line == undefined || !style.line.enable) {
           $('#' + TREE_SELECT_ID).find('li .center_docu,li .bottom_docu').hide();
-          //.layui-treeSelect .ztree li .center_docu:before, .ztree li .bottom_docu::before
+          // .layui-treeSelect .ztree li .center_docu:before, .ztree li
+			// .bottom_docu::before
         }
 
         if (style == undefined || style.folder == undefined || !style.folder.enable) {
@@ -508,19 +525,23 @@ function(c,a,b,f){(!a||!d.isHidden(c,a))&&s.apply(e,arguments)};var t=e.repairPa
   };
 
   /**
-   * 重新加载trerSelect
-   * @param filter
-   */
+	 * 重新加载trerSelect
+	 * 
+	 * @param filter
+	 */
   TreeSelect.prototype.refresh = function (filter) {
       var treeObj = obj.treeObj(filter);
       treeObj.reAsyncChildNodes(null, "refresh");
   };
 
   /**
-   * 选中节点，因为tree是异步加载，所以必须在success回调中调用checkNode函数，否则无法获取生成的DOM元素
-   * @param filter lay-filter属性
-   * @param id 选中的id
-   */
+	 * 选中节点，因为tree是异步加载，所以必须在success回调中调用checkNode函数，否则无法获取生成的DOM元素
+	 * 
+	 * @param filter
+	 *            lay-filter属性
+	 * @param id
+	 *            选中的id
+	 */
   TreeSelect.prototype.checkNode = function(filter, id){
     var o = obj.filter(filter),
         treeInput = o.find('.layui-select-title input'),
@@ -534,10 +555,13 @@ function(c,a,b,f){(!a||!d.isHidden(c,a))&&s.apply(e,arguments)};var t=e.repairPa
   };
 
   /**
-   * 撤销选中的节点
-   * @param filter lay-filter属性
-   * @param fn 回调函数
-   */
+	 * 撤销选中的节点
+	 * 
+	 * @param filter
+	 *            lay-filter属性
+	 * @param fn
+	 *            回调函数
+	 */
   TreeSelect.prototype.revokeNode = function(filter, fn){
     var o = obj.filter(filter);
     o.find('a[treenode_a]').removeClass('curSelectedNode');
@@ -552,8 +576,8 @@ function(c,a,b,f){(!a||!d.isHidden(c,a))&&s.apply(e,arguments)};var t=e.repairPa
   }
 
   /**
-   * 销毁组件
-   */
+	 * 销毁组件
+	 */
   TreeSelect.prototype.destroy = function(filter) {
     var o = obj.filter(filter);
     o.remove();
@@ -561,9 +585,10 @@ function(c,a,b,f){(!a||!d.isHidden(c,a))&&s.apply(e,arguments)};var t=e.repairPa
   }
 
   /**
-   * 获取zTree对象，可调用所有zTree函数
-   * @param filter
-   */
+	 * 获取zTree对象，可调用所有zTree函数
+	 * 
+	 * @param filter
+	 */
   TreeSelect.prototype.zTree = function (filter) {
     return obj.treeObj(filter);
   };
@@ -588,7 +613,7 @@ function(c,a,b,f){(!a||!d.isHidden(c,a))&&s.apply(e,arguments)};var t=e.repairPa
     }
   };
 
-  //输出接口
+  // 输出接口
   var mod = new TreeSelect();
   exports(_MOD, mod);
 });    

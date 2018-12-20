@@ -101,19 +101,15 @@
         });
         //点击行事件
         treeGrid.on('tool('+tableId+')',function (obj) {
-            if(obj.event === 'del'){//删除行
-                del(obj);
-            }else if(obj.event==="add"){//添加行
-                add(obj);
-            }else if(obj.event==="edit"){//编辑
-            	layer.open({
-            		  type: 2,
-            		  area: ['700px', '450px'],
-            		  fixed: false, //不固定
-            		  maxmin: true,
-            		  content: '${ctx}/xtgl/xtsz/cdgl/edit'
-            		});           	
-            }
+        	var data = obj.data;
+        	var url = "${ctx}/xtgl/xtsz/cdgl/edit?m_id="+data.id+"&action="+obj.event;
+           	layer.open({
+           		  type: 2,
+           		  area: ['760px', '450px'],
+           		  fixed: false, //不固定
+           		  maxmin: true,
+           		  content: url
+            });     	
         });
         
         form.on('submit(query)', function(data){

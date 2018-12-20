@@ -25,7 +25,8 @@ layui.define(['layer', 'laytpl', 'element'], function(exports) {
             },
             cached: false, //是否缓存
             elem: undefined, //容器
-            filter: 'kitNavbar' //过滤器名称
+            filter: 'kitNavbar', //过滤器名称
+            iconfa: 'fa-'
         },
         set: function(options) {
             var that = this;
@@ -119,6 +120,7 @@ layui.define(['layer', 'laytpl', 'element'], function(exports) {
             var that = this,
                 _config = that.config, //配置
                 _remote = _config.remote, //远程参数配置
+                _iconfa = _config.iconfa, //字体图标前缀
                 _tpl = [
                     '{{# layui.each(d,function(index, item){ }}',
                     '{{# if(item.spread){ }}',
@@ -129,7 +131,7 @@ layui.define(['layer', 'laytpl', 'element'], function(exports) {
                     '{{# var hasChildren = item.children!==undefined && item.children.length>0; }}',
                     '{{# if(hasChildren){ }}',
                     '<a href="javascript:;">',
-                    '{{# if (item.icon.indexOf("fa-") !== -1) { }}',
+                    '{{# if (item.icon.indexOf("'+_iconfa+'") !== -1) { }}',
                     '<i class="fa {{item.icon}}" aria-hidden="true"></i>',
                     '{{# } else { }}',
                     '<i class="layui-icon">{{item.icon}}</i>',
@@ -141,7 +143,7 @@ layui.define(['layer', 'laytpl', 'element'], function(exports) {
                     '{{# layui.each(children,function(childIndex, child){ }}',
                     '<dd>',
                     '<a href="javascript:;" kit-target data-options="{url:\'{{child.url}}\',icon:\'{{child.icon}}\',title:\'{{child.title}}\',id:\'{{child.id}}\'}">',
-                    '{{# if (child.icon.indexOf("fa-") !== -1) { }}',
+                    '{{# if (child.icon.indexOf("'+_iconfa+'") !== -1) { }}',
                     '<i class="fa {{child.icon}}" aria-hidden="true"></i>',
                     '{{# } else { }}',
                     '<i class="layui-icon">{{child.icon}}</i>',
@@ -153,7 +155,7 @@ layui.define(['layer', 'laytpl', 'element'], function(exports) {
                     '</dl>',
                     '{{# }else{ }}',
                     '<a href="javascript:;" kit-target data-options="{url:\'{{item.url}}\',icon:\'{{item.icon}}\',title:\'{{item.title}}\',id:\'{{item.id}}\'}">',
-                    '{{# if (item.icon.indexOf("fa-") !== -1) { }}',
+                    '{{# if (item.icon.indexOf("'+_iconfa+'") !== -1) { }}',
                     '<i class="fa {{item.icon}}" aria-hidden="true"></i>',
                     '{{# } else { }}',
                     '<i class="layui-icon">{{item.icon}}</i>',

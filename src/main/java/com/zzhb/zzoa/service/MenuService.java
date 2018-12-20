@@ -27,6 +27,9 @@ public class MenuService {
 		Map<String, Object> params = new HashMap<>();
 		params.put("r_id", r_id);
 		params.put("m_level", "1");
+		if (!Constant.SUPERADMIN.equals(r_id)) {
+			params.put("m_status", "1");
+		}
 		return menuMapper.getMenus(params);
 	}
 
