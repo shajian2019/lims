@@ -63,14 +63,14 @@
 	    <div class="layui-form-item">
 	        <label class="layui-form-label">链接(Href):</label>
 	        <div class="layui-inline">
-	            <input class="layui-input" type="text" name="url" value="<#if params.action != 'add'>${(menu.url)!''}</#if>" placeholder="菜单地址">
+	            <input class="layui-input" type="text" name="url" value="<#if params.action != 'add'>${(menu.url)!''}</#if>" placeholder="菜单地址" <#if menu.level == '2' || (params.action == 'edit' && menu.level == '3')>lay-verify="required"</#if>>
 	        </div>
 	    </div>
     </#if>
     <div class="layui-form-item">
         <label class="layui-form-label">排序(升序):</label>
         <div class="layui-inline">
-            <input class="layui-input" type="text" name="sort" value="<#if params.action != 'add'>${menu.sort}</#if>" placeholder="排序" lay-verify="required">
+            <input class="layui-input" type="text" name="sort" value="<#if params.action != 'add'>${menu.sort}</#if>" placeholder="排序" lay-verify="required|number">
         </div>
     </div>
     <div class="layui-form-item">
@@ -78,15 +78,13 @@
         <div class="layui-inline icon-box">
             <div class="layui-inline-block">
             	<div class="icon">
-	            	<#if params.action != 'add'>
-			             <#if menu.level != '3'>
-			                <i class="fa ${menu.icon} fa-fw"></i>
-			            <#else>
-			                <i class="layui-icon ${menu.icon}"></i>
-			            </#if>
-			        </#if>
+		             <#if menu.level != '3'>
+		                <i class="fa ${menu.icon} fa-fw"></i>
+		             <#else>
+		                <i class="layui-icon ${menu.icon}"></i>
+		            </#if>
             	</div>
-                <input type="text" id="icon_input" name="icon" class="icon-input" value="<#if params.action != 'add'>${menu.icon?html}</#if>" lay-verify="required">
+                <input type="text" id="icon_input" name="icon" class="icon-input" value="${menu.icon?html}" lay-verify="required">
                 <a class="layui-btn layui-btn-primary" id="icon_search" style="border-top:none;border-bottom: none;border-right:none;height:36px;line-height: 36px;padding: 0 15px;">
                 	<i class="fa fa-search"></i>
                 </a>
