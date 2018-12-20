@@ -194,6 +194,11 @@
         var treedata=treeGrid.getDataTreeList(tableId);
         treeGrid.treeOpenAll(tableId,!treedata[0][treeGrid.config.cols.isOpen]);
     }
+    
+    function openAll() {
+        var treedata=treeGrid.getDataTreeList(tableId);
+        treeGrid.treeOpenAll(tableId,!treedata[0][treeGrid.config.cols.isOpen]);
+    }
 
     function getCheckData() {
         var checkStatus = treeGrid.checkStatus(tableId)

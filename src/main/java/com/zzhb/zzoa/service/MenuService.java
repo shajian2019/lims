@@ -15,6 +15,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.zzhb.zzoa.domain.common.Menu;
 import com.zzhb.zzoa.mapper.MenuMapper;
+import com.zzhb.zzoa.mapper.RoleMapper;
 import com.zzhb.zzoa.utils.Constant;
 
 @Service
@@ -22,6 +23,9 @@ public class MenuService {
 
 	@Autowired
 	MenuMapper menuMapper;
+
+	@Autowired
+	RoleMapper roleMapper;
 
 	@Cacheable(value = "ONEMENU", key = "#r_id")
 	public List<Menu> getOneMenusByRoleId(String r_id) {
@@ -169,12 +173,14 @@ public class MenuService {
 		return updateMenu;
 	}
 
+	@Transactional
 	public Integer delMenus(Map<String, String> param) {
 		Map<String, Object> params = new HashMap<>();
 		List<String> idByParentId = menuMapper.getIdByParentId(param.get("id"), Constant.SUPERADMIN);
 		idByParentId.add(param.get("id"));
 		params.put("m_ids", idByParentId);
 		// TODO 删除权限角色中间表中的记录
+		roleMapper.delRoleMenu(params);
 		return menuMapper.delMenus(params);
 	}
 }

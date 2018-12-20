@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzhb.zzoa.mapper.RoleMapper">
+	
+	<delete id="delRoleMenu" parameterType="java.util.Map">
+		DELETE FROM sys_t_role_menu 
+		<where>
+			<if test="m_ids !=null and m_ids.size() != 0">
+				and m_id in 
+				<foreach collection="m_ids" item="m_id" open="(" separator="," close=")">
+           			#{m_id}
+        		</foreach>
+			</if>
+		</where>
+	</delete>
+	
+</mapper>
