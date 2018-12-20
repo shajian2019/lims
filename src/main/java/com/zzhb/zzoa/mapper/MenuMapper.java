@@ -24,4 +24,8 @@ public interface MenuMapper {
 	public List<String> getUrls();
 
 	public Integer updateMenu(Menu menu);
+	
+	public Integer insertMenu(Menu menu);
+	
+	public Integer delMenus(Map<String, Object> params);
 }

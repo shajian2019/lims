@@ -46,4 +46,10 @@ public class MenuController {
 		System.out.println(menu);
 		return menuService.updateMenu(menu);
 	}
+	
+	@PostMapping("/del")
+	@ResponseBody
+	public Integer del(@RequestParam Map<String,String> param) {
+		return menuService.delMenus(param);
+	}
 }

@@ -152,4 +152,21 @@
 		</where>
 	</update>
 	
+	<insert id="insertMenu" parameterType="com.zzhb.zzoa.domain.common.Menu">
+		INSERT INTO sys_t_menu (m_name,m_url,m_icon,m_parentid,m_status,m_sort,m_level)
+		VALUES (#{title},#{url,jdbcType=VARCHAR},#{icon},#{parentid},#{status},#{sort},#{level})
+	</insert>
+	
+	<delete id="delMenus" parameterType="java.util.Map">
+		DELETE FROM sys_t_menu 
+		<where>
+			<if test="m_ids !=null and m_ids.size() != 0">
+				and m_id in 
+				<foreach collection="m_ids" item="m_id" open="(" separator="," close=")">
+           			#{m_id}
+        		</foreach>
+			</if>
+		</where>
+	</delete>
+	
 </mapper>

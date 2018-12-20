@@ -164,9 +164,17 @@ public class MenuService {
 		if (parentid == null) {
 			updateMenu = menuMapper.updateMenu(menu);
 		} else {
-			
+			updateMenu = menuMapper.insertMenu(menu);
 		}
 		return updateMenu;
 	}
 
+	public Integer delMenus(Map<String, String> param) {
+		Map<String, Object> params = new HashMap<>();
+		List<String> idByParentId = menuMapper.getIdByParentId(param.get("id"), Constant.SUPERADMIN);
+		idByParentId.add(param.get("id"));
+		params.put("m_ids", idByParentId);
+		// TODO 删除权限角色中间表中的记录
+		return menuMapper.delMenus(params);
+	}
 }

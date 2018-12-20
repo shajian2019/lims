@@ -67,7 +67,7 @@
             ,isOpenDefault:true//节点默认是展开还是折叠【默认展开】
             ,method:'get'
             ,cols: [[
-                 {field:'title', width:500, title: '菜单名称',edit:'text'}
+                 {field:'title', width:500, title: '菜单名称'}
                 ,{field:'sort', width:200, title: '排序',edit:'text'}
                 ,{field:'status', width:300, title: '状态',templet:function(d){
                 	 var html='';
@@ -104,24 +104,49 @@
         treeGrid.on('tool('+tableId+')',function (obj) {
         	var data = obj.data;
         	var action = obj.event;
-        	var url = "${ctx}/xtgl/xtsz/cdgl/edit?m_id="+data.id+"&action="+action;
-        	if(action == 'edit'){
-        		action = "修改";
+        	if(action == 'del'){
+        		var index;
+        		$.ajax({
+    			    type: "post",
+    			    data: {id:data.id},
+    			    url: "${ctx}/menus/del",
+    			    beforeSend: function () {
+    			    	index = layer.load(1);
+    			    },
+    			    success: function (data) {
+    			    	layer.close(index);
+    			    	if(data > 0){
+    			    		layer.msg("删除成功",{offset:['50%'],time: 1000},function(){
+    			    			 treeGrid.reload(tableId)
+    	                    });
+    			    	}else{
+    			    		layer.msg("操作失败")
+    			    	}
+    			    },
+    			    error: function (data) {
+    			    	layer.msg("服务端异常");
+    			    }
+    		 	});
         	}else{
-        		action = "新增";
+        		var url = "${ctx}/xtgl/xtsz/cdgl/edit?m_id="+data.id+"&action="+action;
+            	if(action == 'edit'){
+            		action = "修改";
+            	}else{
+            		action = "新增";
+            	}
+               	var index = layer.open({
+               		title:action,
+               		  type: 2,
+               		  area: ['620px', '400px'],
+               		  fixed: false, //不固定
+               		  maxmin: true,
+               		  content: url,
+               		  end: function(){
+               			  treeGrid.reload(tableId)
+               		  }
+                });
+               	layer.full(index);
         	}
-           	var index = layer.open({
-           		title:action,
-           		  type: 2,
-           		  area: ['620px', '400px'],
-           		  fixed: false, //不固定
-           		  maxmin: true,
-           		  content: url,
-           		  end: function(){
-           			  treeGrid.reload(tableId)
-           		  }
-            });
-           	layer.full(index);
         });
         
         form.on('submit(query)', function(data){
