@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSONArray;
 import com.zzhb.zzoa.domain.common.Menu;
 import com.zzhb.zzoa.service.MenuService;
 
@@ -30,4 +31,11 @@ public class MenuController {
 	public List<Map<String, Object>> getSecondMenu(String parentid, String r_id) {
 		return menuService.getSecondMenu(r_id, parentid);
 	}
+
+	@GetMapping("/tree/init")
+	@ResponseBody
+	public JSONArray initMenuTree() {
+		return menuService.initMenuTree();
+	}
+
 }

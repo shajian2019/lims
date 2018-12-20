@@ -32,6 +32,11 @@
 			<if test="m_level !=null and m_level !='' ">
 				and m_level = #{m_level}
 			</if>
+			<if test="r_id != null and r_id != 'superadmin' ">
+				<if test="r_id !=null and r_id !='' ">
+					and rm.r_id = #{r_id}
+				</if>
+			</if> 
 		</where>
 		ORDER BY m.m_parentid,m.m_sort		
 	</select>
@@ -84,7 +89,14 @@
 				<bind name="_title" value="'%'+title+'%'"/>
 				and m_name like #{_title}
 			</if>
+			<if test="m_level !=null and m_level !='' ">
+				and m_level = #{m_level}
+			</if>
+			<if test="m_parentid !=null and m_parentid !='' ">
+				and m_parentid = #{m_parentid}
+			</if>
 		</where>
+		order by m_sort
 	</select>
 	
 </mapper>
