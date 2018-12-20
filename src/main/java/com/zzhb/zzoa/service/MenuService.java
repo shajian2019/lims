@@ -12,10 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.zzhb.zzoa.domain.common.Menu;
-import com.zzhb.zzoa.domain.common.Result;
 import com.zzhb.zzoa.mapper.MenuMapper;
 import com.zzhb.zzoa.utils.Constant;
 
@@ -91,7 +88,7 @@ public class MenuService {
 		return result;
 	}
 
-	@Cacheable(value = "MENUS")
+	@Cacheable(value = "TREEMENUS")
 	public JSONArray initMenuTree() {
 		JSONArray result = new JSONArray();
 		Map<String, String> params = new HashMap<>();
