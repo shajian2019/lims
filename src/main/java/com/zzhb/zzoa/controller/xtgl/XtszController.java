@@ -42,6 +42,7 @@ public class XtszController {
 		ModelAndView mv = new ModelAndView();
 		Menu menu = menuMapper.getMenu(params);
 		mv.addObject("menu", menu);
+		mv.addObject("params", params);
 		mv.setViewName("xtgl/xtsz/edit");
 		return mv;
 	}

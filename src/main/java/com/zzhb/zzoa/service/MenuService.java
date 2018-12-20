@@ -9,6 +9,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -92,10 +93,10 @@ public class MenuService {
 	}
 
 	@Cacheable(value = "TREEMENUS")
-	public JSONArray initMenuTree() {
+	public JSONArray initMenuTree(Map<String, String> params) {
 		JSONArray result = new JSONArray();
-		Map<String, String> params = new HashMap<>();
 		params.put("m_level", "1");
+		String level = params.get("level");
 		List<Menu> allMenus = menuMapper.getAllMenus(params);
 		params.clear();
 		for (int i = 0; i < allMenus.size(); i++) {
@@ -109,28 +110,34 @@ public class MenuService {
 			JSONArray childrenS = new JSONArray();
 			List<Menu> secondMenus = menuMapper.getAllMenus(params);
 			params.clear();
-			for (int j = 0; j < secondMenus.size(); j++) {
-				JSONObject secondJson = new JSONObject();
-				Menu secondmenu = secondMenus.get(j);
-				String sm_id = secondmenu.getId();
-				secondJson.put("id", sm_id);
-				secondJson.put("name", secondmenu.getTitle());
-				secondJson.put("open", false);
-				params.put("m_parentid", sm_id);
-				JSONArray childrenT = new JSONArray();
-				List<Menu> thirdMenus = menuMapper.getAllMenus(params);
-				params.clear();
-				for (int k = 0; k < thirdMenus.size(); k++) {
-					JSONObject thirdJson = new JSONObject();
-					Menu thirdmenu = thirdMenus.get(k);
-					String tm_id = thirdmenu.getId();
-					thirdJson.put("id", tm_id);
-					thirdJson.put("name", thirdmenu.getTitle());
-					thirdJson.put("open", false);
-					childrenT.add(thirdJson);
+			if (!"2".equals(level)) {
+				for (int j = 0; j < secondMenus.size(); j++) {
+					JSONObject secondJson = new JSONObject();
+					Menu secondmenu = secondMenus.get(j);
+					String sm_id = secondmenu.getId();
+					secondJson.put("id", sm_id);
+					secondJson.put("name", secondmenu.getTitle());
+					secondJson.put("open", false);
+					params.put("m_parentid", sm_id);
+					JSONArray childrenT = new JSONArray();
+					List<Menu> thirdMenus = menuMapper.getAllMenus(params);
+					params.clear();
+					if (!"3".equals(level)) {
+						for (int k = 0; k < thirdMenus.size(); k++) {
+							JSONObject thirdJson = new JSONObject();
+							Menu thirdmenu = thirdMenus.get(k);
+							String tm_id = thirdmenu.getId();
+							thirdJson.put("id", tm_id);
+							thirdJson.put("name", thirdmenu.getTitle());
+							thirdJson.put("open", false);
+							childrenT.add(thirdJson);
+						}
+					}
+					secondJson.put("children", childrenT);
+					childrenS.add(secondJson);
 				}
-				secondJson.put("children", childrenT);
-				childrenS.add(secondJson);
+			} else {
+				json.put("open", false);
 			}
 			json.put("children", childrenS);
 			result.add(json);
@@ -148,6 +155,18 @@ public class MenuService {
 		result.put("data", allMenus);
 		result.put("tip", "操作成功");
 		return result;
+	}
+
+	@Transactional
+	public Integer updateMenu(Menu menu) {
+		Integer updateMenu = 0;
+		String parentid = menu.getParentid();
+		if (parentid == null) {
+			updateMenu = menuMapper.updateMenu(menu);
+		} else {
+			
+		}
+		return updateMenu;
 	}
 
 }

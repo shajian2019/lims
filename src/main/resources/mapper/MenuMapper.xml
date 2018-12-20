@@ -117,4 +117,39 @@
 		order by m_sort
 	</select>
 	
+	<update id="updateMenu" parameterType="com.zzhb.zzoa.domain.common.Menu">
+		UPDATE sys_t_menu
+		<set>
+			<if test="title != null and title !='' ">
+				m_name = #{title},
+			</if>
+			<if test="icon != null and icon !='' ">
+				m_icon = #{icon},
+			</if>
+			<if test="url != null and url !='' ">
+				m_url = #{url},
+			</if>
+			<if test="status != null and status !='' ">
+				m_status = #{status},
+			</if>
+			<if test="parentid != null and parentid !='' ">
+				m_parentid = #{parentid},
+			</if>
+			<if test="sort != null and sort !='' ">
+				m_sort = #{sort},
+			</if>
+			<if test="level != null and level !='' ">
+				m_level = #{level},
+			</if>
+		</set>
+		<where>
+			<if test="id != null and id !='' ">
+				and m_id = #{id}
+			</if>
+			<if test="parentid != null and parentid !='' ">
+				and m_parentid = #{parentid}
+			</if>
+		</where>
+	</update>
+	
 </mapper>

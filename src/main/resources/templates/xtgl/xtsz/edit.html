@@ -17,19 +17,19 @@
 </style>
 </head>
 <body>
-<form class="layui-form layui-form-pane" lay-filter="edit">
-	<#if menu.level != '1'>
+<form class="layui-form layui-form-pane" lay-filter="edit" action="/menus/update">
+	<#if params.action != 'add' && menu.level != '1'>
 	    <div class="layui-form-item">
 	        <label class="layui-form-label">上级菜单:</label>
 	        <div class="layui-inline">
-	            <input type="text" id="tree" lay-filter="tree" class="layui-input">
+	            <input type="text" id="tree" lay-filter="tree" class="layui-input" name="parentid" >
 	        </div>
 	    </div>
     </#if>
     <div class="layui-form-item">
         <label class="layui-form-label">菜单名称:</label>
         <div class="layui-inline">
-            <input class="layui-input" type="text" name="title" value="${menu.title}">
+            <input class="layui-input" type="text" name="title" value="<#if params.action != 'add'>${menu.title}</#if>" placeholder="菜单名称">
         </div>
     </div>
     <#if menu.level == '3'>
@@ -43,24 +43,26 @@
     <div class="layui-form-item">
         <label class="layui-form-label">排序(升序):</label>
         <div class="layui-inline">
-            <input class="layui-input" type="text" name="sort" value="${menu.sort}">
+            <input class="layui-input" type="text" name="sort" value="<#if params.action != 'add'>${menu.sort}</#if>" placeholder="排序">
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">菜单图标:</label>
         <div class="layui-inline">
-            <#if menu.level != '3'>
-            	<i class="fa ${menu.icon} fa-fw"></i>
-            <#else>
-            	<i class="layui-icon">${menu.icon}</i> 
-            </#if>
+        	<#if params.action != 'add'>
+	            <#if menu.level != '3'>
+	            	<i class="fa ${menu.icon} fa-fw"></i>
+	            <#else>
+	            	<i class="layui-icon">${menu.icon}</i> 
+	            </#if>
+        	</#if>
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">是否可见:</label>
         <div class="layui-input-block radio-box">
-            <input type="radio" name="sex" value="显示" title="显示"<#if menu.status == '1'>checked</#if>>
-            <input type="radio" name="sex" value="隐藏" title="隐藏"<#if menu.status == '0'>checked</#if>>
+            <input type="radio" name="status" value="1" title="显示"<#if menu.status == '1'>checked</#if>>
+            <input type="radio" name="status" value="0" title="隐藏"<#if menu.status == '0'>checked</#if>>
         </div>
     </div>
 <div class="layui-btn-container">
@@ -78,8 +80,9 @@ layui.config({
 	    treeSelect: "treeSelect"
 });
 layui.use(['treeSelect','form','layer'],function(){
+	console.log("=====action=====${params.action}")
 	var $=layui.jquery,treeSelect=layui.treeSelect,form=layui.form,layer=layui.layer;
-	if(${menu.level} != 1){
+	if(('${params.action}' != 'add' && ${menu.level} != 1)){
 	    treeSelect.render({
 	        elem: '#tree',
 	        data: "${ctx}/menus/tree/init?level="+${menu.level},
@@ -99,14 +102,51 @@ layui.use(['treeSelect','form','layer'],function(){
 	            console.log(d.data); // 得到组成树的数据
 	        },
 	        success: function (d) {
-	      	   console.log(d)  	
 	           treeSelect.checkNode('tree', ${menu.parentid});
-	           var treeObj = treeSelect.zTree('tree');
-		       console.log("===="+treeObj);
 	           treeSelect.refresh('tree');
 	        }
 	    });
 	}
+	
+	form.on('submit(save)', function(data){
+		var action = '${params.action}';
+		if('${params.action}' == 'edit'){
+			data.field.id = '${menu.id}';
+		}else{
+			data.field.parentid = '${menu.parentid}';
+		}
+	    var index;
+	    $.ajax({
+			    type: "post",
+			    data: data.field,
+			    url: data.form.action,
+			    beforeSend: function () {
+			    	index = layer.load(1);
+			    },
+			    success: function (data) {
+			    	layer.close(index);
+			    	if(data > 0){
+			    		var msg = "";
+			    		if('${params.action}' == 'edit'){
+			    			msg = "修改成功";
+			    		}else{
+			    			msg = "保存成功";
+			    		}
+			    		layer.msg(msg,{offset:['50%'],time: 1000},function(){
+					    	index = parent.layer.getFrameIndex(window.name);
+					    	parent.layer.close(index);
+	                    });
+			    	}else{
+			    		layer.msg("操作失败")
+			    	}
+			    },
+			    error: function (data) {
+			    	layer.msg("操作异常");
+			    }
+		 });
+	     return false;
+    });
+	
 })
 </script>
 </body>

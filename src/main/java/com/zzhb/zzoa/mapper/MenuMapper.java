@@ -22,4 +22,6 @@ public interface MenuMapper {
 
 	@Select("SELECT m_url FROM sys_t_menu WHERE m_url IS NOT NULL")
 	public List<String> getUrls();
+
+	public Integer updateMenu(Menu menu);
 }

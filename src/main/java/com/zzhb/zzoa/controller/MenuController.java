@@ -6,7 +6,9 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONArray;
@@ -34,8 +36,14 @@ public class MenuController {
 
 	@GetMapping("/tree/init")
 	@ResponseBody
-	public JSONArray initMenuTree() {
-		return menuService.initMenuTree();
+	public JSONArray initMenuTree(@RequestParam Map<String, String> params) {
+		return menuService.initMenuTree(params);
 	}
 
+	@PostMapping("/update")
+	@ResponseBody
+	public Integer updateMenu(Menu menu) {
+		System.out.println(menu);
+		return menuService.updateMenu(menu);
+	}
 }
