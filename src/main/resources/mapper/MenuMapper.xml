@@ -90,12 +90,13 @@
 				and m_name like #{_title}
 			</if>
 			<if test="m_level !=null and m_level !='' ">
-				and m_level = #{m_level} order by m_sort
+				and m_level = #{m_level}
 			</if>
 			<if test="m_parentid !=null and m_parentid !='' ">
-				and m_parentid = #{m_parentid} order by m_sort
+				and m_parentid = #{m_parentid}
 			</if>
 		</where>
+		order by m_sort
 	</select>
 	
 </mapper>
