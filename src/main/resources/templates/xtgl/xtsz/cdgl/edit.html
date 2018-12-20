@@ -6,6 +6,7 @@
  <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
  <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" />
  <style>
+ html,body{height:100%;}
  /* layui重置 */
  .layui-form{width:530px;margin:10px auto 0;}
  .layui-form-item .layui-inline, .layui-form-item .layui-input-block{
@@ -43,7 +44,7 @@
 </style>
 </head>
 <body>
-<form class="layui-form layui-form-pane" lay-filter="edit" action="/menus/update">
+<form class="layui-form layui-form-pane" lay-filter="edit" action="/menus/update" style="position: absolute;top: 50%;left:50%;margin:-210px 0 0 -265px ;">
 	<#if params.action != 'add' &&  menu.level != '1'>
 	    <div class="layui-form-item">
 	        <label class="layui-form-label">上级菜单:</label>
@@ -85,7 +86,7 @@
 			            </#if>
 			        </#if>
             	</div>
-                <input type="text" name="icon" class="icon-input" value="<#if params.action != 'add'>${menu.icon?html}</#if>" lay-verify="required">
+                <input type="text" id="icon_input" name="icon" class="icon-input" value="<#if params.action != 'add'>${menu.icon?html}</#if>" lay-verify="required">
                 <a class="layui-btn layui-btn-primary" id="icon_search" style="border-top:none;border-bottom: none;border-right:none;height:36px;line-height: 36px;padding: 0 15px;">
                 	<i class="fa fa-search"></i>
                 </a>
