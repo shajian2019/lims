@@ -259,7 +259,7 @@ layui.define(['jquery', 'element', 'nprogress', 'utils'], function(exports) {
                 if (icon.indexOf('fa-') !== -1) {
                     titleHtm.push('<i class="fa ' + icon + '" aria-hidden="true"></i>');
                 } else {
-                    titleHtm.push('<i class="layui-icon">' + icon + '</i>');
+                    titleHtm.push('<i class="layui-icon '+icon+'"></i>');
                 }
             }
             titleHtm.push('&nbsp;' + title);
