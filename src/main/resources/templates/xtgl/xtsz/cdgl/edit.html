@@ -44,7 +44,7 @@
 </head>
 <body>
 <form class="layui-form layui-form-pane" lay-filter="edit" action="/menus/update">
-	<#if params.action != 'add' && menu.level != '1'>
+	<#if params.action != 'add' &&  menu.level != '1'>
 	    <div class="layui-form-item">
 	        <label class="layui-form-label">上级菜单:</label>
 	        <div class="layui-inline">
@@ -142,10 +142,10 @@ layui.use(['treeSelect','form','layer'],function(){
 	
 	form.on('submit(save)', function(data){
 		var action = '${params.action}';
-		data.field.level = ${menu.level} + 1;
 		if('${params.action}' == 'edit'){
 			data.field.id = '${menu.id}';
 		}else{
+			data.field.level = ${menu.level} + 1;
 			data.field.parentid = '${menu.id}';
 		}
 	    var index;
