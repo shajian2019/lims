@@ -146,9 +146,6 @@
 			<if test="id != null and id !='' ">
 				and m_id = #{id}
 			</if>
-			<if test="parentid != null and parentid !='' ">
-				and m_parentid = #{parentid}
-			</if>
 		</where>
 	</update>
 	

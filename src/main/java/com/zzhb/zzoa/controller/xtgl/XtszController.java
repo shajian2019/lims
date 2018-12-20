@@ -46,6 +46,10 @@ public class XtszController {
 	@GetMapping("/xtsz/cdgl/edit")
 	public ModelAndView edit(@RequestParam Map<String, String> params) {
 		ModelAndView mv = new ModelAndView();
+		if (params.get("flag") != null) {
+			mv.setViewName("xtgl/xtsz/cdgl/addone");
+			return mv;
+		}
 		Menu menu = menuMapper.getMenu(params);
 		mv.addObject("menu", menu);
 		mv.addObject("params", params);

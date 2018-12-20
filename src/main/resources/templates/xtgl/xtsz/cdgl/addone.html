@@ -44,32 +44,16 @@
 </head>
 <body>
 <form class="layui-form layui-form-pane" lay-filter="edit" action="/menus/update">
-	<#if params.action != 'add' &&  menu.level != '1'>
-	    <div class="layui-form-item">
-	        <label class="layui-form-label">上级菜单:</label>
-	        <div class="layui-inline">
-	            <input type="text" id="tree" lay-filter="tree" class="layui-input" name="parentid" lay-verify="required">
-	        </div>
-	    </div>
-    </#if>
     <div class="layui-form-item">
         <label class="layui-form-label">菜单名称:</label>
         <div class="layui-inline">
-            <input class="layui-input" type="text" name="title" value="<#if params.action != 'add'>${menu.title}</#if>" placeholder="菜单名称" lay-verify="required">
+            <input class="layui-input" type="text" name="title" value="" placeholder="菜单名称" lay-verify="required">
         </div>
     </div>
-    <#if (params.action == 'add' && menu.level == '2') || (params.action == 'edit' && menu.level == '3')>
-	    <div class="layui-form-item">
-	        <label class="layui-form-label">链接(Href):</label>
-	        <div class="layui-inline">
-	            <input class="layui-input" type="text" name="url" value="${(menu.url)!''}">
-	        </div>
-	    </div>
-    </#if>
     <div class="layui-form-item">
         <label class="layui-form-label">排序(升序):</label>
         <div class="layui-inline">
-            <input class="layui-input" type="text" name="sort" value="<#if params.action != 'add'>${menu.sort}</#if>" placeholder="排序" lay-verify="required">
+            <input class="layui-input" type="text" name="sort" value="" placeholder="排序" lay-verify="required">
         </div>
     </div>
     <div class="layui-form-item">
@@ -77,15 +61,9 @@
         <div class="layui-inline icon-box">
             <div class="layui-inline-block">
             	<div class="icon">
-	            	<#if params.action != 'add'>
-			             <#if menu.level != '3'>
-			                <i class="fa ${menu.icon} fa-fw"></i>
-			            <#else>
-			                <i class="layui-icon">${menu.icon}</i>
-			            </#if>
-			        </#if>
+	                <i class="fa fa-cog fa-fw"></i>
             	</div>
-                <input type="text" name="icon" class="icon-input" value="<#if params.action != 'add'>${menu.icon?html}</#if>" lay-verify="required">
+                <input type="text" name="icon" class="icon-input" value="fa-cog" lay-verify="required">
                 <a class="layui-btn layui-btn-primary" id="icon_search" style="border-top:none;border-bottom: none;border-right:none;height:36px;line-height: 36px;padding: 0 15px;">
                 	<i class="fa fa-search"></i>
                 </a>
@@ -95,8 +73,8 @@
     <div class="layui-form-item">
         <label class="layui-form-label">是否可见:</label>
         <div class="layui-input-block radio-box">
-            <input type="radio" name="status" value="1" title="显示"<#if menu.status == '1'>checked</#if>>
-            <input type="radio" name="status" value="0" title="隐藏"<#if menu.status == '0'>checked</#if>>
+            <input type="radio" name="status" value="1" title="显示" checked>
+            <input type="radio" name="status" value="0" title="隐藏">
         </div>
     </div>
 <div class="layui-btn-container">
@@ -106,50 +84,12 @@
 </form>
 <script src="${ctx}/plugins/layui/layui.js"></script>
 <script type="text/javascript">
-//加载formSelect模块
-layui.config({
-    base: "${ctx}/plugins/layui/extend/"
-	}).extend({
-	    treeSelect: "treeSelect"
-});
-layui.use(['treeSelect','form','layer'],function(){
+layui.use(['form','layer'],function(){
 	var $=layui.jquery,treeSelect=layui.treeSelect,form=layui.form,layer=layui.layer;
-	if(('${params.action}' != 'add' && ${menu.level} != 1)){
-	    treeSelect.render({
-	        elem: '#tree',
-	        data: "${ctx}/menus/tree/init?level="+${menu.level},
-	        type: 'get',
-	        placeholder: '菜单名称',
-	        search: true,
-	        id: 'tree',
-	        style: {
-	            line: {
-	                enable: true
-	            }
-	        },
-	        click: function(d){
-	        	console.log(d);
-	            console.log(d.treeId); // 得到组件的id
-	            console.log(d.current); // 得到点击节点的treeObj对象
-	            console.log(d.data); // 得到组成树的数据
-	        },
-	        success: function (d) {
-	           treeSelect.checkNode('tree', ${menu.parentid});
-	           treeSelect.refresh('tree');
-	        }
-	    });
-	}
-	
 	form.on('submit(save)', function(data){
-		debugger;
-		var action = '${params.action}';
-		if('${params.action}' == 'edit'){
-			data.field.id = '${menu.id}';
-			data.field.level = ${menu.level};
-		}else{
-			data.field.level = ${menu.level} + 1;
-			data.field.parentid = '${menu.id}';
-		}
+		//一级菜单
+		data.field.parentid = "0"
+		data.field.level = "1"
 	    var index;
 	    $.ajax({
 			    type: "post",
@@ -161,12 +101,7 @@ layui.use(['treeSelect','form','layer'],function(){
 			    success: function (data) {
 			    	layer.close(index);
 			    	if(data > 0){
-			    		var msg = "";
-			    		if('${params.action}' == 'edit'){
-			    			msg = "修改成功";
-			    		}else{
-			    			msg = "保存成功";
-			    		}
+			    		var msg = "保存成功";
 			    		layer.msg(msg,{offset:['50%'],time: 1000},function(){
 					    	index = parent.layer.getFrameIndex(window.name);
 					    	parent.layer.close(index);
@@ -176,7 +111,6 @@ layui.use(['treeSelect','form','layer'],function(){
 			    	}
 			    },
 			    error: function (data) {
-			    	layer.close(index);
 			    	layer.msg("服务端异常");
 			    }
 		 });
@@ -185,16 +119,7 @@ layui.use(['treeSelect','form','layer'],function(){
 	
 	//图标
 	$("#icon_search").click(function(){
-		var action = '${params.action}';
-		var level = ${menu.level};
-		//新增菜单 level需要加1
-		if(action == 'add'){
-			level += 1			
-		}
 		var type = "0";
-		if(level == 3){
-			type = "1";
-		}
 		var index = layer.open({
 			  title:'图标库',
 			  type: 2,

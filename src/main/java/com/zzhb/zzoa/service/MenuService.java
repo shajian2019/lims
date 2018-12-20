@@ -164,8 +164,8 @@ public class MenuService {
 	@Transactional
 	public Integer updateMenu(Menu menu) {
 		Integer updateMenu = 0;
-		String parentid = menu.getParentid();
-		if (parentid == null) {
+		String id = menu.getId();
+		if (id != null) {
 			updateMenu = menuMapper.updateMenu(menu);
 		} else {
 			updateMenu = menuMapper.insertMenu(menu);

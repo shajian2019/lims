@@ -32,7 +32,7 @@
 	        </div>
 	        <div class="layui-inline">
 	        	<button class="layui-btn layui-btn-primary" lay-submit="" lay-filter="query">查询</button>
-		 	 	<a class="layui-btn layui-btn-primary" onclick="openAll();">新增</a>
+		 	 	<a class="layui-btn layui-btn-primary" onclick="add();">新增</a>
 		 	 	<a class="layui-btn layui-btn-primary" onclick="openAll();">展开/折叠</a>
 		 	 	<a class="layui-btn layui-btn-primary" onclick="openAll();">保存排序</a>
 	        </div>
@@ -157,6 +157,22 @@
         });
 
     });
+    
+    function add() {
+    	var url = "${ctx}/xtgl/xtsz/cdgl/edit?flag=add";
+    	var index = layer.open({
+       		  title:'新增一级菜单',
+       		  type: 2,
+       		  area: ['620px', '400px'],
+       		  fixed: false, //不固定
+       		  maxmin: true,
+       		  content: url,
+       		  end: function(){
+       			  treeGrid.reload(tableId)
+       		  }
+        });
+       	layer.full(index);
+    }
     
    
 
