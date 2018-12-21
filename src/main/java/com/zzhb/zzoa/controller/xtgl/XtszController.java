@@ -20,10 +20,10 @@ import com.zzhb.zzoa.service.MenuService;
 
 //系统设置
 @Controller
-@RequestMapping("/xtgl")
+@RequestMapping("/xtgl/xtsz")
 public class XtszController {
 
-	@GetMapping("/xtsz/cdgl")
+	@GetMapping("/cdgl")
 	public String cdgl() {
 		return "xtgl/xtsz/cdgl/cdgl";
 	}
@@ -37,13 +37,13 @@ public class XtszController {
 	@Autowired
 	IconMapper iconMapper;
 
-	@GetMapping("/xtsz/cdgl/getall")
+	@GetMapping("/cdgl/getall")
 	@ResponseBody
 	public JSONObject getCd(@RequestParam Map<String, String> params) {
 		return menuService.getAllMenus(params);
 	}
 
-	@GetMapping("/xtsz/cdgl/edit")
+	@GetMapping("/cdgl/edit")
 	public ModelAndView edit(@RequestParam Map<String, String> params) {
 		ModelAndView mv = new ModelAndView();
 		if (params.get("flag") != null) {
@@ -57,7 +57,7 @@ public class XtszController {
 		return mv;
 	}
 
-	@GetMapping("/xtsz/cdgl/icon")
+	@GetMapping("/cdgl/icon")
 	public ModelAndView icon(@RequestParam Map<String, String> params) {
 		ModelAndView mv = new ModelAndView();
 		List<Icon> icons = iconMapper.getIcons(params);
