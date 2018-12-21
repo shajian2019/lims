@@ -47,9 +47,51 @@ server:
   
 ---
 
-spring: 
+spring:
   profiles: dev
-  datasource: 
+  datasource:
+    username: root
+    password: zzhb2018
+    url: jdbc:mysql://192.168.1.104:3306/zzoa?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&failOverReadOnly=false&useSSL=false
+    driver-class-name: com.mysql.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    initialSize: 5
+    minIdle: 5
+    maxActive: 20
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    validationQuery: SELECT 1
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    maxPoolPreparedStatementPerConnectionSize: 20
+    filters: stat,wall,log4j
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+    useGlobalDataSourceStat: true
+    remove-abandoned: true
+    remove-abandoned-timeout: 300
+    log-abandoned: false
+    initialization-mode: embedded
+  redis:
+    database: 2
+    host: localhost
+    port: 6379
+    password:
+    timeout: 0
+    pool:
+      max-idle: 10
+      max-wait: -1
+      min-idle: 2
+      max-active: 20
+
+  server:
+    port: 8080
+
+---
+spring:
+  profiles: local
+  datasource:
     username: root
     password: 123456
     url: jdbc:mysql://localhost:3306/zzoa?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&failOverReadOnly=false&useSSL=false
@@ -73,17 +115,17 @@ spring:
     remove-abandoned-timeout: 300
     log-abandoned: false
     initialization-mode: embedded
-  redis: 
+  redis:
     database: 2
     host: localhost
     port: 6379
-    password: 
+    password:
     timeout: 0
     pool:
       max-idle: 10
       max-wait: -1
       min-idle: 2
       max-active: 20
-    
-server:
-  port: 8080
+
+  server:
+    port: 8080
