@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzhb.zzoa.mapper.UserMapper">
+    <select id="getAllUsers" resultType="com.zzhb.zzoa.domain.User" parameterType="java.util.Map">
+      SELECT
+        u_id,
+        username,
+        password,
+        nickname,
+        createtime,
+        updatetime,
+        remark,
+        email,
+        phone,
+        status,
+        recentlogin
+      FROM sys_t_user
+      <where>
+          <if test="username != null and username != ''">
+              <bind name="_username" value="'%'+username+'%'"/>
+              AND username like #{_username}
+          </if>
+          <if test="nickname != null and nickname != ''">
+              <bind name="_nickname" value="'%'+nickname+'%'"/>
+              AND nickname like #{_nickname}
+          </if>
+      </where>
+    </select>
+    
+    
+    <delete id="delUserById" parameterType="java.lang.Integer">
+        DELETE FROM sys_t_user
+        <where>
+            <if test="id != null and id != ''">
+                u_id = #{id}
+            </if>
+        </where>
+    </delete>
+
+    <insert id="addUser" parameterType="com.zzhb.zzoa.domain.User">
+        INSERT INTO sys_t_user(username,password,nickname,createtime,updatetime,remark,email,phone,status,recentlogin)
+        VALUES (#{username},#{password},#{nickname},#{createtime},#{updatetime},#{remark},#{email},#{phone},#{status},#{recentlogin})
+    </insert>
+</mapper>

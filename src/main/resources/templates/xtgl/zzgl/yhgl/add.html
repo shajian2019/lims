@@ -1,0 +1,148 @@
+<#assign ctx=req.contextPath />
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+ <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
+ <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" />
+ <style>
+ /* layui重置 */
+ .layui-form{width:530px;margin:10px auto 0;}
+ .layui-form-item .layui-inline, .layui-form-item .layui-input-block{
+    width:400px;
+ }
+ .layui-form-item .radio-box{border:1px solid #e6e6e6;}
+ .layui-btn-container{width:512px;text-align:center;}
+ /* 自定义 */
+ div.icon-box{
+    height: 36px;
+    border:1px solid #e6e6e6;
+    border-left:none;
+    background-color: #fff;
+    border-radius: 2px;
+ }
+ .icon-box .icon{
+ 	width: 36px;
+ 	height:36px;
+ 	text-align: center;
+ 	line-height: 36px;
+ 	border-right:1px solid #e6e6e6;
+ 	display: inline-block;
+ }
+ .icon-box .layui-inline-block{
+ 	display: flex;
+ 	align-items: center;
+ 	justify-content: space-between;
+ }
+ .icon-box .icon-input{
+ 	display: inline-block;
+ 	border:none; 
+ 	flex-grow: 1;
+ 	padding: 0 10px;
+ }
+</style>
+</head>
+<body>
+<form class="layui-form layui-form-pane" lay-filter="edit" action="/menus/update" style="position: absolute;top: 50%;left:50%;margin:-210px 0 0 -265px ;">
+    <div class="layui-form-item">
+        <label class="layui-form-label">菜单名称:</label>
+        <div class="layui-inline">
+            <input class="layui-input" type="text" name="title" value="" placeholder="菜单名称" lay-verify="required">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">排序(升序):</label>
+        <div class="layui-inline">
+            <input class="layui-input" type="text" name="sort" value="" placeholder="排序" lay-verify="required">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">菜单图标:</label>
+        <div class="layui-inline icon-box">
+            <div class="layui-inline-block">
+            	<div class="icon">
+	                <i class="fa fa-cog fa-fw"></i>
+            	</div>
+                <input type="text" name="icon" class="icon-input" value="fa-cog" lay-verify="required">
+                <a class="layui-btn layui-btn-primary" id="icon_search" style="border-top:none;border-bottom: none;border-right:none;height:36px;line-height: 36px;padding: 0 15px;">
+                	<i class="fa fa-search"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">是否可见:</label>
+        <div class="layui-input-block radio-box">
+            <input type="radio" name="status" value="1" title="显示" checked>
+            <input type="radio" name="status" value="0" title="隐藏">
+        </div>
+    </div>
+<div class="layui-btn-container">
+  <a class="layui-btn layui-btn-sm layui-btn-primary" lay-submit lay-filter="save">保存</a>
+  <a id="cancel" class="layui-btn layui-btn-sm layui-bg-gray">取消</a>
+</div>
+</form>
+<script src="${ctx}/plugins/layui/layui.js"></script>
+<script type="text/javascript">
+layui.use(['form','layer'],function(){
+	var $=layui.jquery,treeSelect=layui.treeSelect,form=layui.form,layer=layui.layer;
+	form.on('submit(save)', function(data){
+		//一级菜单
+		data.field.parentid = "0"
+		data.field.level = "1"
+	    var index;
+	    $.ajax({
+			    type: "post",
+			    data: data.field,
+			    url: data.form.action,
+			    beforeSend: function () {
+			    	index = layer.load(1);
+			    },
+			    success: function (data) {
+			    	layer.close(index);
+			    	if(data > 0){
+			    		var msg = "保存成功";
+			    		layer.msg(msg,{offset:['50%'],time: 1000},function(){
+					    	index = parent.layer.getFrameIndex(window.name);
+					    	parent.layer.close(index);
+	                    });
+			    	}else{
+			    		layer.msg("操作失败")
+			    	}
+			    },
+			    error: function (data) {
+			    	layer.msg("服务端异常");
+			    }
+		 });
+	    
+	     return false;
+    });
+	
+	//图标
+	$("#icon_search").click(function(){
+		var type = "0";
+		var index = layer.open({
+			  title:'图标库',
+			  type: 2,
+			  area: ['780px', '400px'],
+			  fixed: false, //不固定
+			  maxmin: true,
+			  content:'${ctx}/xtgl/xtsz/cdgl/icon?type='+type,
+			  end: function(){
+				  
+			  }
+		  });
+	})
+	
+	//取消
+	$("#cancel").click(function(){
+		var index = parent.layer.getFrameIndex(window.name);
+    	parent.layer.close(index);
+	})
+	
+})
+
+
+</script>
+</body>
+</html>
