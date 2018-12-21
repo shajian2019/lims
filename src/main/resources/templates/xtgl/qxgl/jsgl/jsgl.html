@@ -1,4 +1,3 @@
-<#assign ctx=req.contextPath />
 <!DOCTYPE html>
 <html>
 
@@ -6,6 +5,7 @@
 	<meta charset="UTF-8">
 	<title>角色管理</title>
 	<link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
+	<link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" />
 	<style>
 		.layui-table, .layui-table-view {
     margin: 0 0;
@@ -34,32 +34,28 @@
 }
 </style>
 </head>
-
-<body>
+<body class="layui-layout-body" style="padding: 10px">
 	<form class="layui-form head-form" accept-charset="utf-8">
 		<div class="layui-form-item">
-			<label class="layui-form-label">角色名称:</label>
 			<div class="layui-inline">
-				<input type="text" class="layui-input">
+				<input class="layui-input" type="text" placeholder="角色名称" name="rolename">
 			</div>
 		</div>
 		<div class="layui-form-item">
-			<label class="layui-form-label">角色编码:</label>
 			<div class="layui-inline">
-				<input type="text" class="layui-input">
+				<input class="layui-input" type="text" placeholder="角色编码" name="rolecode">
 			</div>
 		</div>
 		<div class="layui-form-item">
-			<label class="layui-form-label">状态:</label>
 			<div class="layui-inline">
-				<select name="">
-					<option value=""></option>
+				<select name="status">
+					<option value="状态"></option>
 				</select>
 			</div>
 		</div>
 		<div class="layui-btn-container">
-			<a class="layui-btn layui-btn-sm" lay-submit lay-filter="search">查询</a>
-			<a class="layui-btn layui-btn-sm" id="addBtn">新增</a>
+			<a class="layui-btn layui-btn-primary" lay-submit lay-filter="search">查询</a>
+			<a class="layui-btn layui-btn-primary" id="addBtn">新增</a>
 		</div>
 	</form>
 	<table class="layui-hide" lay-filter="tableBox" id="tableBox"></table>
@@ -68,32 +64,33 @@
 </html>
 <script type="text/html" id="rightBar">
 	<div class="layui-btn-group">
-		<a class="layui-btn layui-btn-small layui-btn-xs" lay-event="">
-		  <i class="layui-icon">&#xe654;</i>
+		<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="add">
+		  	<i class="fa fa-plus-square-o"></i>
 		</a>
-		<a class="layui-btn layui-btn-small layui-btn-xs" lay-event="edit">
-		  <i class="layui-icon">&#xe642;</i>
+		<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">
+		 	<i class="fa fa-pencil"></i>
 		</a>
-		<a class="layui-btn layui-btn-small layui-btn-xs" lay-event="del">
-		  <i class="layui-icon">&#xe640;</i>
+		<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del">
+		    <i class="fa fa-trash-o"></i>
 		</a>
-		<a class="layui-btn layui-btn-small layui-btn-xs" lay-event="more">
-		  <i class="layui-icon">&#xe602;</i>
+		<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="more">
+		  	<i class="fa fa-chevron-circle-left"></i>
 		</a>
-	  </div>	
+	 </div>	
 </script>
 <script src="${ctx}/plugins/layui/layui.all.js"></script>
 <script>
 	var data = [{
 		"wfd_name": "111"
 	}]
+	var tableId = "tableBox";
 	layui.use(['layer', 'form', 'table'], function () {
 		var $ = layui.jquery,
 			layer = layui.layer,
 			table = layui.table,
 			form = layui.form;
 		table.render({
-			elem: '#tableBox',
+			elem: '#'+tableId,
 			//url: '',
 			data: data,
 			height: 'full-50',
@@ -114,22 +111,6 @@
 						field: 'wf_type',
 						align: 'center',
 						title: '角色编码'
-					}, {
-						field: 'wf_code',
-						align: 'center',
-						title: '排序号'
-					}, {
-						field: 'wf_unit',
-						align: 'center',
-						title: '系统角色'
-					}, {
-						field: 'wf_feature',
-						align: 'center',
-						title: '用户类型'
-					}, {
-						field: 'wf_content',
-						align: 'center',
-						title: '数据范围'
 					}, {
 						field: 'wf_form',
 						align: 'center',
@@ -154,11 +135,10 @@
 			page: true,
 			limits: [12, 24, 36],
 			limit: 12,
-			id: 'tableMain',
+			id: tableId,
 			done: function (res, curr, count) {
-				// 数据提交查询
 				form.on('submit(search)', function (data) {
-					table.reload('tableMain', {
+					table.reload(tableId, {
 						where: data.field
 					});
 					return false;
@@ -173,14 +153,13 @@
 			});
 		});
 		//监听工具条
-		table.on('tool(tableBox)', function (obj) {
+		table.on('tool('+tableId+')', function (obj) {
 			var data = obj.data;
 			if (obj.event === 'edit') {
 				//编辑
 			} else if (obj.event === 'del') {
 				layer.confirm('真的删除行么', function (index) {
 					obj.del();
-
 				});
 			} else if (obj.event === 'more') {
 
