@@ -31,7 +31,7 @@ public class MenuController {
 	@GetMapping("/second/get")
 	@ResponseBody
 	public List<Map<String, Object>> getSecondMenu(String parentid, String r_id) {
-		return menuService.getSecondMenu(r_id, parentid);
+		return menuService.getSecondMenu(r_id + ">" + parentid, r_id, parentid);
 	}
 
 	@GetMapping("/tree/init")
@@ -46,10 +46,10 @@ public class MenuController {
 		System.out.println(menu);
 		return menuService.updateMenu(menu);
 	}
-	
+
 	@PostMapping("/del")
 	@ResponseBody
-	public Integer del(@RequestParam Map<String,String> param) {
+	public Integer del(@RequestParam Map<String, String> param) {
 		return menuService.delMenus(param);
 	}
 }

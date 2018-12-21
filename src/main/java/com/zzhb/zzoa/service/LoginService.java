@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.zzhb.zzoa.controller.LoginController;
 import com.zzhb.zzoa.domain.Role;
 import com.zzhb.zzoa.domain.User;
 import com.zzhb.zzoa.mapper.RoleMapper;

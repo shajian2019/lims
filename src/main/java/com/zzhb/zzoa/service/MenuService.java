@@ -39,8 +39,8 @@ public class MenuService {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Cacheable(value = "SECONDMENU", key = "#r_id")
-	public List<Map<String, Object>> getSecondMenu(String r_id, String parentid) {
+	@Cacheable(value = "SECONDMENU", key = "#cachKey")
+	public List<Map<String, Object>> getSecondMenu(String cachKey,String r_id, String parentid) {
 		// 获取parentid下的所有子菜单ID
 		List<String> childIds = menuMapper.getIdByParentId(parentid, r_id);
 		Map<String, Object> params = new HashMap<>();

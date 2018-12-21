@@ -7,12 +7,12 @@ public class Role implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Integer r_id;
-
 	private String rolename;
-
+	private String rolecode;
 	private String createtime;
 	private String updatetime;
 	private String remark;
+	private String status;
 
 	public Integer getR_id() {
 		return r_id;
@@ -54,10 +54,26 @@ public class Role implements Serializable {
 		this.remark = remark;
 	}
 
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getRolecode() {
+		return rolecode;
+	}
+
+	public void setRolecode(String rolecode) {
+		this.rolecode = rolecode;
+	}
+
 	@Override
 	public String toString() {
-		return "Role [r_id=" + r_id + ", rolename=" + rolename + ", createtime=" + createtime + ", updatetime="
-				+ updatetime + ", remark=" + remark + "]";
+		return "Role [r_id=" + r_id + ", rolename=" + rolename + ", rolecode=" + rolecode + ", createtime=" + createtime
+				+ ", updatetime=" + updatetime + ", remark=" + remark + ", status=" + status + "]";
 	}
 
 }

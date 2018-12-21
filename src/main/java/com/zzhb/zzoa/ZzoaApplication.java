@@ -11,7 +11,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @EnableScheduling
 @EnableAsync
-//@EnableCaching //TODO开发阶段
+@EnableCaching
 @MapperScan({"com.zzhb.zzoa.mapper","com.zzhb.zzoa.shiro.mapper"})
 @SpringBootApplication
 public class ZzoaApplication {
