@@ -1,4 +1,3 @@
-<#assign ctx=req.contextPath />
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,21 +9,22 @@
     <title>Insert title here</title>
 </head>
 <style>
-    html, body {
+     html,body{
         height: 100%;
     }
-
-    div {
-        -moz-box-sizing: border-box; /*Firefox3.5+*/
+    div{
+        -moz-box-sizing: border-box;  /*Firefox3.5+*/
         -webkit-box-sizing: border-box; /*Safari3.2+*/
         -o-box-sizing: border-box; /*Opera9.6*/
         -ms-box-sizing: border-box; /*IE8*/
         box-sizing: border-box; /*W3C标准(IE9+，Safari5.1+,Chrome10.0+,Opera10.6+都符合box-sizing的w3c标准语法)*/
     }
-
-    .layui-form-item {
+    .layui-form-item{
         margin-bottom: 0px
     }
+    .layui-table, .layui-table-view {
+	    margin: 0px 0;
+	}
 </style>
 <body class="layui-layout-body" style="padding: 10px">
 
@@ -47,8 +47,6 @@
     <table class="layui-hidden layui-table" id="dataTable" lay-filter="dataTable"></table>
 </div>
 
-
-
 </body>
 <script>
     var editObj=null,ptable=null,treeGrid=null,tableId='dataTable',layer=null,form=null;
@@ -60,7 +58,7 @@
             ,url:'${ctx}/xtgl/zzgl/yhgl/getAllUsers'//后台接受路径
             ,page:true
             ,id:tableId
-            ,height:'full-90'
+            ,height:'full-80'
             ,method:'get'
             ,cols: [[
                 {field:'username', width:150, title: '用户名称'}
@@ -172,5 +170,4 @@
         layer.full(index);
     }
 </script>
-
 </html>
