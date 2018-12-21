@@ -1,5 +1,6 @@
 package com.zzhb.zzoa.mapper;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Select;
@@ -12,5 +13,7 @@ public interface RoleMapper {
 	public Role getRol(Integer u_id);
 	
 	public Integer delRoleMenu(Map<String, Object> params);
+	
+	public List<Role> getRoles(Map<String, String> params);
 
 }

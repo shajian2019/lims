@@ -14,4 +14,9 @@
 		</where>
 	</delete>
 	
+	<select id="getRoles" parameterType="com.zzhb.zzoa.domain.Role">
+	
+	
+	</select>
+	
 </mapper>
