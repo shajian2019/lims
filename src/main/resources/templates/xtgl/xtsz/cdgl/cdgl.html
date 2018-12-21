@@ -157,9 +157,9 @@
             });
             return false;
         });
+        
         form.on('submit(updateSort)', function(data){
             var map=treeGrid.getDataMap(tableId);
-            console.log(map);
             var array = [];
             for(var item in map){
      	        var json = {};
@@ -167,7 +167,6 @@
              	json.sort = map[item].sort
              	array.push(json)
             }
-            console.log(array)
             var index;
             $.ajax({
     		    type: "post",

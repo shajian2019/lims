@@ -62,7 +62,7 @@
 	    <div class="layui-form-item">
 	        <label class="layui-form-label">链接(Href):</label>
 	        <div class="layui-inline">
-	            <input class="layui-input" type="text" name="url" value="<#if params.action != 'add'>${(menu.url)!''}</#if>" placeholder="菜单地址" <#if menu.level == '2' || (params.action == 'edit' && menu.level == '3')>lay-verify="required"</#if>>
+	            <input class="layui-input" type="text" name="url" value="<#if params.action != 'add'>${(menu.url)!''}</#if>" placeholder="菜单地址" <#if (params.action == 'add' && menu.level == '2') || (params.action == 'edit' && menu.level == '3')>lay-verify="required"</#if>>
 	        </div>
 	    </div>
     </#if>
@@ -93,8 +93,13 @@
     <div class="layui-form-item">
         <label class="layui-form-label">是否可见:</label>
         <div class="layui-input-block radio-box">
-            <input type="radio" name="status" value="1" title="显示"<#if menu.status == '1'>checked</#if>>
-            <input type="radio" name="status" value="0" title="隐藏"<#if menu.status == '0'>checked</#if>>
+        	<#if (params.action == 'add')>
+	            <input type="radio" name="status" value="1" title="显示" checked>
+	            <input type="radio" name="status" value="0" title="隐藏">
+    		<#else>
+	            <input type="radio" name="status" value="1" title="显示"<#if menu.status == '1'>checked</#if>>
+	            <input type="radio" name="status" value="0" title="隐藏"<#if menu.status == '0'>checked</#if>>
+        	</#if>
         </div>
     </div>
 <div class="layui-btn-container">

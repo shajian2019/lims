@@ -183,6 +183,13 @@ public class MenuService {
 		String id = menu.getId();
 		if (id != null) {
 			updateMenu = menuMapper.updateMenu(menu);
+			List<String> childIds = menuMapper.getIdByParentId(id, Constant.SUPERADMIN);
+			for (String string : childIds) {
+				Menu menus = new Menu();
+				menus.setId(string);
+				menus.setStatus(menu.getStatus());
+				updateMenu += menuMapper.updateMenu(menus);
+			}
 		} else {
 			updateMenu = menuMapper.insertMenu(menu);
 		}

@@ -30,7 +30,8 @@ public class MenuController {
 
 	@GetMapping("/second/get")
 	@ResponseBody
-	public List<Map<String, Object>> getSecondMenu(@RequestParam("parentid") String parentid, @RequestParam("r_id") String r_id) {
+	public List<Map<String, Object>> getSecondMenu(@RequestParam("parentid") String parentid,
+			@RequestParam("r_id") String r_id) {
 		return menuService.getSecondMenu(r_id + ">" + parentid, r_id, parentid);
 	}
 
