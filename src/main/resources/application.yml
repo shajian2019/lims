@@ -85,8 +85,8 @@ spring:
       min-idle: 2
       max-active: 20
 
-  server:
-    port: 8080
+server:
+  port: 8080
 
 ---
 spring:
@@ -127,5 +127,5 @@ spring:
       min-idle: 2
       max-active: 20
 
-  server:
-    port: 8080
+server:
+  port: 8080
