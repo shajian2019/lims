@@ -2,10 +2,15 @@ package com.zzhb.zzoa.controller.xtgl;
 
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.fastjson.JSONObject;
+import com.zzhb.zzoa.service.RoleService;
 
 //权限管理
 @Controller
@@ -17,13 +22,17 @@ public class QxglController {
 		return "xtgl/qxgl/jsgl/jsgl";
 	}
 
-	@GetMapping("/jsgl")
+	@GetMapping("/jsgl/pop")
 	public String pop(@RequestParam Map<String, String> params) {
 		return "xtgl/qxgl/jsgl/pop";
 	}
 
-	@GetMapping("/jsgl/roles/list")
-	public void listRoles(Integer page, Integer limit, @RequestParam Map<String, String> params) {
+	@Autowired
+	RoleService roleService;
 
+	@GetMapping("/jsgl/roles/list")
+	@ResponseBody
+	public JSONObject listRoles(Integer page, Integer limit, @RequestParam Map<String, String> params) {
+		return roleService.listRoles(page, limit, params);
 	}
 }

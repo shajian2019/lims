@@ -1,19 +1,29 @@
 package com.zzhb.zzoa.service;
 
+import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.zzhb.zzoa.domain.Role;
+import com.zzhb.zzoa.mapper.RoleMapper;
+import com.zzhb.zzoa.utils.LayUiUtil;
 
 @Service
 public class RoleService {
+	
+	@Autowired
+	RoleMapper roleMapper;
 
 	public JSONObject listRoles(Integer page, Integer limit, Map<String, String> params) {
-		
-		
-
-		return null;
+		PageHelper.startPage(page, limit);
+		List<Role> roles = roleMapper.getRoles(params);
+		PageInfo<Role> pageInfo = new PageInfo<Role>(roles);
+		return LayUiUtil.pagination(pageInfo);
 	}
 
 }

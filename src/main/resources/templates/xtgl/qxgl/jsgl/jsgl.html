@@ -47,9 +47,11 @@
 			</div>
 		</div>
 		<div class="layui-form-item">
-			<div class="layui-inline">
+			<div class="layui-input-inline">
 				<select name="status">
-					<option value="状态"></option>
+					<option value="">全部</option>
+					<option value="1">正常</option>
+					<option value="0">禁用</option>
 				</select>
 			</div>
 		</div>
@@ -64,9 +66,6 @@
 </html>
 <script type="text/html" id="rightBar">
 	<div class="layui-btn-group">
-		<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="add">
-		  	<i class="fa fa-plus-square-o"></i>
-		</a>
 		<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">
 		 	<i class="fa fa-pencil"></i>
 		</a>
@@ -78,11 +77,11 @@
 		</a>
 	 </div>	
 </script>
+<script type="text/html" id="switch" >
+	<input type="checkbox" name="switch" lay-skin="switch" lay-filter="switchstatus" lay-text="正常|禁用" {{ d.status == '1' ? 'checked' : '' }}>
+</script>
 <script src="${ctx}/plugins/layui/layui.all.js"></script>
 <script>
-	var data = [{
-		"wfd_name": "111"
-	}]
 	var tableId = "tableBox";
 	layui.use(['layer', 'form', 'table'], function () {
 		var $ = layui.jquery,
@@ -91,50 +90,55 @@
 			form = layui.form;
 		table.render({
 			elem: '#'+tableId,
-			//url: '',
-			data: data,
+			url: '${ctx}/xtgl/qxgl/jsgl/roles/list',
 			height: 'full-50',
-			toolbar: '',
-			cellMinWidth: 140,
 			title: '角色管理',
-			cols: [
-				[ //标题栏
+			cols: [[
 					{
+						title: '序号',
 						type: 'numbers',
-						width: 60
+						width: 50
 					}, {
-						field: 'wf_name',
-						align: 'center',
-						title: '角色名称'
-					} //rowspan即纵向跨越的单元格数
-					, {
-						field: 'wf_type',
-						align: 'center',
-						title: '角色编码'
+						field: 'r_id',
+						hide:true
 					}, {
-						field: 'wf_form',
+						field: 'rolename',
+						align: 'center',
+						title: '角色名称',
+						width: 200
+					}, {
+						field: 'rolecode',
+						align: 'center',
+						title: '角色编码',
+						width: 200
+					}, {
+						field: 'createtime',
+						align: 'center',
+						title: '创建时间'
+					}, {
+						field: 'updatetime',
 						align: 'center',
 						title: '更新时间'
 					}, {
-						field: 'wf_form',
+						field: 'remark',
 						align: 'center',
 						title: '备注信息'
 					}, {
-						field: 'wf_form',
+						field: 'status',
 						align: 'center',
-						title: '状态'
+						title: '状态',
+						width: 100,
+						templet:"#switch"
 					}, {
 						field: 'center',
 						align: 'center',
 						title: '操作',
-						minWidth: 80,
+						width: 100,
 						toolbar: '#rightBar'
 					}
 				]
 			],
 			page: true,
-			limits: [12, 24, 36],
-			limit: 12,
 			id: tableId,
 			done: function (res, curr, count) {
 				form.on('submit(search)', function (data) {
@@ -159,11 +163,18 @@
 				//编辑
 			} else if (obj.event === 'del') {
 				layer.confirm('真的删除行么', function (index) {
-					obj.del();
+					console.log(obj.data)
 				});
 			} else if (obj.event === 'more') {
 
 			}
 		});
+		
+		form.on('switch(switchstatus)', function(obj){
+			var selectIfKey=obj.othis;                                  
+			var parentTr = selectIfKey.parents("tr");
+			var dataField = $(parentTr).find("td:eq(1)").find(".layui-table-cell").text();
+		    console.log(dataField+"==="+obj.elem.checked)
+		})
 	})
 </script>

@@ -14,9 +14,22 @@
 		</where>
 	</delete>
 	
-	<select id="getRoles" parameterType="com.zzhb.zzoa.domain.Role">
-	
-	
+	<select id="getRoles" resultType="com.zzhb.zzoa.domain.Role" parameterType="java.util.Map">
+		SELECT * FROM sys_t_role
+		<where>
+			<if test="rolename !=null and rolename !=''">
+				<bind name="_rolename" value="'%'+rolename+'%'"/>
+				and rolename like #{_rolename}
+			</if>
+			<if test="rolecode !=null and rolecode !=''">
+				<bind name="_rolecode" value="'%'+rolecode+'%'"/>
+				and rolecode like #{_rolecode}
+			</if>
+			<if test="status !=null and status !=''">
+				and status = #{status}
+			</if>
+		</where>
+		ORDER BY createtime desc
 	</select>
 	
 </mapper>
