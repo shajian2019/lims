@@ -43,6 +43,9 @@
 <div style="height:100%">
     <table class="layui-hidden layui-table" id="treeTable" lay-filter="treeTable"></table>
 </div>
+<script type="text/html" id="switch" >
+	<input type="checkbox" name="switch" lay-skin="switch" lay-filter="switchstatus" lay-text="正常|禁用" {{ d.status == '1' ? 'checked' : '' }}>
+</script>
 <script>
     var editObj=null,ptable=null,treeGrid=null,tableId='treeTable',layer=null,form=null;
     layui.config({
@@ -68,18 +71,11 @@
             ,isOpenDefault:true//节点默认是展开还是折叠【默认展开】
             ,method:'get'
             ,cols: [[
-                 {field:'title', width:500, title: '菜单名称'}
+                 {field:'id', width:80,title: '菜单ID',align:'center'}
+                ,{field:'title', width:400, title: '菜单名称'}
                 ,{field:'url', width:200, title: '菜单链接'}
                 ,{field:'sort', width:200, title: '排序',edit:'text'}
-                ,{field:'status', width:200, title: '状态',templet:function(d){
-                	 var html='';
-                	 if(d.status == 0){
-                		 html = "隐藏"
-                	 }else{
-                		 html = "显示"
-                	 }
-                	 return html
-                }}
+                ,{field:'status', width:200, title: '状态',templet:'#switch'}
                 ,{title: '操作', align:'center'/*toolbar: '#barDemo'*/
                     ,templet: function(d){
                         var html='';
@@ -92,15 +88,6 @@
                     }
                 }
             ]]
-            ,parseData:function (res) {//数据加载后回调
-                return res;
-            }
-            ,onClickRow:function (index, o) {
-                console.log(index,o,"单击！");
-            }
-            ,onDblClickRow:function (index, o) {
-                console.log(index,o,"双击");
-            }
         });
         //点击行事件
         treeGrid.on('tool('+tableId+')',function (obj) {
@@ -194,6 +181,13 @@
     		});
             return false;
         });
+        
+        form.on('switch(switchstatus)', function(obj){
+			var selectIfKey=obj.othis;                                  
+			var parentTr = selectIfKey.parents("tr");
+			var dataField = $(parentTr).find("td:eq(0)").find(".layui-table-cell").text();
+		    console.log(dataField+"==="+obj.elem.checked)
+		})
 
     });
     
