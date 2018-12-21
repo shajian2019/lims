@@ -23,6 +23,9 @@ import com.zzhb.zzoa.utils.Constant;
 public class MenuService {
 
 	@Autowired
+	CacheService cacheService;
+
+	@Autowired
 	MenuMapper menuMapper;
 
 	@Autowired
@@ -183,6 +186,7 @@ public class MenuService {
 		} else {
 			updateMenu = menuMapper.insertMenu(menu);
 		}
+		cacheService.flushMenus();
 		return updateMenu;
 	}
 
@@ -196,6 +200,7 @@ public class MenuService {
 			menu.setSort(job.getString("sort"));
 			updateMenu += menuMapper.updateMenu(menu);
 		}
+		cacheService.flushMenus();
 		return updateMenu;
 	}
 
@@ -207,6 +212,7 @@ public class MenuService {
 		params.put("m_ids", idByParentId);
 		// TODO 删除权限角色中间表中的记录
 		roleMapper.delRoleMenu(params);
+		cacheService.flushMenus();
 		return menuMapper.delMenus(params);
 	}
 }
