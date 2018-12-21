@@ -27,7 +27,7 @@ public class MenuService {
 	@Autowired
 	RoleMapper roleMapper;
 
-	@Cacheable(value = "ONEMENU", key = "#r_id")
+	@Cacheable(value = "ONEMENU", key = "#r_id",condition="#r_id !='superadmin'")
 	public List<Menu> getOneMenusByRoleId(String r_id) {
 		Map<String, Object> params = new HashMap<>();
 		params.put("r_id", r_id);
@@ -39,7 +39,7 @@ public class MenuService {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Cacheable(value = "SECONDMENU", key = "#cachKey")
+	@Cacheable(value = "SECONDMENU", key = "#cachKey",condition="#r_id !='superadmin'")
 	public List<Map<String, Object>> getSecondMenu(String cachKey,String r_id, String parentid) {
 		// 获取parentid下的所有子菜单ID
 		List<String> childIds = menuMapper.getIdByParentId(parentid, r_id);
