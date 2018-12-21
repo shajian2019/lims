@@ -24,20 +24,21 @@ public class MenuController {
 
 	@GetMapping("/one/get")
 	@ResponseBody
-	public List<Menu> getOneMenus(String r_id) {
+	public List<Menu> getOneMenus(@RequestParam("r_id") String r_id) {
 		return menuService.getOneMenusByRoleId(r_id);
 	}
 
 	@GetMapping("/second/get")
 	@ResponseBody
-	public List<Map<String, Object>> getSecondMenu(String parentid, String r_id) {
+	public List<Map<String, Object>> getSecondMenu(@RequestParam("parentid") String parentid, @RequestParam("r_id") String r_id) {
 		return menuService.getSecondMenu(r_id + ">" + parentid, r_id, parentid);
 	}
 
 	@GetMapping("/tree/init")
 	@ResponseBody
-	public JSONArray initMenuTree(@RequestParam Map<String, String> params) {
-		return menuService.initMenuTree(params);
+	public JSONArray initMenuTree(@RequestParam(defaultValue = "0") String level, String r_id,
+			@RequestParam Map<String, String> params) {
+		return menuService.initMenuTree(level, r_id, params);
 	}
 
 	@PostMapping("/update")

@@ -25,9 +25,14 @@ public class LoginService {
 
 	@Transactional
 	public void initLoginUser(User user, Session session) {
-		Role rol = roleMapper.getRol(user.getU_id());
-		logger.debug("=======user======" + user.getUsername() + "=======role====" + rol);
-		session.setAttribute(Constant.ROLE, rol);
+		Role role = roleMapper.getRol(user.getU_id());
+		logger.debug("=======user======" + user.getUsername() + "=======role====" + role);
+		session.setAttribute(Constant.ROLE, role);
+		if (role == null) {
+			session.setAttribute(Constant.ROLEID, Constant.SUPERADMIN);
+		} else {
+			session.setAttribute(Constant.ROLEID, role.getR_id());
+		}
 		session.setAttribute(Constant.USER, user);
 		userMapper.updateRecentlogin(user);
 		logger.debug("=====更新用户登录时间==user======" + user.getUsername());

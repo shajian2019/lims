@@ -140,7 +140,6 @@ layui.use(['treeSelect','form','layer'],function(){
 	}
 	
 	form.on('submit(save)', function(data){
-		debugger;
 		var action = '${params.action}';
 		if('${params.action}' == 'edit'){
 			data.field.id = '${menu.id}';

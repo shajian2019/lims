@@ -87,7 +87,6 @@ layui.define(['element', 'nprogress', 'form', 'table', 'loader', 'tab', 'navbar'
                 }).render();
                 //处理顶部一级菜单
                 var onelevel = layui.onelevel;
-                console.log("="+_config.r_id)
                 if (!onelevel.hasElem()) {
                     onelevel.set({
                     	elem:'#ds',

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +28,7 @@ public class MenuService {
 	@Autowired
 	RoleMapper roleMapper;
 
-	@Cacheable(value = "ONEMENU", key = "#r_id",condition="#r_id !='superadmin'")
+	@Cacheable(value = "ONEMENU", key = "#r_id", condition = "#r_id !='superadmin'")
 	public List<Menu> getOneMenusByRoleId(String r_id) {
 		Map<String, Object> params = new HashMap<>();
 		params.put("r_id", r_id);
@@ -38,9 +39,13 @@ public class MenuService {
 		return menuMapper.getMenus(params);
 	}
 
+	@CacheEvict(value = "ONEMENU", allEntries = true)
+	public void flushOnemenu() {
+	}
+
 	@SuppressWarnings("unchecked")
-	@Cacheable(value = "SECONDMENU", key = "#cachKey",condition="#r_id !='superadmin'")
-	public List<Map<String, Object>> getSecondMenu(String cachKey,String r_id, String parentid) {
+	@Cacheable(value = "SECONDMENU", key = "#cachKey", condition = "#r_id !='superadmin'")
+	public List<Map<String, Object>> getSecondMenu(String cachKey, String r_id, String parentid) {
 		// 获取parentid下的所有子菜单ID
 		List<String> childIds = menuMapper.getIdByParentId(parentid, r_id);
 		Map<String, Object> params = new HashMap<>();
@@ -97,11 +102,18 @@ public class MenuService {
 		return result;
 	}
 
-	@Cacheable(value = "TREEMENUS")
-	public JSONArray initMenuTree(Map<String, String> params) {
+	@CacheEvict(value = "SECONDMENU", allEntries = true)
+	public void flushSecondmenu() {
+	}
+
+	@CacheEvict(value = "TREEMENUS", allEntries = true)
+	public void flushMenuTree() {
+	}
+
+	@Cacheable(value = "TREEMENUS", key = "#level", condition = "#r_id !='superadmin'")
+	public JSONArray initMenuTree(String level, String r_id, Map<String, String> params) {
 		JSONArray result = new JSONArray();
 		params.put("m_level", "1");
-		String level = params.get("level");
 		List<Menu> allMenus = menuMapper.getAllMenus(params);
 		params.clear();
 		for (int i = 0; i < allMenus.size(); i++) {
@@ -170,6 +182,19 @@ public class MenuService {
 			updateMenu = menuMapper.updateMenu(menu);
 		} else {
 			updateMenu = menuMapper.insertMenu(menu);
+		}
+		return updateMenu;
+	}
+
+	@Transactional
+	public Integer updateSort(JSONArray array) {
+		Integer updateMenu = 0;
+		for (int i = 0; i < array.size(); i++) {
+			JSONObject job = array.getJSONObject(i);
+			Menu menu = new Menu();
+			menu.setId(job.getString("id"));
+			menu.setSort(job.getString("sort"));
+			updateMenu += menuMapper.updateMenu(menu);
 		}
 		return updateMenu;
 	}
