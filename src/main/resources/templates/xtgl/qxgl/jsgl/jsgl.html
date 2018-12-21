@@ -1,10 +1,190 @@
+<#assign ctx=req.contextPath />
 <!DOCTYPE html>
 <html>
+
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+	<meta charset="UTF-8">
+	<title>角色管理</title>
+	<link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
+	<style>
+		.layui-table, .layui-table-view {
+    margin: 0 0;
+}
+.head-form{
+	display: flex;
+	align-items: center;
+	padding: 5px 0;
+}
+.head-form .layui-form-item {
+	margin-bottom: 0;
+}
+.head-form .layui-form-item .layui-inline{
+	margin-bottom: 0;
+}
+.head-form .layui-input,.head .layui-select{
+	height:35px;
+	line-height: 35px;
+}
+.head-form .layui-form-label{
+	padding: 7px 10px;
+}
+.layui-btn-container .layui-btn {
+    margin-right: 10px;
+    margin-bottom: 0;
+}
+</style>
 </head>
+
 <body>
-	角色管理
+	<form class="layui-form head-form" accept-charset="utf-8">
+		<div class="layui-form-item">
+			<label class="layui-form-label">角色名称:</label>
+			<div class="layui-inline">
+				<input type="text" class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">角色编码:</label>
+			<div class="layui-inline">
+				<input type="text" class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">状态:</label>
+			<div class="layui-inline">
+				<select name="">
+					<option value=""></option>
+				</select>
+			</div>
+		</div>
+		<div class="layui-btn-container">
+			<a class="layui-btn layui-btn-sm" lay-submit lay-filter="search">查询</a>
+			<a class="layui-btn layui-btn-sm" id="addBtn">新增</a>
+		</div>
+	</form>
+	<table class="layui-hide" lay-filter="tableBox" id="tableBox"></table>
 </body>
+
 </html>
+<script type="text/html" id="rightBar">
+	<div class="layui-btn-group">
+		<a class="layui-btn layui-btn-small layui-btn-xs" lay-event="">
+		  <i class="layui-icon">&#xe654;</i>
+		</a>
+		<a class="layui-btn layui-btn-small layui-btn-xs" lay-event="edit">
+		  <i class="layui-icon">&#xe642;</i>
+		</a>
+		<a class="layui-btn layui-btn-small layui-btn-xs" lay-event="del">
+		  <i class="layui-icon">&#xe640;</i>
+		</a>
+		<a class="layui-btn layui-btn-small layui-btn-xs" lay-event="more">
+		  <i class="layui-icon">&#xe602;</i>
+		</a>
+	  </div>	
+</script>
+<script src="${ctx}/plugins/layui/layui.all.js"></script>
+<script>
+	var data = [{
+		"wfd_name": "111"
+	}]
+	layui.use(['layer', 'form', 'table'], function () {
+		var $ = layui.jquery,
+			layer = layui.layer,
+			table = layui.table,
+			form = layui.form;
+		table.render({
+			elem: '#tableBox',
+			//url: '',
+			data: data,
+			height: 'full-50',
+			toolbar: '',
+			cellMinWidth: 140,
+			title: '角色管理',
+			cols: [
+				[ //标题栏
+					{
+						type: 'numbers',
+						width: 60
+					}, {
+						field: 'wf_name',
+						align: 'center',
+						title: '角色名称'
+					} //rowspan即纵向跨越的单元格数
+					, {
+						field: 'wf_type',
+						align: 'center',
+						title: '角色编码'
+					}, {
+						field: 'wf_code',
+						align: 'center',
+						title: '排序号'
+					}, {
+						field: 'wf_unit',
+						align: 'center',
+						title: '系统角色'
+					}, {
+						field: 'wf_feature',
+						align: 'center',
+						title: '用户类型'
+					}, {
+						field: 'wf_content',
+						align: 'center',
+						title: '数据范围'
+					}, {
+						field: 'wf_form',
+						align: 'center',
+						title: '更新时间'
+					}, {
+						field: 'wf_form',
+						align: 'center',
+						title: '备注信息'
+					}, {
+						field: 'wf_form',
+						align: 'center',
+						title: '状态'
+					}, {
+						field: 'center',
+						align: 'center',
+						title: '操作',
+						minWidth: 80,
+						toolbar: '#rightBar'
+					}
+				]
+			],
+			page: true,
+			limits: [12, 24, 36],
+			limit: 12,
+			id: 'tableMain',
+			done: function (res, curr, count) {
+				// 数据提交查询
+				form.on('submit(search)', function (data) {
+					table.reload('tableMain', {
+						where: data.field
+					});
+					return false;
+				});
+			}
+		});
+		//编辑
+		$("#addBtn").click(function (e) {
+			layer.open({
+				type: 2,
+				content: 'http://sentsin.com'
+			});
+		});
+		//监听工具条
+		table.on('tool(tableBox)', function (obj) {
+			var data = obj.data;
+			if (obj.event === 'edit') {
+				//编辑
+			} else if (obj.event === 'del') {
+				layer.confirm('真的删除行么', function (index) {
+					obj.del();
+
+				});
+			} else if (obj.event === 'more') {
+
+			}
+		});
+	})
+</script>
