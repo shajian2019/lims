@@ -57,7 +57,6 @@
             ,elem: '#'+tableId
             ,idField:'id'
             ,url:'${ctx}/xtgl/xtsz/cdgl/getall'
-            ,cellMinWidth: 100
             ,treeId:'id'//树形id字段名称
             ,treeUpId:'parentid'//树形父id字段名称
             ,treeShowName:'title'//以树形式显示的字段
@@ -68,8 +67,9 @@
             ,method:'get'
             ,cols: [[
                  {field:'title', width:500, title: '菜单名称'}
+                ,{field:'url', width:200, title: '菜单链接'}
                 ,{field:'sort', width:200, title: '排序',edit:'text'}
-                ,{field:'status', width:300, title: '状态',templet:function(d){
+                ,{field:'status', width:200, title: '状态',templet:function(d){
                 	 var html='';
                 	 if(d.status == 0){
                 		 html = "隐藏"
@@ -78,7 +78,7 @@
                 	 }
                 	 return html
                 }}
-                ,{width:150,title: '操作', align:'center'/*toolbar: '#barDemo'*/
+                ,{title: '操作', align:'center'/*toolbar: '#barDemo'*/
                     ,templet: function(d){
                         var html='';
                         	html +='<button class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit"><i class="fa fa-pencil"></i></button>';
