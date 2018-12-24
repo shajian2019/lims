@@ -1,7 +1,13 @@
 package com.zzhb.zzoa.controller.xtgl;
 
+import java.util.HashMap;
 import java.util.Map;
 
+import com.alibaba.fastjson.JSON;
+import com.zzhb.zzoa.domain.User;
+import com.zzhb.zzoa.mapper.RoleMapper;
+import com.zzhb.zzoa.mapper.UserMapper;
+import com.zzhb.zzoa.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +27,15 @@ public class ZzglController {
 
 	@Autowired
 	UserService userService;
+
+	@Autowired
+    RoleService roleService;
+
+	@Autowired
+	UserMapper userMapper;
+
+	@Autowired
+	RoleMapper roleMapper;
 
 	@GetMapping("/yhgl")
 	public String yhgl() {
@@ -46,23 +61,33 @@ public class ZzglController {
 		String url = "";
 		if(flag.equals("add")){
 			url = "xtgl/zzgl/yhgl/add";
-			model.setViewName(url);
 		}else if(flag.equals("edit")){
-
-			JSONObject userJson = userService.getAllUsers(1,10,map);
-			System.out.println(userJson.toString());
-			model.addObject("user",userJson);
+			String username = map.get("username");
+			User u = userMapper.getUser(username);
+			model.addObject("user",u);
+			Integer r_id = roleMapper.getRoleIds(u.getU_id());
+			model.addObject("r_id",r_id);
 			url = "xtgl/zzgl/yhgl/edit";
-			model.setViewName(url);
 		}
+		model.setViewName(url);
 		return model;
 	}
 
 
 	@PostMapping("/yhgl/addUser")
 	@ResponseBody
-	public Integer addUser(@RequestParam Map<String,Object> map){
-		return userService.addUser(map);
+	public Integer addUser(@RequestParam Map<String,String> map){
+		Integer i = userService.addUser(map);
+		User user = userService.getUser(String.valueOf(map.get("username")));
+		if(map.get("role") != null && !"".equals(map.get("role"))){
+			Integer u_id = user.getU_id();
+			Integer r_id = Integer.parseInt(String.valueOf(map.get("role")));
+			Map<String,Integer> userRoleMap = new HashMap<String,Integer>();
+			userRoleMap.put("u_id",u_id);
+			userRoleMap.put("r_id",r_id);
+			return userService.addUrole(userRoleMap);
+		}
+		return i;
 	}
 
 	@PostMapping("/yhgl/updateUser")
@@ -70,4 +95,11 @@ public class ZzglController {
 	public Integer updateUser(@RequestParam Map<String,Object> map){
 		return userService.updateUser(map);
 	}
+
+	@GetMapping("/yhgl/getAllRole")
+    @ResponseBody
+    public JSONObject getAllRole(@RequestParam Map<String,String> map){
+
+        return roleService.listRoles(1,Integer.MAX_VALUE,map);
+    }
 }

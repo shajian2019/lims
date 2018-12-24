@@ -51,6 +51,28 @@
 </div>
 
 </body>
+<script type="text/html" id="rightBar">
+    <div class="layui-btn-group">
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">
+            <i class="fa fa-pencil"></i>
+        </a>
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del">
+            <i class="fa fa-trash-o"></i>
+        </a>
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="more">
+            <i class="fa fa-chevron-circle-left"></i>
+        </a>
+    </div>
+</script>
+
+<script type="text/html" id="switch" >
+    {{# if(d.status != '3'){ }}
+    <input type="checkbox" name="switch" lay-skin="switch" lay-filter="switchstatus" lay-text="正常|禁用" {{ d.status == '0' ? 'checked' : '' }}>
+    {{# } else { }}
+        角色未分配
+    {{# } }}
+</script>
+
 <script>
     var editObj = null, ptable = null, treeGrid = null, tableId = 'dataTable', layer = null, form = null,$=null;
     layui.use('table', function () {
@@ -73,27 +95,12 @@
                 , {field: 'email', width: 170, title: '邮件'}
                 , {field: 'phone', width: 140, title: '手机号码'}
                 , {
-                    field: 'status', width: 150, title: '用户状态', templet: function (d) {
-                        var html = '';
-                        if (d.status == 0) {
-                            html = "正常"
-                        } else if (d.status == 1) {
-                            html = "锁定"
-                        } else if (d.status == 2) {
-                            html = "禁用"
-                        } else {
-                            html = "未授权"
-                        }
-                        return html
-                    }
+                    field: 'status', width: 150, title: '用户状态',
+                    templet:"#switch"
                 }, {
                     title: '操作', align: 'center',width: 170
-                    , templet: function (d) {
-                        var html = '';
-                        html += '<button class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit"><i class="fa fa-pencil"></i></button>';
-                        html += '<button class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del"><i class="fa fa-trash-o"></i></button>';
-                        return html;
-                    }
+                    ,
+                    toolbar: '#rightBar'
                 }
             ]]
 
@@ -101,7 +108,6 @@
         //点击行事件
         table.on('tool(' + tableId + ')', function (obj) {
             var data = obj.data;
-            console.log(data);
             var action = obj.event;
             if (action == 'del') {
                 var index;
@@ -129,7 +135,7 @@
                     });
                 }
 
-            } else {
+            } else if(action == 'edit'){
                 var url = "${ctx}/xtgl/zzgl/yhgl/editPage?flag=edit&username=" + data.username;
                 var index = layer.open({
                     title:action,
@@ -143,11 +149,12 @@
                     }
                 });
                 layer.full(index);
+            }else{
+
             }
         });
 
         form.on('submit(query)', function (data) {
-            console.log(data);
             table.reload(tableId, {
                 where: data.field
             });

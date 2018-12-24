@@ -43,6 +43,9 @@
     <insert id="addUser" parameterType="java.util.Map">
         INSERT INTO sys_t_user(username,password,nickname,createtime,updatetime,remark,email,phone,status,recentlogin)
         VALUES (#{username},#{password},#{nickname},#{createtime},'',#{remark},#{email},#{phone},#{status},'')
+        <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID() AS id
+        </selectKey>
     </insert>
 
     <update id="updateUser" parameterType="java.util.Map">
@@ -79,4 +82,9 @@
             </if>
         </where>
     </update>
+
+    <insert id="addUrole" parameterType="java.util.Map">
+        INSERT INTO sys_t_user_role(u_id,r_id)
+        VALUES (#{u_id},#{r_id})
+    </insert>
 </mapper>
