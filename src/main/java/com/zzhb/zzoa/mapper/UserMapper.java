@@ -20,8 +20,10 @@ public interface UserMapper {
 
 	public Integer delUserById(Map<String,Object> map);
 
-	public Integer addUser(Map<String,Object> map);
+	public Integer addUser(Map<String,String> map);
 
-	public Integer updateUser(Map<String,Object> map);
+	public Integer updateUser(Map<String,String> map);
+
+	public Integer addUrole(Map<String,Integer> map);
 
 }

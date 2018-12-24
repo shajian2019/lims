@@ -30,4 +30,7 @@ public interface RoleMapper {
 	public Integer addRole(Role role);
 
 	public Integer addRoleMenus(Map<String, Object> params);
+
+	@Select("SELECT r_id FROM sys_t_user_role WHERE u_id = #{0}")
+	public Integer getRoleIds(Integer u_id);
 }

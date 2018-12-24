@@ -64,8 +64,8 @@ public class ShiroRealm extends AuthorizingRealm {
 
 	public static void main(String[] args) {
 		String hashAlgorithmName = "MD5";
-		Object credentials = "password";
-		Object salt = ByteSource.Util.bytes("username");
+		Object credentials = "2";
+		Object salt = ByteSource.Util.bytes("2");
 		int hashIterations = 1;
 		// 盐值加密
 		Object result = new SimpleHash(hashAlgorithmName, credentials, salt, hashIterations);
