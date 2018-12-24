@@ -41,6 +41,8 @@ public class RoleService {
 	public Integer addRole(Map<String, String> params) {
 		Integer addRoleMenus = 0;
 		String flag = params.get("flag");
+		Map<String, Object> params2 = new HashMap<>();
+		String paramStr = params.get("paramStr");
 		if ("add".equals(flag)) {
 			Role role = new Role();
 			role.setRolecode(params.get("rolecode"));
@@ -49,15 +51,14 @@ public class RoleService {
 			role.setRemark(params.get("remark"));
 			roleMapper.addRole(role);
 			Integer r_id = role.getR_id();
-
-			Map<String, Object> params2 = new HashMap<>();
 			params2.put("r_id", r_id + "");
-			String paramStr = params.get("paramStr");
-			params2.put("m_ids", Arrays.asList(paramStr.split("\\|")));
-			addRoleMenus = roleMapper.addRoleMenus(params2);
 		} else if ("edit".equals(flag)) {
-
+			roleMapper.updateRole(params);
+			params2.put("r_id", params.get("r_id"));
+			roleMapper.delRoleMenu(params2);
 		}
+		params2.put("m_ids", Arrays.asList(paramStr.split("\\|")));
+		addRoleMenus = roleMapper.addRoleMenus(params2);
 		return addRoleMenus;
 	}
 

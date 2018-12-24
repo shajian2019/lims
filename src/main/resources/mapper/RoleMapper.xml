@@ -11,6 +11,9 @@
            			#{m_id}
         		</foreach>
 			</if>
+			<if test="r_id !=null and r_id !=''">
+				and r_id = #{r_id}
+			</if>
 		</where>
 	</delete>
 	
