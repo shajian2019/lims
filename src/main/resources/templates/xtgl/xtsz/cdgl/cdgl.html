@@ -44,7 +44,11 @@
     <table class="layui-hidden layui-table" id="treeTable" lay-filter="treeTable"></table>
 </div>
 <script type="text/html" id="switch" >
-	<input type="checkbox" name="switch" lay-skin="switch" lay-filter="switchstatus" lay-text="正常|禁用" {{ d.status == '1' ? 'checked' : '' }}>
+{{# if (d.status == 1) { }}
+     <span>正常</span>
+{{# } else { }}
+    <span>禁用</span>
+{{# } }}
 </script>
 <script>
     var editObj=null,ptable=null,treeGrid=null,tableId='treeTable',layer=null,form=null;
@@ -94,28 +98,32 @@
         	var data = obj.data;
         	var action = obj.event;
         	if(action == 'del'){
-        		var index;
-        		$.ajax({
-    			    type: "post",
-    			    data: {id:data.id},
-    			    url: "${ctx}/menus/del",
-    			    beforeSend: function () {
-    			    	index = layer.load(1);
-    			    },
-    			    success: function (data) {
-    			    	layer.close(index);
-    			    	if(data > 0){
-    			    		layer.msg("删除成功",{offset:['50%'],time: 1000},function(){
-    			    			 treeGrid.reload(tableId)
-    	                    });
-    			    	}else{
-    			    		layer.msg("操作失败")
-    			    	}
-    			    },
-    			    error: function (data) {
-    			    	layer.msg("服务端异常");
-    			    }
-    		 	});
+        	    layer.confirm('是否删除菜单', {
+        			  btn: ['是','否'] //按钮
+        		}, function(){
+       			  	var index;
+              		$.ajax({
+          			    type: "post",
+          			    data: {id:data.id},
+          			    url: "${ctx}/menus/del",
+          			    beforeSend: function () {
+          			    	index = layer.load(1);
+          			    },
+          			    success: function (data) {
+          			    	layer.close(index);
+          			    	if(data > 0){
+          			    		layer.msg("删除成功",{offset:['50%'],time: 1000},function(){
+          			    			 treeGrid.reload(tableId)
+          	                    });
+          			    	}else{
+          			    		layer.msg("操作失败")
+          			    	}
+          			    },
+          			    error: function (data) {
+          			    	layer.msg("服务端异常");
+          			    }
+          		 	});
+        		}, function(){});
         	}else{
         		var url = "${ctx}/xtgl/xtsz/cdgl/edit?m_id="+data.id+"&action="+action;
             	if(action == 'edit'){
@@ -181,14 +189,6 @@
     		});
             return false;
         });
-        
-        form.on('switch(switchstatus)', function(obj){
-			var selectIfKey=obj.othis;                                  
-			var parentTr = selectIfKey.parents("tr");
-			var dataField = $(parentTr).find("td:eq(0)").find(".layui-table-cell").text();
-		    console.log(dataField+"==="+obj.elem.checked)
-		})
-
     });
     
     function add() {
@@ -212,6 +212,7 @@
         var treedata=treeGrid.getDataTreeList(tableId);
         treeGrid.treeOpenAll(tableId,!treedata[0][treeGrid.config.cols.isOpen]);
     }
+    
 </script>
 </body>
 </html>
