@@ -149,6 +149,7 @@
 				});
 			}
 		});
+		
 		//编辑
 		$("#addBtn").click(function (e) {
 			layer.open({
@@ -156,6 +157,7 @@
 				content: 'http://sentsin.com'
 			});
 		});
+		
 		//监听工具条
 		table.on('tool('+tableId+')', function (obj) {
 			var data = obj.data;
@@ -175,6 +177,32 @@
 			var parentTr = selectIfKey.parents("tr");
 			var dataField = $(parentTr).find("td:eq(1)").find(".layui-table-cell").text();
 		    console.log(dataField+"==="+obj.elem.checked)
+		    var status = obj.elem.checked == true? '1':'0';
+    		var index;
+            $.ajax({
+    		    type: "post",
+    		    data: {r_id:dataField,status:status},
+    		    url: '${ctx}/xtgl/qxgl/jsgl/role/update',
+    		    beforeSend: function () {
+    		    	index = layer.load(1);
+    		    },
+    		    success: function (data) {
+    		    	layer.close(index)
+    		    	var msg = "";
+    		    	if(data > 0){
+    		    		msg = "修改成功";
+    		    	}else{
+    		    		msg = "修改失败";
+    		    	}
+    		    	layer.msg(msg,{offset:['50%'],time: 1000},function(){
+    		    		table.reload(tableId)
+                    });
+    		    },
+    		    error: function (data) {
+    		    	layer.close(index)
+    		    	layer.msg("服务器异常",{icon:2});
+    		    }
+    		});
 		})
 	})
 </script>

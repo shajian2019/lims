@@ -32,4 +32,30 @@
 		ORDER BY createtime desc
 	</select>
 	
+	<update id="updateRole" parameterType="java.util.Map">
+		UPDATE sys_t_role
+		<set>
+			<if test="rolename != null and rolename !='' ">
+				rolename = #{rolename},
+			</if>
+			<if test="true">
+				updatetime = now(),
+			</if>
+			<if test="remark != null and remark !='' ">
+				remark = #{remark},
+			</if>
+			<if test="status != null and status !='' ">
+				status = #{status},
+			</if>
+			<if test="rolecode != null and rolecode !='' ">
+				rolecode = #{rolecode},
+			</if>
+		</set>
+		<where>
+			<if test="r_id != null and r_id !='' ">
+				and r_id = #{r_id}
+			</if>
+		</where>
+	</update>
+	
 </mapper>

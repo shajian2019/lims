@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
@@ -15,7 +16,7 @@ import com.zzhb.zzoa.utils.LayUiUtil;
 
 @Service
 public class RoleService {
-	
+
 	@Autowired
 	RoleMapper roleMapper;
 
@@ -24,6 +25,14 @@ public class RoleService {
 		List<Role> roles = roleMapper.getRoles(params);
 		PageInfo<Role> pageInfo = new PageInfo<Role>(roles);
 		return LayUiUtil.pagination(pageInfo);
+	}
+
+	@Transactional
+	public Integer updateRole(Map<String, String> params) {
+		Integer updateRole = roleMapper.updateRole(params);
+		List<String> userIds = roleMapper.getUserIds(params);
+		
+		return roleMapper.updateRole(params);
 	}
 
 }
