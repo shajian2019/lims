@@ -99,7 +99,6 @@ public class ZzglController {
 	@GetMapping("/yhgl/getAllRole")
     @ResponseBody
     public JSONObject getAllRole(@RequestParam Map<String,String> map){
-
         return roleService.listRoles(1,Integer.MAX_VALUE,map);
     }
 }

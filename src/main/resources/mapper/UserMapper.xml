@@ -54,8 +54,8 @@
             <if test="nickname != null and nickname !='' ">
                 nickname = #{nickname},
             </if>
-            <if test="updatetime != null and updatetime !='' ">
-                updatetime = #{updatetime},
+            <if test="true">
+                updatetime = now(),
             </if>
             <if test="remark != null and remark !='' ">
                 remark = #{remark},
