@@ -3,11 +3,6 @@ package com.zzhb.zzoa.controller.xtgl;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.alibaba.fastjson.JSON;
-import com.zzhb.zzoa.domain.User;
-import com.zzhb.zzoa.mapper.RoleMapper;
-import com.zzhb.zzoa.mapper.UserMapper;
-import com.zzhb.zzoa.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +13,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.zzhb.zzoa.domain.User;
+import com.zzhb.zzoa.mapper.RoleMapper;
+import com.zzhb.zzoa.mapper.UserMapper;
+import com.zzhb.zzoa.service.RoleService;
 import com.zzhb.zzoa.service.UserService;
 
 //组织管理
@@ -50,7 +49,6 @@ public class ZzglController {
 	@PostMapping("/yhgl/delUserByid")
 	@ResponseBody
 	public Integer delUserById(@RequestParam Map<String,Object> map){
-		System.out.println(map.get("id"));
 		return userService.delUserById(map);
 	}
 

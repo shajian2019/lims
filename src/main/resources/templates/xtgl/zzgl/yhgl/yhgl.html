@@ -66,10 +66,12 @@
 </script>
 
 <script type="text/html" id="switch" >
-    {{# if(d.status != '3'){ }}
-    	<input type="checkbox" name="switch" lay-skin="switch" lay-filter="switchstatus" lay-text="正常|禁用" {{ d.status == '0' ? 'checked' : '' }}>
+    {{# if(d.status == '0' || d.status == '1' ) { }}
+    	<input type="checkbox" name="switch" lay-skin="switch" lay-filter="switchstatus" lay-text="正常|锁定" {{ d.status == '0' ? 'checked' : '' }}>
+    {{# } else if(d.status == '3') { }}
+       	 未分配角色
     {{# } else { }}
-       	 角色未分配
+		禁用
     {{# } }}
 </script>
 
@@ -97,44 +99,43 @@
                 , {
                     field: 'status', width: 150, title: '用户状态',
                     templet:"#switch"
-                }, {
-                    title: '操作', align: 'center',width: 170
-                    ,
+                },{
+                    title: '操作', align: 'center',width: 170,
                     toolbar: '#rightBar'
                 }
             ]]
 
         });
+        
         //点击行事件
         table.on('tool(' + tableId + ')', function (obj) {
             var data = obj.data;
             var action = obj.event;
             if (action == 'del') {
-                var index;
-                if(confirm("确定删除该用户吗？")){
-                    $.ajax({
-                        type: "post",
-                        data: {id: data.u_id},
-                        url: "${ctx}/xtgl/zzgl/yhgl/delUserByid",
-                        beforeSend: function () {
-                            index = layer.load(1);
-                        },
-                        success: function (data) {
-                            layer.close(index);
-                            if (data > 0) {
-                                layer.msg("删除成功", {offset: ['50%'], time: 1000}, function () {
-                                    table.reload(tableId)
-                                });
-                            } else {
-                                layer.msg("操作失败")
-                            }
-                        },
-                        error: function (data) {
-                            layer.msg("服务端异常");
-                        }
-                    });
-                }
-
+            	layer.confirm('确定删除该角色吗?', function (index) {
+            		 var index;
+                     $.ajax({
+                         type: "post",
+                         data: {id: data.u_id},
+                         url: "${ctx}/xtgl/zzgl/yhgl/delUserByid",
+                         beforeSend: function () {
+                             index = layer.load(1);
+                         },
+                         success: function (data) {
+                             layer.close(index);
+                             if (data > 0) {
+                                 layer.msg("删除成功", {offset: ['50%'], time: 1000}, function () {
+                                     table.reload(tableId)
+                                 });
+                             } else {
+                                 layer.msg("操作失败")
+                             }
+                         },
+                         error: function (data) {
+                             layer.msg("服务端异常");
+                         }
+                     });
+            	})
             } else if(action == 'edit'){
                 var url = "${ctx}/xtgl/zzgl/yhgl/editPage?flag=edit&username=" + data.username;
                 var index = layer.open({
