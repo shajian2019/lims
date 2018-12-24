@@ -45,7 +45,6 @@ public class MenuController {
 	@PostMapping("/update")
 	@ResponseBody
 	public Integer updateMenu(Menu menu) {
-		System.out.println(menu);
 		return menuService.updateMenu(menu);
 	}
 

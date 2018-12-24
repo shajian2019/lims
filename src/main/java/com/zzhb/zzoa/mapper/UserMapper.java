@@ -18,8 +18,10 @@ public interface UserMapper {
 
 	public List<User> getAllUsers(Map<String, String> params);
 
-	public void delUserById(Integer id);
+	public Integer delUserById(Map<String,Object> map);
 
-	public void addUser(User user);
+	public Integer addUser(Map<String,Object> map);
+
+	public Integer updateUser(Map<String,Object> map);
 
 }
