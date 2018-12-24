@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.zzhb.zzoa.domain.common.Menu;
 import com.zzhb.zzoa.service.MenuService;
 
@@ -40,6 +41,12 @@ public class MenuController {
 	public JSONArray initMenuTree(@RequestParam(defaultValue = "0") String level, String r_id,
 			@RequestParam Map<String, String> params) {
 		return menuService.initMenuTree(level, r_id, params);
+	}
+
+	@GetMapping("/dtree/init")
+	@ResponseBody
+	public JSONObject initDTree(@RequestParam Map<String, String> params) {
+		return menuService.initDTree(params);
 	}
 
 	@PostMapping("/update")

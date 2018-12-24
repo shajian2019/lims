@@ -58,4 +58,16 @@
 		</where>
 	</update>
 	
+	<insert id="addRole" keyProperty="r_id" useGeneratedKeys="true" parameterType="com.zzhb.zzoa.domain.Role">
+		INSERT INTO sys_t_role (rolename,createtime,remark,status,rolecode)
+		VALUES(#{rolename},now(),#{remark},#{status},#{rolecode})
+	</insert>
+	
+	<insert id="addRoleMenus" parameterType="java.util.Map">
+		INSERT INTO sys_t_role_menu (r_id,m_id)
+		VALUES
+		<foreach collection="m_ids" item="m_id" index="index" separator=",">
+            (#{r_id,jdbcType=INTEGER}, #{m_id,jdbcType=INTEGER})
+        </foreach>
+	</insert>
 </mapper>

@@ -155,7 +155,7 @@
 			layer.open({
 				type: 2,
 				area: ['1000px', '460px'],
-				content: '${ctx}/xtgl/qxgl/jsgl/pop',
+				content: '${ctx}/xtgl/qxgl/jsgl/pop?flag=add',
 				end: function(){
 					table.reload(tableId)
          		}
@@ -165,11 +165,20 @@
 		//监听工具条
 		table.on('tool('+tableId+')', function (obj) {
 			var data = obj.data;
+			console.log(data);
 			if (obj.event === 'edit') {
-				//编辑
+				layer.open({
+					type: 2,
+					area: ['1000px', '460px'],
+					content: '${ctx}/xtgl/qxgl/jsgl/pop?flag=edit&r_id='+data.r_id,
+					end: function(){
+						table.reload(tableId)
+	         		}
+				});
 			} else if (obj.event === 'del') {
-				layer.confirm('真的删除行么', function (index) {
+				layer.confirm('确定删除该角色吗?', function (index) {
 					console.log(obj.data)
+					
 				});
 			} else if (obj.event === 'more') {
 

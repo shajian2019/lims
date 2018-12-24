@@ -63,36 +63,42 @@
 </head>
 <body>
     <form class="layui-form" style="margin-top:10px;">
+    	<input type="hidden" name="r_id" value="${(role.r_id)!''}">
         <div class="form-left">
             <div class="layui-form-item">
                 <label class="layui-form-label">角色名称</label>
                 <div class="layui-inline">
-                    <input class="layui-input" type="text" lay-verify="required" name="rolename">
+                    <input class="layui-input" type="text" lay-verify="required" name="rolename" value="${(role.rolename)!''}">
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">角色编码</label>
                 <div class="layui-inline">
-                    <input class="layui-input" type="text" lay-verify="required" name="rolecode">
+                    <input class="layui-input" type="text" lay-verify="required" name="rolecode" value="${(role.rolecode)!''}">
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">状态</label>
                 <div class="layui-input-inline">
-                    <input type="radio" name="status" value="1" title="正常" checked>
-                    <input type="radio" name="status" value="0" title="禁用">
+                	<#if (flag == 'edit')>
+	                    <input type="radio" name="status" value="1" title="正常" <#if role.status == '1'>checked</#if>>
+	                    <input type="radio" name="status" value="0" title="禁用" <#if role.status == '0'>checked</#if>>
+                    <#else>
+	                    <input type="radio" name="status" value="1" title="正常" checked>
+	                    <input type="radio" name="status" value="0" title="禁用" >
+                    </#if>
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">备注信息:</label>
                 <div class="layui-inline">
-                    <textarea name="desc" placeholder="请输入内容" class="layui-textarea"></textarea>
+                    <textarea name="remark" placeholder="请输入内容" class="layui-textarea" value="${(role.remark)!''}"></textarea>
                 </div>
             </div>
         </div>
         <div class="form-right">
             <p>功能菜单:</p>
-            <ul id="e" class="dtree" data-id="0"></ul>
+            <ul id="dtree" class="dtree" data-id="0"></ul>
         </div>
         <div class="layui-btn-container">
             <a class="layui-btn layui-btn-sm layui-btn-primary" lay-submit lay-filter="save">保存</a>
@@ -104,111 +110,6 @@
 </html>
 <script src="${ctx}/plugins/layui/layui.all.js"></script>
 <script>
-    var data = [{
-        "id": "003",
-        "title": "广东省",
-        "isLast": false,
-        "parentId": "0",
-        "level": "1",
-        "checkArr": [{
-            "type": "0",
-            "isChecked": "0"
-        }],
-        "children": [{
-            "id": "003001",
-            "title": "广州市",
-            "isLast": false,
-            "parentId": "003",
-            "level": "2",
-            "checkArr": [{
-                "type": "1",
-                "isChecked": "1"
-            }],
-            "children": [{
-                "id": "003001001",
-                "title": "天河区",
-                "isLast": true,
-                "parentId": "003001",
-                "checkArr": [{
-                    "type": "0",
-                    "isChecked": "0"
-                }],
-                "level": "3"
-            }, {
-                "id": "003001002",
-                "title": "花都区",
-                "isLast": true,
-                "parentId": "003001",
-                "checkArr": [{
-                    "type": "0",
-                    "isChecked": "0"
-                }],
-                "level": "3"
-            }]
-        }]
-    }, {
-        "id": "004",
-        "title": "浙江省",
-        "isLast": false,
-        "level": "1",
-        "parentId": "0",
-        "checkArr": [{
-            "type": "0",
-            "isChecked": "0"
-        }],
-        "children": [{
-            "id": "004001",
-            "title": "杭州市",
-            "isLast": true,
-            "parentId": "004",
-            "checkArr": [{
-                "type": "0",
-                "isChecked": "0"
-            }],
-            "level": "2"
-        }, {
-            "id": "004002",
-            "title": "温州市",
-            "isLast": true,
-            "parentId": "004",
-            "checkArr": [{
-                "type": "0",
-                "isChecked": "0"
-            }],
-            "level": "2"
-        }, {
-            "id": "004003",
-            "title": "绍兴市",
-            "isLast": true,
-            "parentId": "004",
-            "checkArr": [{
-                "type": "0",
-                "isChecked": "0"
-            }],
-            "level": "2"
-        }, {
-            "id": "004004",
-            "title": "金华市",
-            "isLast": true,
-            "parentId": "004",
-            "checkArr": [{
-                "type": "0",
-                "isChecked": "0"
-            }],
-            "level": "2"
-        }, {
-            "id": "004005",
-            "title": "义乌市",
-            "isLast": true,
-            "parentId": "004",
-            "checkArr": [{
-                "type": "0",
-                "isChecked": "0"
-            }],
-            "level": "2"
-        }]
-    }]
-    
     layui.config({
         base: '${ctx}/plugins/layui/extend/dtree/'
     }).extend({
@@ -221,14 +122,17 @@
             table = layui.table,
             form = layui.form,
             dtree = layui.dtree;
-        dtree.render({
-            elem: '#e',
+        var dtreeId = 'dtree';
+        
+        var DemoTree = dtree.render({
+            elem: '#'+dtreeId,
+            method: 'GET',
             checkbar: true,
             checkbarType: "all",
             dot:false,
             icon: "2",
-            //url: "../json/case/demoTree1.json"  //异步接口
-            data: data
+            initLevel: '3', //
+            url: "${ctx}/menus/dtree/init?r_id=${(role.r_id)!''}" //异步接口
         });
         
 	    $("#cancel").click(function(){
@@ -236,5 +140,47 @@
 	        parent.layer.close(index);
 	    })
 	    
+	    form.on('submit(save)', function(data){
+	        layer.alert(JSON.stringify(data.field), {
+	          title: '最终的提交信息'
+	        })
+	        var paramStr = "";
+	        var param = dtree.getCheckbarNodesParam(DemoTree);
+	        param.forEach(function(e){  
+	        	paramStr +=e.nodeId+"|"
+	        });
+	        if(paramStr == ""){
+	        	layer.msg("请选择功能菜单",{offset:['50%'],time: 2000});
+	        }else{
+				data.field.paramStr = paramStr;
+				console.log(data.field);
+				var index;
+	            $.ajax({
+	    		    type: "post",
+	    		    data: data.field,
+	    		    url: '${ctx}/xtgl/qxgl/jsgl/role/add?flag=${flag}',
+	    		    beforeSend: function () {
+	    		    	index = layer.load(1);
+	    		    },
+	    		    success: function (data) {
+	    		    	layer.close(index)
+	    		    	var msg = "";
+	    		    	if(data > 0){
+	    		    		msg = "保存成功";
+	    		    	}else{
+	    		    		msg = "保存失败";
+	    		    	}
+	    		    	layer.msg(msg,{offset:['50%'],time: 1000},function(){
+	    		    		table.reload(tableId)
+	                    });
+	    		    },
+	    		    error: function (data) {
+	    		    	layer.close(index)
+	    		    	layer.msg("服务器异常",{icon:2});
+	    		    }
+	    		});
+	        }
+	        return false;
+        });
     })
 </script>

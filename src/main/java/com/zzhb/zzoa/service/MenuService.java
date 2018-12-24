@@ -165,6 +165,74 @@ public class MenuService {
 		return result;
 	}
 
+	public JSONObject initDTree(Map<String, String> params) {
+		JSONObject result = new JSONObject();
+		JSONObject status = new JSONObject();
+		JSONArray data = new JSONArray();
+		params.put("m_level", "1");
+		List<Menu> allMenus = menuMapper.getAllMenus(params);
+		List<String> midsByRId = new ArrayList<>();
+		if (!"".equals(params.get("r_id"))) {
+			midsByRId = roleMapper.getMidsByRId(params);
+		}
+		params.clear();
+		for (int i = 0; i < allMenus.size(); i++) {
+			JSONObject json = new JSONObject();
+			Menu menu = allMenus.get(i);
+			json.put("id", menu.getId());
+			json.put("title", menu.getTitle());
+			json.put("checkArr", getCheckArr(midsByRId, menu.getId()));
+			json.put("parentId", menu.getParentid());
+
+			JSONArray childrenS = new JSONArray();
+			params.put("m_parentid", menu.getId());
+			List<Menu> secondMenus = menuMapper.getAllMenus(params);
+			params.clear();
+			for (int j = 0; j < secondMenus.size(); j++) {
+				JSONObject jsonS = new JSONObject();
+				Menu menuS = secondMenus.get(j);
+				jsonS.put("id", menuS.getId());
+				jsonS.put("title", menuS.getTitle());
+				jsonS.put("checkArr", getCheckArr(midsByRId, menuS.getId()));
+				jsonS.put("parentId", menuS.getParentid());
+				JSONArray childrenT = new JSONArray();
+				params.put("m_parentid", menuS.getId());
+				List<Menu> thirdMenus = menuMapper.getAllMenus(params);
+				params.clear();
+				for (int k = 0; k < thirdMenus.size(); k++) {
+					JSONObject jsonT = new JSONObject();
+					Menu menuT = thirdMenus.get(k);
+					jsonT.put("id", menuT.getId());
+					jsonT.put("title", menuT.getTitle());
+					jsonT.put("checkArr", getCheckArr(midsByRId, menuT.getId()));
+					jsonT.put("parentId", menuT.getParentid());
+					childrenT.add(jsonT);
+				}
+				jsonS.put("children", childrenT);
+				childrenS.add(jsonS);
+			}
+			json.put("children", childrenS);
+			data.add(json);
+		}
+		status.put("code", 200);
+		status.put("message", "success");
+		result.put("status", status);
+		result.put("data", data);
+		return result;
+	}
+
+	public JSONArray getCheckArr(List<String> midsByRId, String id) {
+		JSONArray result = new JSONArray();
+		JSONObject json = new JSONObject();
+		json.put("type", "0");
+		json.put("isChecked", "0");
+		if (midsByRId.contains(id)) {
+			json.put("isChecked", "1");
+		}
+		result.add(json);
+		return result;
+	}
+
 	public JSONObject getAllMenus(Map<String, String> params) {
 		JSONObject result = new JSONObject();
 		List<Menu> allMenus = menuMapper.getAllMenus(params);
