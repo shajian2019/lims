@@ -14,6 +14,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zzhb.zzoa.domain.Role;
 import com.zzhb.zzoa.mapper.RoleMapper;
+import com.zzhb.zzoa.mapper.UserMapper;
 import com.zzhb.zzoa.utils.LayUiUtil;
 
 @Service
@@ -21,6 +22,9 @@ public class RoleService {
 
 	@Autowired
 	RoleMapper roleMapper;
+
+	@Autowired
+	UserMapper userMapper;
 
 	public JSONObject listRoles(Integer page, Integer limit, Map<String, String> params) {
 		PageHelper.startPage(page, limit);
@@ -63,9 +67,17 @@ public class RoleService {
 	}
 
 	@Transactional
-	public Integer delRole(Map<String, String> params) {
-
-		return null;
+	public Integer delRole(Map<String, Object> params) {
+		Integer delUserRole = roleMapper.delRole(params);
+		delUserRole = roleMapper.delRoleMenu(params);
+		List<String> uIds = roleMapper.getUIds(params);
+		if (uIds.size() > 0) {
+			roleMapper.delUserRole(params);
+			params.put("status", "3");
+			params.put("u_ids", uIds);
+			userMapper.updateUser(params);
+		}
+		return delUserRole;
 	}
 
 }

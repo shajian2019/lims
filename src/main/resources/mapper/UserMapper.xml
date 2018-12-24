@@ -60,10 +60,19 @@
             <if test="phone != null and phone !='' ">
                 phone = #{phone},
             </if>
+            <if test="status != null and status !='' ">
+                status = #{status},
+            </if>
         </set>
         <where>
             <if test="username != null and username !='' ">
               AND username = #{username}
+            </if>
+            <if test="u_ids != null and u_ids.size() > 0 ">
+              AND u_id in
+	            <foreach collection="u_ids" item="u_id" index="index" open="(" close=")" separator=",">
+				  #{u_id}
+				</foreach>
             </if>
         </where>
     </update>

@@ -66,7 +66,7 @@ public class QxglController {
 
 	@PostMapping("/jsgl/role/del")
 	@ResponseBody
-	public Integer delRole(@RequestParam Map<String, String> params) {
+	public Integer delRole(@RequestParam Map<String, Object> params) {
 		return roleService.delRole(params);
 	}
 

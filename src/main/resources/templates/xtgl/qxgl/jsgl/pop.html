@@ -92,7 +92,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">备注信息:</label>
                 <div class="layui-inline">
-                    <textarea name="remark" placeholder="请输入内容" class="layui-textarea" value="${(role.remark)!''}"></textarea>
+                    <textarea name="remark" placeholder="请输入内容" class="layui-textarea">${(role.remark)!''}</textarea>
                 </div>
             </div>
         </div>
@@ -141,9 +141,6 @@
 	    })
 	    
 	    form.on('submit(save)', function(data){
-	        layer.alert(JSON.stringify(data.field), {
-	          title: '最终的提交信息'
-	        })
 	        var paramStr = "";
 	        var param = dtree.getCheckbarNodesParam(DemoTree);
 	        param.forEach(function(e){  
@@ -153,7 +150,6 @@
 	        	layer.msg("请选择功能菜单",{offset:['50%'],time: 2000});
 	        }else{
 				data.field.paramStr = paramStr;
-				console.log(data.field);
 				var index;
 	            $.ajax({
 	    		    type: "post",
@@ -171,7 +167,8 @@
 	    		    		msg = "保存失败";
 	    		    	}
 	    		    	layer.msg(msg,{offset:['50%'],time: 1000},function(){
-	    		    		table.reload(tableId)
+	    		    		index = parent.layer.getFrameIndex(window.name);
+					    	parent.layer.close(index);
 	                    });
 	    		    },
 	    		    error: function (data) {

@@ -3,6 +3,7 @@ package com.zzhb.zzoa.mapper;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Select;
 
 import com.zzhb.zzoa.domain.Role;
@@ -15,6 +16,12 @@ public interface RoleMapper {
 	@Select("SELECT * from sys_t_role WHERE r_id = #{0}")
 	public Role getRolByRid(String r_id);
 
+	@Delete("DELETE FROM sys_t_role WHERE r_id = #{r_id}")
+	public Integer delRole(Map<String, Object> params);
+	
+	@Delete("DELETE FROM sys_t_user_role WHERE r_id = #{r_id}")
+	public Integer delUserRole(Map<String, Object> params);
+	
 	public Integer delRoleMenu(Map<String, Object> params);
 
 	public List<Role> getRoles(Map<String, String> params);
@@ -23,6 +30,9 @@ public interface RoleMapper {
 
 	@Select("SELECT u_id FROM sys_t_user_role WHERE r_id = #{r_id}")
 	public List<String> getUserIds(Map<String, String> params);
+	
+	@Select("SELECT u_id FROM sys_t_user_role WHERE r_id = #{r_id}")
+	public List<String> getUIds(Map<String, Object> params);
 
 	@Select("SELECT m_id FROM sys_t_role_menu WHERE r_id = #{r_id}")
 	public List<String> getMidsByRId(Map<String, String> params);
