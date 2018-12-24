@@ -5,9 +5,16 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zzhb.zzoa.domain.User;
 import com.zzhb.zzoa.mapper.UserMapper;
+import com.zzhb.zzoa.shiro.ShiroRealm;
+import com.zzhb.zzoa.utils.DateUtil;
+
+import org.apache.shiro.crypto.hash.SimpleHash;
+import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -29,12 +36,21 @@ public class UserService {
         return result;
     }
 
-    public void delUserById(Integer id){
-        userMapper.delUserById(id);
+    public Integer delUserById(Map<String,Object> map){
+        return userMapper.delUserById(map);
     }
 
-    public void addUser(User user){
+    public Integer addUser(Map<String,Object> map){
+		// 盐值加密
+		Object result = new SimpleHash("MD5", String.valueOf(map.get("passwprd")), String.valueOf(map.get("username")), 1);
+        map.put("password",String.valueOf(result));
+        map.put("createtime",DateUtil.dateToString());
+        map.put("status",3);
+        return userMapper.addUser(map);
+    }
 
-        userMapper.addUser(user);
+    public Integer updateUser(Map<String,Object> map){
+        map.put("updatetime",DateUtil.dateToString());
+        return userMapper.updateUser(map);
     }
 }

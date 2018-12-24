@@ -1,14 +1,18 @@
 package com.zzhb.zzoa.controller.xtgl;
 
-import com.alibaba.fastjson.JSONObject;
-import com.zzhb.zzoa.domain.User;
-import com.zzhb.zzoa.service.UserService;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.Map;
+import com.alibaba.fastjson.JSONObject;
+import com.zzhb.zzoa.service.UserService;
 
 //组织管理
 @Controller
@@ -28,29 +32,42 @@ public class ZzglController {
 		return userService.getAllUsers(page,limit,params);
 	}
 
-	@DeleteMapping("/yhgl/delUserByid")
-	public String delUserById(@RequestParam("id")Integer id){
-		userService.delUserById(id);
-		return "success";
+	@PostMapping("/yhgl/delUserByid")
+	@ResponseBody
+	public Integer delUserById(@RequestParam Map<String,Object> map){
+		System.out.println(map.get("id"));
+		return userService.delUserById(map);
 	}
 
 	@GetMapping("/yhgl/editPage")
-	public ModelAndView goEditPage(@RequestParam("flag")String flag){
+	public ModelAndView goEditPage(@RequestParam Map<String,String> map){
 		ModelAndView model = new ModelAndView();
+		String flag = (String) map.get("flag");
 		String url = "";
 		if(flag.equals("add")){
-			url = "xtgl/zzgl/yhgl/yhgl";
+			url = "xtgl/zzgl/yhgl/add";
 			model.setViewName(url);
 		}else if(flag.equals("edit")){
-			url = "";
+
+			JSONObject userJson = userService.getAllUsers(1,10,map);
+			System.out.println(userJson.toString());
+			model.addObject("user",userJson);
+			url = "xtgl/zzgl/yhgl/edit";
+			model.setViewName(url);
 		}
 		return model;
 	}
 
 
-	@PutMapping("/addUser")
-	public String addUser(User user){
-		userService.addUser(user);
-		return "success";
+	@PostMapping("/yhgl/addUser")
+	@ResponseBody
+	public Integer addUser(@RequestParam Map<String,Object> map){
+		return userService.addUser(map);
+	}
+
+	@PostMapping("/yhgl/updateUser")
+	@ResponseBody
+	public Integer updateUser(@RequestParam Map<String,Object> map){
+		return userService.updateUser(map);
 	}
 }

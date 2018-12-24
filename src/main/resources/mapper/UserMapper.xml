@@ -28,7 +28,7 @@
     </select>
     
     
-    <delete id="delUserById" parameterType="java.lang.Integer">
+    <delete id="delUserById" parameterType="java.util.Map">
         DELETE FROM sys_t_user
         <where>
             <if test="id != null and id != ''">
@@ -37,8 +37,34 @@
         </where>
     </delete>
 
-    <insert id="addUser" parameterType="com.zzhb.zzoa.domain.User">
+    <insert id="addUser" parameterType="java.util.Map">
         INSERT INTO sys_t_user(username,password,nickname,createtime,updatetime,remark,email,phone,status,recentlogin)
-        VALUES (#{username},#{password},#{nickname},#{createtime},#{updatetime},#{remark},#{email},#{phone},#{status},#{recentlogin})
+        VALUES (#{username},#{password},#{nickname},#{createtime},'',#{remark},#{email},#{phone},#{status},'')
     </insert>
+
+    <update id="updateUser" parameterType="java.util.Map">
+        UPDATE sys_t_user
+        <set>
+            <if test="nickname != null and nickname !='' ">
+                nickname = #{nickname},
+            </if>
+            <if test="updatetime != null and updatetime !='' ">
+                updatetime = #{updatetime},
+            </if>
+            <if test="remark != null and remark !='' ">
+                remark = #{remark},
+            </if>
+            <if test="email != null and email !='' ">
+                email = #{email},
+            </if>
+            <if test="phone != null and phone !='' ">
+                phone = #{phone},
+            </if>
+        </set>
+        <where>
+            <if test="username != null and username !='' ">
+              AND username = #{username}
+            </if>
+        </where>
+    </update>
 </mapper>
