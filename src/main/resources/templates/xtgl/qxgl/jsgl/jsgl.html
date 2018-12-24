@@ -68,11 +68,11 @@
 		<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">
 		 	<i class="fa fa-pencil"></i>
 		</a>
-		<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del">
-		    <i class="fa fa-trash-o"></i>
-		</a>
 		<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="bindUser">
 		  	<i class="fa fa-user"></i>
+		</a>
+		<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del">
+		    <i class="fa fa-trash-o"></i>
 		</a>
 	</div>	
 </script>
@@ -206,8 +206,15 @@
 					
 				});
 			} else if (obj.event === 'bindUser') {
-				//TODO
-				alert("TODO")
+				layer.open({
+					type: 2,
+					title: '分配用户',
+					area: ['1000px', '460px'],
+					content: '${ctx}/xtgl/qxgl/jsgl/role/bind?r_id='+data.r_id,
+					end: function(){
+						table.reload(tableId)
+	         		}
+				});
 			}
 		});
 		
@@ -215,7 +222,6 @@
 			var selectIfKey=obj.othis;                                  
 			var parentTr = selectIfKey.parents("tr");
 			var dataField = $(parentTr).find("td:eq(1)").find(".layui-table-cell").text();
-		    console.log(dataField+"==="+obj.elem.checked)
 		    var status = obj.elem.checked == true? '1':'0';
     		var index;
             $.ajax({

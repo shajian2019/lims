@@ -18,10 +18,10 @@ public interface RoleMapper {
 
 	@Delete("DELETE FROM sys_t_role WHERE r_id = #{r_id}")
 	public Integer delRole(Map<String, Object> params);
-	
+
 	@Delete("DELETE FROM sys_t_user_role WHERE r_id = #{r_id}")
 	public Integer delUserRole(Map<String, Object> params);
-	
+
 	public Integer delRoleMenu(Map<String, Object> params);
 
 	public List<Role> getRoles(Map<String, String> params);
@@ -30,7 +30,7 @@ public interface RoleMapper {
 
 	@Select("SELECT u_id FROM sys_t_user_role WHERE r_id = #{r_id}")
 	public List<String> getUserIds(Map<String, String> params);
-	
+
 	@Select("SELECT u_id FROM sys_t_user_role WHERE r_id = #{r_id}")
 	public List<String> getUIds(Map<String, Object> params);
 
@@ -40,4 +40,6 @@ public interface RoleMapper {
 	public Integer addRole(Role role);
 
 	public Integer addRoleMenus(Map<String, Object> params);
+
+	public Integer bindUser(Map<String, Object> params);
 }

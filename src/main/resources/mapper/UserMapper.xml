@@ -24,6 +24,9 @@
               <bind name="_nickname" value="'%'+nickname+'%'"/>
               AND nickname like #{_nickname}
           </if>
+          <if test="status != null and status != ''">
+              AND status = #{status}
+          </if>
       </where>
     </select>
     

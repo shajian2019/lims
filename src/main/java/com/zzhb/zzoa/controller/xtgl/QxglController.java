@@ -70,4 +70,18 @@ public class QxglController {
 		return roleService.delRole(params);
 	}
 
+	@GetMapping("/jsgl/role/bind")
+	public ModelAndView bind(@RequestParam Map<String, String> params) {
+		ModelAndView mv = new ModelAndView();
+		mv.addObject("param", params);
+		mv.setViewName("xtgl/qxgl/jsgl/bind");
+		return mv;
+	}
+
+	@PostMapping("/jsgl/role/bindUser")
+	@ResponseBody
+	public Integer bindUser(@RequestParam Map<String, Object> params) {
+		return roleService.bindUser(params);
+	}
+
 }

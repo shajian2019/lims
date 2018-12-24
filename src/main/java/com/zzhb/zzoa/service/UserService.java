@@ -42,7 +42,7 @@ public class UserService {
 
     public Integer addUser(Map<String,Object> map){
 		// 盐值加密
-		Object result = new SimpleHash("MD5", String.valueOf(map.get("passwprd")), String.valueOf(map.get("username")), 1);
+		Object result = new SimpleHash("MD5", String.valueOf(map.get("password")), String.valueOf(map.get("username")), 1);
         map.put("password",String.valueOf(result));
         map.put("createtime",DateUtil.dateToString());
         map.put("status",3);

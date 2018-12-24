@@ -73,4 +73,12 @@
             (#{r_id,jdbcType=INTEGER}, #{m_id,jdbcType=INTEGER})
         </foreach>
 	</insert>
+	
+	<insert id="bindUser" parameterType="java.util.Map">
+		INSERT INTO sys_t_user_role (u_id,r_id)
+		VALUES
+		<foreach collection="u_ids" item="u_id" index="index" separator=",">
+            (#{u_id,jdbcType=INTEGER}, #{r_id,jdbcType=INTEGER})
+        </foreach>
+	</insert>
 </mapper>
