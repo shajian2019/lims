@@ -74,7 +74,7 @@
 		<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="more">
 		  	<i class="fa fa-chevron-circle-left"></i>
 		</a>
-	 </div>	
+	</div>	
 </script>
 <script type="text/html" id="switch" >
 	<input type="checkbox" name="switch" lay-skin="switch" lay-filter="switchstatus" lay-text="正常|禁用" {{ d.status == '1' ? 'checked' : '' }}>
@@ -87,6 +87,7 @@
 			layer = layui.layer,
 			table = layui.table,
 			form = layui.form;
+		
 		table.render({
 			elem: '#'+tableId,
 			url: '${ctx}/xtgl/qxgl/jsgl/roles/list',
@@ -154,7 +155,10 @@
 			layer.open({
 				type: 2,
 				area: ['1000px', '460px'],
-				content: '${ctx}/xtgl/qxgl/jsgl/pop'
+				content: '${ctx}/xtgl/qxgl/jsgl/pop',
+				end: function(){
+					table.reload(tableId)
+         		}
 			});
 		});
 		
