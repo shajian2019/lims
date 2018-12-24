@@ -17,7 +17,7 @@ public class QxglController {
 		return "xtgl/qxgl/jsgl/jsgl";
 	}
 
-	@GetMapping("/jsgl")
+	@GetMapping("/jsgl/pop")
 	public String pop(@RequestParam Map<String, String> params) {
 		return "xtgl/qxgl/jsgl/pop";
 	}
