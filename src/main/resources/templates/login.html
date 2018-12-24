@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <title>Login - KitAdminCore</title>
+    <title>${(sysname)!''}</title>
     <script>
         if (window != window.top) 
         	top.location.href = self.location.href;
@@ -84,7 +84,7 @@
                 <canvas id="demo-canvas"></canvas>
                 <div class="kit-login-box">
                     <header>
-                        <h1>ZZOA办公系统</h1>
+                        <h1>${(sysname)!''}</h1>
                     </header>
                     <div class="kit-login-main">
                         <form action="loginIn" class="layui-form">
@@ -120,7 +120,7 @@
                         </form>
                     </div>
                     <footer>
-                        <p>KIT ADMIN © <a href="http://blog.zhengjinfan.cn" style="color:white; font-size:18px;" target="_blank">www.zhengjinfan.cn</a></p>
+                        <p>${(copyright)!''} © <a href="${(companyurl)!'#'}" style="color:white; font-size:18px;" target="_blank">${(companyurl)!''}</a></p>
                     </footer>
                 </div>
             </div>

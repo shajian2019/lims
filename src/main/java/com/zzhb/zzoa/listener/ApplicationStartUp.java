@@ -6,12 +6,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.zzhb.zzoa.service.InitService;
+
 import freemarker.template.Configuration;
 
 @Component
 public class ApplicationStartUp implements InitializingBean {
 
 	private static Logger logger = Logger.getLogger(ApplicationStartUp.class);
+
+	@Autowired
+	InitService initService;
 
 	@Value(value = "${server.context-path:}")
 	private String contextpath;
@@ -25,5 +30,6 @@ public class ApplicationStartUp implements InitializingBean {
 		// freemarker 全局配置
 		logger.info("==============configuration================" + configuration);
 		configuration.setSharedVariable("ctx", contextpath);
+		initService.initParams(configuration);
 	}
 }
