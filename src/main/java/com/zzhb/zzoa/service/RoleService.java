@@ -35,10 +35,17 @@ public class RoleService {
 
 	@Transactional
 	public Integer updateRole(Map<String, String> params) {
-		Integer updateRole = roleMapper.updateRole(params);
+		roleMapper.updateRole(params);
 		List<String> userIds = roleMapper.getUserIds(params);
-
-		return roleMapper.updateRole(params);
+		System.out.println(userIds);
+		Map<String, Object> params2 = new HashMap<>();
+		params2.put("status", "0");
+		if ("0".equals(params.get("status"))) {
+			params2.put("status", "2");
+		}
+		params2.put("u_ids", userIds);
+		Integer updateUser = userMapper.updateUser(params2);
+		return updateUser;
 	}
 
 	@Transactional
