@@ -44,6 +44,11 @@ public class UserService {
 
 	@Transactional
 	public Integer delUserById(Map<String, Object> map) {
+        //map中只有u_id
+        User u = userMapper.getUserById(Integer.parseInt(String.valueOf(map.get("id"))));
+        if(!u.getStatus().equals("3")){//已分配角色
+            userMapper.delUserRole(Integer.parseInt(String.valueOf(map.get("id"))));
+        }
 		return userMapper.delUserById(map);
 	}
 
@@ -87,5 +92,12 @@ public class UserService {
 	public Integer addUrole(Map<String, Integer> map) {
 		return userMapper.addUrole(map);
 	}
+
+    @Transactional
+    public Integer resetPass(Map<String,String> map){
+        Object result = new SimpleHash("MD5", "123456", map.get("username"), 1);
+        map.put("password",String.valueOf(result));
+	    return userMapper.resetPass(map);
+    }
 
 }

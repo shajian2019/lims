@@ -127,5 +127,20 @@
         INSERT INTO sys_t_user_role(u_id,r_id)
         VALUES (#{u_id},#{r_id})
     </insert>
+
+
+    <update id="resetPass" parameterType="java.util.Map">
+        UPDATE sys_t_user
+        <set>
+            <if test="password != null and password !='' ">
+                password = #{password}
+            </if>
+        </set>
+        <where>
+            <if test="u_id != null and u_id !='' ">
+                AND u_id = #{u_id}
+            </if>
+        </where>
+    </update>
     
 </mapper>
