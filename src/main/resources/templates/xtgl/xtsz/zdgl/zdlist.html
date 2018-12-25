@@ -12,76 +12,56 @@
 </style>
 </head>
 <body style="padding:8px 8px 0;">
-        <form class="layui-form" action="">
-            <div class="layui-inline">
-                <input class="layui-input" type="text" placeholder="字典标签">
-            </div>
-            <div class="layui-inline">
-                <input class="layui-input" type="text" placeholder="字典键值">
-            </div>
-            <div class="layui-input-inline">
-                    <select name="zt">
-                        <option value="">状态</option>
-                    </select>
-                </div>
-            <div class="layui-inline">
-                <a class="layui-btn layui-btn-primary" lay-submit lay-filter="query">查询</a>
-                <a class="layui-btn layui-btn-primary" id="addBtn">新增</a>
-            </div>
-        </form>
+        <div class="layui-inline">
+            <a class="layui-btn layui-btn-primary" id="addBtn">新增</a>
+        </div>
         <table class="layui-hide" id="tableBox" lay-filter="tableBox"></table>
     </body>
 </html>
 <script type="text/html" id="rightBar">
-    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit"><i class="fa fa-pencil"></i></a>
+<div class="layui-btn-group">
+	<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit"><i class="fa fa-pencil"></i></a>
     <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del"><i class="fa fa-trash-o"></i></a>
-</script>
-<script type="text/html" id="switch" >
-	<input type="checkbox" name="switch" lay-skin="switch" lay-filter="switchstatus" lay-text="正常|关闭">
+</div>
 </script>
 <script src="${ctx}/plugins/layui/layui.all.js"></script>
 <script>
-    var data = [{
-        id: '测试'
-    }]
     var $ = layui.jquery,
         table = layui.table,
         form = layui.form,
+        tableId = 'tableBox',
         layer = layui.layer;
         table.render({
-        elem: '#tableBox',
-        data: data,
-        //,url:'/test/table/demo1.json',
+        elem: '#'+tableId,
+        id:tableId,
+        url:'${ctx}/xtgl/xtsz/zdgl/list?g_id=${params.g_id}',
         title: '字典数据',
-        skin:'line',
-        height:'full-55',
+        height:'full',
         cellMinWidth: 120,
         cols: [
             [{
                 type: 'numbers',
-                width: 50
+                width: 50,
+                title: '序号'
             }, {
-                field: 'id',
+                field: 'name',
                 title: '字典标签'
             }, {
-                field:'123',
+                field:'value',
                 title: '字典键值',
             }, {
-                field: 'sex',
+                field: 'sort',
                 title: '排序号',
                 width:100
             }, {
-                field: 'sex',
+                field: 'createtime',
+                title: '创建时间'
+            }, {
+                field: 'updatetime',
                 title: '更新时间'
             },{
-                field: 'sex',
+                field: 'remark',
                 title: '备注信息'
-            },{
-                field: 'sex',
-                title: '状态',
-                templet:'#switch',
-                width:95,
-                align:'center'
             }, {
                 title: '操作',
                 width: 140,
@@ -91,28 +71,51 @@
         ],
         page: true
     });
+        
     table.on('tool(tableBox)', function (obj) {
         var data = obj.data;
         if (obj.event === 'edit') {
             layer.open({
-            type: 2,
-            area: ['690px', '445px'],
-            fixed: false, //不固定
-            maxmin: true,
-            content: '${ctx}/xtgl/xtsz/zdgl/zdpop'
-        })
+	            type: 2,
+	            area: ['690px', '445px'],
+	            fixed: false, //不固定
+	            maxmin: true,
+	            content: '${ctx}/xtgl/xtsz/zdgl/zdpop?flag=edit&d_id='+data.d_id+"&g_id=${params.g_id}",
+	            end: function(){
+	            	table.reload(tableId)
+	     		}
+        	})
         }else if (obj.event === 'del') {
-            layer.confirm('是否删除这条数据？', function (index) {
-                obj.del();
+        	layer.confirm('是否删除字典数据？', function (index) {
                 layer.close(index);
+                var index;
+    		    $.ajax({
+    				    type: "post",
+    				    data: {d_id:data.d_id},
+    				    url: '${ctx}/xtgl/xtsz/zdgl/del',
+    				    beforeSend: function () {
+    				    	index = layer.load(1);
+    				    },
+    				    success: function (data) {
+    				    	layer.close(index);
+    				    	if(data > 0){
+    				    		var msg = "删除成功";
+    				    		layer.msg(msg,{offset:['50%'],time: 1000},function(){
+    				    			table.reload(tableId)
+    		                    });
+    				    	}else{
+    				    		layer.msg("操作失败")
+    				    	}
+    				    },
+    				    error: function (data) {
+    				    	layer.close(index);
+    				    	layer.msg("服务端异常");
+    				    }
+    			 });
             });
         }
     })
-    //查询
-    form.on('submit(search)', function (data) {
-
     
-    });
     //添加
     $("#addBtn").click(function (e) { 
         layer.open({
@@ -120,7 +123,10 @@
             area: ['690px', '445px'],
             fixed: false, //不固定
             maxmin: true,
-            content: '${ctx}/xtgl/xtsz/zdgl/zdpop'
+            content: '${ctx}/xtgl/xtsz/zdgl/zdpop?flag=add&g_id=${params.g_id}',
+            end: function(){
+            	table.reload(tableId)
+     		}
         })       
     });
 </script>

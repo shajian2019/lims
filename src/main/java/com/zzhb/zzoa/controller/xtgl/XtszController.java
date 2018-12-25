@@ -15,10 +15,13 @@ import org.springframework.web.servlet.ModelAndView;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.zzhb.zzoa.domain.common.Dict;
 import com.zzhb.zzoa.domain.common.Icon;
 import com.zzhb.zzoa.domain.common.Menu;
+import com.zzhb.zzoa.mapper.DictMapper;
 import com.zzhb.zzoa.mapper.IconMapper;
 import com.zzhb.zzoa.mapper.MenuMapper;
+import com.zzhb.zzoa.service.DictService;
 import com.zzhb.zzoa.service.MenuService;
 
 //系统设置
@@ -88,23 +91,67 @@ public class XtszController {
 		return "xtgl/xtsz/cssz/pop";
 	}
 
+	@Autowired
+	DictService dictService;
+
+	@Autowired
+	DictMapper dictMapper;
+
 	@GetMapping("/zdgl")
 	public String zdgl() {
 		return "xtgl/xtsz/zdgl/zdgl";
 	}
 
+	@GetMapping("/zdgl/list")
+	@ResponseBody
+	public JSONObject listDicts(Integer page, Integer limit, @RequestParam Map<String, String> params) {
+		JSONObject listDicts = dictService.listDicts(page, limit, params);
+		return listDicts;
+	}
+
 	@GetMapping("/zdgl/pop")
-	public String zdglpop() {
-		return "xtgl/xtsz/zdgl/pop";
+	public ModelAndView zdglpop(@RequestParam Map<String, String> params) {
+		ModelAndView mv = new ModelAndView();
+		mv.addObject("params", params);
+		String flag = params.get("flag");
+		if ("edit".equals(flag)) {
+			Dict dict = dictMapper.getDict(params);
+			mv.addObject("dict", dict);
+		}
+		mv.setViewName("xtgl/xtsz/zdgl/pop");
+		return mv;
+	}
+
+	@PostMapping("/zdgl/saveorupdate")
+	@ResponseBody
+	public Integer saveorupdate(Dict dict, String flag) {
+		return dictService.saveorupdateDict(dict, flag);
+	}
+
+	@PostMapping("/zdgl/del")
+	@ResponseBody
+	public Integer del(@RequestParam Map<String, String> params) {
+		return dictService.delDict(params.get("d_id"));
 	}
 
 	@GetMapping("/zdgl/zdlist")
-	public String zdlist() {
-		return "xtgl/xtsz/zdgl/zdlist";
+	public ModelAndView zdlist(@RequestParam Map<String, String> params) {
+		ModelAndView mv = new ModelAndView();
+		mv.addObject("params", params);
+		mv.setViewName("xtgl/xtsz/zdgl/zdlist");
+		return mv;
 	}
 
 	@GetMapping("/zdgl/zdpop")
-	public String zdpop() {
-		return "xtgl/xtsz/zdgl/zdpop";
+	public ModelAndView zdpop(@RequestParam Map<String, String> params) {
+		ModelAndView mv = new ModelAndView();
+		mv.addObject("params", params);
+		String flag = params.get("flag");
+		if ("edit".equals(flag)) {
+			Dict dict = dictMapper.getDict(params);
+			mv.addObject("dict", dict);
+		}
+		mv.setViewName("xtgl/xtsz/zdgl/zdpop");
+		return mv;
 	}
 }

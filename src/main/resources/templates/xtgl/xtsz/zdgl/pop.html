@@ -18,28 +18,29 @@
 
 <body>
     <form class="layui-form" style="width:550px;margin:8px auto 0;">
+    	<input type="hidden" value="${(dict.d_id)!''}" name="d_id">
         <div class="layui-form-item">
-            <label class="layui-form-label"> <span class="red">*</span>字典名称</label>
+            <label class="layui-form-label">字典名称</label>
             <div class="layui-inline">
-                <input class="layui-input" type="text" lay-verify="required">
+                <input class="layui-input" placeholder="字典名称" type="text" lay-verify="required" name="name" value="${(dict.name)!''}">
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label"> <span class="red">*</span>字典类型</label>
+            <label class="layui-form-label">字典类型</label>
             <div class="layui-inline">
-                <input class="layui-input" type="text" lay-verify="required">
+                <input class="layui-input" placeholder="字典类型" type="text" lay-verify="required" name="gtype" value="${(dict.gtype)!''}">
             </div>
 
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">备注信息</label>
             <div class="layui-inline">
-                <textarea name="" required lay-verify="required" placeholder="请输入" class="layui-textarea"></textarea>
+                <textarea name="remark" placeholder="备注" class="layui-textarea">${(dict.remark)!''}</textarea>
             </div>
         </div>
         <div class="layui-btn-container">
-                <a class="layui-btn layui-btn-sm layui-btn-primary" lay-submit lay-filter="save">保存</a>
-                <a id="cancel" class="layui-btn layui-btn-sm layui-bg-gray">取消</a>
+             <a class="layui-btn layui-btn-sm layui-btn-primary" lay-submit lay-filter="save">保存</a>
+             <a id="cancel" class="layui-btn layui-btn-sm layui-bg-gray">取消</a>
         </div>
     </form>
 </body>
@@ -51,10 +52,48 @@
         var $ = layui.jquery,
             form = layui.form,
             layer = layui.layer;
-	//取消
-	$("#cancel").click(function(){
-		var index = parent.layer.getFrameIndex(window.name);
-    	parent.layer.close(index);
-	})
+        
+		$("#cancel").click(function(){
+			var index = parent.layer.getFrameIndex(window.name);
+	    	parent.layer.close(index);
+		})
+		
+		form.on('submit(save)', function(data){
+		    var index;
+		    $.ajax({
+				    type: "post",
+				    data: data.field,
+				    url: '${ctx}/xtgl/xtsz/zdgl/saveorupdate?flag=${params.flag}',
+				    beforeSend: function () {
+				    	index = layer.load(1);
+				    },
+				    success: function (data) {
+				    	layer.close(index);
+				    	if(data > 0){
+				    		var msg = "";
+				    		if('${params.flag}' == 'edit'){
+				    			msg = "修改成功";
+				    		}else{
+				    			msg = "保存成功";
+				    		}
+				    		layer.msg(msg,{offset:['50%'],time: 1000},function(){
+						    	index = parent.layer.getFrameIndex(window.name);
+						    	parent.layer.close(index);
+		                    });
+				    	}else if(data == -1){
+				    		layer.msg("字典类型不能重复")
+				    	}else{
+				    		layer.msg("操作失败")
+				    	}
+				    },
+				    error: function (data) {
+				    	layer.close(index);
+				    	layer.msg("服务端异常");
+				    }
+			 });
+		     return false;
+	    });
+		
+		
     })
 </script>

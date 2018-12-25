@@ -5,20 +5,26 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.zzhb.zzoa.ZzoaApplication;
-
 @Service
 public class CacheService {
 
-	private static Logger logger = LoggerFactory.getLogger(ZzoaApplication.class);
+	private static Logger logger = LoggerFactory.getLogger(CacheService.class);
 
 	@Autowired
 	MenuService menuService;
+	
+	@Autowired
+	DictService dictService;
 
 	public void flushMenus() {
 		logger.info("========清楚菜单缓存========");
 		menuService.flushOnemenu();
 		menuService.flushSecondmenu();
 		menuService.flushMenuTree();
+	}
+	
+	public void flushDict() {
+		logger.info("========清楚字典缓存========");
+		dictService.flushDicts();
 	}
 }

@@ -6,7 +6,6 @@
     <title>Insert title here</title>
     <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
     <style>
-        .red{color:red;}
         .layui-form-item .layui-inline {
             margin-bottom: 5px;
             margin-right: 10px;
@@ -18,34 +17,30 @@
 
 <body>
     <form class="layui-form" style="width:550px;margin:8px auto 0;">
+    	<input type="hidden" value="${(dict.d_id)!''}" name="d_id">
+    	<input type="hidden" value="${params.g_id}" name="g_id">
         <div class="layui-form-item">
-            <label class="layui-form-label">上级字典</label>
+            <label class="layui-form-label">字典标签</label>
             <div class="layui-inline">
-                <input class="layui-input" type="text" readonly>
+                <input class="layui-input" name="name" placeholder="字典标签" type="text" lay-verify="required" value="${(dict.name)!''}">
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label"> <span class="red">*</span>字典标签</label>
+            <label class="layui-form-label">字典键值</label>
             <div class="layui-inline">
-                <input class="layui-input" type="text" lay-verify="required">
+                <input class="layui-input" name="value" placeholder="字典键值" type="text" lay-verify="required" value="${(dict.value)!''}">
             </div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label"> <span class="red">*</span>字典键值</label>
+            <label class="layui-form-label">排序号</label>
             <div class="layui-inline">
-                <input class="layui-input" type="text" lay-verify="required">
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label"> <span class="red">*</span>排序号</label>
-            <div class="layui-inline">
-                <input class="layui-input" type="number" lay-verify="required">
+                <input class="layui-input" name="sort" placeholder="排序号" type="number" lay-verify="required" value="${(dict.sort)!''}">
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">字典描述</label>
             <div class="layui-inline">
-                <textarea name="" required lay-verify="required" placeholder="请输入" class="layui-textarea"></textarea>
+                <textarea name="remark" placeholder="字典描述" class="layui-textarea">${(dict.remark)!''}</textarea>
             </div>
         </div>
         <div class="layui-btn-container">
@@ -62,5 +57,46 @@
         var $ = layui.jquery,
             form = layui.form,
             layer = layui.layer;
+        
+        $("#cancel").click(function(){
+			var index = parent.layer.getFrameIndex(window.name);
+	    	parent.layer.close(index);
+		})
+        
+        form.on('submit(save)', function(data){
+		    var index;
+		    $.ajax({
+				    type: "post",
+				    data: data.field,
+				    url: '${ctx}/xtgl/xtsz/zdgl/saveorupdate?flag=${params.flag}',
+				    beforeSend: function () {
+				    	index = layer.load(1);
+				    },
+				    success: function (data) {
+				    	layer.close(index);
+				    	if(data > 0){
+				    		var msg = "";
+				    		if('${params.flag}' == 'edit'){
+				    			msg = "修改成功";
+				    		}else{
+				    			msg = "保存成功";
+				    		}
+				    		layer.msg(msg,{offset:['50%'],time: 1000},function(){
+						    	index = parent.layer.getFrameIndex(window.name);
+						    	parent.layer.close(index);
+		                    });
+				    	}else if(data == -1){
+				    		layer.msg("字典标签不能重复")
+				    	}else{
+				    		layer.msg("操作失败")
+				    	}
+				    },
+				    error: function (data) {
+				    	layer.close(index);
+				    	layer.msg("服务端异常");
+				    }
+			 });
+		     return false;
+	    });
     })
 </script>
