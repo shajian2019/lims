@@ -84,8 +84,18 @@ public class XtszController {
 		return "xtgl/xtsz/cssz/cssz";
 	}
 	
+	@GetMapping("/cssz/pop")
+	public String csszpop() {
+		return "xtgl/xtsz/cssz/pop";
+	}
+	
 	@GetMapping("/zdgl")
 	public String zdgl() {
 		return "xtgl/xtsz/zdgl/zdgl";
+	}
+	
+	@GetMapping("/zdgl/pop")
+	public String zdglpop() {
+		return "xtgl/xtsz/zdgl/pop";
 	}
 }
