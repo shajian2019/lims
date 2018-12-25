@@ -30,8 +30,8 @@ public class DruidConfig {
 				"/druid/*");
 		// 登录查看信息的账号密码.
 		Map<String, String> initParameters = new HashMap<String, String>();
-		initParameters.put("loginUsername", "admin");
-		initParameters.put("loginPassword", "123456");
+//		initParameters.put("loginUsername", "admin");
+//		initParameters.put("loginPassword", "123456");
 		servletRegistrationBean.setInitParameters(initParameters);
 		return servletRegistrationBean;
 	}

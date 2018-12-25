@@ -77,13 +77,13 @@
         <div class="layui-inline icon-box">
             <div class="layui-inline-block">
             	<div class="icon">
-		             <#if menu.level != '3'>
+		             <#if (menu.level == '1') || (menu.level == '2' && params.action == 'edit')>
 		                <i class="fa ${menu.icon} fa-fw"></i>
 		             <#else>
-		                <i class="layui-icon ${menu.icon}"></i>
-		            </#if>
+		                <i class="layui-icon <#if !(menu.level == '2' && params.action == 'add')>${menu.icon}<#else>layui-icon-rate-solid</#if>"></i>
+		             </#if>
             	</div>
-                <input type="text" id="icon_input" name="icon" class="icon-input" value="${menu.icon?html}" lay-verify="required">
+                <input type="text" id="icon_input" name="icon" class="icon-input" value="<#if !(menu.level == '2' && params.action == 'add')>${menu.icon?html}<#else>layui-icon-rate-soli</#if>" lay-verify="required">
                 <a class="layui-btn layui-btn-primary" id="icon_search" style="border-top:none;border-bottom: none;border-right:none;height:36px;line-height: 36px;padding: 0 15px;">
                 	<i class="fa fa-search"></i>
                 </a>
