@@ -91,7 +91,7 @@
             , height: 'full-80'
             , method: 'get'
             , cols: [[
-                {type: 'checkbox', fixed: 'left'}
+                {field: '序号',width:50,fixed:'left',type:'numbers',title:'序号'}
                 , {field: 'username', width: 150, title: '用户账号'}
                 , {field: 'nickname', width: 150, title: '用户昵称'}
                 , {field: 'createtime', width: 170, title: '创建时间'}
@@ -153,6 +153,32 @@
                 layer.full(index);
             }else{
 				//TODO
+                //重置密码
+                layer.confirm('确定重置密码吗?', function (index) {
+                    var index;
+                    $.ajax({
+                        type: "post",
+                        data: {u_id: data.u_id,
+                                username:data.username},
+                        url: "${ctx}/xtgl/zzgl/yhgl/resetPassword",
+                        beforeSend: function () {
+                            index = layer.load(1);
+                        },
+                        success: function (data) {
+                            layer.close(index);
+                            if (data > 0) {
+                                layer.msg("重置成功", {offset: ['50%'], time: 1000}, function () {
+                                    table.reload(tableId)
+                                });
+                            } else {
+                                layer.msg("操作失败")
+                            }
+                        },
+                        error: function (data) {
+                            layer.msg("服务端异常");
+                        }
+                    });
+                })
             }
         });
 
@@ -162,6 +188,39 @@
             });
             return false;
         });
+
+        form.on('switch(switchstatus)', function(obj){
+            var selectIfKey=obj.othis;
+            var parentTr = selectIfKey.parents("tr");
+            var dataField = $(parentTr).find("td:eq(1)").find(".layui-table-cell").text();//username
+            var status = obj.elem.checked == true? '0':'1';
+            console.log(dataField);
+            var index;
+            $.ajax({
+                type: "post",
+                data: {username:dataField,status:status},
+                url: '${ctx}/xtgl/zzgl/yhgl/updateUser',
+                beforeSend: function () {
+                    index = layer.load(1);
+                },
+                success: function (data) {
+                    layer.close(index)
+                    var msg = "";
+                    if(data > 0){
+                        msg = "修改成功";
+                    }else{
+                        msg = "修改失败";
+                    }
+                    layer.msg(msg,{offset:['50%'],time: 1000},function(){
+                        table.reload(tableId)
+                    });
+                },
+                error: function (data) {
+                    layer.close(index)
+                    layer.msg("服务器异常",{icon:2});
+                }
+            });
+        })
 
     });
 

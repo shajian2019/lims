@@ -87,4 +87,10 @@ public class ZzglController {
 	public JSONObject getAllRole(@RequestParam Map<String, String> map) {
 		return roleService.listRoles(1, Integer.MAX_VALUE, map);
 	}
+
+	@PostMapping("/yhgl/resetPassword")
+	@ResponseBody
+	public Integer resetPass(@RequestParam Map<String, String> map){
+		return userService.resetPass(map);
+	}
 }
