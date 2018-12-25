@@ -18,11 +18,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.zzhb.zzoa.domain.common.Dict;
 import com.zzhb.zzoa.domain.common.Icon;
 import com.zzhb.zzoa.domain.common.Menu;
+import com.zzhb.zzoa.domain.common.Param;
 import com.zzhb.zzoa.mapper.DictMapper;
 import com.zzhb.zzoa.mapper.IconMapper;
 import com.zzhb.zzoa.mapper.MenuMapper;
+import com.zzhb.zzoa.mapper.ParamMapper;
 import com.zzhb.zzoa.service.DictService;
 import com.zzhb.zzoa.service.MenuService;
+import com.zzhb.zzoa.service.ParamService;
 
 //系统设置
 @Controller
@@ -142,6 +145,12 @@ public class XtszController {
 		return mv;
 	}
 
+	@Autowired
+	ParamMapper paramMapper;
+	
+	@Autowired
+	ParamService paramService;
+
 	@GetMapping("/zdgl/zdpop")
 	public ModelAndView zdpop(@RequestParam Map<String, String> params) {
 		ModelAndView mv = new ModelAndView();
@@ -154,37 +163,37 @@ public class XtszController {
 		mv.setViewName("xtgl/xtsz/zdgl/zdpop");
 		return mv;
 	}
-	
+
 	@GetMapping("/cssz/getAllParams")
 	@ResponseBody
-	public JSONObject getAllParams(Integer page, Integer limit, @RequestParam Map<String, String> params){
-		return paramService.getAllParams(page,limit,params);
+	public JSONObject getAllParams(Integer page, Integer limit, @RequestParam Map<String, String> params) {
+		return paramService.getAllParams(page, limit, params);
 	}
 
 	@GetMapping("/cssz/editpage")
-	public ModelAndView goEditPage(@RequestParam Map<String, String> map){
+	public ModelAndView goEditPage(@RequestParam Map<String, String> map) {
 		ModelAndView model = new ModelAndView();
 		String flag = map.get("flag");
 		String url = "xtgl/xtsz/cssz/add";
 		model.setViewName(url);
-		if(flag.equals("edit")){
+		if (flag.equals("edit")) {
 			System.out.println(map.get("p_id"));
 			Param param = paramMapper.getParamById(Integer.parseInt(map.get("p_id")));
-			model.addObject("param",param);
+			model.addObject("param", param);
 		}
-		model.addObject("map",map);
+		model.addObject("map", map);
 		return model;
 	}
 
 	@PostMapping("/cssz/saveParam")
 	@ResponseBody
-	public Integer saveParam(Param param,String flag){
-		return paramService.saveParam(param,flag);
+	public Integer saveParam(Param param, String flag) {
+		return paramService.saveParam(param, flag);
 	}
 
 	@PostMapping("/cssz/delParamById")
 	@ResponseBody
-	public Integer delParamById(@RequestParam Map<String,String> map){
+	public Integer delParamById(@RequestParam Map<String, String> map) {
 		return paramMapper.delParamById(map);
 	}
 }
