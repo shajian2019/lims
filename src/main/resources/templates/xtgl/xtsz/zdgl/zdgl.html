@@ -2,9 +2,130 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>字典管理</title>
+<link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
+<link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" />
+<style>
+        .layui-table, .layui-table-view {
+            margin: 8px 0 0;
+        }
+</style>
 </head>
-<body>
-字典管理
-</body>
+<body style="padding:8px 8px 0;">
+        <form class="layui-form" action="">
+            <div class="layui-inline">
+                <input class="layui-input" type="text" placeholder="字典名称">
+            </div>
+            <div class="layui-inline">
+                <input class="layui-input" type="text" placeholder="字典类型">
+            </div>
+            <div class="layui-input-inline">
+                    <select name="zt">
+                        <option value="">状态</option>
+                    </select>
+                </div>
+            <div class="layui-inline">
+                <a class="layui-btn layui-btn-primary" lay-submit lay-filter="query">查询</a>
+                <a class="layui-btn layui-btn-primary" id="addBtn">新增</a>
+            </div>
+        </form>
+        <table class="layui-hide" id="tableBox" lay-filter="tableBox"></table>
+    </body>
 </html>
+<script type="text/html" id="rightBar">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit"><i class="fa fa-pencil"></i></a>
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="zd_data"><i class="fa fa-file-text"></i></a>
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del"><i class="fa fa-trash-o"></i></a>
+</script>
+<script type="text/html" id="switch" >
+	<input type="checkbox" name="switch" lay-skin="switch" lay-filter="switchstatus" lay-text="正常|关闭">
+</script>
+<script src="${ctx}/plugins/layui/layui.all.js"></script>
+<script>
+    var data = [{
+        id: '测试'
+    }]
+    var $ = layui.jquery,
+        table = layui.table,
+        form = layui.form,
+        layer = layui.layer;
+        table.render({
+        elem: '#tableBox',
+        data: data,
+        //,url:'/test/table/demo1.json',
+        title: '参数设置',
+        height:'full-55',
+        cellMinWidth: 120,
+        cols: [
+            [{
+                type: 'numbers',
+                width: 50
+            }, {
+                field: 'id',
+                title: '字典名称'
+            }, {
+                field:'123',
+                title: '字典类型',
+            }, {
+                field: 'sex',
+                title: '更新时间'
+            }, {
+                field: 'sex',
+                title: '备注信息'
+            },{
+                field: 'sex',
+                title: '状态',
+                templet:'#switch',
+                width:95,
+                align:'center'
+            }, {
+                title: '操作',
+                width: 140,
+                templet: '#rightBar'
+            }]
+        ],
+        page: true
+    });
+    table.on('tool(tableBox)', function (obj) {
+        var data = obj.data;
+        if (obj.event === 'edit') {
+            layer.open({
+            type: 2,
+            area: ['630px', '350px'],
+            fixed: false, //不固定
+            maxmin: true,
+            content: '${ctx}/xtgl/xtsz/zdgl/pop'
+        })
+        } else if(obj.event==='zd_data'){
+            var index=layer.open({
+            type: 2,
+            area: ['630px', '350px'],
+            fixed: false, //不固定
+            maxmin: true,
+            title:'字典数据',
+            content: '${ctx}/xtgl/xtsz/zdgl/zdlist'
+        });
+        layer.full(index);
+        }else if (obj.event === 'del') {
+            layer.confirm('是否删除这条数据？', function (index) {
+                obj.del();
+                layer.close(index);
+            });
+        }
+    })
+    //查询
+    form.on('submit(search)', function (data) {
+
+    
+    });
+    //添加
+    $("#addBtn").click(function (e) { 
+        layer.open({
+            type: 2,
+            area: ['630px', '350px'],
+            fixed: false, //不固定
+            maxmin: true,
+            content: '${ctx}/xtgl/xtsz/zdgl/pop'
+        })       
+    });
+</script>

@@ -77,10 +77,10 @@
         if (obj.event === 'edit') {
             layer.open({
                 type: 2,
-                area: ['700px', '450px'],
+                area: ['630px', '450px'],
                 fixed: false, //不固定
                 maxmin: true,
-                content: 'test/iframe.html'
+                content: '${ctx}/xtgl/xtsz/cssz/pop'
             })
         } else if (obj.event === 'del') {
             layer.confirm('是否删除这条数据？', function (index) {
@@ -89,7 +89,18 @@
             });
         }
     })
+    //查询
     form.on('submit(search)', function (data) {
 
-    })
+    });
+    //添加
+    $("#addBtn").click(function (e) { 
+        layer.open({
+                type: 2,
+                area: ['630px', '450px'],
+                fixed: false, //不固定
+                maxmin: true,
+                content: '${ctx}/xtgl/xtsz/cssz/pop'
+            })       
+    });
 </script>
