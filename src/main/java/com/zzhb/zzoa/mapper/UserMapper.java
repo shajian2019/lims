@@ -38,4 +38,6 @@ public interface UserMapper {
 	public Integer delUserRole(Integer u_id);
 
 	public Integer resetPass(Map<String,String> map);
+	@Select("SELECT COUNT(1) FROM sys_t_user WHERE username = #{0}")
+	public Integer getCountByName(String username);
 }

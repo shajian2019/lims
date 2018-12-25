@@ -93,4 +93,10 @@ public class ZzglController {
 	public Integer resetPass(@RequestParam Map<String, String> map){
 		return userService.resetPass(map);
 	}
+
+	@PostMapping("/yhgl/getUserByName")
+	@ResponseBody
+	public Integer getUserByName(@RequestParam("username") String username){
+		return userService.getAllUname(username);
+	}
 }
