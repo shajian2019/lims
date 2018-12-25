@@ -6,6 +6,10 @@ import com.github.pagehelper.PageInfo;
 import com.zzhb.zzoa.domain.common.Param;
 import com.zzhb.zzoa.mapper.ParamMapper;
 import com.zzhb.zzoa.utils.LayUiUtil;
+
+import freemarker.template.Configuration;
+import freemarker.template.TemplateModelException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,31 +20,37 @@ import java.util.Map;
 @Service
 public class ParamService {
 
-    @Autowired
-    ParamMapper paramMapper;
+	@Autowired
+	InitService initService;
 
-    public JSONObject getAllParams(Integer page, Integer limit, @RequestParam Map<String, String> params){
-        PageHelper.startPage(page, limit);
-        List<Param> paramList = paramMapper.getAllParams(params);
-        PageInfo<Param> pageInfo = new PageInfo<Param>(paramList);
-        return LayUiUtil.pagination(pageInfo);
-    }
+	@Autowired
+	ParamMapper paramMapper;
 
-    public Integer saveParam(Param param,String flag){
-        Integer result = 0;
-        Integer checkKey = paramMapper.checkKey(param);
-        if(checkKey == 0){
-            if(flag.equals("edit")){//修改
-                result = paramMapper.updateParam(param);
+	public JSONObject getAllParams(Integer page, Integer limit, @RequestParam Map<String, String> params) {
+		PageHelper.startPage(page, limit);
+		List<Param> paramList = paramMapper.getAllParams(params);
+		PageInfo<Param> pageInfo = new PageInfo<Param>(paramList);
+		return LayUiUtil.pagination(pageInfo);
+	}
 
-            }else{//新增
-                result = paramMapper.addNewParam(param);
-            }
-        }else {
-            result = -1;
-        }
-
-        return result;
-    }
+	public Integer saveParam(Param param, String flag) {
+		Integer result = 0;
+		Integer checkKey = paramMapper.checkKey(param);
+		if (checkKey == 0) {
+			if (flag.equals("edit")) {// 修改
+				result = paramMapper.updateParam(param);
+			} else {// 新增
+				result = paramMapper.addNewParam(param);
+			}
+			try {
+				initService.initParams();
+			} catch (TemplateModelException e) {
+				e.printStackTrace();
+			}
+		} else {
+			result = -1;
+		}
+		return result;
+	}
 
 }

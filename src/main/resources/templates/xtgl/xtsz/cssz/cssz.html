@@ -79,7 +79,6 @@
         });
         table.on('tool(tableBox)', function (obj) {
             var data = obj.data;
-            console.log(data);
             if (obj.event === 'edit') {
                 var url = "${ctx}/xtgl/xtsz/cssz/editpage?flag=edit&p_id=" + data.p_id;
                 var index = layer.open({
@@ -96,7 +95,6 @@
             } else if (obj.event === 'del') {
                 layer.confirm('是否删除这条数据？', function (index) {
                     var index;
-                    console.log(data);
                     $.ajax({
                         type: "post",
                         data: {p_id: data.p_id},

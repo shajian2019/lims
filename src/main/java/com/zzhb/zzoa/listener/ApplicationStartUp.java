@@ -30,6 +30,6 @@ public class ApplicationStartUp implements InitializingBean {
 		// freemarker 全局配置
 		logger.info("==============configuration================" + configuration);
 		configuration.setSharedVariable("ctx", contextpath);
-		initService.initParams(configuration);
+		initService.initParams();
 	}
 }

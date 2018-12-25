@@ -17,7 +17,10 @@ public class InitService {
 	@Autowired
 	ParamMapper paramMapper;
 
-	public void initParams(Configuration configuration) throws TemplateModelException {
+	@Autowired
+	private Configuration configuration;
+
+	public void initParams() throws TemplateModelException {
 		List<Param> params2 = paramMapper.getParams(null);
 		for (Param param : params2) {
 			configuration.setSharedVariable(param.getKey(), param.getValue());

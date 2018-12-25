@@ -89,11 +89,6 @@ public class XtszController {
 		return "xtgl/xtsz/cssz/cssz";
 	}
 
-	@GetMapping("/cssz/pop")
-	public String csszpop() {
-		return "xtgl/xtsz/cssz/pop";
-	}
-
 	@Autowired
 	DictService dictService;
 
@@ -145,12 +140,7 @@ public class XtszController {
 		return mv;
 	}
 
-	@Autowired
-	ParamMapper paramMapper;
 	
-	@Autowired
-	ParamService paramService;
-
 	@GetMapping("/zdgl/zdpop")
 	public ModelAndView zdpop(@RequestParam Map<String, String> params) {
 		ModelAndView mv = new ModelAndView();
@@ -163,6 +153,13 @@ public class XtszController {
 		mv.setViewName("xtgl/xtsz/zdgl/zdpop");
 		return mv;
 	}
+	
+	
+	@Autowired
+	ParamMapper paramMapper;
+	
+	@Autowired
+	ParamService paramService;
 
 	@GetMapping("/cssz/getAllParams")
 	@ResponseBody
@@ -177,7 +174,6 @@ public class XtszController {
 		String url = "xtgl/xtsz/cssz/add";
 		model.setViewName(url);
 		if (flag.equals("edit")) {
-			System.out.println(map.get("p_id"));
 			Param param = paramMapper.getParamById(Integer.parseInt(map.get("p_id")));
 			model.addObject("param", param);
 		}
