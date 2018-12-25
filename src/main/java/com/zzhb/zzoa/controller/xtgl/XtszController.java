@@ -98,4 +98,9 @@ public class XtszController {
 	public String zdglpop() {
 		return "xtgl/xtsz/zdgl/pop";
 	}
+	
+	@GetMapping("/zdgl/zdlist")
+	public String zdlist() {
+		return "xtgl/xtsz/zdgl/zdlist";
+	}
 }
