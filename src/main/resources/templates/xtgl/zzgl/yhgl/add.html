@@ -59,60 +59,49 @@
 </head>
 <body>
 
-<form class="layui-form layui-form-pane" lay-filter="edit" action="/menus/update"
-      style="position: absolute;top: 50%;left:50%;margin:-210px 0 0 -265px ;">
-
-
+<form class="layui-form layui-form-pane" lay-filter="edit" action="/menus/update" style="position: absolute;top: 50%;left:50%;margin:-210px 0 0 -265px ;">
     <div class="layui-form-item">
-        <label class="layui-form-label">用户名称:</label>
-        <div class="layui-inline">
-            <input class="layui-input" type="text" name="username" value="" placeholder="用户名称"
-                   lay-verify="required">
-        </div>
+    	<input type="hidden" value="${(echouser.status)!''}" name="status">
+    	<#if map.flag == 'add'>
+	        <label class="layui-form-label">用户账号:</label>
+	        <div class="layui-inline">
+	            <input class="layui-input" type="text" name="username" value="" placeholder="用户账号" lay-verify="required">
+	        </div>
+        </#if>
         <label class="layui-form-label">用户昵称:</label>
         <div class="layui-inline">
-            <input class="layui-input" type="text" name="nickname" value="" placeholder="用户昵称"
-                   lay-verify="required">
+            <input class="layui-input" type="text" name="nickname" value="${(echouser.nickname)!''}" placeholder="用户昵称" lay-verify="required">
         </div>
-    </div>
-
-    <div class="layui-form-item">
-        <label class="layui-form-label">密码:</label>
-        <div class="layui-inline">
-            <input class="layui-input" type="password" name="password" id="password" value="" placeholder="密码"
-                   lay-verify="firstPwd">
-        </div>
-        <label class="layui-form-label">密码确认:</label>
-        <div class="layui-inline">
-            <input class="layui-input" type="password" name="sedPassword" id="passwordCheck" value=""
-                   placeholder="密码确认"
-                   lay-verify="sedPwd">
-        </div>
-    </div>
-
-
-    <div class="layui-form-item">
-        <label class="layui-form-label">备注:</label>
-        <div class="layui-inline">
-            <input class="layui-input" type="text" name="remark" value="" placeholder="备注">
-        </div>
+        <#if map.flag == 'add'>
+	        <label class="layui-form-label">密码:</label>
+	        <div class="layui-inline">
+	            <input class="layui-input" type="password" name="password" id="password" placeholder="密码" >
+	        </div>
+	        <label class="layui-form-label">密码确认:</label>
+	        <div class="layui-inline">
+	            <input class="layui-input" type="password" name="sedPassword" id="passwordCheck" placeholder="密码确认" lay-verify="sedPwd">
+	        </div>
+        </#if>
         <label class="layui-form-label">邮箱:</label>
         <div class="layui-inline">
-            <input class="layui-input" type="text" name="email" value="" placeholder="邮箱" lay-verify="email">
+            <input class="layui-input" type="text" name="email" value="${(echouser.email)!''}" placeholder="邮箱" lay-verify="email">
         </div>
-    </div>
-    <div class="layui-form-item">
         <label class="layui-form-label">电话:</label>
         <div class="layui-inline">
-            <input class="layui-input" type="text" name="phone" value="" placeholder="电话" lay-verify="phone">
+            <input class="layui-input" type="text" name="phone" value="${(echouser.phone)!''}" placeholder="电话" lay-verify="phone">
         </div>
         <label class="layui-form-label">角色:</label>
         <div class="layui-inline">
             <select name="role" id="role" lay-search>
-                <option value=""></option>
+            	<#if map.flag == 'add'>
+                	<option value=""></option>
+                </#if>
             </select>
         </div>
-
+        <label class="layui-form-label">备注信息:</label>
+        <div class="layui-inline">
+            <textarea name="remark" placeholder="请输入内容" class="layui-textarea">${(echouser.remark)!''}</textarea>
+        </div>
     </div>
 
     <div class="layui-btn-container">
@@ -139,10 +128,12 @@
             dataType: 'json',
             type: 'get',
             success: function (data) {
-                console.log(data);
                 $.each(data.data, function (index, item) {
                     $('#role').append(new Option(item.rolename, item.r_id));// 下拉菜单里添加元素
                 });
+                if('${(echor_id)!''}' != ''){
+	                $("#role").val('${(echor_id)!''}');
+                }
                 layui.form.render("select");
             }
         })
@@ -150,7 +141,8 @@
 
         form.on('submit(save)', function (data) {
             var url = "${ctx}/xtgl/zzgl/yhgl/addUser";
-            console.log(JSON.stringify(data.field));
+            data.field.flag = '${map.flag}';
+            data.field.u_id = '${(echouser.u_id)!''}';
             var index;
             $.ajax({
                 type: "POST",

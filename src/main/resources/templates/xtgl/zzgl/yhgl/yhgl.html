@@ -34,7 +34,7 @@
 <form class="layui-form" id="query">
     <div class="layui-form-item">
         <div class="layui-inline">
-            <input class="layui-input" type="text" placeholder="用户名称" name="username" id="username">
+            <input class="layui-input" type="text" placeholder="用户账号" name="username" id="username">
         </div>
         <div class="layui-inline">
             <input class="layui-input" type="text" placeholder="用户昵称" name="nickname" id="nickname">
@@ -56,11 +56,13 @@
         <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">
             <i class="fa fa-pencil"></i>
         </a>
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del">
-            <i class="fa fa-trash-o"></i>
-        </a>
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="more">
-            <i class="fa fa-chevron-circle-left"></i>
+		{{# if(d.username != 'superadmin' ) { }}
+        	<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del">
+            	<i class="fa fa-trash-o"></i>
+        	</a>
+		{{# } }}
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="reset">
+            <i class="fa fa-circle-o-notch"></i>
         </a>
     </div>
 </script>
@@ -90,7 +92,7 @@
             , method: 'get'
             , cols: [[
                 {type: 'checkbox', fixed: 'left'}
-                , {field: 'username', width: 150, title: '用户名称'}
+                , {field: 'username', width: 150, title: '用户账号'}
                 , {field: 'nickname', width: 150, title: '用户昵称'}
                 , {field: 'createtime', width: 170, title: '创建时间'}
                 , {field: 'remark', title: '备注'}
@@ -141,7 +143,6 @@
                 var index = layer.open({
                     title:action,
                     type: 2,
-                    area: ['620px', '400px'],
                     fixed: false, //不固定
                     maxmin: true,
                     content: url,
@@ -151,7 +152,7 @@
                 });
                 layer.full(index);
             }else{
-
+				//TODO
             }
         });
 

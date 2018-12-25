@@ -8,6 +8,7 @@ import com.zzhb.zzoa.mapper.RoleMapper;
 import com.zzhb.zzoa.mapper.UserMapper;
 import com.zzhb.zzoa.shiro.ShiroRealm;
 import com.zzhb.zzoa.utils.DateUtil;
+import com.zzhb.zzoa.utils.LayUiUtil;
 
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.util.ByteSource;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,15 +36,10 @@ public class UserService {
 	}
 
 	public JSONObject getAllUsers(Integer page, Integer limit, Map<String, String> params) {
-		JSONObject result = new JSONObject();
 		PageHelper.startPage(page, limit);
 		List<User> userList = userMapper.getAllUsers(params);
 		PageInfo<User> pageInfo = new PageInfo<User>(userList);
-		result.put("code", 0);
-		result.put("msg", "");
-		result.put("count", pageInfo.getTotal());
-		result.put("data", pageInfo.getList());
-		return result;
+		return LayUiUtil.pagination(pageInfo);
 	}
 
 	@Transactional
@@ -51,18 +48,34 @@ public class UserService {
 	}
 
 	@Transactional
-	public Integer addUser(Map<String, String> map) {
-		// 盐值加密
-		Object result = new SimpleHash("MD5", String.valueOf(map.get("password")), String.valueOf(map.get("username")),
-				1);
-		map.put("password", String.valueOf(result));
-		map.put("createtime", DateUtil.dateToString());
-		if (map.get("role") == null || map.get("role").equals("")) {
-			map.put("status", "3");
+	public Integer addUser(User user, String role, String flag) {
+		Integer addUser = 0;
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		map.put("r_id", Integer.parseInt(role));
+		if ("add".equals(flag)) {
+			Object result = new SimpleHash("MD5", user.getPassword(), user.getUsername(), 1);
+			user.setPassword(result.toString());
+			if (role == null || "".equals(role)) {
+				user.setStatus("3");
+				addUser = userMapper.addUser(user);
+			} else {
+				user.setStatus("0");
+				addUser = userMapper.addUser(user);
+				Integer u_id = user.getU_id();
+				map.put("u_id", u_id);
+				userMapper.addUrole(map);
+			}
 		} else {
-			map.put("status", "0");
+			map.put("u_id", user.getU_id());
+			if ("3".equals(user.getStatus())) {
+				user.setStatus("0");
+				userMapper.addUrole(map);
+			} else {
+				userMapper.updateUserRole(map);
+			}
+			addUser = userMapper.updateUserByUser(user);
 		}
-		return userMapper.addUser(map);
+		return addUser;
 	}
 
 	@Transactional
