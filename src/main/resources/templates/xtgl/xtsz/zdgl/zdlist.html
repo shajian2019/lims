@@ -34,7 +34,6 @@
 </html>
 <script type="text/html" id="rightBar">
     <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit"><i class="fa fa-pencil"></i></a>
-    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="zd_data"><i class="fa fa-file-text"></i></a>
     <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del"><i class="fa fa-trash-o"></i></a>
 </script>
 <script type="text/html" id="switch" >
@@ -53,7 +52,8 @@
         elem: '#tableBox',
         data: data,
         //,url:'/test/table/demo1.json',
-        title: '参数设置',
+        title: '字典数据',
+        skin:'line',
         height:'full-55',
         cellMinWidth: 120,
         cols: [
@@ -85,6 +85,7 @@
             }, {
                 title: '操作',
                 width: 140,
+                align:'center',
                 templet: '#rightBar'
             }]
         ],
@@ -95,21 +96,11 @@
         if (obj.event === 'edit') {
             layer.open({
             type: 2,
-            area: ['630px', '350px'],
+            area: ['690px', '445px'],
             fixed: false, //不固定
             maxmin: true,
-            content: '${ctx}/xtgl/xtsz/zdgl/pop'
+            content: '${ctx}/xtgl/xtsz/zdgl/zdpop'
         })
-        } else if(obj.event==='zd_data'){
-            var index=layer.open({
-            type: 2,
-            area: ['630px', '350px'],
-            fixed: false, //不固定
-            maxmin: true,
-            title:'字典数据',
-            content: '${ctx}/xtgl/xtsz/zdgl/zdlist'
-        });
-        layer.full(index);
         }else if (obj.event === 'del') {
             layer.confirm('是否删除这条数据？', function (index) {
                 obj.del();
@@ -126,10 +117,10 @@
     $("#addBtn").click(function (e) { 
         layer.open({
             type: 2,
-            area: ['630px', '350px'],
+            area: ['690px', '445px'],
             fixed: false, //不固定
             maxmin: true,
-            content: '${ctx}/xtgl/xtsz/zdgl/pop'
+            content: '${ctx}/xtgl/xtsz/zdgl/zdpop'
         })       
     });
 </script>
