@@ -77,4 +77,15 @@ public class XtszController {
 		System.out.println(array);
 		return menuService.updateSort(array);
 	}
+	
+	
+	@GetMapping("/cssz")
+	public String cssz() {
+		return "xtgl/xtsz/cssz/cssz";
+	}
+	
+	@GetMapping("/zdgl")
+	public String zdgl() {
+		return "xtgl/xtsz/zdgl/zdgl";
+	}
 }
