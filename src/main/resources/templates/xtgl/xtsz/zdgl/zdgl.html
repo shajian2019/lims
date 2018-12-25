@@ -34,10 +34,8 @@
 </html>
 <script type="text/html" id="rightBar">
     <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit"><i class="fa fa-pencil"></i></a>
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="zd_data"><i class="fa fa-file-text"></i></a>
     <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del"><i class="fa fa-trash-o"></i></a>
-</script>
-<script type="text/html" id="zd_type" >
-    <a href="javascript:;" class="zd-type">data.xxx</a>
 </script>
 <script type="text/html" id="switch" >
 	<input type="checkbox" name="switch" lay-skin="switch" lay-filter="switchstatus" lay-text="正常|关闭">
@@ -68,7 +66,6 @@
             }, {
                 field:'123',
                 title: '字典类型',
-                templet: '#zd_type'
             }, {
                 field: 'sex',
                 title: '更新时间'
@@ -99,7 +96,17 @@
             maxmin: true,
             content: '${ctx}/xtgl/xtsz/zdgl/pop'
         })
-        } else if (obj.event === 'del') {
+        } else if(obj.event==='zd_data'){
+            var index=layer.open({
+            type: 2,
+            area: ['630px', '350px'],
+            fixed: false, //不固定
+            maxmin: true,
+            title:'字典数据',
+            content: '${ctx}/xtgl/xtsz/zdgl/zdlist'
+        });
+        layer.full(index);
+        }else if (obj.event === 'del') {
             layer.confirm('是否删除这条数据？', function (index) {
                 obj.del();
                 layer.close(index);
