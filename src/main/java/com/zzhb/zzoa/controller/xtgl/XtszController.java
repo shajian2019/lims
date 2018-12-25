@@ -77,30 +77,34 @@ public class XtszController {
 		System.out.println(array);
 		return menuService.updateSort(array);
 	}
-	
-	
+
 	@GetMapping("/cssz")
 	public String cssz() {
 		return "xtgl/xtsz/cssz/cssz";
 	}
-	
+
 	@GetMapping("/cssz/pop")
 	public String csszpop() {
 		return "xtgl/xtsz/cssz/pop";
 	}
-	
+
 	@GetMapping("/zdgl")
 	public String zdgl() {
 		return "xtgl/xtsz/zdgl/zdgl";
 	}
-	
+
 	@GetMapping("/zdgl/pop")
 	public String zdglpop() {
 		return "xtgl/xtsz/zdgl/pop";
 	}
-	
+
 	@GetMapping("/zdgl/zdlist")
 	public String zdlist() {
 		return "xtgl/xtsz/zdgl/zdlist";
+	}
+
+	@GetMapping("/zdgl/zdpop")
+	public String zdpop() {
+		return "xtgl/xtsz/zdgl/zdpop";
 	}
 }
