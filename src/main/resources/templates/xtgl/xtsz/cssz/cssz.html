@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <title>参数设置</title>
-    <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
-    <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet"/>
+    <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet"/>
     <style>
         .layui-table, .layui-table-view {
             margin: 8px 0 0;
@@ -14,93 +14,136 @@
 </head>
 
 <body style="padding:8px 8px 0;">
-    <form class="layui-form" action="">
-        <div class="layui-inline">
-            <input class="layui-input" type="text" placeholder="参数名称">
-        </div>
-        <div class="layui-inline">
-            <input class="layui-input" type="text" placeholder="参数键名">
-        </div>
-        <div class="layui-inline">
-            <a class="layui-btn layui-btn-primary" lay-submit lay-filter="query">查询</a>
-            <a class="layui-btn layui-btn-primary" id="addBtn">新增</a>
-        </div>
-    </form>
-    <table class="layui-hide" id="tableBox" lay-filter="tableBox"></table>
+<form class="layui-form" id="query">
+    <div class="layui-inline">
+        <input class="layui-input" type="text" placeholder="参数名称" name="name">
+    </div>
+    <div class="layui-inline">
+        <input class="layui-input" type="text" placeholder="参数键名" name="key">
+    </div>
+    <div class="layui-inline">
+        <a class="layui-btn layui-btn-primary" lay-submit="" lay-filter="query" datatype="reload">查询</a>
+        <a class="layui-btn layui-btn-primary" id="addBtn" onclick="add();">新增</a>
+    </div>
+</form>
+<table class="layui-hide" id="tableBox" lay-filter="tableBox"></table>
 </body>
 
 </html>
 <script type="text/html" id="rightBar">
-    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit"><i class="fa fa-pencil"></i></a>
-    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del"><i class="fa fa-trash-o"></i></a>
+    <div class="layui-btn-group">
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit"><i class="fa fa-pencil"></i></a>
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del"><i class="fa fa-trash-o"></i></a>
+    </div>
 </script>
 <script src="${ctx}/plugins/layui/layui.all.js"></script>
 <script>
-    var data = [{
-        id: '测试'
-    }]
-    var $ = layui.jquery,
-        table = layui.table,
-        form = layui.form,
-        layer = layui.layer;
-    table.render({
-        elem: '#tableBox',
-        data: data,
-        //,url:'/test/table/demo1.json',
-        title: '参数设置',
-        height:'full-55',
-        cellMinWidth: 120,
-        cols: [
-            [{
-                type: 'numbers',
-                width: 50
-            }, {
-                field: 'id',
-                title: '参数名称',
-                templet: '#cs_name'
-            }, {
-                field: '',
-                title: '参数键名'
-            }, {
-                field: 'sex',
-                title: '参数键值',
-            }, {
-                title: '操作',
-                width: 140,
-                templet: '#rightBar'
-            }]
-        ],
-        page: true
-    });
-    table.on('tool(tableBox)', function (obj) {
-        var data = obj.data;
-        if (obj.event === 'edit') {
-            layer.open({
-                type: 2,
-                area: ['630px', '450px'],
-                fixed: false, //不固定
-                maxmin: true,
-                content: '${ctx}/xtgl/xtsz/cssz/pop'
-            })
-        } else if (obj.event === 'del') {
-            layer.confirm('是否删除这条数据？', function (index) {
-                obj.del();
-                layer.close(index);
+    var tableId = 'tableBox';
+    layui.use('table', function () {
+        var $ = layui.jquery;
+        var table = layui.table;
+        form = layui.form;
+        // layer = layui.layer;
+        table.render({
+            elem: '#' + tableId,
+            url: '${ctx}/xtgl/xtsz/cssz/getAllParams',
+            title: '参数设置',
+            page: true,
+            id: tableId,
+            method: 'get',
+            height: 'full-55',
+            cellMinWidth: 120,
+            cols: [
+                [{
+                    type: 'numbers',
+                    width: 50
+                }, {
+                    field: 'name',
+                    title: '参数名称',
+                }, {
+                    field: 'key',
+                    title: '参数键名'
+                }, {
+                    field: 'value',
+                    title: '参数键值',
+                },{
+                    field: 'remark',
+                    title: '备注',
+                }, {
+                    title: '操作', align: 'center',
+                    width: 140,
+                    templet: '#rightBar'
+                }]
+            ],
+            page: true
+        });
+        table.on('tool(tableBox)', function (obj) {
+            var data = obj.data;
+            console.log(data);
+            if (obj.event === 'edit') {
+                var url = "${ctx}/xtgl/xtsz/cssz/editpage?flag=edit&p_id=" + data.p_id;
+                var index = layer.open({
+                    title:"参数修改",
+                    type: 2,
+                    fixed: false, //不固定
+                    maxmin: true,
+                    content: url,
+                    end: function(){
+                        table.reload(tableId)
+                    }
+                });
+                layer.full(index);
+            } else if (obj.event === 'del') {
+                layer.confirm('是否删除这条数据？', function (index) {
+                    var index;
+                    console.log(data);
+                    $.ajax({
+                        type: "post",
+                        data: {p_id: data.p_id},
+                        url: "${ctx}/xtgl/xtsz/cssz/delParamById",
+                        beforeSend: function () {
+                            index = layer.load(1);
+                        },
+                        success: function (data) {
+                            layer.close(index);
+                            if (data > 0) {
+                                layer.msg("删除成功", {offset: ['50%'], time: 1000}, function () {
+                                    table.reload(tableId)
+                                });
+                            } else {
+                                layer.msg("操作失败")
+                            }
+                        },
+                        error: function (data) {
+                            layer.msg("服务端异常");
+                        }
+                    });
+                });
+            }
+        })
+        form.on('submit(query)', function (data) {
+            console.log(data);
+            table.reload(tableId, {
+                where: data.field
             });
-        }
-    })
-    //查询
-    form.on('submit(search)', function (data) {
+            return false;
+        });
+    });
 
-    });
-    //添加
-    $("#addBtn").click(function (e) { 
-        layer.open({
-                type: 2,
-                area: ['630px', '450px'],
-                fixed: false, //不固定
-                maxmin: true,
-                content: '${ctx}/xtgl/xtsz/cssz/pop'
-            })       
-    });
+    function add() {
+        var url = "${ctx}/xtgl/xtsz/cssz/editpage?flag=add";
+        var table = layui.table;
+        var index = layer.open({
+            title: '新增参数',
+            type: 2,
+            area: ['620px', '400px'],
+            fixed: false, //不固定
+            maxmin: true,
+            content: url,
+            end: function () {
+                table.reload(tableId);
+            }
+        });
+        layer.full(index);
+    }
 </script>

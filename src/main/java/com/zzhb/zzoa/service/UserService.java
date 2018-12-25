@@ -100,4 +100,7 @@ public class UserService {
 	    return userMapper.resetPass(map);
     }
 
+    public Integer getAllUname(String username){
+		return userMapper.getCountByName(username);
+	}
 }

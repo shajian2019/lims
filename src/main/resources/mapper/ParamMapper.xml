@@ -10,4 +10,73 @@
 			</if>
 		</where>
 	</select>
+
+	<select id="getAllParams" resultType="com.zzhb.zzoa.domain.common.Param" parameterType="java.util.Map">
+		SELECT * FROM sys_t_params
+		<where>
+			<if test="p_id !=null and p_id !=''">
+				AND p_id = #{p_id}
+			</if>
+			<if test="name !=null and name !=''">
+				<bind name="_name" value="'%'+name+'%'"/>
+				AND name like #{_name}
+			</if>
+			<if test="key !=null and key !=''">
+				<bind name="_key" value="'%'+key+'%'"/>
+				AND `key` like #{_key}
+			</if>
+		</where>
+	</select>
+
+	<insert id="addNewParam" parameterType="com.zzhb.zzoa.domain.common.Param" keyProperty="u_id" useGeneratedKeys="true">
+		INSERT INTO sys_t_params(`name`,`key`,`value`,createtime,remark)
+		VALUES (#{name},#{key},#{value},now(),#{remark,jdbcType=VARCHAR})
+	</insert>
+
+	<delete id="delParamById" parameterType="java.util.Map">
+		DELETE FROM sys_t_params
+		<where>
+			<if test="p_id != null and p_id != ''">
+				and p_id = #{p_id}
+			</if>
+		</where>
+	</delete>
+
+	<select id="checkKey" parameterType="com.zzhb.zzoa.domain.common.Param" resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM  sys_t_params
+		<where>
+			<if test="key != null and key != ''">
+				and `key` = #{key}
+			</if>
+			<if test="p_id != null and p_id != ''">
+				and p_id != #{p_id}
+			</if>
+		</where>
+	</select>
+
+	<update id="updateParam" parameterType="com.zzhb.zzoa.domain.common.Param">
+		UPDATE sys_t_params
+		<set>
+			<if test="name != null and name !='' ">
+				`name` = #{name},
+			</if>
+			<if test="true">
+				updatetime = now(),
+			</if>
+			<if test="remark != null and remark !='' ">
+				remark = #{remark},
+			</if>
+			<if test="key != null and key !='' ">
+				`key` = #{key},
+			</if>
+			<if test="value != null and value !='' ">
+				`value` = #{value},
+			</if>
+		</set>
+		<where>
+			<if test="p_id != null and p_id !='' ">
+				and p_id = #{p_id}
+			</if>
+		</where>
+	</update>
 </mapper>

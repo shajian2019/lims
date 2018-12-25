@@ -154,4 +154,37 @@ public class XtszController {
 		mv.setViewName("xtgl/xtsz/zdgl/zdpop");
 		return mv;
 	}
+	
+	@GetMapping("/cssz/getAllParams")
+	@ResponseBody
+	public JSONObject getAllParams(Integer page, Integer limit, @RequestParam Map<String, String> params){
+		return paramService.getAllParams(page,limit,params);
+	}
+
+	@GetMapping("/cssz/editpage")
+	public ModelAndView goEditPage(@RequestParam Map<String, String> map){
+		ModelAndView model = new ModelAndView();
+		String flag = map.get("flag");
+		String url = "xtgl/xtsz/cssz/add";
+		model.setViewName(url);
+		if(flag.equals("edit")){
+			System.out.println(map.get("p_id"));
+			Param param = paramMapper.getParamById(Integer.parseInt(map.get("p_id")));
+			model.addObject("param",param);
+		}
+		model.addObject("map",map);
+		return model;
+	}
+
+	@PostMapping("/cssz/saveParam")
+	@ResponseBody
+	public Integer saveParam(Param param,String flag){
+		return paramService.saveParam(param,flag);
+	}
+
+	@PostMapping("/cssz/delParamById")
+	@ResponseBody
+	public Integer delParamById(@RequestParam Map<String,String> map){
+		return paramMapper.delParamById(map);
+	}
 }
