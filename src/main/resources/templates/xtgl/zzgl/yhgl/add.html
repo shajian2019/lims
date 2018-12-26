@@ -147,23 +147,24 @@
                 }
             }
         });
-        //下拉框
-        $.ajax({
-            url: '${ctx}/xtgl/zzgl/yhgl/getAllRole?status=1',
-            dataType: 'json',
-            type: 'get',
-            success: function (data) {
-            	console.log(data)
-                $.each(data.data, function (index, item) {
-                    $('#role').append(new Option(item.rolename, item.r_id));// 下拉菜单里添加元素
-                });
-                if ('${(echor_id)!''}' != ''){
-                    $("#role").val('${(echor_id)!''}');
-                }
-                layui.form.render("select");
-            }
-        })
-
+        if('${map.flag}' == 'add' || '${(echouser.username)!''}' != 'superadmin' ){
+	        //下拉框
+	        $.ajax({
+	            url: '${ctx}/xtgl/zzgl/yhgl/getAllRole?status=1',
+	            dataType: 'json',
+	            type: 'get',
+	            success: function (data) {
+	            	console.log(data)
+	                $.each(data.data, function (index, item) {
+	                    $('#role').append(new Option(item.rolename, item.r_id));// 下拉菜单里添加元素
+	                });
+	                if ('${(echor_id)!''}' != ''){
+	                    $("#role").val('${(echor_id)!''}');
+	                }
+	                layui.form.render("select");
+	            }
+	        })
+        }
 
         form.on('submit(save)', function (data) {
             var url = "${ctx}/xtgl/zzgl/yhgl/addUser";
