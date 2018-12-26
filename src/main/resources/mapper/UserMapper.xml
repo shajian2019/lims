@@ -51,6 +51,9 @@
             <if test="nickname != null and nickname !='' ">
                 nickname = #{nickname},
             </if>
+            <if test="password != null and password !='' ">
+                password = #{password},
+            </if>
             <if test="true">
                 updatetime = now(),
             </if>

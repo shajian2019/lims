@@ -1,10 +1,141 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>修改密码</title>
+    <meta charset="UTF-8">
+    <title>修改密码</title>
+    <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet"/>
+    <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet"/>
+    <style>
+        .main{width:500px;margin: 10% auto 0;}
+        .red{color:red;}
+        .icon{
+            display: inline-block;
+            border: 1px solid #e6e6e6;
+            border-left:none;
+            border-radius: 0 8px 8px 0;
+            height:36px;
+            width:38px;
+            line-height:36px;
+            text-align: center;
+            background-color: #f3f5f7;
+        }
+        .layui-form-item{
+            display: flex;
+            align-items: center;
+        }
+        .layui-form-item .layui-form-label{
+            width:80px;
+            text-align: right;
+        }
+        .layui-form-item .layui-inline {
+            margin-bottom: 0;
+            margin-right: 0;
+            width:260px;
+        }
+    </style>
 </head>
 <body>
-修改密码
+<form class="layui-form main">
+    <input type="hidden" name="username" value="${(user.username)!''}">
+    <input type="hidden" name="nickname" value="${(user.nickname)!''}">
+    <input type="hidden" name="u_id" value="${(user.u_id)!''}">
+    <input type="hidden" name="createtime" value="${(user.createtime)!''}">
+    <input type="hidden" name="updatetime" value="${(user.updatetime)!''}">
+    <input type="hidden" name="status" value="${(user.status)!''}">
+    <input type="hidden" name="recentlogin" value="${(user.recentlogin)!''}">
+    <div class="layui-form-item">
+        <label class="layui-form-label">旧密码:</label>
+        <div class="layui-inline">
+            <input type="password" name="oldPassword" class="layui-input" value="" placeholder="请输入密码" lay-verify="checkOldPass">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">新密码:</label>
+        <div class="layui-inline">
+            <input type="password" name="password" class="layui-input" value="" id="password" lay-verify="required"
+                   placeholder="请输入密码">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">确认新密码:</label>
+        <div class="layui-inline">
+            <input type="password" name="passwordCheck" class="layui-input" lay-verify="sedPass" value="" id="passwordCheck"
+                   placeholder="请输入密码">
+        </div>
+    </div>
+
+    <div class="layui-btn-container" style="text-align:center;">
+        <a class="layui-btn layui-btn-sm " lay-submit lay-filter="save">保存</a>
+        <a class="layui-btn layui-btn-sm layui-bg-gray" id="cancel">取消</a>
+    </div>
+</form>
 </body>
 </html>
+<script src="${ctx}/plugins/layui/layui.all.js"></script>
+<script>
+    layui.use(['form', 'layer', 'upload'], function () {
+        var $ = layui.jquery,
+            table = layui.table,
+            form = layui.form;
+
+        form.verify({
+            checkOldPass:function(value){
+                var message = '';
+                $.ajax({
+                    url: '${ctx}/xtgl/zzgl/yhgl/checkOldPass?password='+ value +'&username=${user.username}',
+                    type: 'post',
+                    async: false,
+                    success: function (data) {
+                        if (data > 0) {
+                            message = '旧密码不正确!';
+                        }
+                    },
+                })
+                return message;
+            },
+            sedPass: function (value) {
+                if (value != $("#password").val()) {
+                    $("#passwordCheck").val("");
+                    return '两次输入的密码不一致!';
+                }
+            }
+        })
+
+        form.on('submit(save)', function (data) {
+            var param = data.field;
+            param.flag = "grzx";
+            console.log(param);
+            var url = "${ctx}/xtgl/zzgl/yhgl/updateUser";
+            var index;
+            $.ajax({
+                type: "POST",
+                data: param,
+                url: url,
+                beforeSend: function () {
+                    index = layer.load(1);
+                },
+                success: function (data) {
+                    layer.close(index);
+                    if (data > 0) {
+                        var msg = "保存成功";
+                        layer.msg(msg, {offset: ['50%'], time: 1000}, function () {
+                            index = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(index);
+                        });
+                    } else {
+                        layer.msg("操作失败")
+                    }
+                },
+                error: function (data) {
+                    layer.msg("服务端异常");
+                }
+            });
+            return false;
+        });
+        //取消
+        $("#cancel").click(function () {
+            var index = parent.layer.getFrameIndex(window.name);
+            parent.layer.close(index);
+        })
+    })
+</script>

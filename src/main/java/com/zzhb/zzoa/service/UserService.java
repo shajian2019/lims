@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -30,6 +31,8 @@ public class UserService {
 
 	@Autowired
 	RoleMapper roleMapper;
+
+	HttpSession session;
 
 	public User getUser(String username) {
 		return userMapper.getUser(username);
@@ -85,6 +88,11 @@ public class UserService {
 
 	@Transactional
 	public Integer updateUser(Map<String, Object> map) {
+		if(map.containsKey("password")){
+			String password = (String) map.get("password");
+			Object result = new SimpleHash("MD5", password, map.get("username"), 1);
+			map.put("password",String.valueOf(result));
+		}
 		return userMapper.updateUser(map);
 	}
 
@@ -102,5 +110,17 @@ public class UserService {
 
     public Integer getAllUname(String username){
 		return userMapper.getCountByName(username);
+	}
+
+	public Integer checkOldPass(User user,String oldPass){
+		Integer result = 0;
+		Object oldPassword = new SimpleHash("MD5", oldPass, user.getUsername(), 1);//对输入的旧密码加密
+		String oldpassword = String.valueOf(oldPassword);
+		System.out.println(oldpassword);
+		System.out.println(user.getPassword());
+		if(!oldpassword.equals(user.getPassword())){
+			result = 1;
+		}
+		return result;
 	}
 }
