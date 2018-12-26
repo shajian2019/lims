@@ -36,13 +36,6 @@
 </head>
 <body>
     <form class="layui-form main">
-        <input type="hidden" name="username" value="${(user.username)!''}">
-        <input type="hidden" name="u_id" value="${(user.u_id)!''}">
-        <input type="hidden" name="password" value="${(user.password)!''}">
-        <input type="hidden" name="createtime" value="${(user.createtime)!''}">
-        <input type="hidden" name="updatetime" value="${(user.updatetime)!''}">
-        <input type="hidden" name="status" value="${(user.status)!''}">
-        <input type="hidden" name="recentlogin" value="${(user.recentlogin)!''}">
             <div class="layui-form-item">
                 <label class="layui-form-label">用户昵称:</label>
                 <div class="layui-inline">
@@ -78,7 +71,6 @@
             </div>
             <div class="layui-btn-container" style="text-align:center;">
                 <a class="layui-btn layui-btn-sm " lay-submit lay-filter="save">保存</a>
-                <a class="layui-btn layui-btn-sm layui-bg-gray" id="cancel">取消</a>
             </div>
     </form>
 </body>
@@ -91,14 +83,12 @@
             form = layui.form;
 
         form.on('submit(save)', function (data) {
-            var param = data.field;
-            param.flag = "grzx";
-            console.log(param);
+        	data.field.username = "${user.username}";
             var url = "${ctx}/xtgl/zzgl/yhgl/updateUser";
             var index;
             $.ajax({
                 type: "POST",
-                data: param,
+                data: data.field,
                 url: url,
                 beforeSend: function () {
                     index = layer.load(1);
@@ -106,10 +96,9 @@
                 success: function (data) {
                     layer.close(index);
                     if (data > 0) {
-                        var msg = "保存成功";
+                        var msg = "修改成功";
                         layer.msg(msg, {offset: ['50%'], time: 1000}, function () {
-                            index = parent.layer.getFrameIndex(window.name);
-                            parent.layer.close(index);
+                        	 parent.location.reload();
                         });
                     } else {
                         layer.msg("操作失败")
@@ -121,10 +110,5 @@
             });
             return false;
         });
-        //取消
-        $("#cancel").click(function () {
-            var index = parent.layer.getFrameIndex(window.name);
-            parent.layer.close(index);
-        })
     })
 </script>

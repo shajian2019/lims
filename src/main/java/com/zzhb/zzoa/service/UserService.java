@@ -1,27 +1,24 @@
 package com.zzhb.zzoa.service;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.crypto.hash.SimpleHash;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.subject.Subject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zzhb.zzoa.domain.User;
 import com.zzhb.zzoa.mapper.RoleMapper;
 import com.zzhb.zzoa.mapper.UserMapper;
-import com.zzhb.zzoa.shiro.ShiroRealm;
-import com.zzhb.zzoa.utils.DateUtil;
 import com.zzhb.zzoa.utils.LayUiUtil;
-
-import org.apache.shiro.crypto.hash.SimpleHash;
-import org.apache.shiro.util.ByteSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.servlet.http.HttpSession;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Service
 public class UserService {
@@ -32,7 +29,8 @@ public class UserService {
 	@Autowired
 	RoleMapper roleMapper;
 
-	HttpSession session;
+	@Autowired
+	LoginService loginService;
 
 	public User getUser(String username) {
 		return userMapper.getUser(username);
@@ -47,11 +45,11 @@ public class UserService {
 
 	@Transactional
 	public Integer delUserById(Map<String, Object> map) {
-        //map中只有u_id
-        User u = userMapper.getUserById(Integer.parseInt(String.valueOf(map.get("id"))));
-        if(!u.getStatus().equals("3")){//已分配角色
-            userMapper.delUserRole(Integer.parseInt(String.valueOf(map.get("id"))));
-        }
+		// map中只有u_id
+		User u = userMapper.getUserById(Integer.parseInt(String.valueOf(map.get("id"))));
+		if (!u.getStatus().equals("3")) {// 已分配角色
+			userMapper.delUserRole(Integer.parseInt(String.valueOf(map.get("id"))));
+		}
 		return userMapper.delUserById(map);
 	}
 
@@ -88,12 +86,19 @@ public class UserService {
 
 	@Transactional
 	public Integer updateUser(Map<String, Object> map) {
-		if(map.containsKey("password")){
+		Integer updateUser = 0;
+		if (map.containsKey("password")) {
 			String password = (String) map.get("password");
 			Object result = new SimpleHash("MD5", password, map.get("username"), 1);
-			map.put("password",String.valueOf(result));
+			map.put("password", String.valueOf(result));
+			updateUser = userMapper.updateUser(map);
+		} else {
+			updateUser = userMapper.updateUser(map);
+			Session session = SecurityUtils.getSubject().getSession();
+			User user = userMapper.getUser(map.get("username").toString());
+			loginService.initLoginUser(user, session);
 		}
-		return userMapper.updateUser(map);
+		return updateUser;
 	}
 
 	@Transactional
@@ -101,24 +106,24 @@ public class UserService {
 		return userMapper.addUrole(map);
 	}
 
-    @Transactional
-    public Integer resetPass(Map<String,String> map){
-        Object result = new SimpleHash("MD5", "123456", map.get("username"), 1);
-        map.put("password",String.valueOf(result));
-	    return userMapper.resetPass(map);
-    }
+	@Transactional
+	public Integer resetPass(Map<String, String> map) {
+		Object result = new SimpleHash("MD5", "123456", map.get("username"), 1);
+		map.put("password", String.valueOf(result));
+		return userMapper.resetPass(map);
+	}
 
-    public Integer getAllUname(String username){
+	public Integer getAllUname(String username) {
 		return userMapper.getCountByName(username);
 	}
 
-	public Integer checkOldPass(User user,String oldPass){
+	public Integer checkPass(User user) {
+		User oldUser = userMapper.getUser(user.getUsername());
 		Integer result = 0;
-		Object oldPassword = new SimpleHash("MD5", oldPass, user.getUsername(), 1);//对输入的旧密码加密
+		// 对输入的旧密码加密
+		Object oldPassword = new SimpleHash("MD5", user.getPassword(), user.getUsername(), 1);
 		String oldpassword = String.valueOf(oldPassword);
-		System.out.println(oldpassword);
-		System.out.println(user.getPassword());
-		if(!oldpassword.equals(user.getPassword())){
+		if (!oldpassword.equals(oldUser.getPassword())) {
 			result = 1;
 		}
 		return result;
