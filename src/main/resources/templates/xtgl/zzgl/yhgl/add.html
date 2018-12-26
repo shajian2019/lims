@@ -95,14 +95,16 @@
     <input class="layui-input" type="text" name="phone" value="${(echouser.phone)!''}" placeholder="电话"
            lay-verify="phone">
 </div>
-<label class="layui-form-label">角色:</label>
-<div class="layui-inline">
-    <select name="role" id="role" lay-search>
-        <#if map.flag == 'add'>
-        	<option value=""></option>
-    	</#if>
-    </select>
-</div>
+<#if map.flag == 'add' || echouser.username != 'superadmin'>
+	<label class="layui-form-label">角色:</label>
+	<div class="layui-inline">
+	    <select name="role" id="role" lay-search>
+	        <#if map.flag == 'add'>
+	        	<option value=""></option>
+	    	</#if>
+	    </select>
+	</div>
+</#if>
 <label class="layui-form-label">备注信息:</label>
 <div class="layui-inline">
     <textarea name="remark" placeholder="请输入内容" class="layui-textarea">${(echouser.remark)!''}</textarea>

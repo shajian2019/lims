@@ -69,7 +69,11 @@
 
 <script type="text/html" id="switch" >
     {{# if(d.status == '0' || d.status == '1' ) { }}
-    	<input type="checkbox" name="switch" lay-skin="switch" lay-filter="switchstatus" lay-text="正常|锁定" {{ d.status == '0' ? 'checked' : '' }}>
+		{{# if(d.username == 'superadmin' ) { }}
+    		<input type="checkbox" name="switch" disabled="" lay-skin="switch" lay-filter="switchstatus" lay-text="正常|锁定" checked>
+		{{# } else { }}
+    		<input type="checkbox" name="switch" lay-skin="switch" lay-filter="switchstatus" lay-text="正常|锁定" {{ d.status == '0' ? 'checked' : '' }}>
+		{{# } }}
     {{# } else if(d.status == '3') { }}
        	 未分配角色
     {{# } else { }}
