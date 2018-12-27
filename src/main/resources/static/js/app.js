@@ -85,6 +85,16 @@ layui.define(['element', 'nprogress', 'form', 'table', 'loader', 'tab', 'navbar'
                         return true; //返回true则关闭
                     }
                 }).render();
+                
+                //navbar加载方式二，设置远程地址加载
+               /* navbar.set({
+	                     remote: {
+	                         url: 'menus/second/get?parentid=&r_id='+_config.r_id
+	                     }
+                 	}).render(function(data) {
+                     tab.tabAdd(data);
+                });*/
+                
                 //处理顶部一级菜单
                 var onelevel = layui.onelevel;
                 if (!onelevel.hasElem()) {
