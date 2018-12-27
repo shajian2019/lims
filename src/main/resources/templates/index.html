@@ -77,12 +77,12 @@
                 layer = layui.layer;
             //将message设置为全局以便子页面调用
             message = layui.message;
-            
             //主入口
             var r_id = "${r_id}";
             app.set({
                 type: 'iframe',
-                r_id:r_id
+                r_id:r_id,
+                menu:"${(menu)!'1'}"
             }).init();
 
             $('dl.skin > dd').on('click', function() {

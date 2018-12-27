@@ -12,7 +12,7 @@ public class CacheService {
 
 	@Autowired
 	MenuService menuService;
-	
+
 	@Autowired
 	DictService dictService;
 
@@ -21,8 +21,9 @@ public class CacheService {
 		menuService.flushOnemenu();
 		menuService.flushSecondmenu();
 		menuService.flushMenuTree();
+		menuService.flushAllMenu();
 	}
-	
+
 	public void flushDict() {
 		logger.info("========清楚字典缓存========");
 		dictService.flushDicts();

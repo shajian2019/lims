@@ -14,6 +14,10 @@
 	<springProfile name="prod">
 		<property name="LOG_PATH" value="C:/log" />
 	</springProfile>
+	
+	<springProfile name="local">
+		<property name="LOG_PATH" value="C:/log" />
+	</springProfile>
 
 	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
@@ -162,6 +166,12 @@
 			<appender-ref ref="FILEWARN" />
 			<appender-ref ref="FILEINFO" />
 			<appender-ref ref="FILEDEBUG" />
+		</root>
+	</springProfile>
+	
+	<springProfile name="local">
+		<root level="INFO">
+			<appender-ref ref="CONSOLE" />
 		</root>
 	</springProfile>
 

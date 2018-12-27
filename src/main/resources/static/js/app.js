@@ -86,18 +86,20 @@ layui.define(['element', 'nprogress', 'form', 'table', 'loader', 'tab', 'navbar'
                     }
                 }).render();
                 
-                //navbar加载方式二，设置远程地址加载
-               /* navbar.set({
-	                     remote: {
-	                         url: 'menus/second/get?parentid=&r_id='+_config.r_id
-	                     }
-                 	}).render(function(data) {
-                     tab.tabAdd(data);
-                });*/
+                if(_config.menu != '1'){
+	                //navbar加载方式二，设置远程地址加载
+	                navbar.set({
+		                     remote: {
+		                         url: 'menus/all/get?r_id='+_config.r_id
+		                     }
+	                }).render(function(data) {
+	                     tab.tabAdd(data);
+	                });
+                }
                 
                 //处理顶部一级菜单
                 var onelevel = layui.onelevel;
-                if (!onelevel.hasElem()) {
+                if (_config.menu == '1' && !onelevel.hasElem()) {
                     onelevel.set({
                     	elem:'#ds',
                         remote: {
@@ -122,7 +124,6 @@ layui.define(['element', 'nprogress', 'form', 'table', 'loader', 'tab', 'navbar'
 
             // ripple start
             var addRippleEffect = function(e) {
-                // console.log(e);
                 layui.stope(e)
                 var target = e.target;
                 if (target.localName !== 'button' && target.localName !== 'a') return false;
