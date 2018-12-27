@@ -113,6 +113,7 @@ layui.define(['element', 'nprogress', 'form', 'table', 'loader', 'tab', 'navbar'
                             });
                         },
                         renderAfter: function(elem) {
+                        	console.log("===模拟点击第一个一级菜单=======")
                             elem.find('li').eq(0).click(); //模拟点击第一个
                         }
                     }).render();
