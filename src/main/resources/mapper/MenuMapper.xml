@@ -35,26 +35,38 @@
 			INNER JOIN sys_t_role_menu rm on m.m_id = rm.m_id
 		</if> 
 		<where>
-			<if test="m_ids !=null and m_ids.size() != 0">
-				and m.m_id in 
-				<foreach collection="m_ids" item="m_id" open="(" separator="," close=")">
-           			#{m_id}
-        		</foreach>
-			</if>
-			<if test="m_ids !=null and m_ids.size() == 0">
-				and 1 = 2
-			</if>
-			<if test="m_status !=null and m_status !='' ">
-				and m_status = #{m_status}
-			</if>
-			<if test="m_level !=null and m_level !='' ">
-				and m_level = #{m_level}
-			</if>
-			<if test="r_id != null and r_id != 'superadmin' ">
-				<if test="r_id !=null and r_id !='' ">
-					and rm.r_id = #{r_id}
+			<if test="flag == null">
+				<if test="m_ids !=null and m_ids.size() != 0">
+					and m.m_id in 
+					<foreach collection="m_ids" item="m_id" open="(" separator="," close=")">
+	           			#{m_id}
+	        		</foreach>
 				</if>
-			</if> 
+				<if test="m_ids !=null and m_ids.size() == 0">
+					and 1 = 2
+				</if>
+				<if test="m_status !=null and m_status !='' ">
+					and m_status = #{m_status}
+				</if>
+				<if test="m_level !=null and m_level !='' ">
+					and m_level = #{m_level}
+				</if>
+				<if test="r_id != null and r_id != 'superadmin' ">
+					<if test="r_id !=null and r_id !='' ">
+						and rm.r_id = #{r_id}
+					</if>
+				</if> 
+			</if>
+			<if test="flag != null">
+				<if test="m_status !=null and m_status !='' ">
+					and m_status = #{m_status}
+				</if>
+				<if test="r_id != null and r_id != 'superadmin' ">
+					<if test="r_id !=null and r_id !='' ">
+						and rm.r_id = #{r_id}
+					</if>
+				</if>
+			</if>
 		</where>
 		ORDER BY m.m_parentid,m.m_sort		
 	</select>

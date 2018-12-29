@@ -8,12 +8,10 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.zzhb.zzoa.ZzoaApplication;
-
 @ControllerAdvice
 public class Global500ExceptionHandler {
 
-	private static Logger logger = LoggerFactory.getLogger(ZzoaApplication.class);
+	private static Logger logger = LoggerFactory.getLogger(Global500ExceptionHandler.class);
 
 	@ExceptionHandler(value = Exception.class)
 	public ModelAndView defaultErrorHandler(HttpServletRequest req, Exception e) {

@@ -23,6 +23,12 @@ public class MenuController {
 	@Autowired
 	MenuService menuService;
 
+	@GetMapping("/all/get")
+	@ResponseBody
+	public List<Map<String, Object>> getAllMenu(@RequestParam("r_id") String r_id) {
+		return menuService.getAllMenu(r_id);
+	}
+
 	@GetMapping("/one/get")
 	@ResponseBody
 	public List<Menu> getOneMenus(@RequestParam("r_id") String r_id) {

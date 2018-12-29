@@ -31,6 +31,19 @@ public class MenuService {
 	@Autowired
 	RoleMapper roleMapper;
 
+	@Cacheable(value = "ALLMENUS", key = "#r_id", condition = "#r_id !='superadmin'")
+	public List<Map<String, Object>> getAllMenu(String r_id) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("r_id", r_id);
+		params.put("flag", "all");
+		List<Menu> menus = menuMapper.getMenus(params);
+		return getFormatMenus(menus);
+	}
+	
+	@CacheEvict(value = "ALLMENUS", allEntries = true)
+	public void flushAllMenu() {
+	}
+
 	@Cacheable(value = "ONEMENU", key = "#r_id", condition = "#r_id !='superadmin'")
 	public List<Menu> getOneMenusByRoleId(String r_id) {
 		Map<String, Object> params = new HashMap<>();
@@ -46,7 +59,6 @@ public class MenuService {
 	public void flushOnemenu() {
 	}
 
-	@SuppressWarnings("unchecked")
 	@Cacheable(value = "SECONDMENU", key = "#cachKey", condition = "#r_id !='superadmin'")
 	public List<Map<String, Object>> getSecondMenu(String cachKey, String r_id, String parentid) {
 		// 获取parentid下的所有子菜单ID
@@ -62,6 +74,12 @@ public class MenuService {
 			params.put("m_status", "1");
 		}
 		List<Menu> menus = menuMapper.getMenus(params);
+
+		return getFormatMenus(menus);
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Map<String, Object>> getFormatMenus(List<Menu> menus) {
 		Map<String, Map<String, Object>> json = new LinkedHashMap<>();
 		for (int i = 0; i < menus.size(); i++) {
 			Menu menu = menus.get(i);
