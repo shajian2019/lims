@@ -92,13 +92,13 @@
             <if test="true">
                 updatetime = now(),
             </if>
-            <if test="remark != null and remark !='' ">
+            <if test="remark != null">
                 remark = #{remark},
             </if>
-            <if test="email != null and email !='' ">
+            <if test="email != null">
                 email = #{email},
             </if>
-            <if test="phone != null and phone !='' ">
+            <if test="phone != null">
                 phone = #{phone},
             </if>
             <if test="status != null and status !='' ">

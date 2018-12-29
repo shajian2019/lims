@@ -20,6 +20,8 @@ spring:
     process-definition-location-prefix: classpath:/processes/
     async-executor-activate: false
     history-level: full
+    rest-api-enabled: true
+    rest-api-mapping: /ac/**
 
 #mybatis配置
 mybatis:

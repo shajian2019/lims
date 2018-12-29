@@ -138,6 +138,11 @@
 			<artifactId>activiti-spring-boot-starter-basic</artifactId>
 			<version>${activiti.version}</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
