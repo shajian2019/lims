@@ -85,6 +85,10 @@ spring:
       min-idle: 2
       max-active: 20
 
+logging:
+  level: 
+    org.activiti: DEBUG
+    
 server:
   port: 8080
 
@@ -127,6 +131,9 @@ spring:
       max-wait: -1
       min-idle: 2
       max-active: 20
+logging:
+  level: 
+    org.activiti: DEBUG
 
 server:
   port: 8080
