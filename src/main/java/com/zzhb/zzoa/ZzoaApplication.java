@@ -24,5 +24,4 @@ public class ZzoaApplication {
 		logger.debug("======ZzoaApplication===start success==");
 	}
 
-	
 }
