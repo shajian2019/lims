@@ -5,22 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>用户管理2233</title>
     <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
-    <script src="${ctx}/plugins/layui/layui.js"></script>
     <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" />
 </head>
 <style>
     html, body {
         height: 100%;
     }
-
-    div {
-        -moz-box-sizing: border-box; /*Firefox3.5+*/
-        -webkit-box-sizing: border-box; /*Safari3.2+*/
-        -o-box-sizing: border-box; /*Opera9.6*/
-        -ms-box-sizing: border-box; /*IE8*/
-        box-sizing: border-box; /*W3C标准(IE9+，Safari5.1+,Chrome10.0+,Opera10.6+都符合box-sizing的w3c标准语法)*/
-    }
-
     .layui-form-item {
         margin-bottom: 0px
     }
@@ -28,6 +18,10 @@
     .layui-table, .layui-table-view {
         margin: 0px 0;
     }
+    #pop{margin: 12px auto 0;}
+    #pop .layui-form-item{display: flex;align-items: center;}
+    #pop .layui-form-item>.layui-inline{width: 320px;}
+    #lc_upload_btn{margin: 0 auto;}
 </style>
 <body class="layui-layout-body" style="padding: 10px">
 
@@ -46,7 +40,26 @@
 <div style="height:100%">
     <table class="layui-hidden layui-table" id="dataTable" lay-filter="dataTable"></table>
 </div>
+<div class="pop" id="pop">
+    <form class="layui-form layui-upload" lay-filter="pop">
+        <div class="layui-form-item">
+            <label class="layui-form-label">部署名称:</label>
+            <div class="layui-inline">
+                <input type="text" class="layui-input"> 
+            </div>
+        </div>
+        <div class="layui-form-item">
+                <label class="layui-form-label">文件上传:</label>
+                <div class="layui-inline" style="margin-bottom:0;">     
+                        <input type="text" class="layui-hide" name=""> 
+                        <button type="button" class="layui-btn layui-btn-sm" id="lc_upload_btn">开始上传</button>                      
+                        <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="lc_upload">选择文件</button>
+                </div>
+        </div>
+        
+    </form>
 
+</div>
 </body>
 <script type="text/html" id="rightBar">
     <div class="layui-btn-group">
@@ -63,13 +76,15 @@
 		{{# } }}
     </div>
 </script>
-
+<script src="${ctx}/plugins/layui/layui.js"></script>
 <script>
     var editObj = null, ptable = null, treeGrid = null, tableId = 'dataTable', layer = null, form = null,$=null;
-    layui.use('table', function () {
+    layui.use(['table','form','layer','upload'], function () {
         var table = layui.table;
-        $=layui.jquery;
-        form = layui.form;
+        $=layui.jquery,
+        form = layui.form,
+        layer=layui.layer,
+        upload=layui.upload;
         table.render({
             elem: '#' + tableId
             , url: '#'
@@ -92,24 +107,33 @@
             ]]
 
         });
-    });
-    
+        //选完文件后不自动上传
+        upload.render({
+            elem: '#lc_upload'
+            ,url: '/upload/'
+            ,accept:'file'
+            ,auto: false
+            //,multiple: true
+            ,bindAction: '#lc_upload_btn'
+            ,done: function(res){
+            console.log(res)
+            }
+        });
+    });   
     //流程部署
     function deploy() {
-        var url = "${ctx}/xtgl/zzgl/yhgl/editPage?flag=add";
         var table = layui.table;
         var index = layer.open({
-            title: '新增用户',
-            type: 2,
-            area: ['620px', '400px'],
+            title: '流程部署',
+            type: 1,
+            area: ['490px', '300px'],
             fixed: false, //不固定
             maxmin: true,
-            content: url,
+            content: $("#pop"),
             end: function () {
                 table.reload(tableId)
             }
         });
-        layer.full(index);
     }
 </script>
 </html>
