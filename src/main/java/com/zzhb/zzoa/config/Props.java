@@ -13,6 +13,8 @@ public class Props {
 
 	private Long globalSessionTimeout;
 
+	private String tempPath;
+
 	public String getCookiename() {
 		return cookiename;
 	}
@@ -36,4 +38,13 @@ public class Props {
 	public void setGlobalSessionTimeout(Long globalSessionTimeout) {
 		this.globalSessionTimeout = globalSessionTimeout;
 	}
+
+	public String getTempPath() {
+		return tempPath;
+	}
+
+	public void setTempPath(String tempPath) {
+		this.tempPath = tempPath;
+	}
+
 }

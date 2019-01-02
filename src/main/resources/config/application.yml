@@ -22,6 +22,18 @@ spring:
     history-level: full
     rest-api-enabled: true
     rest-api-mapping: /ac/**
+  http:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 100MB
+  resources:
+    static-locations:
+    - classpath:/META-INF/resources/
+    - classpath:/resources/
+    - classpath:/static/
+    - classpath:/public/
+    - file:${props.temp-path}
+    
 
 #mybatis配置
 mybatis:
@@ -48,9 +60,10 @@ logging:
   level:
     com.zzhb.zzoa.mapper: DEBUG
     org.springframework.scheduling: INFO
- 
+
    
 props: 
   loginUrl: /login
   cookiename: ZZOA
   globalSessionTimeout: 43200000 #session过期时间
+  temp-path: D:/download
