@@ -18,7 +18,6 @@ public class ZzoaApplication {
 
 	private static Logger logger = LoggerFactory.getLogger(ZzoaApplication.class);
 
-	
 	public static void main(String[] args) {
 		SpringApplication.run(ZzoaApplication.class, args);
 		logger.info("======ZzoaApplication===start success==");
