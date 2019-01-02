@@ -100,36 +100,6 @@
         form = layui.form,
         layer=layui.layer,
         upload=layui.upload;
-        table.render({
-            elem: '#' + tableId
-            , url: '${ctx}/lcgl/lcdy/list'
-            , where: {lastversion:'true'}
-            , page: true
-            , id: tableId
-            , height: 'full-80'
-            , method: 'get'
-            , cols: [[
-                  {field: '序号',width:50,fixed:'left',type:'numbers',title:'序号'}
-                , {field: 'deployment_id', width: 100, title: '部署ID'}
-                , {field: 'name', width: 200, title: '流程名称'}
-                , {field: 'resource_name', width: 150, title: '部署文件名称'}
-                , {field: 'version', width: 80, title: '版本'}
-                , {field: 'createuser', width: 120, title: '创建人'}
-                , {field: 'createtime', width: 170, title: '创建时间'}
-                , {field: 'description', title: '备注'}
-                , {
-                    title: '操作', align: 'center',toolbar: '#rightBar'
-                }
-            ]]
-        });
-        
-        form.on('submit(query)', function (data) {
-            table.reload(tableId, {
-                where: data.field
-            });
-            return false;
-        });
-        
         $.ajax({
             url: '${ctx}/dict/get',
             data:{gtype:'protype'},
@@ -142,6 +112,34 @@
                 form.render("select");
             }
         })
+        table.render({
+              elem: '#' + tableId
+            , url: '${ctx}/lcgl/lcdy/list'
+            , where: {lastversion:'true'}
+            , page: true
+            , id: tableId
+            , height: 'full-80'
+            , method: 'get'
+            , cols: [[
+                  {field: '序号',width:50,type:'numbers',title:'序号'}
+                , {field: 'deployment_id', width: 100, title: '部署ID',align:'center'}
+                , {field: 'name', width: 200, title: '流程名称'}
+                , {field: 'version', width: 70, title: '版本',align:'center'}
+                , {field: 'createuser', width: 120, title: '创建人',align:'center'}
+                , {field: 'createtime', width: 170, title: '创建时间'}
+                , {field: 'description', title: '备注'}
+                , {
+                    title: '操作', align: 'center', width: 120,toolbar: '#rightBar'
+                }
+            ]]
+        });
+        
+        form.on('submit(query)', function (data) {
+            table.reload(tableId, {
+                where: data.field
+            });
+            return false;
+        });
         
         upload.render({
             elem: '#lc_upload'
