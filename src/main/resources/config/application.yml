@@ -66,4 +66,4 @@ props:
   loginUrl: /login
   cookiename: ZZOA
   globalSessionTimeout: 43200000 #session过期时间
-  temp-path: D:/download
+  temp-path: C:/download
