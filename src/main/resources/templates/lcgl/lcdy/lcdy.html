@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>用户管理</title>
+    <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
+    <script src="${ctx}/plugins/layui/layui.js"></script>
+    <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" />
+</head>
+<style>
+    html, body {
+        height: 100%;
+    }
+
+    div {
+        -moz-box-sizing: border-box; /*Firefox3.5+*/
+        -webkit-box-sizing: border-box; /*Safari3.2+*/
+        -o-box-sizing: border-box; /*Opera9.6*/
+        -ms-box-sizing: border-box; /*IE8*/
+        box-sizing: border-box; /*W3C标准(IE9+，Safari5.1+,Chrome10.0+,Opera10.6+都符合box-sizing的w3c标准语法)*/
+    }
+
+    .layui-form-item {
+        margin-bottom: 0px
+    }
+
+    .layui-table, .layui-table-view {
+        margin: 0px 0;
+    }
+</style>
+<body class="layui-layout-body" style="padding: 10px">
+
+<form class="layui-form" id="query">
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <input class="layui-input" type="text" placeholder="流程名称" name="name">
+        </div>
+        <div class="layui-inline">
+            <a class="layui-btn layui-btn-primary" lay-submit="" lay-filter="query" datatype="reload">查询</a>
+            <a class="layui-btn layui-btn-primary" onclick="deploy();">流程部署</a>
+        </div>
+    </div>
+</form>
+
+<div style="height:100%">
+    <table class="layui-hidden layui-table" id="dataTable" lay-filter="dataTable"></table>
+</div>
+
+</body>
+<script type="text/html" id="rightBar">
+    <div class="layui-btn-group">
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">
+            <i class="fa fa-pencil"></i>
+        </a>
+		{{# if(d.username != 'superadmin' ) { }}
+        	<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del">
+            	<i class="fa fa-trash-o"></i>
+        	</a>
+			<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="reset">
+            	<i class="fa fa-rotate-left"></i>
+        	</a>
+		{{# } }}
+    </div>
+</script>
+
+<script>
+    var editObj = null, ptable = null, treeGrid = null, tableId = 'dataTable', layer = null, form = null,$=null;
+    layui.use('table', function () {
+        var table = layui.table;
+        $=layui.jquery;
+        form = layui.form;
+        table.render({
+            elem: '#' + tableId
+            , url: '#'
+            , page: true
+            , id: tableId
+            , height: 'full-80'
+            , method: 'get'
+            , cols: [[
+                {field: '序号',width:50,fixed:'left',type:'numbers',title:'序号'}
+                , {field: 'username', width: 150, title: '用户账号'}
+                , {field: 'nickname', width: 150, title: '用户昵称'}
+                , {field: 'createtime', width: 170, title: '创建时间'}
+                , {field: 'remark', title: '备注'}
+                , {field: 'email', width: 170, title: '邮件'}
+                , {field: 'phone', width: 140, title: '手机号码'}
+                , {
+                    title: '操作', align: 'center',width: 170,
+                    toolbar: '#rightBar'
+                }
+            ]]
+
+        });
+    });
+    
+    //流程部署
+    function deploy() {
+        var url = "${ctx}/xtgl/zzgl/yhgl/editPage?flag=add";
+        var table = layui.table;
+        var index = layer.open({
+            title: '新增用户',
+            type: 2,
+            area: ['620px', '400px'],
+            fixed: false, //不固定
+            maxmin: true,
+            content: url,
+            end: function () {
+                table.reload(tableId)
+            }
+        });
+        layer.full(index);
+    }
+</script>
+</html>
