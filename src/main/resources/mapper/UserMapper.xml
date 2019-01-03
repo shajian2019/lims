@@ -30,6 +30,18 @@
       </where>
     </select>
     
+    <select id="getUsers" resultType="com.zzhb.zzoa.domain.User" parameterType="java.util.Map">
+      SELECT * FROM sys_t_user
+      <where>
+          <if test="u_ids != null and u_ids.size() > 0 ">
+              AND u_id in
+	            <foreach collection="u_ids" item="u_id" index="index" open="(" close=")" separator=",">
+				  #{u_id}
+				</foreach>
+            </if>
+      </where>
+    </select>
+    
     
     <delete id="delUserById" parameterType="java.util.Map">
         DELETE FROM sys_t_user
@@ -57,7 +69,7 @@
             <if test="true">
                 updatetime = now(),
             </if>
-            <if test="remark != null and remark !='' ">
+            <if test="remark != null">
                 remark = #{remark},
             </if>
             <if test="email != null and email !='' ">

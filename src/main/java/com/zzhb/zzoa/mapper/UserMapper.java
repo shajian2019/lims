@@ -22,6 +22,8 @@ public interface UserMapper {
 
 	public List<User> getAllUsers(Map<String, String> params);
 
+	public List<User> getUsers(Map<String, Object> params);
+
 	public Integer delUserById(Map<String, Object> map);
 
 	public Integer addUser(User user);
@@ -31,13 +33,14 @@ public interface UserMapper {
 	public Integer updateUserByUser(User user);
 
 	public Integer addUrole(Map<String, Integer> map);
-	
+
 	public Integer updateUserRole(Map<String, Integer> map);
 
 	@Delete("DELETE FROM sys_t_user_role WHERE u_id = #{0}")
 	public Integer delUserRole(Integer u_id);
 
-	public Integer resetPass(Map<String,String> map);
+	public Integer resetPass(Map<String, String> map);
+
 	@Select("SELECT COUNT(1) FROM sys_t_user WHERE username = #{0}")
 	public Integer getCountByName(String username);
 }

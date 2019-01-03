@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -114,12 +115,6 @@ public class ZzglController {
 		return zzjgService.zzjgList();
 	}
 
-	@GetMapping("/zzjg/user/list")
-	@ResponseBody
-	public JSONObject zzjgUserList() {
-		return zzjgService.zzjgList();
-	}
-
 	@PostMapping("/zzjg/add")
 	@ResponseBody
 	public Integer zzjgAdd(String groupName) {
@@ -138,4 +133,33 @@ public class ZzglController {
 		return zzjgService.zzjgDel(groupId);
 	}
 
+	@GetMapping("/zzjg/user/list")
+	@ResponseBody
+	public JSONObject zzjgUserList(Integer page, Integer limit, @RequestParam Map<String, String> params) {
+		return zzjgService.zzjgUserList(page, limit, params);
+	}
+
+	@GetMapping("/zzjg/adduser")
+	public String zzjgAddUser(String groupId, ModelMap map) {
+		map.put("groupId", groupId);
+		return "xtgl/zzgl/zzjg/pop";
+	}
+
+	@GetMapping("/zzjg/adduser/list")
+	@ResponseBody
+	public JSONObject zzjgAddUserList(Integer page, Integer limit, @RequestParam Map<String, String> params) {
+		return zzjgService.zzjgAddUserList(page, limit, params);
+	}
+
+	@PostMapping("/zzjg/user/del")
+	@ResponseBody
+	public Integer zzjgUserDel(String userId) {
+		return zzjgService.zzjgUserDel(userId);
+	}
+
+	@PostMapping("/zzjg/user/add")
+	@ResponseBody
+	public Integer zzjgUserAdd(String groupId, String u_ids) {
+		return zzjgService.zzjgUserAdd(groupId, u_ids);
+	}
 }

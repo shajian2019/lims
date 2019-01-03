@@ -32,4 +32,8 @@
 			</if>
 		</where>
 	</delete>
+	
+	<select id="getAddUsers" resultType="com.zzhb.zzoa.domain.User">
+		SELECT * FROM sys_t_user u LEFT JOIN act_id_user au on u.u_id = au.ID_ WHERE au.ID_ IS NULL AND u.username != 'superadmin'
+	</select>
 </mapper>

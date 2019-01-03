@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.IdentityService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.session.Session;
@@ -31,6 +32,9 @@ public class UserService {
 
 	@Autowired
 	LoginService loginService;
+	
+	@Autowired
+	IdentityService identityService;
 
 	public User getUser(String username) {
 		return userMapper.getUser(username);
@@ -50,6 +54,7 @@ public class UserService {
 		if (!u.getStatus().equals("3")) {// 已分配角色
 			userMapper.delUserRole(Integer.parseInt(String.valueOf(map.get("id"))));
 		}
+		identityService.deleteUser(String.valueOf(map.get("id")));
 		return userMapper.delUserById(map);
 	}
 
@@ -57,7 +62,6 @@ public class UserService {
 	public Integer addUser(User user, String role, String flag) {
 		Integer addUser = 0;
 		Map<String, Integer> map = new HashMap<String, Integer>();
-		map.put("r_id", Integer.parseInt(role));
 		if ("add".equals(flag)) {
 			Object result = new SimpleHash("MD5", user.getPassword(), user.getUsername(), 1);
 			user.setPassword(result.toString());
@@ -69,9 +73,11 @@ public class UserService {
 				addUser = userMapper.addUser(user);
 				Integer u_id = user.getU_id();
 				map.put("u_id", u_id);
+				map.put("r_id", Integer.parseInt(role));
 				userMapper.addUrole(map);
 			}
 		} else {
+			map.put("r_id", Integer.parseInt(role));
 			map.put("u_id", user.getU_id());
 			if ("3".equals(user.getStatus())) {
 				user.setStatus("0");
