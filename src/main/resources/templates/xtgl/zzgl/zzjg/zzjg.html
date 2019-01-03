@@ -1,10 +1,229 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<meta charset="UTF-8">
-<title>组织架构</title>
+    <meta charset="UTF-8">
+    <title>组织架构</title>
+    <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
+    <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <link rel="stylesheet" href="${ctx}/plugins/layui/extend/dtree/dtree.css">
+    <link rel="stylesheet" href="${ctx}/plugins/layui/extend/dtree/font/dtreefont.css">
+    <style>
+        html,body{margin: 0;height: 100%;}
+ .layui-table, .layui-table-view {margin:0;}
+ .layui-table-tool {
+    position: relative;
+    z-index: 890;
+    width: 100%;
+    min-height: 50px;
+    line-height: 49px;
+    padding: 0px 5px;
+    border-width: 0 0 1px;
+}
+.layui-input{height:32px;line-height: 32px;}
+.dtree{width: 210px;}
+ .left-box{float: left;width:240px;height:100%;padding:3px;box-sizing: border-box;overflow-y: auto;border-right:1px solid #e6e6e6;}
+ .right-box{float: right;width:calc(100% - 242px); ;height:100%;}
+ .bm_name_tit{height:42px;line-height: 42px;background-color: #f3f5f7;text-align: center;font-size:16px;}
+</style>
 </head>
+
 <body>
-组织架构
+    <div class="left-box">
+        <!-- <table class="layui-hide" id="left_tb" lay-filter="left_tb"></table> -->
+        <h4 class="bm_name_tit">部门名称</h4>
+        <div style="overflow: auto;" id="toolbarDiv">
+            <ul id="left_tree" class="dtree" data-id="0"></ul>
+        </div>
+
+    </div>
+    <div class="right-box">
+        <table class="layui-hide" id="right_tb" lay-filter="right_tb"></table>
+    </div>
 </body>
+
 </html>
+<script type="text/html" id="topbar">
+    <form class="layui-form">
+            <div class="layui-inline">
+                <input type="text" class="layui-input">
+            </div>
+            <div class="layui-inline">
+                <a href="javascript:;" class="layui-btn layui-btn-sm  layui-btn-primary" lay-submit lay-filter="*">查询</a>
+                <a href="javascript:;" class="layui-btn layui-btn-sm  layui-btn-primary" lay-event="add">添加</a>
+            </div>
+    </form>
+</script>
+<script src="${ctx}/plugins/layui/layui.js"></script>
+<script>
+    var data = [{
+        "id": "001",
+        "title": "湖南省",
+        "isLast": false,
+        "level": "1",
+        "parentId": "0",
+        "checkArr": [{
+            "type": "0",
+            "isChecked": "0"
+        }],
+        "basicData": {
+            "data1": "自定义数据111",
+            "data2": "自定义数据222",
+            "data3": "自定义'我带了单引号'333"
+        },
+    }, {
+        "id": "002",
+        "title": "湖北省",
+        "isLast": false,
+        "parentId": "0",
+        "level": "1",
+        "checkArr": [{
+            "type": "0",
+            "isChecked": "0"
+        }],
+    }]
+    layui.config({
+        base: '${ctx}/plugins/layui/extend/dtree/' //配置 layui 第三方扩展组件存放的基础目录
+    }).extend({
+        dtree: 'dtree' //定义该组件模块名
+    })
+    layui.use(['table', 'layer', 'form', 'dtree', 'element'], function () {
+        var $ = layui.jquery,
+            table = layui.table,
+            form = layui.form,
+            dtree = layui.dtree,
+            element = layui.element,
+            layer = layui.layer;
+        var dtreeID = 'left_tree';
+        var tbID = 'right_tb'
+        //left-表格
+        dtree.render({
+            elem: "#" + dtreeID, //绑定元素
+            //url: "../json/case/demoTree1.json"  //异步接口
+            data: data,
+            ficon: "-1", // 隐藏一级图标
+            icon: "2",
+            dot: false,
+            skin: "layui",
+            menubar: true,
+            menubarTips: {
+                group: [{
+                    menubarId: "add",
+                    icon: "dtree-icon-jia",
+                    title: "新增",
+                    handler: function (node, $div) {
+                        layer.prompt({
+                            formType: 0,
+                            title: '新增部门' //自定义文本域宽高
+                        }, function (value, index, elem) {
+                            //alert(value); //得到value
+                            layer.close(index);
+                        });
+                    } //扩展按钮的回调函数
+                }], //按钮组
+            },
+            toolbar: true,
+            toolbarScroll: "#toolbarDiv", //划重点，必须配置，属性含义请参考文档
+            toolbarShow: ["delete"],
+            toolbarLoad: "node",
+            toolbarExt: [{
+                toolbarId: "edit",
+                icon: "dtree-icon-bianji",
+                title: "编辑",
+                handler: function (node, $div) {
+                    //layer.msg(JSON.stringify(node));
+                    var val = node.context;
+                    layer.prompt({
+                        formType: 0,
+                        value: val,
+                        title: '修改部门' //自定义文本域宽高
+                    }, function (value, index, elem) {
+                        //alert(value); //得到value
+                        layer.close(index);
+                    });
+                }
+            }]
+        });
+        //treeclick
+        dtree.on("node('" + dtreeID + "')", function (obj) {
+
+            console.log(obj.param); // 点击当前节点传递的参数
+            console.log(obj.dom); // 当前节点的jquery对象
+            console.log(obj.childParams); // 当前节点的所有子节点参数
+            console.log(obj.parentParam); // 当前节点的父节点参数
+            rightTB.reload({
+                where: { //设定异步数据接口的额外参数，任意设                  //…
+                }
+            });
+        });
+        var rightTB = table.render({
+            elem: '#' + tbID,
+            heigh: '100%',
+            url: '/demo/table/user/', //数据接口,
+            toolbar: '#topbar',
+            defaultToolbar: [],
+            page: true,
+            cols: [
+                [ //表头
+                    {
+                        field: 'id',
+                        title: 'ID',
+                        width: 80,
+                        sort: true,
+                        fixed: 'left'
+                    }, {
+                        field: 'username',
+                        title: '用户名',
+                        width: 80
+                    }, {
+                        field: 'sex',
+                        title: '性别',
+                        width: 80,
+                        sort: true
+                    }, {
+                        field: 'city',
+                        title: '城市',
+                        width: 80
+                    }, {
+                        field: 'sign',
+                        title: '签名',
+                        width: 177
+                    }, {
+                        field: 'experience',
+                        title: '积分',
+                        width: 80,
+                        sort: true
+                    }, {
+                        field: 'score',
+                        title: '评分',
+                        width: 80,
+                        sort: true
+                    }, {
+                        field: 'classify',
+                        title: '职业',
+                        width: 80
+                    }, {
+                        field: 'wealth',
+                        title: '财富',
+                        width: 135,
+                        sort: true
+                    }
+                ]
+            ]
+        });
+        table.on('toolbar(' + tbID + ')', function (obj) {
+            var checkStatus = table.checkStatus(obj.config.id);
+            switch (obj.event) {
+                case 'add':
+
+                    break;
+            };
+        });
+        form.on('submit(*)', function (data) {
+            console.log(data.elem) //被执行事件的元素DOM对象，一般为button对象
+            console.log(data.form) //被执行提交的form对象，一般在存在form标签时才会返回
+            console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+    })
+</script>
