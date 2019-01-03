@@ -71,8 +71,8 @@ public class ZzglController {
 
 	@PostMapping("/yhgl/addUser")
 	@ResponseBody
-	public Integer addUser(User user, String role,String flag) {
-		return userService.addUser(user, role,flag);
+	public Integer addUser(User user, String role, String flag) {
+		return userService.addUser(user, role, flag);
 	}
 
 	@PostMapping("/yhgl/updateUser")
@@ -89,13 +89,19 @@ public class ZzglController {
 
 	@PostMapping("/yhgl/resetPassword")
 	@ResponseBody
-	public Integer resetPass(@RequestParam Map<String, String> map){
+	public Integer resetPass(@RequestParam Map<String, String> map) {
 		return userService.resetPass(map);
 	}
 
 	@PostMapping("/yhgl/getUserByName")
 	@ResponseBody
-	public Integer getUserByName(@RequestParam("username") String username){
+	public Integer getUserByName(@RequestParam("username") String username) {
 		return userService.getAllUname(username);
 	}
+
+	@GetMapping("/zzjg")
+	public String zzjg() {
+		return "xtgl/zzgl/zzjg/zzjg";
+	}
+
 }
