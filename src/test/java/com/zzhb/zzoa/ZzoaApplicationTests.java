@@ -6,20 +6,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.alibaba.fastjson.JSONArray;
-import com.zzhb.zzoa.service.MenuService;
+import com.zzhb.zzoa.controller.xtgl.ZzglController;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class ZzoaApplicationTests {
 
-	
 	@Autowired
-	MenuService menuService;
+	ZzglController zzglController;
+
 	@Test
 	public void contextLoads() {
-		
+		System.out.println(zzglController.zzjgAdd("销售部"));
+		System.out.println(zzglController.zzjgAdd("行政部"));
+		System.out.println(zzglController.zzjgAdd("工程部"));
+	}
+
+	@Test
+	public void contextLoads2() {
+		System.out.println(zzglController.zzjgList());
 	}
 
 }
-

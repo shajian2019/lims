@@ -17,6 +17,7 @@ import com.zzhb.zzoa.mapper.RoleMapper;
 import com.zzhb.zzoa.mapper.UserMapper;
 import com.zzhb.zzoa.service.RoleService;
 import com.zzhb.zzoa.service.UserService;
+import com.zzhb.zzoa.service.ZzjgService;
 
 //组织管理
 @Controller
@@ -102,6 +103,39 @@ public class ZzglController {
 	@GetMapping("/zzjg")
 	public String zzjg() {
 		return "xtgl/zzgl/zzjg/zzjg";
+	}
+
+	@Autowired
+	ZzjgService zzjgService;
+
+	@GetMapping("/zzjg/list")
+	@ResponseBody
+	public JSONObject zzjgList() {
+		return zzjgService.zzjgList();
+	}
+
+	@GetMapping("/zzjg/user/list")
+	@ResponseBody
+	public JSONObject zzjgUserList() {
+		return zzjgService.zzjgList();
+	}
+
+	@PostMapping("/zzjg/add")
+	@ResponseBody
+	public Integer zzjgAdd(String groupName) {
+		return zzjgService.zzjgAdd(groupName);
+	}
+
+	@PostMapping("/zzjg/edit")
+	@ResponseBody
+	public Integer zzjgEdit(String groupId, String groupName) {
+		return zzjgService.zzjgEdit(groupId, groupName);
+	}
+
+	@PostMapping("/zzjg/del")
+	@ResponseBody
+	public Integer zzjgDel(String groupId) {
+		return zzjgService.zzjgDel(groupId);
 	}
 
 }
