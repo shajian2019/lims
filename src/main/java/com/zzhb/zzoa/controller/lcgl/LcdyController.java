@@ -76,9 +76,9 @@ public class LcdyController {
 	public JSONObject deploy(@RequestParam("file") MultipartFile file, @RequestParam Map<String, String> params) {
 		JSONObject json = new JSONObject();
 		String fileName = file.getOriginalFilename();
-		if (fileName.indexOf("bpmn") == -1) {
+		if (fileName.indexOf(".zip") == -1) {
 			json.put("code", "-1");
-			json.put("msg", "文件类型错误，仅支持bpmn文件");
+			json.put("msg", "文件类型错误，仅支持zip文件");
 		} else {
 			try {
 				Integer deploy = activitiService.deploy(params, file);

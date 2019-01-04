@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.zip.ZipInputStream;
 
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
@@ -29,7 +30,6 @@ import com.zzhb.zzoa.domain.activiti.ProcessDefinitionType;
 import com.zzhb.zzoa.mapper.ActivitiMapper;
 import com.zzhb.zzoa.utils.FileUtil;
 import com.zzhb.zzoa.utils.LayUiUtil;
-import com.zzhb.zzoa.utils.TimeUtil;
 import com.zzhb.zzoa.utils.ZipUtils;
 
 @Service
@@ -49,8 +49,9 @@ public class ActivitiService {
 	@Transactional
 	public Integer deploy(Map<String, String> params, MultipartFile file) throws IOException {
 		String resourceName = file.getOriginalFilename();
-		Deployment deploy = repositoryService.createDeployment().addInputStream(resourceName, file.getInputStream())
-				.name(resourceName).deploy();
+		Deployment deploy = repositoryService.createDeployment()
+				.addZipInputStream(new ZipInputStream(file.getInputStream())).name(resourceName).deploy();
+
 		ProcessDefinition pdf = repositoryService.createProcessDefinitionQuery().deploymentId(deploy.getId())
 				.singleResult();
 		ProcessDefinitionExt pde = new ProcessDefinitionExt();
@@ -121,7 +122,7 @@ public class ActivitiService {
 		String processDefinitionId = params.get("id");
 		String resource_name = params.get("resource_name");
 		String dgrm_resource_name = params.get("dgrm_resource_name");
-		String fileDir = TimeUtil.getTimeByCustom("yyyyMMddHHmmssSSS");
+		String fileDir = resource_name.split("\\.")[0];
 		String dir = props.getTempPath() + "/" + fileDir;
 		if (new File(dir).mkdirs()) {
 			InputStream processModel = repositoryService.getProcessModel(processDefinitionId);
@@ -129,7 +130,7 @@ public class ActivitiService {
 			InputStream processDiagram = repositoryService.getProcessDiagram(processDefinitionId);
 			FileUtil.saveFileFromInputStream(processDiagram, dir, dgrm_resource_name);
 			try {
-				ZipUtils.toZip(dir, new FileOutputStream(dir + ".zip"), true);
+				ZipUtils.toZip(dir, new FileOutputStream(dir + ".zip"), false);
 				fileName = fileDir + ".zip";
 				FileUtil.deleteDirectory(dir);
 			} catch (FileNotFoundException | RuntimeException e) {
