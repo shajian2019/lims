@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +25,7 @@ import com.zzhb.zzoa.mapper.IconMapper;
 import com.zzhb.zzoa.mapper.MenuMapper;
 import com.zzhb.zzoa.mapper.ParamMapper;
 import com.zzhb.zzoa.service.DictService;
+import com.zzhb.zzoa.service.IconService;
 import com.zzhb.zzoa.service.MenuService;
 import com.zzhb.zzoa.service.ParamService;
 
@@ -140,7 +142,6 @@ public class XtszController {
 		return mv;
 	}
 
-	
 	@GetMapping("/zdgl/zdpop")
 	public ModelAndView zdpop(@RequestParam Map<String, String> params) {
 		ModelAndView mv = new ModelAndView();
@@ -153,11 +154,10 @@ public class XtszController {
 		mv.setViewName("xtgl/xtsz/zdgl/zdpop");
 		return mv;
 	}
-	
-	
+
 	@Autowired
 	ParamMapper paramMapper;
-	
+
 	@Autowired
 	ParamService paramService;
 
@@ -191,5 +191,41 @@ public class XtszController {
 	@ResponseBody
 	public Integer delParamById(@RequestParam Map<String, String> map) {
 		return paramMapper.delParamById(map);
+	}
+
+	@Autowired
+	IconService iconService;
+
+	@GetMapping("/tbgl")
+	public String tbgl() {
+		return "xtgl/xtsz/tbgl/tbgl";
+	}
+
+	@GetMapping("/tbgl/list")
+	@ResponseBody
+	public JSONObject tbglList(Integer page, Integer limit, @RequestParam Map<String, String> params) {
+		return iconService.tbglList(page, limit, params);
+	}
+
+	@GetMapping("/tbgl/pop")
+	public String tbglPop(@RequestParam Map<String, String> params, ModelMap model) {
+		String i_id = params.get("i_id");
+		if (i_id != null) {
+			Icon icon = iconMapper.getIcon(params);
+			model.put("icon", icon);
+		}
+		return "xtgl/xtsz/tbgl/pop";
+	}
+
+	@PostMapping("/tbgl/pop/add")
+	@ResponseBody
+	public Integer tbglPopAdd(Icon icon) {
+		return iconService.tbglPodAdd(icon);
+	}
+
+	@PostMapping("/tbgl/pop/del")
+	@ResponseBody
+	public Integer tbglPopDel(Icon icon) {
+		return iconService.tbglPodDel(icon.getId() + "");
 	}
 }
