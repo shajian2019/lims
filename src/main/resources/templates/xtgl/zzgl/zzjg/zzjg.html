@@ -122,13 +122,13 @@
             },
             toolbar: true,
             toolbarScroll: "#toolbarDiv", //划重点，必须配置，属性含义请参考文档
-            toolbarStyle:{title:"", area:["60%","80%"] },
+            toolbarStyle:{title:"部门", area:["60%","80%"] },
             toolbarShow: ["delete"],
             toolbarLoad: "node",
             toolbarExt: [{
                 toolbarId: "edit",
                 icon: "dtree-icon-bianji",
-                title: "编辑",
+                title: "编辑部门",
                 handler: function (node, $div) {
                     var index = layer.prompt({
                         formType: 0,
