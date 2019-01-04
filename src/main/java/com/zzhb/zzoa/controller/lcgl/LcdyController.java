@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONObject;
 import com.zzhb.zzoa.config.Props;
+import com.zzhb.zzoa.domain.activiti.ProcessDefinitionType;
 import com.zzhb.zzoa.service.ActivitiService;
 
 @Controller
@@ -44,6 +45,24 @@ public class LcdyController {
 	@ResponseBody
 	public JSONObject lcdyList(Integer page, Integer limit, @RequestParam Map<String, String> params) {
 		return activitiService.lcdyList(page, limit, params);
+	}
+
+	@GetMapping("/lcfl/list")
+	@ResponseBody
+	public JSONObject lcflList() {
+		return activitiService.lcflList();
+	}
+
+	@PostMapping("/lcfl/add")
+	@ResponseBody
+	public Integer lcflAdd(String name) {
+		return activitiService.lcflAdd(name);
+	}
+
+	@PostMapping("/lcfl/edit")
+	@ResponseBody
+	public Integer lcflEdit(ProcessDefinitionType pt) {
+		return activitiService.lcflEdit(pt);
 	}
 
 	@PostMapping("/del")

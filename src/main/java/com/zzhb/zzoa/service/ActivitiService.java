@@ -7,11 +7,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.joda.time.DateTimeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +19,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zzhb.zzoa.config.Props;
 import com.zzhb.zzoa.domain.activiti.ProcessDefinitionExt;
+import com.zzhb.zzoa.domain.activiti.ProcessDefinitionType;
 import com.zzhb.zzoa.mapper.ActivitiMapper;
-import com.zzhb.zzoa.utils.DateUtil;
 import com.zzhb.zzoa.utils.FileUtil;
 import com.zzhb.zzoa.utils.LayUiUtil;
 import com.zzhb.zzoa.utils.TimeUtil;
@@ -72,6 +73,41 @@ public class ActivitiService {
 		List<ProcessDefinitionExt> processDefinitionExts = activitiMapper.getProcessDefinitionExts(params);
 		PageInfo<ProcessDefinitionExt> pageInfo = new PageInfo<>(processDefinitionExts);
 		return LayUiUtil.pagination(pageInfo);
+	}
+
+	public JSONObject lcflList() {
+		List<ProcessDefinitionType> processDefinitionTypes = activitiMapper.getProcessDefinitionTypes();
+		JSONObject result = new JSONObject();
+		JSONArray data = new JSONArray();
+		JSONArray children = new JSONArray();
+		for (ProcessDefinitionType pt : processDefinitionTypes) {
+			JSONObject groupJ = new JSONObject();
+			groupJ.put("id", pt.getType());
+			groupJ.put("title", pt.getName());
+			groupJ.put("parentId", "0");
+			groupJ.put("children", children);
+			data.add(groupJ);
+		}
+		result.put("data", data);
+		JSONObject status = new JSONObject();
+		status.put("code", 200);
+		status.put("message", "操作成功");
+		result.put("status", status);
+		return result;
+	}
+
+	@Transactional
+	public Integer lcflAdd(String name) {
+		ProcessDefinitionType pt = new ProcessDefinitionType();
+		pt.setName(name);
+		String type = UUID.randomUUID().toString();
+		pt.setType(type);
+		return activitiMapper.addProcessDefinitionType(pt);
+	}
+
+	@Transactional
+	public Integer lcflEdit(ProcessDefinitionType pt) {
+		return activitiMapper.addProcessDefinitionType(pt);
 	}
 
 	@Transactional
