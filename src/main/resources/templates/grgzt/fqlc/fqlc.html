@@ -6,8 +6,6 @@
     <title>发起流程</title>
     <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
     <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" />
-    <link rel="stylesheet" href="${ctx}/css/app.css" media="all" />
-    <link rel="stylesheet" href="${ctx}/css/themes/default.css" media="all" id="skin" kit-skin />
     <link rel="stylesheet" href="${ctx}/plugins/layui/extend/dtree/dtree.css">
     <link rel="stylesheet" href="${ctx}/plugins/layui/extend/dtree/font/dtreefont.css">
     <style>
@@ -145,6 +143,14 @@
         });
     }
     
+    function start(title,key){
+    	var options = {};
+    	options.title = title;
+    	options.icon = "fa-pencil";
+    	options.url = "${ctx}/fqlc/start/"+key;
+    	parent.window.addTab(options);
+    }
+    
     function preview(id,dgrm_resource_name){
     	$.ajax({
             type: "post",
@@ -159,7 +165,7 @@
                 index = layer.open({
               		  type: 1,
               		  title: '流程图',
-                     maxmin: true,
+                      maxmin: true,
               		  content: $('#preview')
          		 });
                 layer.full(index);
@@ -173,7 +179,7 @@
     function load(protype){
     	$.ajax({
             type: "get",
-            data:{protype:protype},
+            data:{protype:protype,lastversion:true},
             url: "${ctx}/lcgl/lcdy/list",
             beforeSend: function () {
                 index = layer.load(1);
@@ -188,7 +194,7 @@
 	                	   html +='<div class="zdy-list-box">';
 	                	   html +='<p>'+value.name+'</p>';
 	                	   html +='<div class="layui-btn-container">';
-	                	   html +='<dd><a href="javascript:;" kit-target data-options={url:"${ctx}/fqlc/start/'+value.key+'",icon:"&#xe658;",id:"1000"} class="layui-btn layui-btn-sm layui-bg-red"><i class="fa fa-play-circle-o zdy-icon"></i>发起</a></dd>';
+	                	   html +='<a href="javascript:void(0);" onclick=start("'+value.name+'","'+value.key+'") class="layui-btn layui-btn-sm layui-bg-red"><i class="fa fa-play-circle-o zdy-icon"></i>发起</a>';
 	                	   html +='<a href="javascript:void(0);" onclick=preview("'+value.id+'","'+value.dgrm_resource_name+'") class="layui-btn layui-btn-sm layui-bg-blue"><i class="fa fa-file-image-o zdy-icon"></i>流程图</a>';
 	                	   html +='</div>';
 	                	   html +='</div>';

@@ -221,7 +221,7 @@
         
         dtree.on("node('" + dtreeID + "')", function (obj) {
             rightTB.reload({
-                where: {protype:obj.param.nodeId}
+                where: {lastversion:true,protype:obj.param.nodeId}
             });
         });
         
@@ -230,6 +230,7 @@
             id: tbID,
             height: 'full-40',
             url: '${ctx}/lcgl/lcdy/list', //数据接口,
+            where:{lastversion:true},
             page: true,
             cols: [[
                 {field: '序号',width:50,type:'numbers',title:'序号'}
@@ -322,6 +323,7 @@
         form.on('submit(search)', function (data) {
         	var param = dtree.getNowParam(dtreeObj);
         	data.field.protype = param.nodeId;
+        	data.field.lastversion = true;
            	rightTB.reload({
                 where: data.field
             });

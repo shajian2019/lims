@@ -21,6 +21,9 @@ import com.zzhb.zzoa.utils.LayUiUtil;
 public class RoleService {
 
 	@Autowired
+	CacheService cacheService;
+
+	@Autowired
 	RoleMapper roleMapper;
 
 	@Autowired
@@ -45,6 +48,7 @@ public class RoleService {
 		}
 		params2.put("u_ids", userIds);
 		Integer updateUser = userMapper.updateUser(params2);
+		cacheService.flushMenus();
 		return updateUser;
 	}
 
@@ -70,6 +74,7 @@ public class RoleService {
 		}
 		params2.put("m_ids", Arrays.asList(paramStr.split("\\|")));
 		addRoleMenus = roleMapper.addRoleMenus(params2);
+		cacheService.flushMenus();
 		return addRoleMenus;
 	}
 
@@ -84,6 +89,7 @@ public class RoleService {
 			params.put("u_ids", uIds);
 			userMapper.updateUser(params);
 		}
+		cacheService.flushMenus();
 		return delUserRole;
 	}
 
