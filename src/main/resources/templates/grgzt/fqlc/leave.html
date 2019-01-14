@@ -64,12 +64,14 @@
         </div>
         <div class="layui-form-item layui-form-text">
                 <label class="layui-form-label">图片</label>
-                 <div class="layui-upload">
-					  <button type="button" class="layui-btn" id="test2">多图片上传</button> 
-					  <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">
-					   	 预览图：
-					    <div class="layui-upload-list" id="demo2"></div>
-					  </blockquote>
+                <div class="layui-upload">
+					  <button type="button" class="layui-btn" id="test2">新增</button> 
+				</div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">审批人</label>
+                <div class="layui-upload">
+					  <button type="button" class="layui-btn" id="test2">新增</button> 
 				</div>
         </div>
         <div class="layui-form-item">
@@ -134,7 +136,15 @@
 		    }
 		    ,done: function(res){
 		      //上传完毕
+		      
 		    }
+		 });
+
+		form.on('submit(sq)', function(data){
+			  console.log(data.elem) //被执行事件的元素DOM对象，一般为button对象
+			  console.log(data.form) //被执行提交的form对象，一般在存在form标签时才会返回
+			  console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
+			  return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
 		});
 	}else if(formType == '1'){
 		
