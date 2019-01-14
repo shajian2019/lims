@@ -43,7 +43,7 @@ public class LcdyController {
 
 	@GetMapping("/list")
 	@ResponseBody
-	public JSONObject lcdyList(Integer page, Integer limit, @RequestParam Map<String, String> params) {
+	public JSONObject lcdyList(@RequestParam(defaultValue="1")Integer page, @RequestParam(defaultValue="0x7fffffff")Integer limit, @RequestParam Map<String, String> params) {
 		return activitiService.lcdyList(page, limit, params);
 	}
 

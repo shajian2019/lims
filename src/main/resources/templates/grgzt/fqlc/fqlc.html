@@ -6,6 +6,8 @@
     <title>发起流程</title>
     <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
     <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <link rel="stylesheet" href="${ctx}/css/app.css" media="all" />
+    <link rel="stylesheet" href="${ctx}/css/themes/default.css" media="all" id="skin" kit-skin />
     <link rel="stylesheet" href="${ctx}/plugins/layui/extend/dtree/dtree.css">
     <link rel="stylesheet" href="${ctx}/plugins/layui/extend/dtree/font/dtreefont.css">
     <style>
@@ -23,12 +25,39 @@
 .layui-input{height:32px;line-height: 32px;}
 .dtree{width: 210px;}
  .left-box{float: left;width:240px;height:100%;padding:3px;box-sizing: border-box;overflow-y: auto;border-right:1px solid #e6e6e6;}
- .right-box{float: right;width:calc(100% - 242px); ;height:100%;}
  .bm_name_tit{height:42px;line-height: 42px;background-color: #f3f5f7;text-align: center;font-size:16px;}
-#pop{margin: 12px auto 0;}
-#pop .layui-form-item{display: flex;align-items: center;}
-#pop .layui-form-item>.layui-inline{width: 320px;}
-#lc_upload_btn{margin: 0 auto;}
+ * {
+            box-sizing: border-box;
+   }
+
+   .flex-box {
+       padding: 8px;
+   }
+
+   .zdy-list {
+       display: flex;
+       align-items: center;
+       justify-content: space-between;
+       flex-wrap: wrap;
+   }
+
+   .zdy-list>li {
+       width: 20%;
+       padding: 10px;
+       margin-bottom: 12px;
+   }
+
+   .zdy-list .zdy-list-box {
+       background-color: #f3f5f7;
+       border: 1px solid #e6e6e6;
+       border-radius: 4px;
+       display: flex;
+       flex-direction: column;
+       height: 140px;
+       justify-content: space-between;
+       padding: 10px;
+   }
+   .zdy-icon{margin-right: 5px;}
 </style>
 </head>
 <body>
@@ -38,10 +67,10 @@
             <ul id="left_tree" class="dtree" data-id="0"></ul>
         </div>
     </div>
-    <div class="right-box">
-        <table class="layui-hide" id="right_tb" lay-filter="right_tb"></table>
+    <div class="flex-box">
     </div>
-	<div id="preview" class="hide" style="display: none;">
+    
+    <div id="preview" class="hide" style="display: none;">
 		<img alt="" src="">
 	</div>
 </body>
@@ -61,16 +90,16 @@
     }).extend({
         dtree: 'dtree'
     })
-    var $ = null,table=null,upload=null,form=null,dtree=null,layer=null,dtreeID=null,tbID=null;
-    layui.use(['table', 'layer', 'form', 'dtree','upload'], function () {
+    var $ = null,table=null,upload=null,dtree=null,layer=null,dtreeID=null,index=null;
+    layui.use(['table', 'layer', 'dtree','upload'], function () {
             $ = layui.jquery,
             table = layui.table,
             upload=layui.upload,
-            form = layui.form,
             dtree = layui.dtree,
             layer = layui.layer,
-            dtreeID = 'left_tree',
-            tbID = 'right_tb';
+            dtreeID = 'left_tree';
+            
+        load('');
         
         var dtreeObj = dtree.render({
             elem: "#" + dtreeID, //绑定元素
@@ -87,60 +116,95 @@
         });
         
         dtree.on("node('" + dtreeID + "')", function (obj) {
-            rightTB.reload({
-                where: {protype:obj.param.nodeId}
-            });
-        });
-        
-        
-        
-        var rightTB = table.render({
-            elem: '#' + tbID,
-            id: tbID,
-            height: 'full-40',
-            url: '${ctx}/lcgl/lcdy/list', //数据接口,
-            page: true,
-            cols: [[
-                {field: '序号',width:50,type:'numbers',title:'序号'}
-              , {field: 'deployment_id', width: 100, title: '部署ID',align:'center'}
-              , {field: 'name', width: 200, title: '流程名称'}
-              , {field: 'version', width: 70, title: '版本',align:'center'}
-              , {field: 'createuser', width: 120, title: '创建人',align:'center'}
-              , {field: 'createtime', width: 170, title: '创建时间'}
-              , {field: 'description', title: '备注'}
-              , {title: '操作', align: 'center', width: 120,toolbar: '#rightBar'}
-          ]]
-        });
-        
-        table.on('tool(' + tbID + ')', function (obj) {
-           var param = dtree.getNowParam(dtreeObj);
-           var data = obj.data;
-           var action = obj.event;
-       	   var index;
-           if("preview" == action){
-        	 $.ajax({
-                 type: "post",
-                 data: data,
-                 url: "${ctx}/lcgl/lcdy/preview",
-                 beforeSend: function () {
-                     index = layer.load(1);
-                 },
-                 success: function (data) {
-                     layer.close(index);
-                     $("img").attr('src',"${ctx}/"+data)
-                     index = layer.open({
-                   		  type: 1,
-                   		  title: '流程图',
-	                      maxmin: true,
-                   		  content: $('#preview')
-              		 });
-                     layer.full(index);
-                 },
-                 error: function (data) {
-                     layer.msg("服务端异常");
-                 }
-             });
-         }
+          	load(obj.param.nodeId)
         });
     })
+    
+    function start(key){
+    	$.ajax({
+            type: "post",
+            data: {key,key},
+            url: "${ctx}/fqlc/start",
+            beforeSend: function () {
+                index = layer.load(1);
+            },
+            success: function (data) {
+                layer.close(index);
+                $("img").attr('src',"${ctx}/"+data)
+                index = layer.open({
+              		  type: 1,
+              		  title: '流程图',
+                     maxmin: true,
+              		  content: $('#preview')
+         		 });
+                layer.full(index);
+            },
+            error: function (data) {
+                layer.msg("服务端异常");
+            }
+        });
+    }
+    
+    function preview(id,dgrm_resource_name){
+    	$.ajax({
+            type: "post",
+            data: {dgrm_resource_name:dgrm_resource_name,id:id},
+            url: "${ctx}/lcgl/lcdy/preview",
+            beforeSend: function () {
+                index = layer.load(1);
+            },
+            success: function (data) {
+                layer.close(index);
+                $("img").attr('src',"${ctx}/"+data)
+                index = layer.open({
+              		  type: 1,
+              		  title: '流程图',
+                     maxmin: true,
+              		  content: $('#preview')
+         		 });
+                layer.full(index);
+            },
+            error: function (data) {
+                layer.msg("服务端异常");
+            }
+        });
+    }
+    
+    function load(protype){
+    	$.ajax({
+            type: "get",
+            data:{protype:protype},
+            url: "${ctx}/lcgl/lcdy/list",
+            beforeSend: function () {
+                index = layer.load(1);
+            },
+            success: function (data) {
+                layer.close(index);
+                if(data.data.length > 0){
+             	   var html = '<ul class="zdy-list">'
+	                   $.each(data.data,function(index,value){
+	                	   console.log(value)
+	                	   html +='<li>';
+	                	   html +='<div class="zdy-list-box">';
+	                	   html +='<p>'+value.name+'</p>';
+	                	   html +='<div class="layui-btn-container">';
+	                	   html +='<dd><a href="javascript:;" kit-target data-options={url:"${ctx}/fqlc/start/'+value.key+'",icon:"&#xe658;",id:"1000"} class="layui-btn layui-btn-sm layui-bg-red"><i class="fa fa-play-circle-o zdy-icon"></i>发起</a></dd>';
+	                	   html +='<a href="javascript:void(0);" onclick=preview("'+value.id+'","'+value.dgrm_resource_name+'") class="layui-btn layui-btn-sm layui-bg-blue"><i class="fa fa-file-image-o zdy-icon"></i>流程图</a>';
+	                	   html +='</div>';
+	                	   html +='</div>';
+	                	   html +='</li>';
+					   });
+             	   html +='</ul>';
+             	   $(".flex-box").html(html);
+                }else{
+                	/* TODO */
+               	   $(".flex-box").html("<p>暂无</p>");
+                }
+            },
+            error: function (data) {
+                layer.msg("服务端异常");
+            }
+     	});
+    	
+    }
 </script>

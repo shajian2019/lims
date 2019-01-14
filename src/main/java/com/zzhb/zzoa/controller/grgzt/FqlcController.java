@@ -1,6 +1,7 @@
 package com.zzhb.zzoa.controller.grgzt;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -11,4 +12,10 @@ public class FqlcController {
 	public String fqlc() {
 		return "grgzt/fqlc/fqlc";
 	}
+	
+	@RequestMapping("/start/{key}")
+	public String start(@PathVariable("key")String key) {
+		return "grgzt/fqlc/"+key;
+	}
+	
 }
