@@ -14,6 +14,54 @@
 			<if test="type !=null and type !='' ">
 				and i_type = #{type}
 			</if>
+			<if test="name !=null and name !='' ">
+				<bind name="_name" value="'%'+name+'%'"/>
+				and i_name like #{_name}
+			</if>
+		</where>
+		order by i_type,i_sort desc
+	</select>
+	
+	<select id="getIcon" resultType="com.zzhb.zzoa.domain.common.Icon" parameterType="java.util.Map">
+		SELECT
+			i_id id,
+			i_type type,
+			i_name name,
+			i_icon icon,
+			i_sort sort
+		FROM sys_t_icon
+		<where>
+			<if test="i_id !=null and i_id !='' ">
+				and i_id = #{i_id}
+			</if>
 		</where>
 	</select>
+	
+	<insert id="addIcon" parameterType="com.zzhb.zzoa.domain.common.Icon">
+		INSERT INTO sys_t_icon (i_type,i_name,i_icon,i_sort)
+		VALUES(#{type},#{name},#{icon},#{sort})
+	</insert>
+	
+	<update id="updateIcon" parameterType="com.zzhb.zzoa.domain.common.Icon">
+		UPDATE sys_t_icon
+		<set>
+			<if test="type !=null and type !='' ">
+				i_type = #{type},
+			</if>
+			<if test="name !=null and name !='' ">
+				i_name = #{name},
+			</if>
+			<if test="icon !=null and icon !='' ">
+				i_icon = #{icon},
+			</if>
+			<if test="sort !=null and sort !='' ">
+				i_sort = #{sort},
+			</if>
+		</set>
+		<where>
+			<if test="id !=null and id !='' ">
+				and i_id = #{id}
+			</if>
+		</where>
+	</update>
 </mapper>

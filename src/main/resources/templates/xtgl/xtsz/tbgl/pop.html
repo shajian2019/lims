@@ -1,0 +1,134 @@
+<#assign ctx=req.contextPath />
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet"/>
+    <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet"/>
+    <style>
+        /* layui重置 */
+        .layui-form {
+            width: 530px;
+            margin: 10px auto 0;
+        }
+
+        .layui-form-item .layui-inline, .layui-form-item .layui-input-block {
+            width: 400px;
+        }
+
+        .layui-form-item .radio-box {
+            border: 1px solid #e6e6e6;
+        }
+
+        .layui-btn-container {
+            width: 512px;
+            text-align: center;
+        }
+
+        /* 自定义 */
+        div.icon-box {
+            height: 36px;
+            border: 1px solid #e6e6e6;
+            border-left: none;
+            background-color: #fff;
+            border-radius: 2px;
+        }
+
+        .icon-box .icon {
+            width: 36px;
+            height: 36px;
+            text-align: center;
+            line-height: 36px;
+            border-right: 1px solid #e6e6e6;
+            display: inline-block;
+        }
+
+        .icon-box .layui-inline-block {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .icon-box .icon-input {
+            display: inline-block;
+            border: none;
+            flex-grow: 1;
+            padding: 0 10px;
+        }
+    </style>
+</head>
+<body>
+
+<form class="layui-form layui-form-pane" lay-filter="edit">
+    <div class="layui-form-item">
+    	<input type="hidden" name="id" value="${(icon.id)!''}">
+        <label class="layui-form-label">图标名称:</label>
+        <div class="layui-inline">
+            <input class="layui-input" type="text" name="name" placeholder="图标名称" lay-verify="required" value="${(icon.name)!''}">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">ICON:</label>
+        <div class="layui-inline">
+            <input class="layui-input" type="text" name="icon" placeholder="仅支持layui和fa图标" lay-verify="required" value="${(icon.icon)!''}">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">排序:</label>
+        <div class="layui-inline">
+            <input class="layui-input" type="text" name="sort" placeholder="排序" lay-verify="number" value="${(icon.sort)!''}">
+        </div>
+    </div>
+	<div class="layui-btn-container">
+	    <a class="layui-btn layui-btn-sm layui-btn-primary" lay-submit lay-filter="save">保存</a>
+	</div>
+</form>
+
+<script src="${ctx}/plugins/layui/layui.js"></script>
+<script type="text/javascript">
+layui.use(['form', 'jquery','layer'], function(){
+      var $ = layui.jquery, form = layui.form, layer = layui.layer;
+      form.on('submit(save)', function (data) {
+    	  console.log(data.field);
+    	  var icon = data.field.icon;
+    	  if(icon.indexOf("fa-") != -1){
+    		  data.field.type = '0';
+    	  }else if(icon.indexOf("layui-") != -1){
+    		  data.field.type = '1';
+    	  }else{
+    		  layer.msg("不支持的图标类型",{offset:['50%'],time: 1000});
+    	  }
+    	  if(data.field.type){
+	          var index;
+	          $.ajax({
+	              type: "post",
+	              data: data.field,
+	              url: '${ctx}/xtgl/xtsz/tbgl/pop/add',
+	              beforeSend: function () {
+	                  index = layer.load(1);
+	              },
+	              success: function (data) {
+	                  layer.close(index)
+	                  var msg = "";
+	                  if(data > 0){
+	                      msg = "保存成功";
+	                  }else{
+	                      msg = "修改失败";
+	                  }
+	                  layer.msg(msg,{offset:['50%'],time: 1000},function(){
+	                      index = parent.layer.getFrameIndex(window.name);
+					      parent.layer.close(index);
+	                  });
+	              },
+	              error: function (data) {
+	                  layer.close(index)
+	                  layer.msg("服务器异常",{icon:2});
+	              }
+	          });
+    	  }
+          return false;
+      });
+})
+</script>
+</body>
+</html>

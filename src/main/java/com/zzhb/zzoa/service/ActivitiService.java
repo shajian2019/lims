@@ -7,11 +7,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import java.util.zip.ZipInputStream;
 
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.joda.time.DateTimeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,16 +20,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zzhb.zzoa.config.Props;
 import com.zzhb.zzoa.domain.activiti.ProcessDefinitionExt;
+import com.zzhb.zzoa.domain.activiti.ProcessDefinitionType;
 import com.zzhb.zzoa.mapper.ActivitiMapper;
-import com.zzhb.zzoa.utils.DateUtil;
 import com.zzhb.zzoa.utils.FileUtil;
 import com.zzhb.zzoa.utils.LayUiUtil;
-import com.zzhb.zzoa.utils.TimeUtil;
 import com.zzhb.zzoa.utils.ZipUtils;
 
 @Service
@@ -48,8 +49,9 @@ public class ActivitiService {
 	@Transactional
 	public Integer deploy(Map<String, String> params, MultipartFile file) throws IOException {
 		String resourceName = file.getOriginalFilename();
-		Deployment deploy = repositoryService.createDeployment().addInputStream(resourceName, file.getInputStream())
-				.name(resourceName).deploy();
+		Deployment deploy = repositoryService.createDeployment()
+				.addZipInputStream(new ZipInputStream(file.getInputStream())).name(resourceName).deploy();
+
 		ProcessDefinition pdf = repositoryService.createProcessDefinitionQuery().deploymentId(deploy.getId())
 				.singleResult();
 		ProcessDefinitionExt pde = new ProcessDefinitionExt();
@@ -74,6 +76,41 @@ public class ActivitiService {
 		return LayUiUtil.pagination(pageInfo);
 	}
 
+	public JSONObject lcflList() {
+		List<ProcessDefinitionType> processDefinitionTypes = activitiMapper.getProcessDefinitionTypes();
+		JSONObject result = new JSONObject();
+		JSONArray data = new JSONArray();
+		JSONArray children = new JSONArray();
+		for (ProcessDefinitionType pt : processDefinitionTypes) {
+			JSONObject groupJ = new JSONObject();
+			groupJ.put("id", pt.getType());
+			groupJ.put("title", pt.getName());
+			groupJ.put("parentId", "0");
+			groupJ.put("children", children);
+			data.add(groupJ);
+		}
+		result.put("data", data);
+		JSONObject status = new JSONObject();
+		status.put("code", 200);
+		status.put("message", "操作成功");
+		result.put("status", status);
+		return result;
+	}
+
+	@Transactional
+	public Integer lcflAdd(String name) {
+		ProcessDefinitionType pt = new ProcessDefinitionType();
+		pt.setName(name);
+		String type = UUID.randomUUID().toString();
+		pt.setType(type);
+		return activitiMapper.addProcessDefinitionType(pt);
+	}
+
+	@Transactional
+	public Integer lcflEdit(ProcessDefinitionType pt) {
+		return activitiMapper.addProcessDefinitionType(pt);
+	}
+
 	@Transactional
 	public Integer lcdyDel(Map<String, String> params) {
 		repositoryService.deleteDeployment(params.get("deployment_id"), true);
@@ -85,7 +122,7 @@ public class ActivitiService {
 		String processDefinitionId = params.get("id");
 		String resource_name = params.get("resource_name");
 		String dgrm_resource_name = params.get("dgrm_resource_name");
-		String fileDir = TimeUtil.getTimeByCustom("yyyyMMddHHmmssSSS");
+		String fileDir = resource_name.split("\\.")[0];
 		String dir = props.getTempPath() + "/" + fileDir;
 		if (new File(dir).mkdirs()) {
 			InputStream processModel = repositoryService.getProcessModel(processDefinitionId);
@@ -93,7 +130,7 @@ public class ActivitiService {
 			InputStream processDiagram = repositoryService.getProcessDiagram(processDefinitionId);
 			FileUtil.saveFileFromInputStream(processDiagram, dir, dgrm_resource_name);
 			try {
-				ZipUtils.toZip(dir, new FileOutputStream(dir + ".zip"), true);
+				ZipUtils.toZip(dir, new FileOutputStream(dir + ".zip"), false);
 				fileName = fileDir + ".zip";
 				FileUtil.deleteDirectory(dir);
 			} catch (FileNotFoundException | RuntimeException e) {

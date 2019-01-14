@@ -1,82 +1,84 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>流程定义</title>
+    <meta charset="UTF-8">
+    <title>组织架构</title>
     <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
     <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" />
-</head>
-<style>
-    html, body {
-        height: 100%;
-    }
-    .layui-form-item {
-        margin-bottom: 0px
-    }
-
-    .layui-table, .layui-table-view {
-        margin: 0px 0;
-    }
-    #pop{margin: 12px auto 0;}
-    #pop .layui-form-item{display: flex;align-items: center;}
-    #pop .layui-form-item>.layui-inline{width: 320px;}
-    #lc_upload_btn{margin: 0 auto;}
+    <link rel="stylesheet" href="${ctx}/plugins/layui/extend/dtree/dtree.css">
+    <link rel="stylesheet" href="${ctx}/plugins/layui/extend/dtree/font/dtreefont.css">
+    <style>
+        html,body{margin: 0;height: 100%;}
+ .layui-table, .layui-table-view {margin:0;}
+ .layui-table-tool {
+    position: relative;
+    z-index: 890;
+    width: 100%;
+    min-height: 50px;
+    line-height: 49px;
+    padding: 0px 5px;
+    border-width: 0 0 1px;
+}
+.layui-input{height:32px;line-height: 32px;}
+.dtree{width: 210px;}
+ .left-box{float: left;width:240px;height:100%;padding:3px;box-sizing: border-box;overflow-y: auto;border-right:1px solid #e6e6e6;}
+ .right-box{float: right;width:calc(100% - 242px); ;height:100%;}
+ .bm_name_tit{height:42px;line-height: 42px;background-color: #f3f5f7;text-align: center;font-size:16px;}
+#pop{margin: 12px auto 0;}
+#pop .layui-form-item{display: flex;align-items: center;}
+#pop .layui-form-item>.layui-inline{width: 320px;}
+#lc_upload_btn{margin: 0 auto;}
 </style>
-<body class="layui-layout-body" style="padding: 10px">
-
-<form class="layui-form" id="query">
-    <div class="layui-form-item">
-        <div class="layui-inline">
-            <input class="layui-input" type="text" placeholder="流程名称" name="name">
-        </div>
-        <div class="layui-inline">
-    		<select name="protype" id="protype1" lay-search>
-    			<option value="">流程分类</option>
-    		</select>
-	    </div>
-        <div class="layui-inline">
-            <a class="layui-btn layui-btn-primary" lay-submit="" lay-filter="query" datatype="reload">查询</a>
-            <a class="layui-btn layui-btn-primary" onclick="deploy();">流程部署</a>
+</head>
+<body>
+    <div class="left-box">
+        <h4 class="bm_name_tit">流程分类</h4>
+        <div style="overflow: auto;" id="toolbarDiv">
+            <ul id="left_tree" class="dtree" data-id="0"></ul>
         </div>
     </div>
-</form>
-
-<div id="preview" class="hide" style="display: none;">
-	<img alt="" src="">
-</div>
-
-<div style="height:100%">
-    <table class="layui-hidden layui-table" id="dataTable" lay-filter="dataTable"></table>
-</div>
-<div class="pop" id="pop">
-	<form class="layui-form">
-	      <div class="layui-form-item">
-	          <label class="layui-form-label">流程分类:</label>
-	          <div class="layui-inline">
-		    		<select name="protype" id="protype" lay-search></select>
+    <div class="right-box">
+    	 <form class="layui-form">
+	            <div class="layui-inline">
+	                <input type="text" class="layui-input" name="name" placeholder="流程名称">
+	            </div>
+	            <div class="layui-inline">
+	                <a href="javascript:;" class="layui-btn layui-btn-sm  layui-btn-primary" lay-submit lay-filter="search">查询</a>
+	                <a href="javascript:;" class="layui-btn layui-btn-sm  layui-btn-primary" lay-submit lay-filter="add">添加</a>
+	            </div>
+    	</form>
+        <table class="layui-hide" id="right_tb" lay-filter="right_tb"></table>
+    </div>
+    
+	<div id="preview" class="hide" style="display: none;">
+		<img alt="" src="">
+	</div>
+	
+    <div class="pop" id="pop" style="display: none;">
+		<form class="layui-form">
+		      <div class="layui-form-item">
+		          <label class="layui-form-label">流程文件:</label>
+		          <div class="layui-inline" style="margin-bottom:0;">     
+		               <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="lc_upload">选择文件</button>
+		          </div>
+		      </div>
+		      <div class="layui-form-item">
+			      	<label class="layui-form-label">备注信息:</label>
+					<div class="layui-inline">
+					    <textarea id="description" name="description" placeholder="请输入内容" class="layui-textarea"></textarea>
+					</div>
 			  </div>
-	      </div>
-	      <div class="layui-form-item">
-	          <label class="layui-form-label">流程文件:</label>
-	          <div class="layui-inline" style="margin-bottom:0;">     
-	               <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="lc_upload">选择文件</button>
-	          </div>
-	      </div>
-	      <div class="layui-form-item">
-		      	<label class="layui-form-label">备注信息:</label>
-				<div class="layui-inline">
-				    <textarea id="description" name="description" placeholder="请输入内容" class="layui-textarea"></textarea>
-				</div>
-		  </div>
-	      <div class="layui-form-item">
-	          <div class="layui-inline">     
-	                <button type="button" class="layui-btn layui-btn-sm" id="lc_upload_btn">保存</button>                      
-	          </div>
-	      </div>
-	</form>
-</div>
+		      <div class="layui-form-item">
+		          <div class="layui-inline">     
+		                <button type="button" class="layui-btn layui-btn-sm" id="lc_upload_btn">保存</button>                      
+		          </div>
+		      </div>
+		</form>
+	</div>
 </body>
+
+</html>
 <script type="text/html" id="rightBar">
     <div class="layui-btn-group">
         <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="preview">
@@ -93,62 +95,269 @@
 <script src="${ctx}/plugins/layui/layui.js"></script>
 <script src="${ctx}/js/common/download.js"></script>
 <script>
-    var editObj = null, ptable = null, treeGrid = null, tableId = 'dataTable', layer = null, form = null,$=null;
-    layui.use(['table','form','layer','upload'], function () {
-        var table = layui.table;
-        $=layui.jquery,
-        form = layui.form,
-        layer=layui.layer,
-        upload=layui.upload;
-        $.ajax({
-            url: '${ctx}/dict/get',
-            data:{gtype:'protype'},
-            type: 'get',
-            success: function (data) {
-                $.each(data, function (index, item) {
-                    $('#protype1').append(new Option(item.name, item.value));// 下拉菜单里添加元素
-                    $('#protype').append(new Option(item.name, item.value));// 下拉菜单里添加元素
-                });
-                form.render("select");
-            }
-        })
-        table.render({
-              elem: '#' + tableId
-            , url: '${ctx}/lcgl/lcdy/list'
-            , where: {lastversion:'true'}
-            , page: true
-            , id: tableId
-            , height: 'full-80'
-            , method: 'get'
-            , cols: [[
-                  {field: '序号',width:50,type:'numbers',title:'序号'}
-                , {field: 'deployment_id', width: 100, title: '部署ID',align:'center'}
-                , {field: 'name', width: 200, title: '流程名称'}
-                , {field: 'version', width: 70, title: '版本',align:'center'}
-                , {field: 'createuser', width: 120, title: '创建人',align:'center'}
-                , {field: 'createtime', width: 170, title: '创建时间'}
-                , {field: 'description', title: '备注'}
-                , {
-                    title: '操作', align: 'center', width: 120,toolbar: '#rightBar'
+    layui.config({
+        base: '${ctx}/plugins/layui/extend/dtree/'
+    }).extend({
+        dtree: 'dtree'
+    })
+    var $ = null,table=null,upload=null,form=null,dtree=null,layer=null,dtreeID=null,tbID=null;
+    layui.use(['table', 'layer', 'form', 'dtree','upload'], function () {
+            $ = layui.jquery,
+            table = layui.table,
+            upload=layui.upload,
+            form = layui.form,
+            dtree = layui.dtree,
+            layer = layui.layer,
+            dtreeID = 'left_tree',
+            tbID = 'right_tb';
+        
+        var dtreeObj = dtree.render({
+            elem: "#" + dtreeID, //绑定元素
+            method:'GET',
+            url: "${ctx}/lcgl/lcdy/lcfl/list",  //异步接口
+            ficon: "-1", // 隐藏一级图标
+            icon: "2",
+            dot: false,
+            skin: "layui",
+            menubar: true,
+            menubarTips: {
+                group: [{
+                    menubarId: "add",
+                    icon: "dtree-icon-jia",
+                    title: "新增",
+                    handler: function (node, $div) {
+                       var index = layer.prompt({
+                            formType: 0,
+                            title: '新增分类' //自定义文本域宽高
+                        }, function (value, index, elem) {
+                            layer.close(index);
+                            $.ajax({
+		                         type: "post",
+		                         data: {name: value},
+		                         url: "${ctx}/lcgl/lcdy/lcfl/add",
+		                         beforeSend: function () {
+		                             index = layer.load(1);
+		                         },
+		                         success: function (data) {
+		                             layer.close(index);
+		                             if (data > 0) {
+		                                 layer.msg("新增成功", {offset: ['50%'], time: 1000}, function () {
+		                                	 dtree.reload(dtreeObj);
+		                                 });
+		                             } else {
+		                                 layer.msg("操作失败")
+		                             }
+		                         },
+		                         error: function (data) {
+		                             layer.msg("服务端异常");
+		                         }
+		                    });
+                        });
+                    } 
+                },'refresh']
+            },
+            toolbar: true,
+            toolbarScroll: "#toolbarDiv", //划重点，必须配置，属性含义请参考文档
+            toolbarStyle:{title:"分类", area:["60%","80%"] },
+            toolbarShow: ["delete"],
+            toolbarLoad: "node",
+            toolbarExt: [{
+                toolbarId: "edit",
+                icon: "dtree-icon-bianji",
+                title: "修改分类",
+                handler: function (node, $div) {
+                    var index = layer.prompt({
+                        formType: 0,
+                        value: node.context,
+                        title: '修改分类'
+                    }, function (value, index, elem) {
+                        layer.close(index);
+                        $.ajax({
+	                         type: "post",
+	                         data: {type: node.nodeId,name:value},
+	                         url: "${ctx}/lcgl/lcdy/lcfl/edit",
+	                         beforeSend: function () {
+	                             index = layer.load(1);
+	                         },
+	                         success: function (data) {
+	                             layer.close(index);
+	                             if (data > 0) {
+	                                 layer.msg("修改成功", {offset: ['50%'], time: 1000}, function () {
+	                                	 dtree.reload(dtreeObj);
+	                                 });
+	                             } else {
+	                                 layer.msg("操作失败")
+	                             }
+	                         },
+	                         error: function (data) {
+	                             layer.msg("服务端异常");
+	                         }
+	                    });
+                    });
                 }
-            ]]
+            }],
+            toolbarFun:{
+            	delTreeNode: function(treeNode, $div){ //删除树后调用的函数，用于用户自定义，如未指定则树不会发生变化
+            		alert("TODO")
+            	    /* dtreeObj.changeTreeNodeDel(true); // 调用内置函数，删除节点后改变节点内容。传入false，则树不会发生变化
+            	    $.ajax({
+                        type: "post",
+                        data: {type: treeNode.nodeId},
+                        url: "${ctx}/lcgl/lcdy/lcfl/del",
+                        success: function (data) {
+                            if (data > 0) {
+                                layer.msg("删除成功", {offset: ['50%'], time: 1000});
+                            } else {
+                                layer.msg("操作失败")
+                            }
+                        },
+                        error: function (data) {
+                            layer.msg("服务端异常");
+                        }
+                   }); */
+            	}
+            }
         });
         
-        form.on('submit(query)', function (data) {
-            table.reload(tableId, {
+        dtree.on("node('" + dtreeID + "')", function (obj) {
+            rightTB.reload({
+                where: {protype:obj.param.nodeId}
+            });
+        });
+        
+        var rightTB = table.render({
+            elem: '#' + tbID,
+            id: tbID,
+            height: 'full-40',
+            url: '${ctx}/lcgl/lcdy/list', //数据接口,
+            page: true,
+            cols: [[
+                {field: '序号',width:50,type:'numbers',title:'序号'}
+              , {field: 'deployment_id', width: 100, title: '部署ID',align:'center'}
+              , {field: 'name', width: 200, title: '流程名称'}
+              , {field: 'version', width: 70, title: '版本',align:'center'}
+              , {field: 'createuser', width: 120, title: '创建人',align:'center'}
+              , {field: 'createtime', width: 170, title: '创建时间'}
+              , {field: 'description', title: '备注'}
+              , {title: '操作', align: 'center', width: 120,toolbar: '#rightBar'}
+          ]]
+        });
+        
+        table.on('tool(' + tbID + ')', function (obj) {
+           var param = dtree.getNowParam(dtreeObj);
+           var data = obj.data;
+           var action = obj.event;
+       	   var index;
+           if (obj.event === 'del') {
+        	   layer.confirm('确定删除该流程定义吗?', function (index) {
+                   $.ajax({
+                       type: "post",
+                       data: {deployment_id: data.deployment_id},
+                       url: "${ctx}/lcgl/lcdy/del",
+                       beforeSend: function () {
+                           index = layer.load(1);
+                       },
+                       success: function (data) {
+                           layer.close(index);
+                           if (data > 0) {
+                               layer.msg("删除成功", {offset: ['50%'], time: 1000}, function () {
+                                   rightTB.reload({
+               	                    	where:{protype:param.nodeId}
+               	               	   });
+                               });
+                           } else {
+                               layer.msg("操作失败")
+                           }
+                       },
+                       error: function (data) {
+                           layer.msg("服务端异常");
+                       }
+                   });
+          		})
+           }else if("download" == action){
+             $.ajax({
+                 type: "post",
+                 data: data,
+                 url: "${ctx}/lcgl/lcdy/download",
+                 beforeSend: function () {
+                     index = layer.load(1);
+                 },
+                 success: function (data) {
+                     layer.close(index);
+                     var url = "${ctx}/lcgl/lcdy/downloadZip"
+               		 var field = {};
+                     field.fileName = data;
+               		 formPost(url, field);
+                 },
+                 error: function (data) {
+                     layer.msg("服务端异常");
+                 }
+             });
+         }else if("preview" == action){
+        	 $.ajax({
+                 type: "post",
+                 data: data,
+                 url: "${ctx}/lcgl/lcdy/preview",
+                 beforeSend: function () {
+                     index = layer.load(1);
+                 },
+                 success: function (data) {
+                     layer.close(index);
+                     $("img").attr('src',"${ctx}/"+data)
+                     index = layer.open({
+                   		  type: 1,
+                   		  title: '流程图',
+	                      maxmin: true,
+                   		  content: $('#preview')
+              		 });
+                     layer.full(index);
+                 },
+                 error: function (data) {
+                     layer.msg("服务端异常");
+                 }
+             });
+         }
+        });
+        
+        form.on('submit(search)', function (data) {
+        	var param = dtree.getNowParam(dtreeObj);
+        	data.field.protype = param.nodeId;
+           	rightTB.reload({
                 where: data.field
             });
             return false;
         });
         
+        form.on('submit(add)', function (data) {
+        	var param = dtree.getNowParam(dtreeObj);
+     	    if(!param.nodeId){
+     		   layer.msg("请选择流程分类", {offset: ['50%'], time: 1000});
+     	    }else{
+     	    	var index = layer.open({
+     	            title: '流程部署',
+     	            type: 1,
+     	            area: ['490px', '300px'],
+     	            fixed: false, //不固定
+     	            content: $("#pop"),
+     	            end: function () {
+     	               rightTB.reload({
+    	                    where:{protype:param.nodeId}
+    	               });
+     	            }
+     	        });
+     	    }
+            return false;
+        });
+        
         upload.render({
-            elem: '#lc_upload'
+             elem: '#lc_upload'
             ,url: '${ctx}/lcgl/lcdy/deploy'
             ,accept:'file'
             ,auto: false
             ,data: {
             	  protype: function(){
-	           		    return $("#protype").val();
+            		   var param = dtree.getNowParam(dtreeObj);
+	           		    return param.nodeId;
            		  },
            		  description: function(){
 	           		    return $("#description").val();
@@ -167,95 +376,6 @@
 				}       	
             }
         });
-        table.on('tool(' + tableId + ')', function (obj) {
-        	 var data = obj.data;
-        	 console.log(data)
-             var action = obj.event;
-             if (action == 'del') {
-            	 layer.confirm('确定删除该流程定义吗?', function (index) {
-            		 var index;
-                     $.ajax({
-                         type: "post",
-                         data: {deployment_id: data.deployment_id},
-                         url: "${ctx}/lcgl/lcdy/del",
-                         beforeSend: function () {
-                             index = layer.load(1);
-                         },
-                         success: function (data) {
-                             layer.close(index);
-                             if (data > 0) {
-                                 layer.msg("删除成功", {offset: ['50%'], time: 1000}, function () {
-                                     table.reload(tableId)
-                                 });
-                             } else {
-                                 layer.msg("操作失败")
-                             }
-                         },
-                         error: function (data) {
-                             layer.msg("服务端异常");
-                         }
-                     });
-            	})
-             }else if("download" == action){
-            	 var index;
-                 $.ajax({
-                     type: "post",
-                     data: data,
-                     url: "${ctx}/lcgl/lcdy/download",
-                     beforeSend: function () {
-                         index = layer.load(1);
-                     },
-                     success: function (data) {
-                         layer.close(index);
-                         var url = "${ctx}/lcgl/lcdy/downloadZip"
-                   		 var field = {};
-                         field.fileName = data;
-                   		 formPost(url, field);
-                     },
-                     error: function (data) {
-                         layer.msg("服务端异常");
-                     }
-                 });
-             }else if("preview" == action){
-            	 $.ajax({
-                     type: "post",
-                     data: data,
-                     url: "${ctx}/lcgl/lcdy/preview",
-                     beforeSend: function () {
-                         index = layer.load(1);
-                     },
-                     success: function (data) {
-                         layer.close(index);
-                         $("img").attr('src',"${ctx}/"+data)
-                         index = layer.open({
-	                   		  type: 1,
-	                   		  title: '流程图',
-		                      maxmin: true,
-	                   		  content: $('#preview')
-                  		 });
-                         layer.full(index);
-                     },
-                     error: function (data) {
-                         layer.msg("服务端异常");
-                     }
-                 });
-             }
-        })
-    });
-    
-    //流程部署
-    function deploy() {
-        var table = layui.table;
-        var index = layer.open({
-            title: '流程部署',
-            type: 1,
-            area: ['490px', '300px'],
-            fixed: false, //不固定
-            content: $("#pop"),
-            end: function () {
-                table.reload(tableId)
-            }
-        });
-    }
+        
+    })
 </script>
-</html>

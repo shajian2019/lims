@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>用户管理</title>
+    <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
+    <script src="${ctx}/plugins/layui/layui.js"></script>
+    <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" />
+</head>
+<style>
+    html, body {
+        height: 100%;
+    }
+
+    div {
+        -moz-box-sizing: border-box; /*Firefox3.5+*/
+        -webkit-box-sizing: border-box; /*Safari3.2+*/
+        -o-box-sizing: border-box; /*Opera9.6*/
+        -ms-box-sizing: border-box; /*IE8*/
+        box-sizing: border-box; /*W3C标准(IE9+，Safari5.1+,Chrome10.0+,Opera10.6+都符合box-sizing的w3c标准语法)*/
+    }
+
+    .layui-form-item {
+        margin-bottom: 0px
+    }
+
+    .layui-table, .layui-table-view {
+        margin: 0px 0;
+    }
+</style>
+<body class="layui-layout-body" style="padding: 10px">
+
+<form class="layui-form" id="query">
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <input class="layui-input" type="text" placeholder="图标名称" name="name">
+        </div>
+        <div class="layui-input-inline">
+			<select name="type">
+				<option value="">图标类型</option>
+				<option value="0">Font Awesome</option>
+				<option value="1">Layui Icon</option>
+			</select>
+		</div>
+        <div class="layui-inline">
+            <a class="layui-btn layui-btn-primary" lay-submit lay-filter="query">查询</a>
+            <a class="layui-btn layui-btn-primary" lay-submit lay-filter="add">新增</a>
+        </div>
+    </div>
+</form>
+<div style="height:100%">
+    <table class="layui-hidden layui-table" id="dataTable" lay-filter="dataTable"></table>
+</div>
+</body>
+<script type="text/html" id="rightBar">
+    <div class="layui-btn-group">
+		<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">
+            <i class="fa fa-pencil"></i>
+        </a>
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del">
+            <i class="fa fa-trash-o"></i>
+        </a>
+    </div>
+</script>
+<script>
+    var editObj = null, ptable = null, treeGrid = null, tableId = 'dataTable', layer = null, form = null,$=null;
+    layui.use('table', function () {
+        var table = layui.table;
+        $=layui.jquery;
+        form = layui.form;
+        table.render({
+            elem: '#' + tableId
+            , url: '${ctx}/xtgl/xtsz/tbgl/list'//后台接受路径
+            , page: true
+            , id: tableId
+            , height: 'full-80'
+            , method: 'get'
+            , cols: [[
+                  {width:50,type:'numbers',title:'序号'}
+                , {field: 'type', width: 150, title: '图片类型',templet:function(d){
+                	if(d.type == '0'){
+                		return "Font Awesome";
+                	}else{
+                		return "Layui Icon";
+                	}
+                }}
+                , {field: 'name', title: '图标名称'}
+                , {title: '图标样式',align:'center',width:120,templet:function(d){
+                	if(d.type == '0'){
+                		return '<i class="fa '+d.icon+'"></i>';
+                	}else{
+                		return '<i class="layui-icon '+d.icon+'"></i>';
+                	}
+                }}
+                , {field: 'icon', title: 'ICON'}
+                , {field: 'sort', title: '排序',width:80,align:'center'}
+                ,{
+                    title: '操作', align: 'center',width: 170,
+                    toolbar: '#rightBar'
+                }
+            ]]
+
+        });
+        
+        //点击行事件
+        table.on('tool(' + tableId + ')', function (obj) {
+            var data = obj.data;
+            var action = obj.event;
+            if(action == 'edit'){
+            	var index = layer.open({
+    	            title: '修改图标',
+    	            type: 2,
+    	            area: ['620px', '300px'],
+    	            fixed: false, //不固定
+    	            maxmin: true,
+    	            content: '${ctx}/xtgl/xtsz/tbgl/pop?i_id='+data.id,
+    	            end: function () {
+    	                table.reload(tableId)
+    	            }
+            	});
+            }else if (action == 'del'){
+            	console.log(data)
+            	var index;
+                $.ajax({
+                    type: "post",
+                    data: data,
+                    url: '${ctx}/xtgl/xtsz/tbgl/pop/del',
+                    beforeSend: function () {
+                        index = layer.load(1);
+                    },
+                    success: function (data) {
+                        layer.close(index)
+                        var msg = "";
+                        if(data > 0){
+                            msg = "删除成功";
+                        }else{
+                            msg = "删除失败";
+                        }
+                        layer.msg(msg,{offset:['50%'],time: 1000},function(){
+                        	table.reload(tableId)
+                        });
+                    },
+                    error: function (data) {
+                        layer.close(index)
+                        layer.msg("服务器异常",{icon:2});
+                    }
+                });
+            }
+        });
+
+        form.on('submit(add)', function (data) {
+        	var index = layer.open({
+	            title: '新增图标',
+	            type: 2,
+	            area: ['620px', '300px'],
+	            fixed: false, //不固定
+	            maxmin: true,
+	            content: '${ctx}/xtgl/xtsz/tbgl/pop',
+	            end: function () {
+	                table.reload(tableId)
+	            }
+        	});
+        	return false;
+        });
+        
+        form.on('submit(query)', function (data) {
+            table.reload(tableId, {
+                where: data.field
+            });
+            return false;
+        });
+    });
+</script>
+</html>

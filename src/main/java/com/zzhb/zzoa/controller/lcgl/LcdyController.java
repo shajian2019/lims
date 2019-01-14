@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONObject;
 import com.zzhb.zzoa.config.Props;
+import com.zzhb.zzoa.domain.activiti.ProcessDefinitionType;
 import com.zzhb.zzoa.service.ActivitiService;
 
 @Controller
@@ -42,8 +43,26 @@ public class LcdyController {
 
 	@GetMapping("/list")
 	@ResponseBody
-	public JSONObject lcdyList(Integer page, Integer limit, @RequestParam Map<String, String> params) {
+	public JSONObject lcdyList(@RequestParam(defaultValue="1")Integer page, @RequestParam(defaultValue="0x7fffffff")Integer limit, @RequestParam Map<String, String> params) {
 		return activitiService.lcdyList(page, limit, params);
+	}
+
+	@GetMapping("/lcfl/list")
+	@ResponseBody
+	public JSONObject lcflList() {
+		return activitiService.lcflList();
+	}
+
+	@PostMapping("/lcfl/add")
+	@ResponseBody
+	public Integer lcflAdd(String name) {
+		return activitiService.lcflAdd(name);
+	}
+
+	@PostMapping("/lcfl/edit")
+	@ResponseBody
+	public Integer lcflEdit(ProcessDefinitionType pt) {
+		return activitiService.lcflEdit(pt);
 	}
 
 	@PostMapping("/del")
@@ -57,9 +76,9 @@ public class LcdyController {
 	public JSONObject deploy(@RequestParam("file") MultipartFile file, @RequestParam Map<String, String> params) {
 		JSONObject json = new JSONObject();
 		String fileName = file.getOriginalFilename();
-		if (fileName.indexOf("bpmn") == -1) {
+		if (fileName.indexOf(".zip") == -1) {
 			json.put("code", "-1");
-			json.put("msg", "文件类型错误，仅支持bpmn文件");
+			json.put("msg", "文件类型错误，仅支持zip文件");
 		} else {
 			try {
 				Integer deploy = activitiService.deploy(params, file);
