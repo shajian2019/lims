@@ -5,22 +5,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-    <link rel="stylesheet" href="layui/css/layui.css">
+    <title>请假流程</title>
+    <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
 </head>
 
 <body>
     <form class="layui-form" style="max-width:800px;margin:10px auto 0;position: absolute;top: 50%;margin-top: -300px;left: 50%;margin-left: -400px;">
         <div class="layui-form-item">
-            <label class="layui-form-label"><span style="color:red;">*</span> 姓名</label>
+            <label class="layui-form-label"><span style="color:red;">*</span>姓名</label>
             <div class="layui-input-inline">
-                <input type="text" name="title" required lay-verify="required" placeholder="请输入姓名" autocomplete="off"
-                    class="layui-input">
+                <input type="text" name="title" required lay-verify="required" placeholder="请输入姓名" autocomplete="off" class="layui-input">
             </div>
             <label class="layui-form-label"><span style="color:red;">*</span>所在部门</label>
             <div class="layui-input-inline">
-                <input type="password" name="password" required lay-verify="required" placeholder="请输入密码" autocomplete="off"
-                    class="layui-input">
+                <input type="password" name="password" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
@@ -81,8 +79,6 @@
             </div>
         </div>
     </form>
-    </div>
 </body>
-
 </html>
-<script src="layui/layui.all.js"></script>
+<script src="${ctx}/plugins/layui/layui.all.js"></script>
