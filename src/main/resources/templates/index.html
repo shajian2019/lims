@@ -71,9 +71,10 @@
         layui.config({
             base: '${ctx}/js/',
             version: '1.0.1'
-        }).use(['app', 'message'], function() {
+        }).use(['app', 'message','tab'], function() {
             var app = layui.app,
                 $ = layui.jquery,
+                tab = layui.tab,
                 layer = layui.layer;
             //将message设置为全局以便子页面调用
             message = layui.message;
@@ -84,6 +85,10 @@
                 r_id: "${r_id}",
                 menu:"${(menu)!'1'}"
             }).init();
+            
+           	window.addTab=function(options){
+	           	tab.tabAdd(options)
+           	}
 
             $('dl.skin > dd').on('click', function() {
                 var $that = $(this);
