@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzhb.zzoa.mapper.OrgMapper">
+	
+	<select id="getOrgs" resultType="com.zzhb.zzoa.domain.Org" parameterType="java.util.Map">
+		SELECT
+			o_id id,
+			o_name name,
+			createtime,
+			updatetime
+		FROM sys_t_org
+	</select>
+	
+	<insert id="addOrg" parameterType="com.zzhb.zzoa.domain.Org">
+		INSERT INTO sys_t_org 
+			(o_name,createtime)
+		VALUES
+			(#{name},now())
+	</insert>
+	
+	<update id="updateOrg" parameterType="com.zzhb.zzoa.domain.Org">
+		UPDATE sys_t_org
+		<set>
+			<if test="name !=null and name !=''">
+				o_name = #{name},
+			</if>
+			<if test="true">
+				updatetime = now(),
+			</if>
+		</set>
+		<where>
+			<if test="id !=null and id !=''">
+				and o_id = #{id}
+			</if>
+		</where>
+	</update>
+	
+	<select id="getUsers" resultType="java.util.Map" parameterType="java.util.Map">
+		SELECT
+			o.o_id,
+			o.o_name,
+			u.* 
+		FROM
+			sys_t_user_org uo
+			LEFT JOIN sys_t_org o ON uo.o_id = o.o_id
+			LEFT JOIN sys_t_user u ON uo.u_id = u.u_id
+		<where>
+			<if test="o_id !=null and o_id !=''">
+				and uo.o_id = #{o_id}
+			</if>
+			<if test="username !=null and username !=''">
+				<bind name="_username" value="'%'+username+'%'"/>
+				and u.username like #{_username}
+			</if>
+			<if test="nickname !=null and nickname !=''">
+				<bind name="_nickname" value="'%'+nickname+'%'"/>
+				and u.nickname like #{_nickname}
+			</if>
+		</where>
+	</select>
+	
+	<insert id="addUserOrg" parameterType="java.util.Map">
+		INSERT INTO sys_t_user_org (u_id,o_id)
+		VALUES
+		<foreach collection="u_ids" item="u_id" index="index" separator=",">
+            (#{u_id,jdbcType=INTEGER}, #{o_id,jdbcType=INTEGER})
+        </foreach>
+	</insert>
+</mapper>

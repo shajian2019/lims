@@ -5,10 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.IdentityService;
-import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.crypto.hash.SimpleHash;
-import org.apache.shiro.session.Session;
-import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +14,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zzhb.zzoa.domain.User;
+import com.zzhb.zzoa.mapper.OrgMapper;
 import com.zzhb.zzoa.mapper.RoleMapper;
 import com.zzhb.zzoa.mapper.UserMapper;
 import com.zzhb.zzoa.utils.LayUiUtil;
@@ -31,8 +29,11 @@ public class UserService {
 	RoleMapper roleMapper;
 
 	@Autowired
+	OrgMapper orgMapper;
+
+	@Autowired
 	LoginService loginService;
-	
+
 	@Autowired
 	IdentityService identityService;
 
@@ -42,20 +43,16 @@ public class UserService {
 
 	public JSONObject getAllUsers(Integer page, Integer limit, Map<String, String> params) {
 		PageHelper.startPage(page, limit);
-		List<User> userList = userMapper.getAllUsers(params);
-		PageInfo<User> pageInfo = new PageInfo<User>(userList);
+		List<Map<String, String>> userList = userMapper.getAllUsers(params);
+		PageInfo<Map<String, String>> pageInfo = new PageInfo<Map<String, String>>(userList);
 		return LayUiUtil.pagination(pageInfo);
 	}
 
 	@Transactional
-	public Integer delUserById(Map<String, Object> map) {
-		// map中只有u_id
-		User u = userMapper.getUserById(Integer.parseInt(String.valueOf(map.get("id"))));
-		if (!u.getStatus().equals("3")) {// 已分配角色
-			userMapper.delUserRole(Integer.parseInt(String.valueOf(map.get("id"))));
-		}
-		identityService.deleteUser(String.valueOf(map.get("id")));
-		return userMapper.delUserById(map);
+	public Integer delUserById(String u_id) {
+		roleMapper.delUserRoleByUId(u_id);
+		orgMapper.delUserOrgByUid(u_id);
+		return userMapper.delUser(u_id);
 	}
 
 	@Transactional
@@ -65,11 +62,10 @@ public class UserService {
 		if ("add".equals(flag)) {
 			Object result = new SimpleHash("MD5", user.getPassword(), user.getUsername(), 1);
 			user.setPassword(result.toString());
+			user.setStatus("0");
 			if (role == null || "".equals(role)) {
-				user.setStatus("3");
 				addUser = userMapper.addUser(user);
 			} else {
-				user.setStatus("0");
 				addUser = userMapper.addUser(user);
 				Integer u_id = user.getU_id();
 				map.put("u_id", u_id);
@@ -79,12 +75,7 @@ public class UserService {
 		} else {
 			map.put("r_id", Integer.parseInt(role));
 			map.put("u_id", user.getU_id());
-			if ("3".equals(user.getStatus())) {
-				user.setStatus("0");
-				userMapper.addUrole(map);
-			} else {
-				userMapper.updateUserRole(map);
-			}
+			userMapper.addUrole(map);
 			addUser = userMapper.updateUserByUser(user);
 		}
 		return addUser;
@@ -97,13 +88,8 @@ public class UserService {
 			String password = (String) map.get("password");
 			Object result = new SimpleHash("MD5", password, map.get("username"), 1);
 			map.put("password", String.valueOf(result));
-			updateUser = userMapper.updateUser(map);
-		} else {
-			updateUser = userMapper.updateUser(map);
-			Session session = SecurityUtils.getSubject().getSession();
-			User user = userMapper.getUser(map.get("username").toString());
-			loginService.initLoginUser(user, session);
 		}
+		updateUser = userMapper.updateUser(map);
 		return updateUser;
 	}
 

@@ -5,14 +5,19 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.zip.ZipInputStream;
 
+import org.activiti.engine.FormService;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.TaskService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +30,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zzhb.zzoa.config.Props;
+import com.zzhb.zzoa.domain.User;
+import com.zzhb.zzoa.domain.activiti.Leave;
 import com.zzhb.zzoa.domain.activiti.ProcessDefinitionExt;
 import com.zzhb.zzoa.domain.activiti.ProcessDefinitionType;
 import com.zzhb.zzoa.mapper.ActivitiMapper;
+import com.zzhb.zzoa.mapper.LeaveMapper;
 import com.zzhb.zzoa.utils.FileUtil;
 import com.zzhb.zzoa.utils.LayUiUtil;
 import com.zzhb.zzoa.utils.ZipUtils;
@@ -45,6 +53,12 @@ public class ActivitiService {
 
 	@Autowired
 	RepositoryService repositoryService;
+
+	@Autowired
+	FormService formService;
+	
+	@Autowired
+	LeaveMapper leaveMapper;
 
 	@Transactional
 	public Integer deploy(Map<String, String> params, MultipartFile file) throws IOException {
@@ -150,5 +164,32 @@ public class ActivitiService {
 		InputStream processDiagram = repositoryService.getProcessDiagram(processDefinitionId);
 		FileUtil.saveFileFromInputStream(processDiagram, dir, dgrm_resource_name);
 		return dgrm_resource_name;
+	}
+
+	@Transactional
+	public Task startProcessInstance(User user, String key, String businessKey) {
+		ProcessDefinition pd = repositoryService.createProcessDefinitionQuery().processDefinitionKey(key)
+				.latestVersion().singleResult();
+		Map<String, String> vars = new HashMap<>();
+		ProcessInstance pi = formService.submitStartFormData(pd.getId(), businessKey, vars);
+		Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
+		task.setOwner(user.getU_id() + "");
+		taskService.saveTask(task);
+		return task;
+	}
+
+	@Autowired
+	TaskService taskService;
+
+	@Transactional
+	public Integer task(Leave leave) {
+		Integer addLeave = leaveMapper.addLeave(leave);
+		Task task = taskService.createTaskQuery().processInstanceBusinessKey(leave.getBk()).singleResult();
+		System.out.println(task.getId());
+		System.out.println(task.getAssignee());
+		Map<String, Object> variable = new HashMap<>();
+		
+		taskService.complete(task.getId(), variable);
+		return addLeave;
 	}
 }

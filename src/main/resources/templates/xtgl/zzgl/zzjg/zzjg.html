@@ -37,14 +37,14 @@
     <div class="right-box">
     	 <form class="layui-form">
 	            <div class="layui-inline">
-	                <input type="text" class="layui-input" name="firstname" placeholder="用户账号">
+	                <input type="text" class="layui-input" name="username" placeholder="用户账号">
 	            </div>
 	            <div class="layui-inline">
-	                <input type="text" class="layui-input" name="lastname" placeholder="用户昵称">
+	                <input type="text" class="layui-input" name="nickname" placeholder="用户昵称">
 	            </div>
 	            <div class="layui-inline">
 	                <a href="javascript:;" class="layui-btn layui-btn-sm  layui-btn-primary" lay-submit lay-filter="search">查询</a>
-	                <a href="javascript:;" class="layui-btn layui-btn-sm  layui-btn-primary" lay-submit lay-filter="add">添加</a>
+	                <a href="javascript:;" class="layui-btn layui-btn-sm  layui-btn-primary" lay-submit lay-filter="add">添加部门成员</a>
 	            </div>
     	</form>
         <table class="layui-hide" id="right_tb" lay-filter="right_tb"></table>
@@ -97,7 +97,7 @@
                             layer.close(index);
                             $.ajax({
 		                         type: "post",
-		                         data: {groupName: value},
+		                         data: {name: value},
 		                         url: "${ctx}/xtgl/zzgl/zzjg/add",
 		                         beforeSend: function () {
 		                             index = layer.load(1);
@@ -138,7 +138,7 @@
                         layer.close(index);
                         $.ajax({
 	                         type: "post",
-	                         data: {groupId: node.nodeId,groupName:value},
+	                         data: {id: node.nodeId,name:value},
 	                         url: "${ctx}/xtgl/zzgl/zzjg/edit",
 	                         beforeSend: function () {
 	                             index = layer.load(1);
@@ -165,7 +165,7 @@
             	    dtreeObj.changeTreeNodeDel(true); // 调用内置函数，删除节点后改变节点内容。传入false，则树不会发生变化
             	    $.ajax({
                         type: "post",
-                        data: {groupId: treeNode.nodeId},
+                        data: {o_id: treeNode.nodeId},
                         url: "${ctx}/xtgl/zzgl/zzjg/del",
                         success: function (data) {
                             if (data > 0) {
@@ -184,7 +184,7 @@
         
         dtree.on("node('" + dtreeID + "')", function (obj) {
             rightTB.reload({
-                where: {groupId:obj.param.nodeId}
+                where: {o_id:obj.param.nodeId}
             });
         });
         
@@ -194,10 +194,9 @@
             height: 'full-40',
             url: '${ctx}/xtgl/zzgl/zzjg/user/list', //数据接口,
             page: true,
-            cols: [
-                [
+            cols: [[
                     {
-                        field: 'id',
+                        field: 'u_id',
                         hide:true
                     },
                     {
@@ -216,10 +215,10 @@
                         field: 'email',
                         title: '用户邮箱',
                     }, {
-                        field: 'groupname',
+                        field: 'o_name',
                         title: '所属部门',
                     }, {
-                        title: '操作', align: 'center',width: 170,
+                        title: '操作', align: 'center',width: 80,
                         toolbar: '#rightBar'
                     }
                 ]
@@ -231,7 +230,7 @@
            if (obj.event === 'del') {
         	   $.ajax({
                    type: "post",
-                   data: {userId: obj.data.id},
+                   data: {u_id: obj.data.u_id},
                    url: "${ctx}/xtgl/zzgl/zzjg/user/del",
                    beforeSend: function () {
                        index = layer.load(1);
@@ -255,7 +254,7 @@
         
         form.on('submit(search)', function (data) {
         	var param = dtree.getNowParam(dtreeObj);
-        	data.field.groupId = param.nodeId;
+        	data.field.o_id = param.nodeId;
            	rightTB.reload({
                 where: data.field
             });
@@ -268,15 +267,15 @@
      		   layer.msg("请选择部门", {offset: ['50%'], time: 1000});
      	    }else{
      		   var index = layer.open({
-     	            title: '添加用户',
+     	            title: '分配用户',
      	            type: 2,
      	            area: ['690px', '400px'],
      	            fixed: false, //不固定
      	            maxmin: true,
-     	            content: '${ctx}/xtgl/zzgl/zzjg/adduser?groupId='+param.nodeId,
+     	            content: '${ctx}/xtgl/zzgl/zzjg/adduser?o_id='+param.nodeId,
      	            end: function () {
      	                rightTB.reload({
-     	                    where:{groupId:param.nodeId}
+     	                    where:{o_id:param.nodeId}
      	                });
      	            }
      	       });

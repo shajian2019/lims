@@ -16,6 +16,7 @@ public class Leave {
 	private String sftg;
 	private String spyj;
 	private String spr;
+	private String spsj;
 	
 	public String getBk() {
 		return bk;
@@ -101,5 +102,17 @@ public class Leave {
 	}
 	public void setSpr(String spr) {
 		this.spr = spr;
+	}
+	public String getSpsj() {
+		return spsj;
+	}
+	public void setSpsj(String spsj) {
+		this.spsj = spsj;
+	}
+	@Override
+	public String toString() {
+		return "Leave [bk=" + bk + ", sqr=" + sqr + ", bmmc=" + bmmc + ", sqrq=" + sqrq + ", qjlx=" + qjlx + ", ksrq="
+				+ ksrq + ", jsrq=" + jsrq + ", qjts=" + qjts + ", qjly=" + qjly + ", fjId=" + fjId + ", gzsc=" + gzsc
+				+ ", sftg=" + sftg + ", spyj=" + spyj + ", spr=" + spr + ", spsj=" + spsj + "]";
 	}
 }

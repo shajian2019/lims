@@ -20,11 +20,10 @@ public interface UserMapper {
 	@Update("UPDATE sys_t_user SET recentlogin = now() WHERE u_id = #{u_id}")
 	public Integer updateRecentlogin(User user);
 
-	public List<User> getAllUsers(Map<String, String> params);
+	public List<Map<String, String>> getAllUsers(Map<String, String> params);
 
-	public List<User> getUsers(Map<String, Object> params);
-
-	public Integer delUserById(Map<String, Object> map);
+	@Delete("DELETE FROM sys_t_user where u_id = #{0}")
+	public Integer delUser(String u_id);
 
 	public Integer addUser(User user);
 

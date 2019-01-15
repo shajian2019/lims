@@ -118,31 +118,6 @@
         });
     })
     
-    function start(key){
-    	$.ajax({
-            type: "post",
-            data: {key,key},
-            url: "${ctx}/fqlc/start",
-            beforeSend: function () {
-                index = layer.load(1);
-            },
-            success: function (data) {
-                layer.close(index);
-                $("img").attr('src',"${ctx}/"+data)
-                index = layer.open({
-              		  type: 1,
-              		  title: '流程图',
-                     maxmin: true,
-              		  content: $('#preview')
-         		 });
-                layer.full(index);
-            },
-            error: function (data) {
-                layer.msg("服务端异常");
-            }
-        });
-    }
-    
     function start(title,key){
     	var options = {};
     	options.title = title;
@@ -171,6 +146,7 @@
                 layer.full(index);
             },
             error: function (data) {
+            	layer.close(index);
                 layer.msg("服务端异常");
             }
         });
