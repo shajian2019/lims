@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,17 +24,24 @@ public class FileController {
 
 	@PostMapping("/upload")
 	@ResponseBody
-	public JSONObject upload(@RequestParam("file") MultipartFile file,String bk) throws Exception {
+	public JSONObject upload(@RequestParam("file") MultipartFile file, String bk) throws Exception {
 		JSONObject result = new JSONObject();
 		String filename = file.getOriginalFilename();
-		
+
 		String dir = props.getTempPath();
 		if (!new File(dir).exists()) {
 			new File(dir).mkdir();
 		}
-		filename = bk +filename;
+		filename = bk + "&" + filename;
 		FileUtil.saveFileFromInputStream(file.getInputStream(), dir, filename);
 		result.put("filename", filename);
 		return result;
+	}
+
+	@GetMapping("del")
+	@ResponseBody
+	public boolean del(@RequestParam("filename") String filename) throws Exception {
+		String dir = props.getTempPath();
+		return FileUtil.delete(dir + File.separator + filename);
 	}
 }

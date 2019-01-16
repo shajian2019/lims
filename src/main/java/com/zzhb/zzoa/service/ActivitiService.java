@@ -201,6 +201,7 @@ public class ActivitiService {
 		taskService.setOwner(task.getId(), user.getU_id() + "");
 		Map<String, Object> variable = new HashMap<>();
 		variable.put("spr", params.get("spr"));
+		
 		taskService.complete(task.getId(), variable);
 		Integer saveBusiness = saveBusiness(key, params);
 		task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();

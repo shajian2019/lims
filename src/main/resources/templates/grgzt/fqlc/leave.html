@@ -13,7 +13,7 @@
 		.img-up-box{max-width: 500px;height: auto;display:flex;align-items: flex-end;flex-wrap: wrap;}
 		.img-up-box .img-box{position: relative;display: inline-block;width: 80px;height:80px;border: 1px solid #e6e6e6;margin-right: 8px;margin-top: 8px;}
 		.img-up-box .img-box .img-close{position: absolute;top: -7px;right: -7px;font-size: 12px;color: #fff;border-radius: 20px;width: 16px;height: 16px;background-color: #000;text-align: center;line-height: 16px;}
-		.img-up-box .img-box>img{width: 100%;}
+		.img-up-box .img-box>img{width: 100%;height:100%;}
 		#img_up{width: 80px;height:80px;border: 1px solid #e6e6e6;text-align: center;line-height: 80px;font-size: 28px;color: #e6e6e6;background-color: #fff;}
     </style>
 </head>
@@ -141,66 +141,80 @@
 		
   //多图片上传
   var imgUpView = $('#img_up'),imgUpload=upload.render({
-    elem: '#img_up'
-    ,url: '${ctx}/file/upload/'
-	,data:{"bk":"${leave.bk}"}
-    ,multiple: true
-	,auto: false
-	,bindAction: '#sq'
-	,choose: function(obj){   
-      var files = this.files = obj.pushFile(); //将每次选择的文件追加到文件队列
-      //读取本地文件
-      obj.preview(function(index, file, result){
-		var img = $([
-			'<div class="img-box">'+
-			'<img src="'+result+'" alt="'+file.name+'" class="layui-upload-img">'+
-			'<i class="fa fa-close img-close"></i>'+
-			'</div>'
-		].join(''));
-        //删除
-        img.find('.img-close').on('click', function(){
-          delete files[index]; //删除对应的文件
-          img.remove();
-          imgUpload.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
-        }); 
-		imgUpView.before(img)
-      });
-    }
-    ,done: function(res){
-		console.log(res)
-      //上传完毕
-    }
-  });
-
-		form.on('submit(sq)', function(data){
-			  console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
-			  data.field.spr = "test";
-			  console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
-			  $.ajax({
-		            type: "post",
-		            data: data.field,
-		            url: "${ctx}/grgzt/fqlc/start/leave",
-		            beforeSend: function () {
-		                index = layer.load(1);
-		            },
-		            success: function (data) {
-		            	layer.close(index);
-		            	console.log(data)
-		            	if(data.code >0){
-		            		layer.msg("申请成功,将于"+data.msg, {offset: ['50%'], time: 2000}, function () {
-		            			parent.window.closeTab("leave");
-                            });
-		            	}else{
-		            		layer.msg("申请失败");
-		            	}
-		            },
-		            error: function (data) {
-		            	layer.close(index);
-		                layer.msg("服务端异常");
-		            }
+	     elem: '#img_up'
+	     ,url: '${ctx}/file/upload/'
+		 ,data:{"bk":"${leave.bk}"}
+	     ,multiple: true
+		 ,auto: true
+		 ,choose: function(obj){   
+		      var files = this.files = obj.pushFile(); //将每次选择的文件追加到文件队列
+		      //读取本地文件
+		      obj.preview(function(index, file, result){
+				var img = $([
+					'<div class="img-box">'+
+					'<img src="'+result+'" alt="'+file.name+'" class="layui-upload-img">'+
+					'<i class="fa fa-close img-close"></i>'+
+					'</div>'
+				].join(''));
+		        //删除
+		        img.find('.img-close').on('click', function(){
+		           delete files[index]; //删除对应的文件
+		           var filename = "${leave.bk}&"+file.name;
+		           $.ajax({
+			            type: "get",
+			            data: {filename:filename},
+			            url: '${ctx}/file/del/',
+			            beforeSend: function () {
+			                index = layer.load(1);
+			            },
+			            success: function (data) {
+			            	layer.close(index);
+			            },
+			            error: function (data) {
+			            	layer.close(index);
+			                layer.msg("服务端异常");
+			            }
+			       });
+		           img.remove();
+		           imgUpload.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
+		        }); 
+				imgUpView.before(img)
 		      });
-			  return false;
-		});
+	     }
+	     ,done: function(res){
+		     //单张上传完毕
+		     console.log(res)
+	     }
+    });
+
+	form.on('submit(sq)', function(data){
+		 data.field.spr = "test";
+		 console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
+		 $.ajax({
+	            type: "post",
+	            data: data.field,
+	            url: "${ctx}/grgzt/fqlc/start/leave",
+	            beforeSend: function () {
+	                index = layer.load(1);
+	            },
+	            success: function (data) {
+	            	console.log(data)
+	            	layer.close(index);
+	            	if(data.code >0){
+	            		layer.msg("申请成功,将于"+data.msg, {offset: ['50%'], time: 3000}, function () {
+	            			parent.window.closeTab("leave");
+                        });
+	            	}else{
+	            		layer.msg("申请失败");
+	            	}
+	            },
+	            error: function (data) {
+	            	layer.close(index);
+	                layer.msg("服务端异常");
+	            }
+	      });
+		  return false;
+	 });
 		
 	}else if(formType == '1'){
 		
