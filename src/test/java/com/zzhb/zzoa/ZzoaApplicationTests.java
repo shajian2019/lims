@@ -98,21 +98,25 @@ public class ZzoaApplicationTests {
 
 	@Test
 	public void testHistoryService() {
-		/*List<HistoricTaskInstance> list = hs.createHistoricTaskInstanceQuery().taskOwner("dev").unfinished()
-				.list();
-		for (HistoricTaskInstance h : list) {
-			System.out.println(h.getProcessDefinitionId());
-			System.out.println(h.getName());
-			System.out.println(h.getStartTime());
-			System.out.println(h.getEndTime());
-			System.out.println(h.getOwner());
-			System.out.println(h.getTaskDefinitionKey());
-		}*/
-		
-/*		HistoricProcessInstance hp = hs.createHistoricProcessInstanceQuery().
-		System.out.println(hp.getName());
-		System.out.println(hp.getProcessDefinitionKey());
-		System.out.println(hp.getStartActivityId());
-		System.out.println(hp.getStartUserId());*/
+		/*
+		 * List<HistoricTaskInstance> list =
+		 * hs.createHistoricTaskInstanceQuery().taskOwner("dev").unfinished() .list();
+		 * for (HistoricTaskInstance h : list) {
+		 * System.out.println(h.getProcessDefinitionId());
+		 * System.out.println(h.getName()); System.out.println(h.getStartTime());
+		 * System.out.println(h.getEndTime()); System.out.println(h.getOwner());
+		 * System.out.println(h.getTaskDefinitionKey()); }
+		 */
+
+		List<HistoricProcessInstance> hps = hs.createHistoricProcessInstanceQuery().startedBy("2").list();
+		for (HistoricProcessInstance hp : hps) {
+			System.out.println(hp.getBusinessKey());
+			System.out.println(hp.getProcessDefinitionKey());
+			System.out.println(hp.getStartActivityId());
+			System.out.println(hp.getProcessDefinitionName());
+			System.out.println(hp.getStartTime());
+			System.out.println(hp.getEndTime());
+		}
+
 	}
 }

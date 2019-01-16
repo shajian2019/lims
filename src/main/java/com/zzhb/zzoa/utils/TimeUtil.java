@@ -54,6 +54,14 @@ public class TimeUtil {
 		return format.format(getDateByCustom(dateFormatFromStr, dateStr));
 	}
 
+	public static String getTimeFromDate(String dateFormatFromStr, Date date) {
+		if (date == null) {
+			return "";
+		}
+		SimpleDateFormat format = new SimpleDateFormat(dateFormatFromStr);
+		return format.format(date);
+	}
+
 	public static int getDaysOfMonth(Date date) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);

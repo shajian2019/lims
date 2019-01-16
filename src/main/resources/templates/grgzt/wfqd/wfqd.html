@@ -16,20 +16,26 @@
 <body style="padding:8px 8px 0;">
 <form class="layui-form" id="query">
     <div class="layui-inline">
-        <input class="layui-input" type="text" placeholder="参数名称" name="name">
+        <input class="layui-input" type="text" placeholder="流水号" name="businessKey">
     </div>
     <div class="layui-inline">
-        <input class="layui-input" type="text" placeholder="参数键名" name="key">
+        <input class="layui-input" type="text" placeholder="流程名称" name="key">
     </div>
     <div class="layui-inline">
         <a class="layui-btn layui-btn-primary" lay-submit="" lay-filter="query" datatype="reload">查询</a>
-        <a class="layui-btn layui-btn-primary" id="addBtn" onclick="add();">新增</a>
     </div>
 </form>
 <table class="layui-hide" id="tableBox" lay-filter="tableBox"></table>
 </body>
 
 </html>
+<script type="text/html" id="lczt">
+   {{#  if(d.endTime == ''){ }}
+		<span style="color: #FFC125;">审核中</span>
+   {{#  } else { }}
+		<span style="color: green">已审核</span>
+   {{#  } }}
+</script>
 <script type="text/html" id="rightBar">
     <div class="layui-btn-group">
         <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit"><i class="fa fa-pencil"></i></a>
@@ -43,10 +49,10 @@
         var $ = layui.jquery;
         var table = layui.table;
         form = layui.form;
-        // layer = layui.layer;
         table.render({
             elem: '#' + tableId,
-            url: '${ctx}/xtgl/xtsz/cssz/getAllParams',
+            url: '${ctx}/grgzt/wfqd/list',
+            where: {u_id:"${user.u_id}"},
             title: '参数设置',
             page: true,
             id: tableId,
@@ -56,19 +62,25 @@
             cols: [
                 [{
                     type: 'numbers',
+                    title: '序号',
                     width: 50
                 }, {
-                    field: 'name',
-                    title: '参数名称',
+                    field: 'businessKey',
+                    title: '流水号',
+                    align: 'center'
                 }, {
-                    field: 'key',
-                    title: '参数键名'
+                    field: 'processDefinitionName',
+                    title: '流程名称',
+                    align: 'center'
                 }, {
-                    field: 'value',
-                    title: '参数键值',
+                    field: 'startTime',
+                    title: '开始时间',
+                    align: 'center'
                 },{
-                    field: 'remark',
-                    title: '备注',
+                    field: 'endTime',
+                    title: '流程状态',
+                    align: 'center',
+                    templet: '#lczt'
                 }, {
                     title: '操作', align: 'center',
                     width: 140,

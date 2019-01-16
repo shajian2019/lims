@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,10 +13,13 @@ import java.util.UUID;
 import java.util.zip.ZipInputStream;
 
 import org.activiti.engine.FormService;
+import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -34,6 +38,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zzhb.zzoa.config.Props;
 import com.zzhb.zzoa.domain.User;
+import com.zzhb.zzoa.domain.activiti.HistoricProcessInstanceVO;
 import com.zzhb.zzoa.domain.activiti.Leave;
 import com.zzhb.zzoa.domain.activiti.ProcessDefinitionExt;
 import com.zzhb.zzoa.domain.activiti.ProcessDefinitionType;
@@ -175,9 +180,12 @@ public class ActivitiService {
 
 	@Autowired
 	RuntimeService runtimeService;
-	
+
 	@Autowired
 	IdentityService is;
+
+	@Autowired
+	HistoryService hs;
 
 	@Transactional
 	public JSONObject startProcessInstance(String key, Map<String, String> params) {
@@ -185,9 +193,10 @@ public class ActivitiService {
 		JSONObject result = new JSONObject();
 		ProcessDefinition pd = repositoryService.createProcessDefinitionQuery().processDefinitionKey(key)
 				.latestVersion().singleResult();
-		Map<String, String> vars = new HashMap<>();
 		is.setAuthenticatedUserId(user.getU_id() + "");
+		Map<String, String> vars = new HashMap<>();
 		ProcessInstance pi = formService.submitStartFormData(pd.getId(), params.get("bk"), vars);
+
 		Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
 		taskService.setOwner(task.getId(), user.getU_id() + "");
 		Map<String, Object> variable = new HashMap<>();
@@ -207,5 +216,16 @@ public class ActivitiService {
 			add = leaveMapper.addLeave(leave);
 		}
 		return add;
+	}
+
+	public JSONObject getHistoricProcessInstances(Integer page, Integer limit, Map<String, String> params) {
+		HistoricProcessInstanceQuery hpiq = hs.createHistoricProcessInstanceQuery().startedBy(params.get("u_id"));
+		long count = hpiq.count();
+		hpiq = hpiq.orderByProcessInstanceStartTime().desc();
+		System.out.println(count);
+		List<HistoricProcessInstance> hps = hpiq.listPage((page - 1) * limit, page * limit);
+		List<HistoricProcessInstanceVO> historicProcessInstanceVOs = HistoricProcessInstanceVO
+				.getHistoricProcessInstanceVOs(hps);
+		return LayUiUtil.pagination(count, historicProcessInstanceVOs);
 	}
 }
