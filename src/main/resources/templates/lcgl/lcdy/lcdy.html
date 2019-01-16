@@ -263,7 +263,7 @@
                            if (data > 0) {
                                layer.msg("删除成功", {offset: ['50%'], time: 1000}, function () {
                                    rightTB.reload({
-               	                    	where:{protype:param.nodeId}
+               	                    	where:{lastversion:true,protype:param.nodeId}
                	               	   });
                                });
                            } else {
@@ -343,7 +343,7 @@
      	            content: $("#pop"),
      	            end: function () {
      	               rightTB.reload({
-    	                    where:{protype:param.nodeId}
+    	                    where:{lastversion:true,protype:param.nodeId}
     	               });
      	            }
      	        });

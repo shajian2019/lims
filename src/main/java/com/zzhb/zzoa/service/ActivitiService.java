@@ -5,14 +5,20 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.zip.ZipInputStream;
 
+import org.activiti.engine.FormService;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.RuntimeService;
+import org.activiti.engine.TaskService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,16 +26,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zzhb.zzoa.config.Props;
+import com.zzhb.zzoa.domain.User;
+import com.zzhb.zzoa.domain.activiti.Leave;
 import com.zzhb.zzoa.domain.activiti.ProcessDefinitionExt;
 import com.zzhb.zzoa.domain.activiti.ProcessDefinitionType;
 import com.zzhb.zzoa.mapper.ActivitiMapper;
+import com.zzhb.zzoa.mapper.LeaveMapper;
 import com.zzhb.zzoa.utils.FileUtil;
 import com.zzhb.zzoa.utils.LayUiUtil;
+import com.zzhb.zzoa.utils.SessionUtils;
 import com.zzhb.zzoa.utils.ZipUtils;
 
 @Service
@@ -45,6 +56,12 @@ public class ActivitiService {
 
 	@Autowired
 	RepositoryService repositoryService;
+
+	@Autowired
+	FormService formService;
+
+	@Autowired
+	LeaveMapper leaveMapper;
 
 	@Transactional
 	public Integer deploy(Map<String, String> params, MultipartFile file) throws IOException {
@@ -150,5 +167,40 @@ public class ActivitiService {
 		InputStream processDiagram = repositoryService.getProcessDiagram(processDefinitionId);
 		FileUtil.saveFileFromInputStream(processDiagram, dir, dgrm_resource_name);
 		return dgrm_resource_name;
+	}
+
+	@Autowired
+	TaskService taskService;
+
+	@Autowired
+	RuntimeService runtimeService;
+
+	@Transactional
+	public JSONObject startProcessInstance(String key, Map<String, String> params) {
+		JSONObject result = new JSONObject();
+		ProcessDefinition pd = repositoryService.createProcessDefinitionQuery().processDefinitionKey(key)
+				.latestVersion().singleResult();
+		Map<String, String> vars = new HashMap<>();
+		ProcessInstance pi = formService.submitStartFormData(pd.getId(), params.get("bk"), vars);
+		Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
+		User user = SessionUtils.getUser();
+		taskService.setOwner(task.getId(), user.getU_id() + "");
+		Map<String, Object> variable = new HashMap<>();
+		variable.put("spr", params.get("spr"));
+		taskService.complete(task.getId(), variable);
+		Integer saveBusiness = saveBusiness(key, params);
+		task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
+		result.put("code", saveBusiness);
+		result.put("msg", task.getName());
+		return result;
+	}
+
+	public Integer saveBusiness(String key, Map<String, String> params) {
+		Integer add = null;
+		if ("leave".equals(key)) {
+			Leave leave = JSON.parseObject(JSON.toJSONString(params), Leave.class);
+			add = leaveMapper.addLeave(leave);
+		}
+		return add;
 	}
 }

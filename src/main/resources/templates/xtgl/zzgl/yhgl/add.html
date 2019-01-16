@@ -154,7 +154,6 @@
 	            dataType: 'json',
 	            type: 'get',
 	            success: function (data) {
-	            	console.log(data)
 	                $.each(data.data, function (index, item) {
 	                    $('#role').append(new Option(item.rolename, item.r_id));// 下拉菜单里添加元素
 	                });

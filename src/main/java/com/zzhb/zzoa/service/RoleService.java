@@ -80,27 +80,11 @@ public class RoleService {
 
 	@Transactional
 	public Integer delRole(Map<String, Object> params) {
+		roleMapper.delRoleMenu(params);
+		roleMapper.delUserRoleByRId(params.get("r_id").toString());
 		Integer delUserRole = roleMapper.delRole(params);
-		delUserRole = roleMapper.delRoleMenu(params);
-		List<String> uIds = roleMapper.getUIds(params);
-		if (uIds.size() > 0) {
-			roleMapper.delUserRole(params);
-			params.put("status", "3");
-			params.put("u_ids", uIds);
-			userMapper.updateUser(params);
-		}
 		cacheService.flushMenus();
 		return delUserRole;
-	}
-
-	@Transactional
-	public Integer bindUser(Map<String, Object> params) {
-		String paramStr = params.get("paramStr").toString();
-		params.put("u_ids", Arrays.asList(paramStr.split("\\|")));
-		roleMapper.bindUser(params);
-		params.put("status", "0");
-		Integer updateUser = userMapper.updateUser(params);
-		return updateUser;
 	}
 
 }
