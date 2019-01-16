@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>流程定义</title>
+    <title>组织架构</title>
     <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
     <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" />
     <link rel="stylesheet" href="${ctx}/plugins/layui/extend/dtree/dtree.css">
@@ -119,104 +119,6 @@
             icon: "2",
             dot: false,
             skin: "layui",
-            menubar: true,
-            menubarTips: {
-                group: [{
-                    menubarId: "add",
-                    icon: "dtree-icon-jia",
-                    title: "新增",
-                    handler: function (node, $div) {
-                       var index = layer.prompt({
-                            formType: 0,
-                            title: '新增分类' //自定义文本域宽高
-                        }, function (value, index, elem) {
-                            layer.close(index);
-                            $.ajax({
-		                         type: "post",
-		                         data: {name: value},
-		                         url: "${ctx}/lcgl/lcdy/lcfl/add",
-		                         beforeSend: function () {
-		                             index = layer.load(1);
-		                         },
-		                         success: function (data) {
-		                             layer.close(index);
-		                             if (data > 0) {
-		                                 layer.msg("新增成功", {offset: ['50%'], time: 1000}, function () {
-		                                	 dtree.reload(dtreeObj);
-		                                 });
-		                             } else {
-		                                 layer.msg("操作失败")
-		                             }
-		                         },
-		                         error: function (data) {
-		                             layer.msg("服务端异常");
-		                         }
-		                    });
-                        });
-                    } 
-                },'refresh']
-            },
-            toolbar: true,
-            toolbarScroll: "#toolbarDiv", //划重点，必须配置，属性含义请参考文档
-            toolbarStyle:{title:"分类", area:["60%","80%"] },
-            toolbarShow: ["delete"],
-            toolbarLoad: "node",
-            toolbarExt: [{
-                toolbarId: "edit",
-                icon: "dtree-icon-bianji",
-                title: "修改分类",
-                handler: function (node, $div) {
-                    var index = layer.prompt({
-                        formType: 0,
-                        value: node.context,
-                        title: '修改分类'
-                    }, function (value, index, elem) {
-                        layer.close(index);
-                        $.ajax({
-	                         type: "post",
-	                         data: {type: node.nodeId,name:value},
-	                         url: "${ctx}/lcgl/lcdy/lcfl/edit",
-	                         beforeSend: function () {
-	                             index = layer.load(1);
-	                         },
-	                         success: function (data) {
-	                             layer.close(index);
-	                             if (data > 0) {
-	                                 layer.msg("修改成功", {offset: ['50%'], time: 1000}, function () {
-	                                	 dtree.reload(dtreeObj);
-	                                 });
-	                             } else {
-	                                 layer.msg("操作失败")
-	                             }
-	                         },
-	                         error: function (data) {
-	                             layer.msg("服务端异常");
-	                         }
-	                    });
-                    });
-                }
-            }],
-            toolbarFun:{
-            	delTreeNode: function(treeNode, $div){ //删除树后调用的函数，用于用户自定义，如未指定则树不会发生变化
-            		alert("TODO")
-            	    /* dtreeObj.changeTreeNodeDel(true); // 调用内置函数，删除节点后改变节点内容。传入false，则树不会发生变化
-            	    $.ajax({
-                        type: "post",
-                        data: {type: treeNode.nodeId},
-                        url: "${ctx}/lcgl/lcdy/lcfl/del",
-                        success: function (data) {
-                            if (data > 0) {
-                                layer.msg("删除成功", {offset: ['50%'], time: 1000});
-                            } else {
-                                layer.msg("操作失败")
-                            }
-                        },
-                        error: function (data) {
-                            layer.msg("服务端异常");
-                        }
-                   }); */
-            	}
-            }
         });
         
         dtree.on("node('" + dtreeID + "')", function (obj) {
