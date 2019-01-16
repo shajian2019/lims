@@ -120,9 +120,10 @@
     
     function start(title,key){
     	var options = {};
+    	options.id = key;
     	options.title = title;
     	options.icon = "fa-pencil";
-    	options.url = "${ctx}/fqlc/start/"+key;
+    	options.url = "${ctx}/grgzt/fqlc/beforeStart/"+key;
     	parent.window.addTab(options);
     }
     

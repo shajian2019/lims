@@ -51,12 +51,14 @@ layui.define(['jquery', 'element', 'nprogress', 'utils'], function(exports) {
     Tab.fn.tabAdd = function(params) {
         _tab.tabAdd(params);
     };
+    
     /**
      * 关闭一个选项卡
      */
     Tab.fn.close = function(layId) {
         _tab.tabDelete(layId);
     };
+    
     Tab.fn.getId = function() {
         return _tab.getCurrLayId();
     };

@@ -27,5 +27,7 @@ public interface OrgMapper {
 	public Integer delUserOrgByOid(String o_id);
 
 	public List<Map<String, String>> getUsers(Map<String, String> params);
+	
+	public Org getOrgByUid(String u_id);
 
 }

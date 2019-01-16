@@ -82,12 +82,16 @@
             //主入口
             app.set({
                 type: 'iframe',
-                r_id: "${r_id}",
+                r_id: "${(role.r_id)!'superadmin'}",
                 menu:"${(menu)!'1'}"
             }).init();
             
            	window.addTab=function(options){
 	           	tab.tabAdd(options)
+           	}
+           	
+           	window.closeTab=function(layId){
+	           	tab.close(layId)
            	}
 
             $('dl.skin > dd').on('click', function() {

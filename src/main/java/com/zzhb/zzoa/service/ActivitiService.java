@@ -13,6 +13,7 @@ import java.util.zip.ZipInputStream;
 
 import org.activiti.engine.FormService;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
@@ -38,6 +40,7 @@ import com.zzhb.zzoa.mapper.ActivitiMapper;
 import com.zzhb.zzoa.mapper.LeaveMapper;
 import com.zzhb.zzoa.utils.FileUtil;
 import com.zzhb.zzoa.utils.LayUiUtil;
+import com.zzhb.zzoa.utils.SessionUtils;
 import com.zzhb.zzoa.utils.ZipUtils;
 
 @Service
@@ -56,7 +59,7 @@ public class ActivitiService {
 
 	@Autowired
 	FormService formService;
-	
+
 	@Autowired
 	LeaveMapper leaveMapper;
 
@@ -166,30 +169,38 @@ public class ActivitiService {
 		return dgrm_resource_name;
 	}
 
-	@Transactional
-	public Task startProcessInstance(User user, String key, String businessKey) {
-		ProcessDefinition pd = repositoryService.createProcessDefinitionQuery().processDefinitionKey(key)
-				.latestVersion().singleResult();
-		Map<String, String> vars = new HashMap<>();
-		ProcessInstance pi = formService.submitStartFormData(pd.getId(), businessKey, vars);
-		Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
-		task.setOwner(user.getU_id() + "");
-		taskService.saveTask(task);
-		return task;
-	}
-
 	@Autowired
 	TaskService taskService;
 
+	@Autowired
+	RuntimeService runtimeService;
+
 	@Transactional
-	public Integer task(Leave leave) {
-		Integer addLeave = leaveMapper.addLeave(leave);
-		Task task = taskService.createTaskQuery().processInstanceBusinessKey(leave.getBk()).singleResult();
-		System.out.println(task.getId());
-		System.out.println(task.getAssignee());
+	public JSONObject startProcessInstance(String key, Map<String, String> params) {
+		JSONObject result = new JSONObject();
+		ProcessDefinition pd = repositoryService.createProcessDefinitionQuery().processDefinitionKey(key)
+				.latestVersion().singleResult();
+		Map<String, String> vars = new HashMap<>();
+		ProcessInstance pi = formService.submitStartFormData(pd.getId(), params.get("bk"), vars);
+		Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
+		User user = SessionUtils.getUser();
+		taskService.setOwner(task.getId(), user.getU_id() + "");
 		Map<String, Object> variable = new HashMap<>();
-		
+		variable.put("spr", params.get("spr"));
 		taskService.complete(task.getId(), variable);
-		return addLeave;
+		Integer saveBusiness = saveBusiness(key, params);
+		task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
+		result.put("code", saveBusiness);
+		result.put("msg", task.getName());
+		return result;
+	}
+
+	public Integer saveBusiness(String key, Map<String, String> params) {
+		Integer add = null;
+		if ("leave".equals(key)) {
+			Leave leave = JSON.parseObject(JSON.toJSONString(params), Leave.class);
+			add = leaveMapper.addLeave(leave);
+		}
+		return add;
 	}
 }

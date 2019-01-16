@@ -13,78 +13,80 @@
 </head>
 
 <body>
-    <!-- ${form} -->
-    <form class="layui-form main">
-    	<input type="hidden" id="formType" value="ygsq">
-    	<input type="hidden" name="bk" value="${leave.bk}">
-        <div class="layui-form-item">
-            <label class="layui-form-label"><span style="color:red;">*</span>申请人</label>
-            <div class="layui-input-inline">
-                <input type="text" name="sqr" value="${leave.sqr}" required lay-verify="required" placeholder="申请人" autocomplete="off" class="layui-input">
-            </div>
-            <label class="layui-form-label"><span style="color:red;">*</span>部门名称</label>
-            <div class="layui-input-inline">
-                <input type="text" name="bmmc" value="${leave.bmmc}" readonly="readonly" required lay-verify="required" placeholder="部门名称" autocomplete="off" class="layui-input">
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label"><span style="color:red;">*</span>申请日期</label>
-            <div class="layui-input-inline">
-                <input type="text" name="sqrq" value="${leave.sqrq}"  readonly="readonly" lay-verify="required" autocomplete="off" class="layui-input">
-            </div>
-            <label class="layui-form-label"><span style="color:red;">*</span>请假类别</label>
-            <div class="layui-input-inline">
-                <select id="qjlx" name="qjlx" lay-verify="required"></select>
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label"><span style="color:red;">*</span>开始日期</label>
-            <div class="layui-input-inline">
-                <input type="text" id="ksrq" name="ksrq" required lay-verify="required" placeholder="开始日期" autocomplete="off"
-                    class="layui-input">
-            </div>
-            <label class="layui-form-label"><span style="color:red;">*</span>结束日期</label>
-            <div class="layui-input-inline">
-                <input type="text" id="jsrq" name="jsrq" required lay-verify="required" placeholder="结束日期" autocomplete="off"
-                    class="layui-input">
-            </div>
-        </div>
-        <div class="layui-form-item">
-        	<label class="layui-form-label"><span style="color:red;">*</span>工作时长</label>
-            <div class="layui-input-inline">
-                <select id="gzsc" name="gzsc" lay-verify="required"></select>
-            </div>
-             <label class="layui-form-label"><span style="color:red;">*</span>请假天数</label>
-             <div class="layui-input-inline">
-                 <input type="text" name="qjts" required lay-verify="required|number" placeholder="请假天数" autocomplete="off" class="layui-input">
-             </div>
-        </div>
-        <div class="layui-form-item layui-form-text">
-            <label class="layui-form-label">请假理由</label>
-            <div class="layui-input-block">
-                <textarea name="qjly" placeholder="请假理由" class="layui-textarea" style="width:500px;"></textarea>
-            </div>
-        </div>
-        <div class="layui-form-item layui-form-text">
-                <label class="layui-form-label">图片</label>
-                <div class="layui-upload">
-					  <button type="button" class="layui-btn" id="test2">新增</button> 
-				</div>
-        </div>
-        <div class="layui-form-item layui-form-text">
-                <label class="layui-form-label">审批人</label>
-                <div class="layui-upload">
-					  <button type="button" class="layui-btn" id="test2">新增</button> 
-				</div>
-        </div>
-        <div class="layui-form-item">
-            <div class="layui-input-block">
-                <button class="layui-btn layui-btn-primary" lay-submit lay-filter="sq">申请</button>
-                <button type="reset" class="layui-btn layui-btn-primary">取消</button>
-            </div>
-        </div>
-    </form>
-    
+    <#if !form??>
+	    <form class="layui-form main">
+	    	<input type="hidden" id="formType" value="ygsq">
+	    	<input type="hidden" name="bk" value="${leave.bk}">
+	        <div class="layui-form-item">
+	            <label class="layui-form-label"><span style="color:red;">*</span>申请人</label>
+	            <div class="layui-input-inline">
+	                <input type="text" name="sqr" value="${leave.sqr}" lay-verify="required" placeholder="申请人" autocomplete="off" class="layui-input">
+	            </div>
+	            <label class="layui-form-label"><span style="color:red;">*</span>部门名称</label>
+	            <div class="layui-input-inline">
+	                <input type="text" name="bmmc" value="${(leave.bmmc)!''}" lay-verify="required" placeholder="部门名称" autocomplete="off" class="layui-input">
+	            </div>
+	        </div>
+	        <div class="layui-form-item">
+	            <label class="layui-form-label"><span style="color:red;">*</span>申请日期</label>
+	            <div class="layui-input-inline">
+	                <input type="text" name="sqrq" value="${leave.sqrq}" readonly="readonly" lay-verify="required" autocomplete="off" class="layui-input">
+	            </div>
+	            <label class="layui-form-label"><span style="color:red;">*</span>请假类别</label>
+	            <div class="layui-input-inline">
+	                <select id="qjlx" name="qjlx" lay-verify="required"></select>
+	            </div>
+	        </div>
+	        <div class="layui-form-item">
+	            <label class="layui-form-label"><span style="color:red;">*</span>开始日期</label>
+	            <div class="layui-input-inline">
+	                <input type="text" id="ksrq" name="ksrq" lay-verify="required" placeholder="开始日期" autocomplete="off"
+	                    class="layui-input">
+	            </div>
+	            <label class="layui-form-label"><span style="color:red;">*</span>结束日期</label>
+	            <div class="layui-input-inline">
+	                <input type="text" id="jsrq" name="jsrq" lay-verify="required" placeholder="结束日期" autocomplete="off"
+	                    class="layui-input">
+	            </div>
+	        </div>
+	        <div class="layui-form-item">
+	        	<label class="layui-form-label"><span style="color:red;">*</span>工作时长</label>
+	            <div class="layui-input-inline">
+	                <select id="gzsc" name="gzsc" lay-verify="required"></select>
+	            </div>
+	             <label class="layui-form-label"><span style="color:red;">*</span>请假天数</label>
+	             <div class="layui-input-inline">
+	                 <input type="text" name="qjts" required lay-verify="required|number" placeholder="请假天数" autocomplete="off" class="layui-input">
+	             </div>
+	        </div>
+	        <div class="layui-form-item layui-form-text">
+	            <label class="layui-form-label">请假理由</label>
+	            <div class="layui-input-block">
+	                <textarea name="qjly" placeholder="请假理由" class="layui-textarea" style="width:500px;"></textarea>
+	            </div>
+	        </div>
+	        <div class="layui-form-item layui-form-text">
+	                <label class="layui-form-label">图片</label>
+	                <div class="layui-upload">
+						  <button type="button" class="layui-btn" id="test2">新增</button> 
+					</div>
+	        </div>
+	        <div class="layui-form-item layui-form-text">
+	                <label class="layui-form-label">审批人</label>
+	                <div class="layui-upload">
+						  <button type="button" class="layui-btn" id="test2">新增</button> 
+					</div>
+	        </div>
+	        <div class="layui-form-item">
+	            <div class="layui-input-block">
+	                <button class="layui-btn layui-btn-primary" lay-submit lay-filter="sq">申请</button>
+	                <button type="reset" class="layui-btn layui-btn-primary">取消</button>
+	            </div>
+	        </div>
+	    </form>
+	<#else>
+		${form}
+    </#if>
 </body>
 <script src="${ctx}/plugins/layui/layui.all.js"></script>
 <script type="text/javascript">
@@ -148,23 +150,31 @@
 		form.on('submit(sq)', function(data){
 			  console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
 			  data.field.spr = "test";
+			  console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
 			  $.ajax({
 		            type: "post",
 		            data: data.field,
-		            url: "${ctx}/fqlc/task",
+		            url: "${ctx}/grgzt/fqlc/start/leave",
 		            beforeSend: function () {
 		                index = layer.load(1);
 		            },
 		            success: function (data) {
 		            	layer.close(index);
 		            	console.log(data)
+		            	if(data.code >0){
+		            		layer.msg("申请成功,将于"+data.msg, {offset: ['50%'], time: 2000}, function () {
+		            			parent.window.closeTab("leave");
+                            });
+		            	}else{
+		            		layer.msg("申请失败");
+		            	}
 		            },
 		            error: function (data) {
 		            	layer.close(index);
 		                layer.msg("服务端异常");
 		            }
 		      });
-			  return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+			  return false;
 		});
 		
 	}else if(formType == '1'){

@@ -2,11 +2,16 @@ package com.zzhb.zzoa;
 
 import java.util.List;
 
+import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
+import org.activiti.engine.TaskService;
+import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
+import org.activiti.engine.task.Task;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +45,9 @@ public class ZzoaApplicationTests {
 
 	@Autowired
 	IdentityService is;
+
+	@Autowired
+	TaskService ts;
 
 	@Test
 	public void contextLoads3() {
@@ -75,5 +83,36 @@ public class ZzoaApplicationTests {
 		for (User user : list) {
 			is.deleteUser(user.getId());
 		}
+	}
+
+	@Test
+	public void testTaskQuery() {
+		List<Task> list = ts.createTaskQuery().taskAssignee("test").list();
+		for (Task task : list) {
+			task.getAssignee();
+		}
+	}
+
+	@Autowired
+	HistoryService hs;
+
+	@Test
+	public void testHistoryService() {
+		/*List<HistoricTaskInstance> list = hs.createHistoricTaskInstanceQuery().taskOwner("dev").unfinished()
+				.list();
+		for (HistoricTaskInstance h : list) {
+			System.out.println(h.getProcessDefinitionId());
+			System.out.println(h.getName());
+			System.out.println(h.getStartTime());
+			System.out.println(h.getEndTime());
+			System.out.println(h.getOwner());
+			System.out.println(h.getTaskDefinitionKey());
+		}*/
+		
+/*		HistoricProcessInstance hp = hs.createHistoricProcessInstanceQuery().
+		System.out.println(hp.getName());
+		System.out.println(hp.getProcessDefinitionKey());
+		System.out.println(hp.getStartActivityId());
+		System.out.println(hp.getStartUserId());*/
 	}
 }
