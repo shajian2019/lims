@@ -67,3 +67,9 @@ props:
   cookiename: ZZOA
   globalSessionTimeout: 43200000 #session过期时间
   temp-path: C:/tmpzzoa
+  flushkeys: 
+    - ONEMENU*
+    - SECONDMENU*
+    - TREEMENUS*
+    - DICT*
+    - ALLMENUS*

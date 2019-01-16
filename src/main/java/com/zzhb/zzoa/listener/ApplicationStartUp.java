@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.zzhb.zzoa.redis.RedisService;
 import com.zzhb.zzoa.service.InitService;
 
 import freemarker.template.Configuration;
@@ -24,6 +25,9 @@ public class ApplicationStartUp implements InitializingBean {
 	@Autowired
 	private Configuration configuration;
 
+	@Autowired
+	RedisService redisService;
+
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		logger.info("==============springboot启动================");
@@ -31,5 +35,8 @@ public class ApplicationStartUp implements InitializingBean {
 		logger.info("==============configuration================" + configuration);
 		configuration.setSharedVariable("ctx", contextpath);
 		initService.initParams();
+
+		String flushdb = redisService.flushdb();
+		logger.info("==============flushdb====" + flushdb + "============");
 	}
 }

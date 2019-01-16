@@ -12,6 +12,7 @@ import java.util.UUID;
 import java.util.zip.ZipInputStream;
 
 import org.activiti.engine.FormService;
+import org.activiti.engine.IdentityService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
@@ -174,16 +175,20 @@ public class ActivitiService {
 
 	@Autowired
 	RuntimeService runtimeService;
+	
+	@Autowired
+	IdentityService is;
 
 	@Transactional
 	public JSONObject startProcessInstance(String key, Map<String, String> params) {
+		User user = SessionUtils.getUser();
 		JSONObject result = new JSONObject();
 		ProcessDefinition pd = repositoryService.createProcessDefinitionQuery().processDefinitionKey(key)
 				.latestVersion().singleResult();
 		Map<String, String> vars = new HashMap<>();
+		is.setAuthenticatedUserId(user.getU_id() + "");
 		ProcessInstance pi = formService.submitStartFormData(pd.getId(), params.get("bk"), vars);
 		Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
-		User user = SessionUtils.getUser();
 		taskService.setOwner(task.getId(), user.getU_id() + "");
 		Map<String, Object> variable = new HashMap<>();
 		variable.put("spr", params.get("spr"));
