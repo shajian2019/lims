@@ -25,13 +25,13 @@ public class FileController {
 	@ResponseBody
 	public JSONObject upload(@RequestParam("file") MultipartFile file,String bk) throws Exception {
 		JSONObject result = new JSONObject();
-		String filename = file.getOriginalFilename().split("\\.")[1];
+		String filename = file.getOriginalFilename();
 		
 		String dir = props.getTempPath();
 		if (!new File(dir).exists()) {
 			new File(dir).mkdir();
 		}
-		filename = bk +"."+filename;
+		filename = bk +filename;
 		FileUtil.saveFileFromInputStream(file.getInputStream(), dir, filename);
 		result.put("filename", filename);
 		return result;
