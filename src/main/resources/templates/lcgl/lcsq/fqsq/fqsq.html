@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>组织架构</title>
+    <title>发起授权</title>
     <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
     <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" />
     <link rel="stylesheet" href="${ctx}/plugins/layui/extend/dtree/dtree.css">
@@ -22,13 +22,13 @@
 }
 .layui-input{height:32px;line-height: 32px;}
 .dtree{width: 210px;}
- .left-box{float: left;width:240px;height:100%;padding:3px;box-sizing: border-box;overflow-y: auto;border-right:1px solid #e6e6e6;}
- .right-box{float: right;width:calc(100% - 242px); ;height:100%;}
+ .left-box{float: left;width:240px;height:100%;padding:3px 0 0 0;box-sizing: border-box;overflow-y: auto;border-right:1px solid #e6e6e6;}
+ .right-box{float: right;width:calc(100% - 249px); ;height:100%;padding: 0 4px 0 0;}
  .bm_name_tit{height:42px;line-height: 42px;background-color: #f3f5f7;text-align: center;font-size:16px;}
 #pop{margin: 12px auto 0;}
 #pop .layui-form-item{display: flex;align-items: center;}
 #pop .layui-form-item>.layui-inline{width: 320px;}
-#lc_upload_btn{margin: 0 auto;}
+#lc_upload_btn{margin: 0 auto;display: block;}
 </style>
 </head>
 <body>
@@ -39,59 +39,26 @@
         </div>
     </div>
     <div class="right-box">
-    	 <form class="layui-form">
+    	 <form class="layui-form" style="padding: 6px 0; ">
 	            <div class="layui-inline">
 	                <input type="text" class="layui-input" name="name" placeholder="流程名称">
 	            </div>
 	            <div class="layui-inline">
 	                <a href="javascript:;" class="layui-btn layui-btn-sm  layui-btn-primary" lay-submit lay-filter="search">查询</a>
-	                <a href="javascript:;" class="layui-btn layui-btn-sm  layui-btn-primary" lay-submit lay-filter="add">添加</a>
 	            </div>
     	</form>
         <table class="layui-hide" id="right_tb" lay-filter="right_tb"></table>
     </div>
     
-	<div id="preview" class="hide" style="display: none;">
-		<img alt="" src="">
-	</div>
-	
-    <div class="pop" id="pop" style="display: none;">
-		<form class="layui-form">
-		      <div class="layui-form-item">
-		          <label class="layui-form-label">流程文件:</label>
-		          <div class="layui-inline" style="margin-bottom:0;">     
-		               <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="lc_upload">选择文件</button>
-		          </div>
-		      </div>
-		      <div class="layui-form-item">
-			      	<label class="layui-form-label">备注信息:</label>
-					<div class="layui-inline">
-					    <textarea id="description" name="description" placeholder="请输入内容" class="layui-textarea"></textarea>
-					</div>
-			  </div>
-		      <div class="layui-form-item">
-		          <div class="layui-inline">     
-		                <button type="button" class="layui-btn layui-btn-sm" id="lc_upload_btn">保存</button>                      
-		          </div>
-		      </div>
-		</form>
-	</div>
 </body>
-
-</html>
 <script type="text/html" id="rightBar">
     <div class="layui-btn-group">
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="preview">
-            <i class="fa fa-image "></i>
-        </a>
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="download">
-            <i class="fa fa-download"></i>
-        </a>
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del">
-            <i class="fa fa-trash-o"></i>
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="authorize">
+            <i class="fa fa-user-o "></i>
         </a>
     </div>
 </script>
+</html>
 <script src="${ctx}/plugins/layui/layui.js"></script>
 <script src="${ctx}/js/common/download.js"></script>
 <script>
@@ -104,7 +71,6 @@
     layui.use(['table', 'layer', 'form', 'dtree','upload'], function () {
             $ = layui.jquery,
             table = layui.table,
-            upload=layui.upload,
             form = layui.form,
             dtree = layui.dtree,
             layer = layui.layer,
@@ -119,6 +85,10 @@
             icon: "2",
             dot: false,
             skin: "layui",
+            menubar: true,
+            menubarTips:{
+            	group: ["refresh"]
+            }
         });
         
         dtree.on("node('" + dtreeID + "')", function (obj) {
@@ -130,19 +100,20 @@
         var rightTB = table.render({
             elem: '#' + tbID,
             id: tbID,
-            height: 'full-40',
+            height: 'full-45',
             url: '${ctx}/lcgl/lcdy/list', //数据接口,
             where:{lastversion:true},
             page: true,
             cols: [[
-                {field: '序号',width:50,type:'numbers',title:'序号'}
-              , {field: 'deployment_id', width: 100, title: '部署ID',align:'center'}
-              , {field: 'name', width: 200, title: '流程名称'}
-              , {field: 'version', width: 70, title: '版本',align:'center'}
-              , {field: 'createuser', width: 120, title: '创建人',align:'center'}
-              , {field: 'createtime', width: 170, title: '创建时间'}
-              , {field: 'description', title: '备注'}
-              , {title: '操作', align: 'center', width: 120,toolbar: '#rightBar'}
+            	  {field: '序号',width:50,type:'numbers',title:'序号'}
+                , {field: 'deployment_id', width: 100, title: '部署ID',align:'center'}
+                , {field: 'proname', width: 120, title: '流程分类',align:'center'}
+                , {field: 'name', width: 180, title: '流程名称',align:'center'}
+                , {field: 'version', width: 70, title: '版本',align:'center'}
+                , {field: 'createuser', width: 120, title: '创建人',align:'center'}
+                , {field: 'createtime', width: 170, title: '创建时间',align:'center'}
+                , {field: 'description', title: '备注',align:'center'}
+                , {title: '操作', align: 'center', width: 120,toolbar: '#rightBar'}
           ]]
         });
         
@@ -150,76 +121,19 @@
            var param = dtree.getNowParam(dtreeObj);
            var data = obj.data;
            var action = obj.event;
-       	   var index;
-           if (obj.event === 'del') {
-        	   layer.confirm('确定删除该流程定义吗?', function (index) {
-                   $.ajax({
-                       type: "post",
-                       data: {deployment_id: data.deployment_id},
-                       url: "${ctx}/lcgl/lcdy/del",
-                       beforeSend: function () {
-                           index = layer.load(1);
-                       },
-                       success: function (data) {
-                           layer.close(index);
-                           if (data > 0) {
-                               layer.msg("删除成功", {offset: ['50%'], time: 1000}, function () {
-                                   rightTB.reload({
-               	                    	where:{lastversion:true,protype:param.nodeId}
-               	               	   });
-                               });
-                           } else {
-                               layer.msg("操作失败")
-                           }
-                       },
-                       error: function (data) {
-                           layer.msg("服务端异常");
-                       }
-                   });
-          		})
-           }else if("download" == action){
-             $.ajax({
-                 type: "post",
-                 data: data,
-                 url: "${ctx}/lcgl/lcdy/download",
-                 beforeSend: function () {
-                     index = layer.load(1);
-                 },
-                 success: function (data) {
-                     layer.close(index);
-                     var url = "${ctx}/lcgl/lcdy/downloadZip"
-               		 var field = {};
-                     field.fileName = data;
-               		 formPost(url, field);
-                 },
-                 error: function (data) {
-                     layer.msg("服务端异常");
-                 }
-             });
-         }else if("preview" == action){
-        	 $.ajax({
-                 type: "post",
-                 data: data,
-                 url: "${ctx}/lcgl/lcdy/preview",
-                 beforeSend: function () {
-                     index = layer.load(1);
-                 },
-                 success: function (data) {
-                     layer.close(index);
-                     $("img").attr('src',"${ctx}/"+data)
-                     index = layer.open({
-                   		  type: 1,
-                   		  title: '流程图',
-	                      maxmin: true,
-                   		  content: $('#preview')
-              		 });
-                     layer.full(index);
-                 },
-                 error: function (data) {
-                     layer.msg("服务端异常");
-                 }
-             });
-         }
+           if (obj.event === 'authorize') {
+        	   console.log(data)
+        	   layer.open({
+	   	            type: 2,
+	   	            area: ['820px', '550px'],
+	   	            fixed: false, //不固定
+	   	            maxmin: true,
+	   	            content: '${ctx}/lcgl/lcsq/fqsq/pop?p_id='+data.id,
+	   	            end: function(){
+	   	            	
+	            	}
+           	   })
+           }
         });
         
         form.on('submit(search)', function (data) {
@@ -230,55 +144,6 @@
                 where: data.field
             });
             return false;
-        });
-        
-        form.on('submit(add)', function (data) {
-        	var param = dtree.getNowParam(dtreeObj);
-     	    if(!param.nodeId){
-     		   layer.msg("请选择流程分类", {offset: ['50%'], time: 1000});
-     	    }else{
-     	    	var index = layer.open({
-     	            title: '流程部署',
-     	            type: 1,
-     	            area: ['490px', '300px'],
-     	            fixed: false, //不固定
-     	            content: $("#pop"),
-     	            end: function () {
-     	               rightTB.reload({
-    	                    where:{lastversion:true,protype:param.nodeId}
-    	               });
-     	            }
-     	        });
-     	    }
-            return false;
-        });
-        
-        upload.render({
-             elem: '#lc_upload'
-            ,url: '${ctx}/lcgl/lcdy/deploy'
-            ,accept:'file'
-            ,auto: false
-            ,data: {
-            	  protype: function(){
-            		   var param = dtree.getNowParam(dtreeObj);
-	           		    return param.nodeId;
-           		  },
-           		  description: function(){
-	           		    return $("#description").val();
-           		  },
-           		  createuser: function(){
-	           		    return '${user.nickname}';
-           		  }
-             }
-            ,bindAction: '#lc_upload_btn'
-            ,done: function(res){
-				if(res.code < 0){
-					layer.msg(res.msg, {offset: ['50%'], time: 2000});
-				}else{
-					$("#description").val('');
-					layer.closeAll();
-				}       	
-            }
         });
         
     })

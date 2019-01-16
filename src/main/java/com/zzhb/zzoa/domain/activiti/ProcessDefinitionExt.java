@@ -15,6 +15,7 @@ public class ProcessDefinitionExt {
 	private String createuser;
 	private String updateuser;
 	private String protype;
+	private String proname;
 
 	public String getId() {
 		return id;
@@ -118,6 +119,14 @@ public class ProcessDefinitionExt {
 
 	public void setProtype(String protype) {
 		this.protype = protype;
+	}
+
+	public String getProname() {
+		return proname;
+	}
+
+	public void setProname(String proname) {
+		this.proname = proname;
 	}
 
 	@Override

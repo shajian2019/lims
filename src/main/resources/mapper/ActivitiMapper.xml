@@ -8,7 +8,7 @@
 	</insert>
 	
 	<select id="getProcessDefinitionExts" resultType="com.zzhb.zzoa.domain.activiti.ProcessDefinitionExt">
-		SELECT  ext.* FROM ext_act_re_procdef ext
+		SELECT  ext.*,pro.`name` proname FROM ext_act_re_procdef ext LEFT JOIN ext_act_proctype pro on ext.protype = pro.type
 		<where>
 			<if test="name !=null and name !='' ">
 				<bind name="_name" value="'%'+name+'%'"/>

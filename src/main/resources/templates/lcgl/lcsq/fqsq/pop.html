@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>新增</title>
+    <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
+    <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <link rel="stylesheet" href="${ctx}/plugins/layui/extend/dtree/dtree.css">
+    <link rel="stylesheet" href="${ctx}/plugins/layui/extend/dtree/font/dtreefont.css">
+    <style>
+        #searchInput{width:220px;display:inline-block;height:31px;line-height:31px;}
+        .form-box{display: flex;align-items: center;width: 100%;margin: 10px 10px 10px 10px;flex-wrap: nowrap;}
+        .form-l{border:1px solid #e6e6e6;height:400px;width:40%;overflow: auto;}
+        .form-r{border:1px solid #e6e6e6;height:400px;overflow: auto;}
+        .tit{background-color: #f3f5f7;line-height:34px;border-bottom: 1px solid #e6e6e6;padding:0 12px;}
+        .tit-r{display: flex;align-items: center;justify-content: space-between;}
+        #staff_list li{display: flex;align-items: center;justify-content: space-between;padding: 8px 15px;margin-bottom: 4px;}
+        #staff_list li:hover{background-color: #e6e6e6;}
+        #staff_list li:hover .layui-icon-close-fill{color:#ff5722;}
+        .num,#all_clear{color:#1E9FFF;}
+        .layui-btn{background-color: #0a8cbf;}
+    </style>
+</head>
+
+<body>
+    <form class="layui-form">
+        <div class="form-box">
+            <div class="form-l">
+                <p class="tit">所有部门</p>
+                <ul id="popTree" class="dtree" data-id="0"></ul>
+            </div>
+            <i class="layui-icon layui-icon-next" style="padding:0 5px;"></i>
+            <div class="form-r">
+                <p class="tit tit-r">
+                    <span>已经选择<span class="num">(<span>0</span>)</span></span>
+                    <span id="all_clear">全部清除</span>
+                </p>
+                <ul id="staff_list">
+                </ul>
+            </div>
+        </div>
+        <div style="text-align: center;width:100%;padding-top:10px;">
+            <a href="javascript:;" class="layui-btn layui-btn-sm" id="save">保存</a>
+            <a href="javascript:;" class="layui-btn layui-btn-sm closeBtn layui-bg-gray">取消</a>
+        </div>
+    </form>
+</body>
+
+</html>
+<script src="${ctx}/plugins/layui/layui.all.js"></script>
+<script>
+	layui.config({
+	    base: '${ctx}/plugins/layui/extend/dtree/'
+	}).extend({
+	    dtree: 'dtree'
+	})
+    layui.use(['element', 'layer', 'dtree'], function () {
+        var $ = layui.jquery,
+            layer = layui.layer,
+            dtree = layui.dtree;
+      	//获取上一个html的url传值
+        function getParams(key) {
+            var reg = new RegExp("(^|&)" + key + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) {
+                return unescape(r[2]);
+            }
+            return null;
+        };
+        //弹出框树
+        var popTree = dtree.render({
+            elem: "#popTree",
+            ficon: "-1", // 隐藏一级图标
+            icon: "2",
+            dot: false,
+            checkbar: true,
+            checkbarType: "no-all",
+            dataStyle: "layui",
+            method:'GET',
+            url: '${ctx}/xtgl/zzgl/zzjg/list',
+            menubar: true,
+            menubarTips: {group: ['refresh']},
+            done: function (data, obj) {
+                $("#search_btn").unbind("click");
+                $("#search_btn").click(function () {
+                    var value = $("#searchInput").val();
+                    if (value) {
+                        var flag = popTree.searchNode(value); // 内置方法查找节点
+                        if (!flag) {
+                            layer.msg("该部门不存在！", {
+                                icon: 5
+                            });
+                        }
+                    } else {
+                        popTree.menubarMethod().refreshTree(); // 内置方法刷新树
+                    }
+                })
+            }
+        })
+        //复选框事件
+        dtree.on("chooseDone('popTree')", function (obj) {
+            var html = '';
+            var list = obj.checkbarParams;
+            for (let i = 0; i < list.length; i++) {
+                if (list[i]['isLeaf'] === true) {
+                    html += "<li><p>" + list[i]['context'] +
+                        "</p><i class='layui-icon layui-icon-close-fill' data-id='" + list[i]['nodeId'] +
+                        "'></i></li>"
+                }
+            }
+            $("#staff_list").html(html);
+            var staff = $("#staff_list li").length;
+            $(".num>span").text(staff);
+        });
+        //数组对象对应删除
+        Array.prototype.remove = function (val) {
+            var index = this.indexOf(val);
+            if (index > -1) {
+                this.splice(index, 1);
+            }
+        };
+        //右侧人员删除
+        $("#staff_list").on("click", ".layui-icon-close-fill", function () {
+            var del = $(this).attr("data-id");
+            var nodeId = "";
+            var w_id = "";
+            $("#staff_list li").each(function () {
+                w_id += $(this).find("i").attr("data-id") + ",";
+                if (w_id.substr(w_id.length - 1) == ',') {
+                    nodeId = w_id.substr(0, w_id.length - 1);
+                }
+            });
+            var arr = nodeId.split(",");
+            arr.remove(del);
+            nodeId = arr.join(",");
+            dtree.reload(popTree, {
+                done: function (data, obj) {
+                    dtree.chooseDataInit("popTree", nodeId);
+                }
+            })
+            $(this).parent().remove();
+            $(".num>span").text($("#staff_list li").length);
+        });
+        //右侧清楚全部
+        $("#all_clear").click(function (e) {
+            //获取对应id
+            popTree.reload();
+            $("#staff_list").empty();
+            $(".num>span").text("0");
+        });
+        //保存
+        $("#save").click(function (e) { 
+            var nodeId = "";
+            var w_id = "";
+            $("#staff_list li").each(function () {
+                w_id += $(this).find("i").attr("data-id") + ",";
+                if (w_id.substr(w_id.length - 1) == ',') {
+                    nodeId = w_id.substr(0, w_id.length - 1);
+                }
+            });  
+            var index = parent.layer.getFrameIndex(window.name); //获取窗口索引         
+            var roleid=getParams("roleid");
+        });
+        
+        $(".closeBtn").click(function (e) { 
+            var index = parent.layer.getFrameIndex(window.name); //获取窗口索引 
+            parent.layer.close(index)   
+        });
+     	
+    });
+</script>
