@@ -15,6 +15,8 @@ public interface ActivitiMapper {
 
 	public List<ProcessDefinitionExt> getProcessDefinitionExts(Map<String, String> params);
 
+	public List<ProcessDefinitionExt> getProcessDefinitionExtsByUid(Map<String, String> params);
+	
 	public Integer delProcessDefinitionExt(Map<String, String> params);
 
 	public List<User> getAddUsers(Map<String, String> params);

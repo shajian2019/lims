@@ -156,8 +156,8 @@
     function load(protype){
     	$.ajax({
             type: "get",
-            data:{protype:protype,lastversion:true},
-            url: "${ctx}/lcgl/lcdy/list",
+            data:{u_id:"${user.u_id}",protype:protype,lastversion:true},
+            url: "${ctx}/grgzt/fqlc/list",
             beforeSend: function () {
                 index = layer.load(1);
             },

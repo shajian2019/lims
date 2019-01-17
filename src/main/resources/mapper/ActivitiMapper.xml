@@ -24,6 +24,31 @@
 		order by ext.createtime desc
 	</select>
 	
+	<select id="getProcessDefinitionExtsByUid" resultType="com.zzhb.zzoa.domain.activiti.ProcessDefinitionExt">
+		SELECT
+			ext.*,
+			pro.`name` proname 
+		FROM
+			sys_t_user_procdef p
+			LEFT JOIN ext_act_re_procdef ext ON p.p_id = ext.id
+			LEFT JOIN ext_act_proctype pro ON ext.protype = pro.type
+		<where>
+			<if test="u_id !=null and u_id !='' ">
+				and p.u_id = #{u_id}
+			</if>
+			<if test="name !=null and name !='' ">
+				<bind name="_name" value="'%'+name+'%'"/>
+				and ext.name like #{_name}
+			</if>
+			<if test="protype !=null and protype !='' ">
+				and ext.protype = #{protype}
+			</if>
+			<if test="lastversion !=null and lastversion !='' ">
+				and ext.version = (SELECT max(version) FROM	ext_act_re_procdef WHERE `key` = ext.`key`)
+			</if>
+		</where>
+	</select>
+	
 	<delete id="delProcessDefinitionExt" parameterType="java.util.Map">
 		DELETE FROM ext_act_re_procdef 
 		<where>
