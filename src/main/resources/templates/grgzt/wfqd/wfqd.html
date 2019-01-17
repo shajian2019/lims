@@ -3,33 +3,87 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>我发起的</title>
-    <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet"/>
-    <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet"/>
+    <title>发起流程</title>
+    <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
+    <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <link rel="stylesheet" href="${ctx}/plugins/layui/extend/dtree/dtree.css">
+    <link rel="stylesheet" href="${ctx}/plugins/layui/extend/dtree/font/dtreefont.css">
     <style>
-        .layui-table, .layui-table-view {
-            margin: 8px 0 0;
-        }
-    </style>
-</head>
+        html,body{margin: 0;height: 100%;}
+ .layui-table, .layui-table-view {margin:0;}
+ .layui-table-tool {
+    position: relative;
+    z-index: 890;
+    width: 100%;
+    min-height: 50px;
+    line-height: 49px;
+    padding: 0px 5px;
+    border-width: 0 0 1px;
+}
+.layui-input{height:32px;line-height: 32px;}
+.dtree{width: 210px;}
+ .left-box{float: left;width:240px;height:100%;padding:3px;box-sizing: border-box;overflow-y: auto;border-right:1px solid #e6e6e6;}
+ .right-box{float: right;width:calc(100% - 249px); ;height:100%;padding: 0 4px 0 0;}
+ .bm_name_tit{height:42px;line-height: 42px;background-color: #f3f5f7;text-align: center;font-size:16px;}
+ * {
+            box-sizing: border-box;
+   }
 
-<body style="padding:8px 8px 0;">
-<form class="layui-form" id="query">
-    <div class="layui-inline">
-        <input class="layui-input" type="text" placeholder="流水号" name="businessKey">
+   .flex-box {
+       padding: 8px;
+   }
+
+   .zdy-list {
+       display: flex;
+       align-items: center;
+       justify-content: space-between;
+       flex-wrap: wrap;
+   }
+
+   .zdy-list>li {
+       width: 20%;
+       padding: 10px;
+       margin-bottom: 12px;
+   }
+
+   .zdy-list .zdy-list-box {
+       background-color: #f3f5f7;
+       border: 1px solid #e6e6e6;
+       border-radius: 4px;
+       display: flex;
+       flex-direction: column;
+       height: 140px;
+       justify-content: space-between;
+       padding: 10px;
+   }
+   .zdy-icon{margin-right: 5px;}
+</style>
+</head>
+<body>
+    <div class="left-box">
+        <h4 class="bm_name_tit">流程分类</h4>
+        <div style="overflow: auto;" id="toolbarDiv">
+            <ul id="left_tree" class="dtree" data-id="0"></ul>
+        </div>
     </div>
-    <div class="layui-inline">
-        <input class="layui-input" type="text" placeholder="流程名称" name="key">
+    
+    <div class="right-box">
+    	<form class="layui-form" id="query">
+		    <div class="layui-inline">
+		        <input class="layui-input" type="text" placeholder="流水号" name="businessKey">
+		    </div>
+		    <div class="layui-inline">
+		        <input class="layui-input" type="text" placeholder="流程名称" name="name">
+		    </div>
+		    <div class="layui-inline">
+		        <a class="layui-btn layui-btn-primary layui-btn-sm" lay-submit="" lay-filter="query" datatype="reload">查询</a>
+		    </div>
+		</form>
+		<table class="layui-hide" id="tableBox" lay-filter="tableBox"></table>
+		<div id="preview" class="hide" style="display: none;">
+			<img alt="" src="">
+		</div>
     </div>
-    <div class="layui-inline">
-        <a class="layui-btn layui-btn-primary" lay-submit="" lay-filter="query" datatype="reload">查询</a>
-    </div>
-</form>
-<div id="preview" class="hide" style="display: none;">
-	<img alt="" src="">
-	
-</div>
-<table class="layui-hide" id="tableBox" lay-filter="tableBox"></table>
 </body>
 
 </html>
@@ -42,20 +96,42 @@
 </script>
 <script type="text/html" id="rightBar">
     <div class="layui-btn-group">
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit"><i class="fa fa-pencil"></i></a>
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del"><i class="fa fa-trash-o"></i></a>
-		<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="preview">
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="preview">
             <i class="fa fa-image "></i>
         </a>
     </div>
 </script>
-<script src="${ctx}/plugins/layui/layui.all.js"></script>
+<script src="${ctx}/plugins/layui/layui.js"></script>
 <script>
-    var tableId = 'tableBox';
-    layui.use('table', function () {
-        var $ = layui.jquery;
-        var table = layui.table;
-        form = layui.form;
+    layui.config({
+        base: '${ctx}/plugins/layui/extend/dtree/'
+    }).extend({
+        dtree: 'dtree'
+    })
+    var $ = null,table=null,upload=null,dtree=null,layer=null,dtreeID=null,index=null,tableId = 'tableBox',form=null;
+    layui.use(['table', 'layer', 'dtree','upload'], function () {
+            $ = layui.jquery,
+            table = layui.table,
+            upload=layui.upload,
+            dtree = layui.dtree,
+            layer = layui.layer,
+            form = layui.form,
+            dtreeID = 'left_tree';
+            
+        var dtreeObj = dtree.render({
+            elem: "#" + dtreeID, //绑定元素
+            method:'GET',
+            url: "${ctx}/lcgl/lcdy/lcfl/listByid",  //异步接口
+            ficon: "0", // 隐藏一级图标
+            icon: "2",
+            dot: false,
+            skin: "layui",
+            menubar:true,
+            menubarTips:{
+            	group:['refresh','searchNode']
+            }
+        });
+        
         table.render({
             elem: '#' + tableId,
             url: '${ctx}/grgzt/wfqd/list',
@@ -64,7 +140,7 @@
             page: true,
             id: tableId,
             method: 'get',
-            height: 'full-55',
+            height: 'full-45',
             cellMinWidth: 120,
             cols: [
                 [{
@@ -74,6 +150,7 @@
                 }, {
                     field: 'businessKey',
                     title: '流水号',
+                   	width: 200,
                     align: 'center'
                 }, {
                     field: 'processDefinitionName',
@@ -82,10 +159,12 @@
                 }, {
                     field: 'startTime',
                     title: '开始时间',
+                    width: 150,
                     align: 'center'
                 },{
                     field: 'endTime',
                     title: '流程状态',
+                	width: 150,
                     align: 'center',
                     templet: '#lczt'
                 }, {
@@ -96,6 +175,7 @@
             ],
             page: true
         });
+        
         table.on('tool(tableBox)', function (obj) {
             var data = obj.data;
             if (obj.event === 'edit') {
@@ -137,7 +217,6 @@
                     });
                 });
             } else if("preview" == obj.event){
-            	console.log(data)
 	        	 $.ajax({
 	                 type: "post",
 	                 data: data,
@@ -160,17 +239,34 @@
 	                     layer.msg("服务端异常");
 	                 }
 	             });
-          }
+            }
         })
+        
         form.on('submit(query)', function (data) {
-            console.log(data);
             table.reload(tableId, {
                 where: data.field
             });
             return false;
         });
-    });
-
+        
+        dtree.on("node('" + dtreeID + "')", function (obj) {
+        	var keys = obj.param.nodeId;
+			$.each(obj.childParams,function(index,data){
+				console.log(data.nodeId)
+				keys += ","+data.nodeId;
+			})
+			var data = {};
+			data.name = $("input[name='name']").val()
+			data.businessKey = $("input[name='businessKey']").val()
+			data.keys = keys;
+			console.log(data)
+			table.reload(tableId, {
+                where: data
+            });
+        });
+        
+    })
+    
     function add() {
         var url = "${ctx}/xtgl/xtsz/cssz/editpage?flag=add";
         var table = layui.table;

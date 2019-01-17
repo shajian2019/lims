@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -121,6 +122,36 @@ public class ActivitiService {
 			groupJ.put("title", pt.getName());
 			groupJ.put("parentId", "0");
 			groupJ.put("children", children);
+			data.add(groupJ);
+		}
+		result.put("data", data);
+		JSONObject status = new JSONObject();
+		status.put("code", 200);
+		status.put("message", "操作成功");
+		result.put("status", status);
+		return result;
+	}
+
+	public JSONObject lcflListByUid() {
+		List<ProcessDefinitionType> processDefinitionTypes = activitiMapper.getProcessDefinitionTypes();
+		JSONObject result = new JSONObject();
+		JSONArray data = new JSONArray();
+		for (ProcessDefinitionType pt : processDefinitionTypes) {
+			JSONObject groupJ = new JSONObject();
+			groupJ.put("id", pt.getType());
+			groupJ.put("title", pt.getName());
+			groupJ.put("parentId", "0");
+			List<ProcessDefinitionExt> processDefinitionTypesByProType = activitiMapper
+					.getProcessDefinitionExtByProType(pt.getType());
+			JSONArray childrenj = new JSONArray();
+			for (ProcessDefinitionExt pde : processDefinitionTypesByProType) {
+				JSONObject cJ = new JSONObject();
+				cJ.put("id", pde.getKey());
+				cJ.put("title", pde.getName());
+				cJ.put("parentId", pt.getType());
+				childrenj.add(cJ);
+			}
+			groupJ.put("children", childrenj);
 			data.add(groupJ);
 		}
 		result.put("data", data);
@@ -280,9 +311,20 @@ public class ActivitiService {
 
 	public JSONObject getHistoricProcessInstances(Integer page, Integer limit, Map<String, String> params) {
 		HistoricProcessInstanceQuery hpiq = hs.createHistoricProcessInstanceQuery().startedBy(params.get("u_id"));
+		String businessKey = params.get("businessKey");
+		String name = params.get("name");
+		String keys = params.get("keys");
+		if (businessKey != null && !"".equals(businessKey)) {
+			hpiq.processInstanceBusinessKey(businessKey);
+		}
+		if (name != null && !"".equals(name)) {
+			hpiq.processDefinitionName(name);
+		}
+		if (keys != null && !"".equals(keys)) {
+			hpiq.processDefinitionKeyIn(Arrays.asList(keys.split(",")));
+		}
 		long count = hpiq.count();
 		hpiq = hpiq.orderByProcessInstanceStartTime().desc();
-		System.out.println(count);
 		List<HistoricProcessInstance> hps = hpiq.listPage((page - 1) * limit, page * limit);
 		List<HistoricProcessInstanceVO> historicProcessInstanceVOs = HistoricProcessInstanceVO
 				.getHistoricProcessInstanceVOs(hps);

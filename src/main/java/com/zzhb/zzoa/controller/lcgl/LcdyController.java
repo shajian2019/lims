@@ -43,7 +43,8 @@ public class LcdyController {
 
 	@GetMapping("/list")
 	@ResponseBody
-	public JSONObject lcdyList(@RequestParam(defaultValue="1")Integer page, @RequestParam(defaultValue="0x7fffffff")Integer limit, @RequestParam Map<String, String> params) {
+	public JSONObject lcdyList(@RequestParam(defaultValue = "1") Integer page,
+			@RequestParam(defaultValue = "0x7fffffff") Integer limit, @RequestParam Map<String, String> params) {
 		return activitiService.lcdyList(page, limit, params);
 	}
 
@@ -51,6 +52,12 @@ public class LcdyController {
 	@ResponseBody
 	public JSONObject lcflList() {
 		return activitiService.lcflList();
+	}
+
+	@GetMapping("/lcfl/listByid")
+	@ResponseBody
+	public JSONObject lcflListByUid() {
+		return activitiService.lcflListByUid();
 	}
 
 	@PostMapping("/lcfl/add")
