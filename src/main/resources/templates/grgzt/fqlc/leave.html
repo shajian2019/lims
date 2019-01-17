@@ -81,7 +81,7 @@
 	        <div class="layui-form-item layui-form-text">
 	                <label class="layui-form-label">审批人</label>
 	                <div class="layui-inline">
-						  <button type="button" class="layui-btn" id="test2">新增</button> 
+					    <input type="text" name="spr" required lay-verify="required" placeholder="待开发" autocomplete="off" class="layui-input">
 					</div>
 	        </div>
 	        <div class="layui-form-item">
@@ -188,7 +188,6 @@
     });
 
 	form.on('submit(sq)', function(data){
-		 data.field.spr = "test";
 		 console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
 		 $.ajax({
 	            type: "post",
@@ -201,7 +200,7 @@
 	            	console.log(data)
 	            	layer.close(index);
 	            	if(data.code >0){
-	            		layer.msg("申请成功,将于"+data.msg, {offset: ['50%'], time: 3000}, function () {
+	            		layer.msg("申请成功,下一个节点："+data.msg, {offset: ['50%'], time: 3000}, function () {
 	            			parent.window.closeTab("leave");
                         });
 	            	}else{
@@ -215,7 +214,6 @@
 	      });
 		  return false;
 	 });
-		
 	}else if(formType == '1'){
 		
 	}

@@ -1,6 +1,7 @@
 package com.zzhb.zzoa.mapper;
 
 import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
@@ -42,4 +43,6 @@ public interface UserMapper {
 
 	@Select("SELECT COUNT(1) FROM sys_t_user WHERE username = #{0}")
 	public Integer getCountByName(String username);
+	
+	public List<User> getUsersByOid(@Param("o_id") String o_id);
 }

@@ -1,5 +1,8 @@
 package com.zzhb.zzoa.listener.activiti;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
 
@@ -13,7 +16,12 @@ public class AtivitiTaskListener implements TaskListener {
 		if ("create".endsWith(eventName)) {
 			System.out.println("=========create=========" + delegateTask.getVariable("spr").toString());
 			String spr = delegateTask.getVariable("spr").toString();
-			delegateTask.setAssignee(spr);
+			if(spr.indexOf(",") == -1) {
+				delegateTask.setAssignee(spr);
+			}else {
+				List<String> candidateUsers = Arrays.asList(spr.split(","));
+				delegateTask.addCandidateUsers(candidateUsers);
+			}
 		} else if ("assignment".endsWith(eventName)) {
 			System.out.println("assignment========" + delegateTask.getAssignee());
 		} else if ("complete".endsWith(eventName)) {

@@ -135,4 +135,10 @@
         </where>
     </update>
     
+    <select id="getUsersByOid" parameterType="java.lang.String" resultType="com.zzhb.zzoa.domain.User">
+    	SELECT u.* FROM sys_t_user_org uo LEFT JOIN sys_t_user u 
+		on uo.u_id = u.u_id
+		WHERE uo.o_id = #{o_id}
+    </select>
+    
 </mapper>

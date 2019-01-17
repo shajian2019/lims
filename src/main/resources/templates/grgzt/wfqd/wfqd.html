@@ -25,6 +25,10 @@
         <a class="layui-btn layui-btn-primary" lay-submit="" lay-filter="query" datatype="reload">查询</a>
     </div>
 </form>
+<div id="preview" class="hide" style="display: none;">
+	<img alt="" src="">
+	
+</div>
 <table class="layui-hide" id="tableBox" lay-filter="tableBox"></table>
 </body>
 
@@ -40,6 +44,9 @@
     <div class="layui-btn-group">
         <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit"><i class="fa fa-pencil"></i></a>
         <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del"><i class="fa fa-trash-o"></i></a>
+		<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="preview">
+            <i class="fa fa-image "></i>
+        </a>
     </div>
 </script>
 <script src="${ctx}/plugins/layui/layui.all.js"></script>
@@ -129,7 +136,31 @@
                         }
                     });
                 });
-            }
+            } else if("preview" == obj.event){
+            	console.log(data)
+	        	 $.ajax({
+	                 type: "post",
+	                 data: data,
+	                 url: "${ctx}/grgzt/wfqd/preview",
+	                 beforeSend: function () {
+	                     index = layer.load(1);
+	                 },
+	                 success: function (data) {
+	                     layer.close(index);
+	                     $("img").attr('src',"${ctx}/"+data)
+	                     index = layer.open({
+	                   		  type: 1,
+	                   		  title: '流程图',
+		                      maxmin: true,
+	                   		  content: $('#preview')
+	              		 });
+	                     layer.full(index);
+	                 },
+	                 error: function (data) {
+	                     layer.msg("服务端异常");
+	                 }
+	             });
+          }
         })
         form.on('submit(query)', function (data) {
             console.log(data);
