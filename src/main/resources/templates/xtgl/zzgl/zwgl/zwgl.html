@@ -29,7 +29,7 @@
 </head>
 <body>
     <div class="left-box">
-        <h4 class="bm_name_tit">部门名称</h4>
+        <h4 class="bm_name_tit">职位名称</h4>
         <div style="overflow: auto;" id="toolbarDiv">
             <ul id="left_tree" class="dtree" data-id="0"></ul>
         </div>
@@ -44,7 +44,7 @@
 	            </div>
 	            <div class="layui-inline">
 	                <a href="javascript:;" class="layui-btn layui-btn-sm  layui-btn-primary" lay-submit lay-filter="search">查询</a>
-	                <a href="javascript:;" class="layui-btn layui-btn-sm  layui-btn-primary" lay-submit lay-filter="add">添加部门成员</a>
+	                <a href="javascript:;" class="layui-btn layui-btn-sm  layui-btn-primary" lay-submit lay-filter="add">添加职位成员</a>
 	            </div>
     	</form>
         <table class="layui-hide" id="right_tb" lay-filter="right_tb"></table>
@@ -78,7 +78,7 @@
         var dtreeObj = dtree.render({
             elem: "#" + dtreeID, //绑定元素
             method:'GET',
-            url: "${ctx}/xtgl/zzgl/zzjg/list",  //异步接口
+            url: "${ctx}/xtgl/zzgl/zwgl/list",  //异步接口
             ficon: "-1", // 隐藏一级图标
             icon: "2",
             dot: false,
@@ -92,13 +92,13 @@
                     handler: function (node, $div) {
                        var index = layer.prompt({
                             formType: 0,
-                            title: '新增部门' //自定义文本域宽高
+                            title: '新增职位' //自定义文本域宽高
                         }, function (value, index, elem) {
                             layer.close(index);
                             $.ajax({
 		                         type: "post",
 		                         data: {name: value},
-		                         url: "${ctx}/xtgl/zzgl/zzjg/add",
+		                         url: "${ctx}/xtgl/zzgl/zwgl/add",
 		                         beforeSend: function () {
 		                             index = layer.load(1);
 		                         },
@@ -122,24 +122,24 @@
             },
             toolbar: true,
             toolbarScroll: "#toolbarDiv", //划重点，必须配置，属性含义请参考文档
-            toolbarStyle:{title:"部门", area:["60%","80%"] },
+            toolbarStyle:{title:"职位", area:["60%","80%"] },
             toolbarShow: ["delete"],
             toolbarLoad: "node",
             toolbarExt: [{
                 toolbarId: "edit",
                 icon: "dtree-icon-bianji",
-                title: "编辑部门",
+                title: "编辑职位",
                 handler: function (node, $div) {
                     var index = layer.prompt({
                         formType: 0,
                         value: node.context,
-                        title: '修改部门'
+                        title: '编辑职位'
                     }, function (value, index, elem) {
                         layer.close(index);
                         $.ajax({
 	                         type: "post",
 	                         data: {id: node.nodeId,name:value},
-	                         url: "${ctx}/xtgl/zzgl/zzjg/edit",
+	                         url: "${ctx}/xtgl/zzgl/zwgl/edit",
 	                         beforeSend: function () {
 	                             index = layer.load(1);
 	                         },
@@ -165,8 +165,8 @@
             	    dtreeObj.changeTreeNodeDel(true); // 调用内置函数，删除节点后改变节点内容。传入false，则树不会发生变化
             	    $.ajax({
                         type: "post",
-                        data: {o_id: treeNode.nodeId},
-                        url: "${ctx}/xtgl/zzgl/zzjg/del",
+                        data: {j_id: treeNode.nodeId},
+                        url: "${ctx}/xtgl/zzgl/zwgl/del",
                         success: function (data) {
                             if (data > 0) {
                                 layer.msg("删除成功", {offset: ['50%'], time: 1000});
@@ -184,7 +184,7 @@
         
         dtree.on("node('" + dtreeID + "')", function (obj) {
             rightTB.reload({
-                where: {o_id:obj.param.nodeId}
+                where: {j_id:obj.param.nodeId}
             });
         });
         
@@ -192,11 +192,11 @@
             elem: '#' + tbID,
             id: tbID,
             height: 'full-40',
-            url: '${ctx}/xtgl/zzgl/zzjg/user/list', //数据接口,
+            url: '${ctx}/xtgl/zzgl/zwgl/user/list', //数据接口,
             page: true,
             cols: [[
                     {
-                        field: 'u_id',
+                        field: 'j_id',
                         hide:true
                     },
                     {
@@ -215,11 +215,11 @@
                         field: 'email',
                         title: '用户邮箱',
                     }, {
-                        field: 'j_name',
-                        title: '职位名称',
-                    }, {
                         field: 'o_name',
                         title: '部门名称',
+                    }, {
+                        field: 'j_name',
+                        title: '职位名称',
                     }, {
                         title: '操作', align: 'center',width: 80,
                         toolbar: '#rightBar'
@@ -234,7 +234,7 @@
         	   $.ajax({
                    type: "post",
                    data: {u_id: obj.data.u_id},
-                   url: "${ctx}/xtgl/zzgl/zzjg/user/del",
+                   url: "${ctx}/xtgl/zzgl/zwgl/user/del",
                    beforeSend: function () {
                        index = layer.load(1);
                    },
@@ -267,7 +267,7 @@
         form.on('submit(add)', function (data) {
         	var param = dtree.getNowParam(dtreeObj);
      	    if(!param.nodeId){
-     		   layer.msg("请选择部门", {offset: ['50%'], time: 1000});
+     		   layer.msg("请选择职位", {offset: ['50%'], time: 1000});
      	    }else{
      		   var index = layer.open({
      	            title: '分配用户',
@@ -275,10 +275,10 @@
      	            area: ['690px', '400px'],
      	            fixed: false, //不固定
      	            maxmin: true,
-     	            content: '${ctx}/xtgl/zzgl/zzjg/adduser?o_id='+param.nodeId,
+     	            content: '${ctx}/xtgl/zzgl/zwgl/adduser?j_id='+param.nodeId,
      	            end: function () {
      	                rightTB.reload({
-     	                    where:{o_id:param.nodeId}
+     	                    where:{j_id:param.nodeId}
      	                });
      	            }
      	       });

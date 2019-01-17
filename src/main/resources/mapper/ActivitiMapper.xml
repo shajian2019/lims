@@ -34,7 +34,7 @@
 	</delete>
 	
 	<select id="getAddUsers" resultType="com.zzhb.zzoa.domain.User">
-		SELECT * FROM sys_t_user u LEFT JOIN sys_t_user_org o on u.u_id = o.u_id 
+		SELECT * FROM sys_t_user u LEFT JOIN ${tablename} o on u.u_id = o.u_id 
 		WHERE o.u_id IS NULL AND u.username != 'superadmin'
 	</select>
 	

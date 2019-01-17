@@ -4,12 +4,10 @@
     <select id="getAllUsers" resultType="java.util.Map" parameterType="java.util.Map">
       SELECT
 		u.*,
-		r.rolename,
-		o.o_name oname
+		r.rolename
 		FROM
 	sys_t_user u
 		LEFT JOIN ( SELECT ur.u_id, r.* FROM sys_t_user_role ur LEFT JOIN sys_t_role r ON ur.r_id = r.r_id ) r ON u.u_id = r.u_id
-		LEFT JOIN ( SELECT uo.u_id, o.* FROM sys_t_user_org uo LEFT JOIN sys_t_org o ON uo.o_id = o.o_id ) o ON u.u_id = o.u_id
       <where>
           <if test="true">
               AND u.username != 'superadmin'

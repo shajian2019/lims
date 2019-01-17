@@ -26,14 +26,14 @@
 	     elem: '#'+tableId
 	    ,id: tableId
 	    ,height: 'full-20'
-	    ,url: '${ctx}/xtgl/zzgl/zzjg/adduser/list' //数据接口
+	    ,url: '${ctx}/xtgl/zzgl/zwgl/adduser/list' //数据接口
 	    ,page: true //开启分页
 	    ,cols: [[ //表头
 	       {type:'checkbox'}
 	      ,{field: 'u_id', hide:true}
 	      ,{field: 'username', title: '用户名', width:100}
 	      ,{field: 'nickname', title: '用户昵称', width:120}
-	      ,{field: 'j_name', title: '职位名称', width:120}
+	      ,{field: 'o_name', title: '所属部门', width:120}
 	      ,{field: 'email', title: '用户邮箱', width:180} 
 	      ,{field: 'remark', title: '备注'}
 	    ]],
@@ -43,7 +43,7 @@
 	  
 	  table.on('toolbar(' + tableId + ')', function (obj) {
 		  var index;
-		  var o_id = "${o_id}"
+		  var j_id = "${j_id}"
           if (obj.event === 'save') {
         	  var checkStatus = table.checkStatus(tableId);
         	  if(checkStatus.data.length == 0){
@@ -56,8 +56,8 @@
         		  u_ids = u_ids.substring(0,u_ids.length-1)
         		  $.ajax({
                          type: "post",
-                         data: {o_id: o_id,u_ids:u_ids},
-                         url: "${ctx}/xtgl/zzgl/zzjg/user/add",
+                         data: {j_id: j_id,u_ids:u_ids},
+                         url: "${ctx}/xtgl/zzgl/zwgl/user/add",
                          beforeSend: function () {
                              index = layer.load(1);
                          },

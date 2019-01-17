@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.zzhb.zzoa.domain.Job;
 import com.zzhb.zzoa.domain.Org;
 import com.zzhb.zzoa.domain.User;
 import com.zzhb.zzoa.mapper.RoleMapper;
@@ -162,5 +163,64 @@ public class ZzglController {
 	@ResponseBody
 	public Integer zzjgUserAdd(String o_id, String u_ids) {
 		return zzjgService.zzjgUserAdd(o_id, u_ids);
+	}
+	
+	@GetMapping("/zwgl")
+	public String zwgl() {
+		return "xtgl/zzgl/zwgl/zwgl";
+	}
+	
+	@GetMapping("/zwgl/list")
+	@ResponseBody
+	public JSONObject zwglList() {
+		return zzjgService.zwglList();
+	}
+	
+	@PostMapping("/zwgl/add")
+	@ResponseBody
+	public Integer zwglAdd(Job job) {
+		return zzjgService.zwglAdd(job);
+	}
+	
+	@PostMapping("/zwgl/edit")
+	@ResponseBody
+	public Integer zwglEdit(Job job) {
+		return zzjgService.zwglEdit(job);
+	}
+	
+	@GetMapping("/zwgl/user/list")
+	@ResponseBody
+	public JSONObject zwglUserList(Integer page, Integer limit, @RequestParam Map<String, String> params) {
+		return zzjgService.zwglUserList(page, limit, params);
+	}
+	
+	@PostMapping("/zwgl/user/del")
+	@ResponseBody
+	public Integer zwglUserDel(String u_id) {
+		return zzjgService.zwglUserDel(u_id);
+	}
+	
+	@GetMapping("/zwgl/adduser/list")
+	@ResponseBody
+	public JSONObject zwglAddUserList(Integer page, Integer limit, @RequestParam Map<String, String> params) {
+		return zzjgService.zwglAddUserList(page, limit, params);
+	}
+	
+	@GetMapping("/zwgl/adduser")
+	public String zwglAddUser(String j_id, ModelMap map) {
+		map.put("j_id", j_id);
+		return "xtgl/zzgl/zwgl/pop";
+	}
+	
+	@PostMapping("/zwgl/user/add")
+	@ResponseBody
+	public Integer zwglUserAdd(String j_id, String u_ids) {
+		return zzjgService.zwglUserAdd(j_id, u_ids);
+	}
+	
+	@PostMapping("/zwgl/del")
+	@ResponseBody
+	public Integer zwglDel(String j_id) {
+		return zzjgService.zwglDel(j_id);
 	}
 }
