@@ -43,6 +43,7 @@ public class FqlcController {
 	@GetMapping("/list")
 	@ResponseBody
 	public JSONObject fqlcList(@RequestParam(defaultValue="1")Integer page, @RequestParam(defaultValue="0x7fffffff")Integer limit, @RequestParam Map<String, String> params) {
+//		http://www.jq22.com/yanshi20759
 		return fqlcService.fqlcList(page, limit, params);
 	}
 
