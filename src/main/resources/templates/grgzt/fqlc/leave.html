@@ -21,12 +21,11 @@
 <body>
     <#if !form??>
 	    <form class="layui-form main layui-upload">
-	    	<input type="hidden" id="formType" value="ygsq">
-	    	<input type="hidden" name="bk" value="${leave.bk}">
+	    	<input type="hidden" name="bk" value="${(leave.bk)!''}">
 	        <div class="layui-form-item">
 	            <label class="layui-form-label"><span style="color:red;">*</span>申请人</label>
 	            <div class="layui-input-inline">
-	                <input type="text" name="sqr" value="${leave.sqr}" lay-verify="required" placeholder="申请人" autocomplete="off" class="layui-input">
+	                <input type="text" name="sqr" value="${(leave.sqr)!''}" lay-verify="required" placeholder="申请人" autocomplete="off" class="layui-input">
 	            </div>
 	            <label class="layui-form-label"><span style="color:red;">*</span>部门名称</label>
 	            <div class="layui-input-inline">
@@ -36,7 +35,7 @@
 	        <div class="layui-form-item">
 	            <label class="layui-form-label"><span style="color:red;">*</span>申请日期</label>
 	            <div class="layui-input-inline">
-	                <input type="text" name="sqrq" value="${leave.sqrq}" readonly="readonly" lay-verify="required" autocomplete="off" class="layui-input">
+	                <input type="text" name="sqrq" value="${(leave.sqrq)!''}" readonly="readonly" lay-verify="required" autocomplete="off" class="layui-input">
 	            </div>
 	            <label class="layui-form-label"><span style="color:red;">*</span>请假类别</label>
 	            <div class="layui-input-inline">
@@ -92,7 +91,6 @@
 	        </div>
 	    </form>
 	<#else>
-		<!-- ${form} -->
 		<form class="layui-form  main layui-upload">
 	        <div class="layui-form-item">
 	            <label class="layui-form-label"><span style="color:red;">*</span>申请人</label>
@@ -147,8 +145,7 @@
 <script src="${ctx}/plugins/layui/layui.all.js"></script>
 <script type="text/javascript">
 	var $ = layui.jquery,laydate = layui.laydate,form=layui.form,upload = layui.upload,index=null;
-	var formType = $("#formType").val();
-	if(formType == 'ygsq'){
+	if("${taskDefinitionKey!''}" == ''){
 		$.ajax({
             type: "get",
             data: {gtype:'qjlx_type'},
@@ -188,11 +185,11 @@
 		   ,type: 'datetime'
 		});
 		
-  //多图片上传
-  var imgUpView = $('#img_up'),imgUpload=upload.render({
+  	//多图片上传
+  	var imgUpView = $('#img_up'),imgUpload=upload.render({
 	     elem: '#img_up'
 	     ,url: '${ctx}/file/upload/'
-		 ,data:{"bk":"${leave.bk}"}
+		 ,data:{"bk":"${(leave.bk)!''}"}
 	     ,multiple: true
 		 ,auto: true
 		 ,choose: function(obj){   
@@ -208,7 +205,7 @@
 		        //删除
 		        img.find('.img-close').on('click', function(){
 		           delete files[index]; //删除对应的文件
-		           var filename = "${leave.bk}&"+file.name;
+		           var filename = "${(leave.bk)!''}&"+file.name;
 		           $.ajax({
 			            type: "get",
 			            data: {filename:filename},
@@ -280,8 +277,8 @@
 	      });
 		  return false;
 	 });
-	}else if(formType == '1'){
-		
+	} else if ("${taskDefinitionKey!''}" == 'usertask2'){
+		console.log("usertask2")
 	}
 </script>
 </html>

@@ -2,9 +2,14 @@ package com.zzhb.zzoa.controller.grgzt;
 
 import java.util.Map;
 
+import org.activiti.engine.FormService;
+import org.activiti.engine.TaskService;
+import org.activiti.engine.task.Task;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,7 +27,13 @@ public class DbsxController {
 
 	@Autowired
 	ActivitiService activitiService;
-
+	
+	@Autowired
+	TaskService taskService;
+	
+	@Autowired
+	FormService formService;
+	
 	@RequestMapping("/dbsx")
 	public String dbsx() {
 		return "grgzt/dbsx/dbsx";
@@ -42,10 +53,14 @@ public class DbsxController {
 		return activitiService.calimTask(taskId, u_id);
 	}
 	
-	@PostMapping("/completeTask/{taskId}")
-	@ResponseBody
-	public Integer completeTask(@PathVariable("taskId")String taskId,String u_id) {
-		return activitiService.calimTask(taskId, u_id);
+	@GetMapping("/viewTask/{taskId}")
+	public String viewTask(@PathVariable("taskId")String taskId,ModelMap modelMap) {
+		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+		String key = task.getProcessDefinitionId().split(":")[0];
+		Object renderedTaskForm = formService.getRenderedTaskForm(taskId);
+		modelMap.put("form", renderedTaskForm);
+		modelMap.put("taskDefinitionKey", task.getTaskDefinitionKey());
+		return "grgzt/fqlc/" + key;
 	}
 	
 }

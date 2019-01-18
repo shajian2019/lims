@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.ModelMap;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -462,5 +463,14 @@ public class ActivitiService {
 	public Integer calimTask(String taskId,String u_id) {
 		taskService.claim(taskId, u_id);
 		return 1;
+	}
+	
+	
+	@Transactional
+	public void viewTask(String taskId,ModelMap modelMap) {
+		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+		String processDefinitionId = task.getProcessDefinitionId();
+		Object renderedTaskForm = formService.getRenderedTaskForm(taskId);
+		modelMap.put("form", renderedTaskForm);
 	}
 }
