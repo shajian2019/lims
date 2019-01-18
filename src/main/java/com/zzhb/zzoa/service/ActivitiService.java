@@ -26,6 +26,7 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
+import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -47,11 +48,13 @@ import com.github.pagehelper.PageInfo;
 import com.zzhb.zzoa.config.Props;
 import com.zzhb.zzoa.domain.User;
 import com.zzhb.zzoa.domain.activiti.HistoricProcessInstanceVO;
+import com.zzhb.zzoa.domain.activiti.HistoricTaskInstanceVO;
 import com.zzhb.zzoa.domain.activiti.Leave;
 import com.zzhb.zzoa.domain.activiti.ProcessDefinitionExt;
 import com.zzhb.zzoa.domain.activiti.ProcessDefinitionType;
 import com.zzhb.zzoa.mapper.ActivitiMapper;
 import com.zzhb.zzoa.mapper.LeaveMapper;
+import com.zzhb.zzoa.mapper.UserMapper;
 import com.zzhb.zzoa.utils.CustomProcessDiagramGenerator;
 import com.zzhb.zzoa.utils.FileUtil;
 import com.zzhb.zzoa.utils.LayUiUtil;
@@ -80,6 +83,9 @@ public class ActivitiService {
 
 	@Autowired
 	ProcessEngine pe;
+	
+	@Autowired
+	UserMapper userMapper;
 
 	@Transactional
 	public Integer deploy(Map<String, String> params, MultipartFile file) throws IOException {
@@ -265,6 +271,26 @@ public class ActivitiService {
 		return dgrm_resource_name;
 	}
 
+	
+	public JSONObject historyTask(String businessKey) {
+		List<HistoricTaskInstance> list = hs.createHistoricTaskInstanceQuery().processInstanceBusinessKey(businessKey).list();
+		List<HistoricTaskInstanceVO> historicTaskInstanceVOs = HistoricTaskInstanceVO.getHistoricTaskInstanceVOs(list);
+		for (HistoricTaskInstanceVO vo : historicTaskInstanceVOs) {
+			String u_id = null;
+			if(vo.getOwner() != null) {
+				u_id = vo.getOwner();
+			}
+			if(vo.getAssignee()!= null) {
+				u_id = vo.getAssignee();
+			}
+			if(u_id != null) {
+				User user  = userMapper.getUserById(Integer.parseInt(u_id));
+				vo.setAssignee(user.getNickname());
+			}
+		}
+		return LayUiUtil.pagination(historicTaskInstanceVOs.size(), historicTaskInstanceVOs);
+	}
+	
 	@Autowired
 	TaskService taskService;
 

@@ -17,6 +17,7 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.task.Task;
@@ -135,6 +136,23 @@ public class ZzoaApplicationTests {
 			System.out.println(hp.getEndTime());
 		}
 
+	}
+	
+	@Test
+	public void testHistoryTaskService() {
+		
+		String processInstanceBusinessKey ="201901171528162";
+		
+		List<HistoricTaskInstance> list = hs.createHistoricTaskInstanceQuery().processInstanceBusinessKey(processInstanceBusinessKey).list();
+		for (HistoricTaskInstance h : list) {
+			 System.out.println(h.getId());
+			 System.out.println(h.getName()); 
+			 System.out.println(h.getStartTime());
+			 System.out.println(h.getEndTime()); 
+			 System.out.println(h.getAssignee());
+			 System.out.println(h.getDurationInMillis());
+			 System.out.println(h.getClaimTime());
+		 }
 	}
 
 	@Autowired

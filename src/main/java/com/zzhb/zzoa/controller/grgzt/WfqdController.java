@@ -5,6 +5,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,5 +40,17 @@ public class WfqdController {
 	@ResponseBody
 	public String preview(@RequestParam Map<String, String> params) {
 		return activitiService.previewByBk(params);
+	}
+	
+	@GetMapping("/history/preview")
+	public String historypreview(String businessKey,ModelMap modeMap) {
+		modeMap.put("businessKey", businessKey);
+		return "grgzt/wfqd/preview";
+	}
+	
+	@GetMapping("/history/list")
+	@ResponseBody
+	public JSONObject historyList(String businessKey) {
+		return activitiService.historyTask(businessKey);
 	}
 }

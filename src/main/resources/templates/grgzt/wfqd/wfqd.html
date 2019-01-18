@@ -57,6 +57,12 @@
        padding: 10px;
    }
    .zdy-icon{margin-right: 5px;}
+   
+   .inner{
+   		padding: 10px;
+   		text-align: center;
+   		margin:0 auto;
+   }
 </style>
 </head>
 <body>
@@ -81,7 +87,12 @@
 		</form>
 		<table class="layui-hide" id="tableBox" lay-filter="tableBox"></table>
 		<div id="preview" class="hide" style="display: none;">
-			<img alt="" src="">
+			<div class="inner">
+				<img alt="" src="">
+			</div>
+			<div class="inner">
+				<table class="layui-hide" id="tableBoxHis" lay-filter="tableBoxHis"></table>
+			</div>
 		</div>
     </div>
 </body>
@@ -92,6 +103,13 @@
 		<span style="color: #FFC125;">审核中</span>
    {{#  } else { }}
 		<span style="color: green">已审核</span>
+   {{#  } }}
+</script>
+<script type="text/html" id="jdzt">
+   {{#  if(d.endTime == ''){ }}
+		<span style="color: #FFC125;">未处理</span>
+   {{#  } else { }}
+		<span style="color: green">已处理</span>
    {{#  } }}
 </script>
 <script type="text/html" id="rightBar">
@@ -108,7 +126,7 @@
     }).extend({
         dtree: 'dtree'
     })
-    var $ = null,table=null,upload=null,dtree=null,layer=null,dtreeID=null,index=null,tableId = 'tableBox',form=null;
+    var $ = null,table=null,upload=null,dtree=null,layer=null,dtreeID=null,index=null,tableId = 'tableBox',form=null,tableIdImg = 'tableBoxHis';
     layui.use(['table', 'layer', 'dtree','upload'], function () {
             $ = layui.jquery,
             table = layui.table,
@@ -122,8 +140,8 @@
             elem: "#" + dtreeID, //绑定元素
             method:'GET',
             url: "${ctx}/lcgl/lcdy/lcfl/listByid",  //异步接口
-            ficon: "0", // 隐藏一级图标
-            icon: "2",
+            ficon: "0", 
+            icon: ["0","4"],
             dot: false,
             skin: "layui",
             menubar:true,
@@ -159,7 +177,7 @@
                 }, {
                     field: 'startTime',
                     title: '开始时间',
-                    width: 150,
+                    width: 200,
                     align: 'center'
                 },{
                     field: 'endTime',
@@ -217,28 +235,13 @@
                     });
                 });
             } else if("preview" == obj.event){
-	        	 $.ajax({
-	                 type: "post",
-	                 data: data,
-	                 url: "${ctx}/grgzt/wfqd/preview",
-	                 beforeSend: function () {
-	                     index = layer.load(1);
-	                 },
-	                 success: function (data) {
-	                     layer.close(index);
-	                     $("img").attr('src',"${ctx}/"+data)
-	                     index = layer.open({
-	                   		  type: 1,
-	                   		  title: '流程图',
-		                      maxmin: true,
-	                   		  content: $('#preview')
-	              		 });
-	                     layer.full(index);
-	                 },
-	                 error: function (data) {
-	                     layer.msg("服务端异常");
-	                 }
-	             });
+            	index = layer.open({
+             		  type: 2,
+             		  title: '流程图',
+                      maxmin: true,
+             		  content: '${ctx}/grgzt/wfqd/history/preview?businessKey='+data.businessKey
+        		 });
+                 layer.full(index);
             }
         })
         
