@@ -92,7 +92,56 @@
 	        </div>
 	    </form>
 	<#else>
-		${form}
+		<!-- ${form} -->
+		<form class="layui-form  main layui-upload">
+	        <div class="layui-form-item">
+	            <label class="layui-form-label"><span style="color:red;">*</span>申请人</label>
+	            <div class="layui-input-inline">
+	                <input type="text" name="sqr" required lay-verify="required" placeholder="申请人" autocomplete="off" class="layui-input">
+	            </div>
+	            <label class="layui-form-label"><span style="color:red;">*</span>所在部门</label>
+	            <div class="layui-input-inline">
+	                <input type="text" name="department" required lay-verify="required" placeholder="部门名称" autocomplete="off" class="layui-input">
+	            </div>
+	        </div>
+	        <div class="layui-form-item">
+	            <label class="layui-form-label"><span style="color:red;">*</span>申请日期</label>
+	            <div class="layui-input-inline">
+	                <input type="text" name="sqrq" required lay-verify="required" autocomplete="off" class="layui-input">
+	            </div>
+	            <label class="layui-form-label"><span style="color:red;">*</span>请假类别</label>
+	            <div class="layui-input-inline">
+	                <select name="qjlx" lay-verify="required">
+	                    <option value="">请假类型</option>
+	                </select>
+	            </div>
+	        </div>
+	        <div class="layui-form-item">
+	            <label class="layui-form-label"><span style="color:red;">*</span>开始日期</label>
+	            <div class="layui-input-inline">
+	                <input type="text" name="ksrq" required lay-verify="required" placeholder="请输入密码" autocomplete="off"
+	                    class="layui-input">
+	            </div>
+	            <label class="layui-form-label"><span style="color:red;">*</span>结束日期</label>
+	            <div class="layui-input-inline">
+	                <input type="text" name="jsrq" required lay-verify="required" placeholder="请输入密码" autocomplete="off"
+	                    class="layui-input">
+	            </div>
+	        </div>
+	        <div class="layui-form-item">
+	                <label class="layui-form-label">请假天数</label>
+	                <div class="layui-input-inline">
+	                    <input type="text" name="qjts" required lay-verify="required" placeholder="" autocomplete="off"
+	                        class="layui-input">
+	                </div>
+	        </div>
+	        <div class="layui-form-item layui-form-text">
+	            <label class="layui-form-label">请假理由</label>
+	            <div class="layui-input-block">
+	                <textarea name="" placeholder="请输入内容" class="layui-textarea" style="width:500px;"></textarea>
+	            </div>
+	        </div>
+    	</form>
     </#if>
 </body>
 <script src="${ctx}/plugins/layui/layui.all.js"></script>

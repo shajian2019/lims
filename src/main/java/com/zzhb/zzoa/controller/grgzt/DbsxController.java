@@ -5,6 +5,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -41,9 +42,9 @@ public class DbsxController {
 		return activitiService.calimTask(taskId, u_id);
 	}
 	
-	@PostMapping("/completeTask")
+	@PostMapping("/completeTask/{taskId}")
 	@ResponseBody
-	public Integer completeTask(String taskId,String u_id) {
+	public Integer completeTask(@PathVariable("taskId")String taskId,String u_id) {
 		return activitiService.calimTask(taskId, u_id);
 	}
 	
