@@ -100,15 +100,13 @@
 </html>
 <script type="text/html" id="rightBar">
     <div class="layui-btn-group">
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="details">
-            <i class="fa fa-bars"></i>
-        </a>
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="preview">
-            <i class="fa fa-image"></i>
-        </a>
-		{{#  if(d.endTime == ''){ }}
-        	<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del">
-            	<i class="fa fa-reply"></i>
+		{{#  if(d.ASSIGNEE_){ }}
+			<a class="layui-btn layui-btn-xs" lay-event="sprw">
+            	<span>审批</span>
+        	</a>
+		{{#  } else { }}
+            <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="lqrw">
+            	<span>领取</span>
         	</a>
         {{#  } }}
     </div>
@@ -191,6 +189,7 @@
         
         table.on('tool(tableBox)', function (obj) {
             var data = obj.data;
+            console.log(data)
             if (obj.event === 'details') {
 				alert("详情TODO")
             } else if("preview" == obj.event){
@@ -201,20 +200,19 @@
              		  content: '${ctx}/grgzt/wfqd/history/preview?businessKey='+data.businessKey
         		 });
                  layer.full(index);
-            } else if("del" == obj.event){
-            	console.log(data)
-            	layer.confirm('确定撤销该【'+data.processDefinitionName+'】吗?', function (index) {
+            } else if("lqrw" == obj.event){
+            	layer.confirm('确定领取该任务吗?', function (index) {
             		$.ajax({
                         type: "post",
-                        data: {processInstanceId: data.processInstanceId},
-                        url: "${ctx}/grgzt/wfqd/revoke",
+                        data: {u_id:"${user.u_id}", taskId:data.ID_},
+                        url: "${ctx}/grgzt/dbsx/calimTask",
                         beforeSend: function () {
                             index = layer.load(1);
                         },
                         success: function (data) {
                             layer.close(index);
                             if (data > 0) {
-                                layer.msg("撤销成功", {offset: ['50%'], time: 1000}, function () {
+                                layer.msg("领取成功", {offset: ['50%'], time: 1000}, function () {
                                 	table.reload(tableId, {
                                         where: data.field
                                     });
@@ -224,6 +222,7 @@
                             }
                         },
                         error: function (data) {
+                        	layer.close(index);
                             layer.msg("服务端异常");
                         }
                     });

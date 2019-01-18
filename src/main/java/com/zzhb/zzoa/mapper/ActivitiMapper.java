@@ -10,6 +10,9 @@ import com.zzhb.zzoa.domain.activiti.ProcessDefinitionExt;
 import com.zzhb.zzoa.domain.activiti.ProcessDefinitionType;
 
 public interface ActivitiMapper {
+	
+	@Select("SELECT NAME_ FROM act_ge_bytearray WHERE DEPLOYMENT_ID_ = #{0}")
+	public List<String> getDeployResourceNameByDepId(String deploymentId);
 
 	public Integer addProcessDefinitionExt(ProcessDefinitionExt pde);
 

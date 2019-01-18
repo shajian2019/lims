@@ -72,7 +72,7 @@ public class ActivitiService {
 
 	@Autowired
 	ActivitiMapper activitiMapper;
-
+	
 	@Autowired
 	RepositoryService repositoryService;
 
@@ -191,16 +191,16 @@ public class ActivitiService {
 
 	public String download(Map<String, String> params) {
 		String fileName = "";
-		String processDefinitionId = params.get("id");
 		String resource_name = params.get("resource_name");
-		String dgrm_resource_name = params.get("dgrm_resource_name");
+		String deploymentId = params.get("deployment_id");
 		String fileDir = resource_name.split("\\.")[0];
 		String dir = props.getTempPath() + "/" + fileDir;
 		if (new File(dir).mkdirs()) {
-			InputStream processModel = repositoryService.getProcessModel(processDefinitionId);
-			FileUtil.saveFileFromInputStream(processModel, dir, resource_name);
-			InputStream processDiagram = repositoryService.getProcessDiagram(processDefinitionId);
-			FileUtil.saveFileFromInputStream(processDiagram, dir, dgrm_resource_name);
+			List<String> deployResourceNameByDepId = activitiMapper.getDeployResourceNameByDepId(deploymentId);
+			for (String resourceName : deployResourceNameByDepId) {
+				InputStream resourceAsStream = repositoryService.getResourceAsStream(deploymentId, resourceName);
+				FileUtil.saveFileFromInputStream(resourceAsStream, dir, resourceName);
+			}
 			try {
 				ZipUtils.toZip(dir, new FileOutputStream(dir + ".zip"), false);
 				fileName = fileDir + ".zip";
@@ -458,4 +458,9 @@ public class ActivitiService {
 		return LayUiUtil.pagination(pageInfo);
 	}
 
+	@Transactional
+	public Integer calimTask(String taskId,String u_id) {
+		taskService.claim(taskId, u_id);
+		return 1;
+	}
 }

@@ -46,8 +46,10 @@ public class ZzoaApplicationTests {
 
 	@Test
 	public void contextLoads2() {
-		System.out.println(zzglController.zzjgList());
-
+		String deploymentId = "160006";
+		String resourceName = "leave_ksldsp.html";
+		InputStream resourceAsStream = repositoryService.getResourceAsStream(deploymentId, resourceName);
+		FileUtil.saveFileFromInputStream(resourceAsStream, "D:/", resourceName);
 	}
 
 	@Autowired
