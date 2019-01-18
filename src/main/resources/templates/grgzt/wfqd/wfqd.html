@@ -79,7 +79,10 @@
 		        <input class="layui-input" type="text" placeholder="流水号" name="businessKey">
 		    </div>
 		    <div class="layui-inline">
-		        <input class="layui-input" type="text" placeholder="流程名称" name="name">
+		        <input type="text" id="dateS" name="dateS" placeholder="申请时间起" autocomplete="off" class="layui-input">
+		    </div>
+		    <div class="layui-inline">
+		        <input type="text" id="dateE" name="dateE" placeholder="申请时间止" autocomplete="off" class="layui-input">
 		    </div>
 		    <div class="layui-inline">
 		        <a class="layui-btn layui-btn-primary layui-btn-sm" lay-submit="" lay-filter="query" datatype="reload">查询</a>
@@ -125,6 +128,7 @@
     </div>
 </script>
 <script src="${ctx}/plugins/layui/layui.js"></script>
+<script src="${ctx}/js/common/time.js"></script>
 <script>
     layui.config({
         base: '${ctx}/plugins/layui/extend/dtree/'
@@ -132,14 +136,27 @@
         dtree: 'dtree'
     })
     var $ = null,table=null,upload=null,dtree=null,layer=null,dtreeID=null,index=null,tableId = 'tableBox',form=null,tableIdImg = 'tableBoxHis';
-    layui.use(['table', 'layer', 'dtree','upload'], function () {
+    layui.use(['table', 'layer', 'dtree','upload','laydate'], function () {
             $ = layui.jquery,
             table = layui.table,
             upload=layui.upload,
             dtree = layui.dtree,
             layer = layui.layer,
             form = layui.form,
+            laydate = layui.laydate,
             dtreeID = 'left_tree';
+            
+         var dateS = getDate(new Date(),-7);
+         var dateE = getNowDate(new Date());
+         
+         laydate.render({
+             elem: '#dateS',
+             value: dateS
+         });
+         laydate.render({
+             elem: '#dateE',
+             value: dateE
+         });
             
         var dtreeObj = dtree.render({
             elem: "#" + dtreeID, //绑定元素
@@ -158,7 +175,7 @@
         table.render({
             elem: '#' + tableId,
             url: '${ctx}/grgzt/wfqd/list',
-            where: {u_id:"${user.u_id}"},
+            where: {u_id:"${user.u_id}",dateS:dateS,dateE:dateE},
             title: '参数设置',
             page: true,
             id: tableId,

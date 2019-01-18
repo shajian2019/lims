@@ -28,5 +28,6 @@ public interface ActivitiMapper {
 	public List<ProcessDefinitionExt> getProcessDefinitionExtByProType(String proType);
 
 	public Integer addProcessDefinitionType(ProcessDefinitionType processDefinitionType);
-
+	
+	public List<Map<String,Object>> getTodoTaskAndToClaimTask(Map<String, Object> params);
 }

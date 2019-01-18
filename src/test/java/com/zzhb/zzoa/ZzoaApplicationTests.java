@@ -100,14 +100,20 @@ public class ZzoaApplicationTests {
 
 	@Test
 	public void testTaskQuery() {
-		List<Task> list = ts.createTaskQuery().taskAssignee("test").list();
+//		List<Task> list = ts.createTaskQuery().taskAssignee("test").list();
+//		for (Task task : list) {
+//			task.getAssignee();
+//		}
+//		list = ts.createTaskQuery().taskCandidateUser("2").list();
+//		for (Task task : list) {
+//			System.out.println(task.getId());
+//			ts.claim(task.getId(), "1");
+//		}
+		List<Task> list = ts.createTaskQuery().taskAssignee("3").list();
+		list = ts.createTaskQuery().taskCandidateUser("3").list();
 		for (Task task : list) {
-			task.getAssignee();
-		}
-		list = ts.createTaskQuery().taskCandidateUser("2").list();
-		for (Task task : list) {
+			System.out.println(task.getAssignee());
 			System.out.println(task.getId());
-			ts.claim(task.getId(), "1");
 		}
 	}
 

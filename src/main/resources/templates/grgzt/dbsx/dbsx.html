@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>发起流程</title>
+    <title>待办事项</title>
     <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
     <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" />
     <link rel="stylesheet" href="${ctx}/plugins/layui/extend/dtree/dtree.css">
@@ -79,7 +79,7 @@
 		        <input class="layui-input" type="text" placeholder="流水号" name="businessKey">
 		    </div>
 		    <div class="layui-inline">
-		        <input class="layui-input" type="text" placeholder="流程名称" name="name">
+		        <input class="layui-input" type="text" placeholder="申请人" name="sqr">
 		    </div>
 		    <div class="layui-inline">
 		        <a class="layui-btn layui-btn-primary layui-btn-sm" lay-submit="" lay-filter="query" datatype="reload">查询</a>
@@ -98,17 +98,6 @@
 </body>
 
 </html>
-<script type="text/html" id="lczt">
-   {{#  if(d.deleteReason == null){ }}
-		{{#  if(d.endTime == ''){ }}
-			<span style="color: #FFC125;">审核中</span>
-   		{{#  } else { }}
-			<span style="color: green">已审核</span>
-   		{{#  } }}
-   {{#  } else { }}
-		<span style="color: red">已撤销</span>
-   {{#  } }}
-</script>
 <script type="text/html" id="rightBar">
     <div class="layui-btn-group">
         <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="details">
@@ -157,7 +146,7 @@
         
         table.render({
             elem: '#' + tableId,
-            url: '${ctx}/grgzt/wfqd/list',
+            url: '${ctx}/grgzt/dbsx/list',
             where: {u_id:"${user.u_id}"},
             title: '参数设置',
             page: true,
@@ -171,25 +160,23 @@
                     title: '序号',
                     width: 50
                 }, {
-                    field: 'businessKey',
+                    field: 'bk',
                     title: '流水号',
                    	width: 200,
                     align: 'center'
                 }, {
-                    field: 'processDefinitionName',
+                    field: 'name',
                     title: '流程名称',
                     align: 'center'
                 }, {
-                    field: 'startTime',
+                    field: 'sqr',
+                    title: '申请人',
+                    align: 'center'
+                }, {
+                    field: 'sqrq',
                     title: '申请时间',
                     width: 200,
                     align: 'center'
-                },{
-                    field: 'endTime',
-                    title: '流程状态',
-                	width: 150,
-                    align: 'center',
-                    templet: '#lczt'
                 }, {
                     title: '操作', align: 'center',
                     width: 140,
@@ -261,7 +248,6 @@
 			data.name = $("input[name='name']").val()
 			data.businessKey = $("input[name='businessKey']").val()
 			data.keys = keys;
-			console.log(data)
 			table.reload(tableId, {
                 where: data
             });

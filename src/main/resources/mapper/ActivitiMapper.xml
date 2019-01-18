@@ -68,4 +68,43 @@
 		VALUES
 		(#{type},#{name})
 	</insert>
+	
+	<select id="getTodoTaskAndToClaimTask" resultType="java.util.Map" parameterType="java.util.Map">
+		SELECT a.*,oa.*,rp.* FROM(
+			SELECT DISTINCT
+				RES.* 
+			FROM
+				ACT_RU_TASK RES 
+			WHERE
+				RES.ASSIGNEE_ = #{u_id}
+			UNION ALL	
+			SELECT DISTINCT
+				RES.* 
+			FROM
+				ACT_RU_TASK RES
+				INNER JOIN ACT_RU_IDENTITYLINK I ON I.TASK_ID_ = RES.ID_ 
+			WHERE
+				RES.ASSIGNEE_ IS NULL 
+				AND I.TYPE_ = 'candidate' 
+				AND ( I.USER_ID_ = #{u_id} ) 
+		) a LEFT JOIN oa_t_leave oa on a.PROC_INST_ID_ = oa.proid
+		  LEFT JOIN ext_act_re_procdef rp on a.PROC_DEF_ID_ = rp.id
+		<where>
+			<if test="sqr !=null and sqr !=''">
+				<bind name="_sqr" value="'%'+sqr+'%'"/>
+				and oa.sqr like #{_sqr}
+			</if>
+			<if test="businessKey !=null and businessKey !=''">
+				and oa.bk = #{businessKey}
+			</if>
+			<if test="keys !=null and keys.size() > 0">
+				and rp.key in 
+				<foreach collection="keys" index="index" item="item" open="(" separator="," close=")">
+		            #{item}
+		        </foreach>
+			</if>
+		</where>
+		ORDER BY
+		CREATE_TIME_ DESC
+	</select>
 </mapper>

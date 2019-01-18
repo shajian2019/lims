@@ -3,8 +3,8 @@
 <mapper namespace="com.zzhb.zzoa.mapper.LeaveMapper">
 	<insert id="addLeave" parameterType="com.zzhb.zzoa.domain.activiti.Leave">
 		INSERT INTO oa_t_leave 
-			(bk,sqr,bmmc,sqrq,qjlx,ksrq,jsrq,qjts,qjly,gzsc)
+			(proid,bk,sqr,bmmc,sqrq,qjlx,ksrq,jsrq,qjts,qjly,gzsc)
 		VALUES
-			(#{bk},#{sqr},#{bmmc},#{sqrq},#{qjlx},#{ksrq},#{jsrq},#{qjts},#{qjly},#{gzsc})
+			(#{proid},#{bk},#{sqr},#{bmmc},#{sqrq},#{qjlx},#{ksrq},#{jsrq},#{qjts},#{qjly},#{gzsc})
 	</insert>
 </mapper>

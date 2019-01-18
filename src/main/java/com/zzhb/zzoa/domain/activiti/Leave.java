@@ -1,6 +1,7 @@
 package com.zzhb.zzoa.domain.activiti;
 
 public class Leave {
+	private String proid;
 	private String bk;
 	private String sqr;
 	private String bmmc;
@@ -18,6 +19,12 @@ public class Leave {
 	private String spr;
 	private String spsj;
 	
+	public String getProid() {
+		return proid;
+	}
+	public void setProid(String proid) {
+		this.proid = proid;
+	}
 	public String getBk() {
 		return bk;
 	}

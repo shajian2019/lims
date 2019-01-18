@@ -59,6 +59,7 @@ import com.zzhb.zzoa.utils.CustomProcessDiagramGenerator;
 import com.zzhb.zzoa.utils.FileUtil;
 import com.zzhb.zzoa.utils.LayUiUtil;
 import com.zzhb.zzoa.utils.SessionUtils;
+import com.zzhb.zzoa.utils.TimeUtil;
 import com.zzhb.zzoa.utils.ZipUtils;
 
 @Service
@@ -321,10 +322,12 @@ public class ActivitiService {
 
 		Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
 		taskService.setOwner(task.getId(), user.getU_id() + "");
+
 		Map<String, Object> variable = new HashMap<>();
 		variable.put("spr", params.get("spr"));
-
 		taskService.complete(task.getId(), variable);
+
+		params.put("proid", pi.getId());
 		Integer saveBusiness = saveBusiness(key, params);
 		task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
 		result.put("code", saveBusiness);
@@ -345,16 +348,20 @@ public class ActivitiService {
 	public JSONObject getHistoricProcessInstances(Integer page, Integer limit, Map<String, String> params) {
 		HistoricProcessInstanceQuery hpiq = hs.createHistoricProcessInstanceQuery().startedBy(params.get("u_id"));
 		String businessKey = params.get("businessKey");
-		String name = params.get("name");
+		String dateS = params.get("dateS");
+		String dateE = params.get("dateE");
 		String keys = params.get("keys");
 		if (businessKey != null && !"".equals(businessKey)) {
 			hpiq.processInstanceBusinessKey(businessKey);
 		}
-		if (name != null && !"".equals(name)) {
-			hpiq.processDefinitionName(name);
-		}
 		if (keys != null && !"".equals(keys)) {
 			hpiq.processDefinitionKeyIn(Arrays.asList(keys.split(",")));
+		}
+		if (dateS != null && !"".equals(dateS)) {
+			hpiq.startedAfter(TimeUtil.getDateByCustom("yyyy-MM-dd HH:mm:ss", dateS+" 00:00:00"));
+		}
+		if (dateE != null && !"".equals(dateE)) {
+			hpiq.startedBefore(TimeUtil.getDateByCustom("yyyy-MM-dd HH:mm:ss", dateE+" 23:59:59"));
 		}
 		long count = hpiq.count();
 		hpiq = hpiq.orderByProcessInstanceStartTime().desc();
@@ -439,4 +446,16 @@ public class ActivitiService {
 		}
 		return highLightedFlowIds;
 	}
+
+	public JSONObject dbsxList(Integer page, Integer limit, Map<String, Object> params) {
+		Object keys = params.get("keys");
+		if (keys != null && !"".equals(keys)) {
+			params.put("keys", Arrays.asList(keys.toString().split(",")));
+		}
+		PageHelper.startPage(page, limit);
+		List<Map<String, Object>> list = activitiMapper.getTodoTaskAndToClaimTask(params);
+		PageInfo<Map<String, Object>> pageInfo = new PageInfo<>(list);
+		return LayUiUtil.pagination(pageInfo);
+	}
+
 }
