@@ -1,57 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zzhb.zzoa.mapper.UserMapper">
-    <select id="getAllUsers" resultType="com.zzhb.zzoa.domain.User" parameterType="java.util.Map">
+    <select id="getAllUsers" resultType="java.util.Map" parameterType="java.util.Map">
       SELECT
-        u_id,
-        username,
-        password,
-        nickname,
-        createtime,
-        updatetime,
-        remark,
-        email,
-        phone,
-        status,
-        recentlogin
-      FROM sys_t_user
+		u.*,
+		r.rolename
+		FROM
+	sys_t_user u
+		LEFT JOIN ( SELECT ur.u_id, r.* FROM sys_t_user_role ur LEFT JOIN sys_t_role r ON ur.r_id = r.r_id ) r ON u.u_id = r.u_id
       <where>
+          <if test="true">
+              AND u.username != 'superadmin'
+          </if>
           <if test="username != null and username != ''">
               <bind name="_username" value="'%'+username+'%'"/>
-              AND username like #{_username}
+              AND u.username like #{_username}
           </if>
           <if test="nickname != null and nickname != ''">
               <bind name="_nickname" value="'%'+nickname+'%'"/>
-              AND nickname like #{_nickname}
+              AND u.nickname like #{_nickname}
           </if>
           <if test="status != null and status != ''">
-              AND status = #{status}
+              AND u.status = #{status}
           </if>
       </where>
     </select>
     
-    <select id="getUsers" resultType="com.zzhb.zzoa.domain.User" parameterType="java.util.Map">
-      SELECT * FROM sys_t_user
-      <where>
-          <if test="u_ids != null and u_ids.size() > 0 ">
-              AND u_id in
-	            <foreach collection="u_ids" item="u_id" index="index" open="(" close=")" separator=",">
-				  #{u_id}
-				</foreach>
-            </if>
-      </where>
-    </select>
-    
-    
-    <delete id="delUserById" parameterType="java.util.Map">
-        DELETE FROM sys_t_user
-        <where>
-            <if test="id != null and id != ''">
-                u_id = #{id}
-            </if>
-        </where>
-    </delete>
-
     <insert id="addUser" keyProperty="u_id" useGeneratedKeys="true" parameterType="com.zzhb.zzoa.domain.User" >
         INSERT INTO sys_t_user(username,password,nickname,createtime,remark,email,phone,status)
         VALUES (#{username},#{password},#{nickname},now(),#{remark,jdbcType=VARCHAR},#{email},#{phone},#{status})
@@ -84,10 +58,13 @@
         </set>
         <where>
             <if test="username != null and username !='' ">
-              AND username = #{username}
+              	AND username = #{username}
+            </if>
+            <if test="u_id != null and u_id !='' ">
+              	AND u_id = #{u_id}
             </if>
             <if test="u_ids != null and u_ids.size() > 0 ">
-              AND u_id in
+              	AND u_id in
 	            <foreach collection="u_ids" item="u_id" index="index" open="(" close=")" separator=",">
 				  #{u_id}
 				</foreach>
@@ -139,7 +116,7 @@
     </update>
 
     <insert id="addUrole" parameterType="java.util.Map">
-        INSERT INTO sys_t_user_role(u_id,r_id)
+        REPLACE INTO sys_t_user_role(u_id,r_id)
         VALUES (#{u_id},#{r_id})
     </insert>
 
@@ -157,5 +134,11 @@
             </if>
         </where>
     </update>
+    
+    <select id="getUsersByOid" parameterType="java.lang.String" resultType="com.zzhb.zzoa.domain.User">
+    	SELECT u.* FROM sys_t_user_org uo LEFT JOIN sys_t_user u 
+		on uo.u_id = u.u_id
+		WHERE uo.o_id = #{o_id}
+    </select>
     
 </mapper>

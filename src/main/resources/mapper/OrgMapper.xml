@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzhb.zzoa.mapper.OrgMapper">
+	
+	<select id="getOrgs" resultType="com.zzhb.zzoa.domain.Org" parameterType="java.util.Map">
+		SELECT
+			o_id id,
+			o_name name,
+			createtime,
+			updatetime
+		FROM sys_t_org
+	</select>
+	
+	<insert id="addOrg" parameterType="com.zzhb.zzoa.domain.Org">
+		INSERT INTO sys_t_org 
+			(o_name,createtime)
+		VALUES
+			(#{name},now())
+	</insert>
+	
+	<update id="updateOrg" parameterType="com.zzhb.zzoa.domain.Org">
+		UPDATE sys_t_org
+		<set>
+			<if test="name !=null and name !=''">
+				o_name = #{name},
+			</if>
+			<if test="true">
+				updatetime = now(),
+			</if>
+		</set>
+		<where>
+			<if test="id !=null and id !=''">
+				and o_id = #{id}
+			</if>
+		</where>
+	</update>
+	
+	<select id="getUsers" resultType="java.util.Map" parameterType="java.util.Map">
+		SELECT
+			o.o_id,
+			o.o_name,
+			u.*,
+			m.j_name 
+		FROM
+			sys_t_user_org uo
+			LEFT JOIN sys_t_org o ON uo.o_id = o.o_id
+			LEFT JOIN sys_t_user u ON uo.u_id = u.u_id
+			LEFT JOIN ( SELECT u.u_id, o.j_name FROM sys_t_user_job u LEFT JOIN sys_t_job o ON u.j_id = o.j_id ) m ON uo.u_id = m.u_id
+		<where>
+			<if test="o_id !=null and o_id !=''">
+				and uo.o_id = #{o_id}
+			</if>
+			<if test="username !=null and username !=''">
+				<bind name="_username" value="'%'+username+'%'"/>
+				and u.username like #{_username}
+			</if>
+			<if test="nickname !=null and nickname !=''">
+				<bind name="_nickname" value="'%'+nickname+'%'"/>
+				and u.nickname like #{_nickname}
+			</if>
+		</where>
+	</select>
+	
+	<insert id="addUserOrg" parameterType="java.util.Map">
+		INSERT INTO sys_t_user_org (u_id,o_id)
+		VALUES
+		<foreach collection="u_ids" item="u_id" index="index" separator=",">
+            (#{u_id,jdbcType=INTEGER}, #{o_id,jdbcType=INTEGER})
+        </foreach>
+	</insert>
+	
+	<select id="getOrgByUid" resultType="com.zzhb.zzoa.domain.Org" parameterType="java.lang.String">
+		SELECT o.o_id id,o.o_name name,createtime,updatetime FROM sys_t_org o LEFT JOIN sys_t_user_org org
+		on o.o_id = org.o_id
+		WHERE org.u_id = #{u_id}
+	</select>
+	
+	<select id="getAddUsers" resultType="java.util.Map">
+		SELECT
+			* 
+		FROM
+			sys_t_user u
+			LEFT JOIN sys_t_user_org o ON u.u_id = o.u_id
+			LEFT JOIN ( SELECT o.j_name, u.u_id FROM sys_t_job o LEFT JOIN sys_t_user_job u ON o.j_id = u.j_id ) m ON u.u_id = m.u_id 
+		WHERE
+			o.u_id IS NULL 
+			AND u.username != 'superadmin'
+	</select>
+</mapper>

@@ -68,9 +68,6 @@
 		<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">
 		 	<i class="fa fa-pencil"></i>
 		</a>
-		<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="bindUser">
-		  	<i class="fa fa-user"></i>
-		</a>
 		<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del">
 		    <i class="fa fa-trash-o"></i>
 		</a>
@@ -133,7 +130,7 @@
 						field: 'center',
 						align: 'center',
 						title: '操作',
-						width: 100,
+						width: 80,
 						toolbar: '#rightBar'
 					}
 				]
@@ -204,16 +201,6 @@
 		    		    }
 		    		});
 					
-				});
-			} else if (obj.event === 'bindUser') {
-				layer.open({
-					type: 2,
-					title: '分配用户',
-					area: ['1000px', '460px'],
-					content: '${ctx}/xtgl/qxgl/jsgl/role/bind?r_id='+data.r_id,
-					end: function(){
-						table.reload(tableId)
-	         		}
 				});
 			}
 		});

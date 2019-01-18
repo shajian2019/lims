@@ -8,7 +8,7 @@
 	</insert>
 	
 	<select id="getProcessDefinitionExts" resultType="com.zzhb.zzoa.domain.activiti.ProcessDefinitionExt">
-		SELECT  ext.* FROM ext_act_re_procdef ext
+		SELECT  ext.*,pro.`name` proname FROM ext_act_re_procdef ext LEFT JOIN ext_act_proctype pro on ext.protype = pro.type
 		<where>
 			<if test="name !=null and name !='' ">
 				<bind name="_name" value="'%'+name+'%'"/>
@@ -24,6 +24,31 @@
 		order by ext.createtime desc
 	</select>
 	
+	<select id="getProcessDefinitionExtsByUid" resultType="com.zzhb.zzoa.domain.activiti.ProcessDefinitionExt">
+		SELECT
+			ext.*,
+			pro.`name` proname 
+		FROM
+			sys_t_user_procdef p
+			LEFT JOIN ext_act_re_procdef ext ON p.p_id = ext.id
+			LEFT JOIN ext_act_proctype pro ON ext.protype = pro.type
+		<where>
+			<if test="u_id !=null and u_id !='' ">
+				and p.u_id = #{u_id}
+			</if>
+			<if test="name !=null and name !='' ">
+				<bind name="_name" value="'%'+name+'%'"/>
+				and ext.name like #{_name}
+			</if>
+			<if test="protype !=null and protype !='' ">
+				and ext.protype = #{protype}
+			</if>
+			<if test="lastversion !=null and lastversion !='' ">
+				and ext.version = (SELECT max(version) FROM	ext_act_re_procdef WHERE `key` = ext.`key`)
+			</if>
+		</where>
+	</select>
+	
 	<delete id="delProcessDefinitionExt" parameterType="java.util.Map">
 		DELETE FROM ext_act_re_procdef 
 		<where>
@@ -34,7 +59,8 @@
 	</delete>
 	
 	<select id="getAddUsers" resultType="com.zzhb.zzoa.domain.User">
-		SELECT * FROM sys_t_user u LEFT JOIN act_id_user au on u.u_id = au.ID_ WHERE au.ID_ IS NULL AND u.username != 'superadmin'
+		SELECT * FROM sys_t_user u LEFT JOIN ${tablename} o on u.u_id = o.u_id 
+		WHERE o.u_id IS NULL AND u.username != 'superadmin'
 	</select>
 	
 	<insert id="addProcessDefinitionType" parameterType="com.zzhb.zzoa.domain.activiti.ProcessDefinitionType">
@@ -42,4 +68,43 @@
 		VALUES
 		(#{type},#{name})
 	</insert>
+	
+	<select id="getTodoTaskAndToClaimTask" resultType="java.util.Map" parameterType="java.util.Map">
+		SELECT a.*,oa.*,rp.* FROM(
+			SELECT DISTINCT
+				RES.* 
+			FROM
+				ACT_RU_TASK RES 
+			WHERE
+				RES.ASSIGNEE_ = #{u_id}
+			UNION ALL	
+			SELECT DISTINCT
+				RES.* 
+			FROM
+				ACT_RU_TASK RES
+				INNER JOIN ACT_RU_IDENTITYLINK I ON I.TASK_ID_ = RES.ID_ 
+			WHERE
+				RES.ASSIGNEE_ IS NULL 
+				AND I.TYPE_ = 'candidate' 
+				AND ( I.USER_ID_ = #{u_id} ) 
+		) a LEFT JOIN oa_t_leave oa on a.PROC_INST_ID_ = oa.proid
+		  LEFT JOIN ext_act_re_procdef rp on a.PROC_DEF_ID_ = rp.id
+		<where>
+			<if test="sqr !=null and sqr !=''">
+				<bind name="_sqr" value="'%'+sqr+'%'"/>
+				and oa.sqr like #{_sqr}
+			</if>
+			<if test="businessKey !=null and businessKey !=''">
+				and oa.bk = #{businessKey}
+			</if>
+			<if test="keys !=null and keys.size() > 0">
+				and rp.key in 
+				<foreach collection="keys" index="index" item="item" open="(" separator="," close=")">
+		            #{item}
+		        </foreach>
+			</if>
+		</where>
+		ORDER BY
+		CREATE_TIME_ DESC
+	</select>
 </mapper>

@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.zzhb.zzoa.domain.Job;
+import com.zzhb.zzoa.domain.Org;
 import com.zzhb.zzoa.domain.User;
 import com.zzhb.zzoa.mapper.RoleMapper;
 import com.zzhb.zzoa.mapper.UserMapper;
@@ -50,8 +52,8 @@ public class ZzglController {
 
 	@PostMapping("/yhgl/delUserByid")
 	@ResponseBody
-	public Integer delUserById(@RequestParam Map<String, Object> map) {
-		return userService.delUserById(map);
+	public Integer delUserById(String u_id) {
+		return userService.delUserById(u_id);
 	}
 
 	@GetMapping("/yhgl/editPage")
@@ -117,20 +119,20 @@ public class ZzglController {
 
 	@PostMapping("/zzjg/add")
 	@ResponseBody
-	public Integer zzjgAdd(String groupName) {
-		return zzjgService.zzjgAdd(groupName);
+	public Integer zzjgAdd(Org org) {
+		return zzjgService.zzjgAdd(org);
 	}
 
 	@PostMapping("/zzjg/edit")
 	@ResponseBody
-	public Integer zzjgEdit(String groupId, String groupName) {
-		return zzjgService.zzjgEdit(groupId, groupName);
+	public Integer zzjgEdit(Org org) {
+		return zzjgService.zzjgEdit(org);
 	}
 
 	@PostMapping("/zzjg/del")
 	@ResponseBody
-	public Integer zzjgDel(String groupId) {
-		return zzjgService.zzjgDel(groupId);
+	public Integer zzjgDel(String o_id) {
+		return zzjgService.zzjgDel(o_id);
 	}
 
 	@GetMapping("/zzjg/user/list")
@@ -140,8 +142,8 @@ public class ZzglController {
 	}
 
 	@GetMapping("/zzjg/adduser")
-	public String zzjgAddUser(String groupId, ModelMap map) {
-		map.put("groupId", groupId);
+	public String zzjgAddUser(String o_id, ModelMap map) {
+		map.put("o_id", o_id);
 		return "xtgl/zzgl/zzjg/pop";
 	}
 
@@ -153,13 +155,72 @@ public class ZzglController {
 
 	@PostMapping("/zzjg/user/del")
 	@ResponseBody
-	public Integer zzjgUserDel(String userId) {
-		return zzjgService.zzjgUserDel(userId);
+	public Integer zzjgUserDel(String u_id) {
+		return zzjgService.zzjgUserDel(u_id);
 	}
 
 	@PostMapping("/zzjg/user/add")
 	@ResponseBody
-	public Integer zzjgUserAdd(String groupId, String u_ids) {
-		return zzjgService.zzjgUserAdd(groupId, u_ids);
+	public Integer zzjgUserAdd(String o_id, String u_ids) {
+		return zzjgService.zzjgUserAdd(o_id, u_ids);
+	}
+	
+	@GetMapping("/zwgl")
+	public String zwgl() {
+		return "xtgl/zzgl/zwgl/zwgl";
+	}
+	
+	@GetMapping("/zwgl/list")
+	@ResponseBody
+	public JSONObject zwglList() {
+		return zzjgService.zwglList();
+	}
+	
+	@PostMapping("/zwgl/add")
+	@ResponseBody
+	public Integer zwglAdd(Job job) {
+		return zzjgService.zwglAdd(job);
+	}
+	
+	@PostMapping("/zwgl/edit")
+	@ResponseBody
+	public Integer zwglEdit(Job job) {
+		return zzjgService.zwglEdit(job);
+	}
+	
+	@GetMapping("/zwgl/user/list")
+	@ResponseBody
+	public JSONObject zwglUserList(Integer page, Integer limit, @RequestParam Map<String, String> params) {
+		return zzjgService.zwglUserList(page, limit, params);
+	}
+	
+	@PostMapping("/zwgl/user/del")
+	@ResponseBody
+	public Integer zwglUserDel(String u_id) {
+		return zzjgService.zwglUserDel(u_id);
+	}
+	
+	@GetMapping("/zwgl/adduser/list")
+	@ResponseBody
+	public JSONObject zwglAddUserList(Integer page, Integer limit, @RequestParam Map<String, String> params) {
+		return zzjgService.zwglAddUserList(page, limit, params);
+	}
+	
+	@GetMapping("/zwgl/adduser")
+	public String zwglAddUser(String j_id, ModelMap map) {
+		map.put("j_id", j_id);
+		return "xtgl/zzgl/zwgl/pop";
+	}
+	
+	@PostMapping("/zwgl/user/add")
+	@ResponseBody
+	public Integer zwglUserAdd(String j_id, String u_ids) {
+		return zzjgService.zwglUserAdd(j_id, u_ids);
+	}
+	
+	@PostMapping("/zwgl/del")
+	@ResponseBody
+	public Integer zwglDel(String j_id) {
+		return zzjgService.zwglDel(j_id);
 	}
 }

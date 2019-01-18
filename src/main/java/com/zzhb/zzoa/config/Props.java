@@ -1,5 +1,8 @@
 package com.zzhb.zzoa.config;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +17,16 @@ public class Props {
 	private Long globalSessionTimeout;
 
 	private String tempPath;
+	
+	private List<String> flushkeys = new ArrayList<>();
+	
+	public List<String> getFlushkeys() {
+		return flushkeys;
+	}
+
+	public void setFlushkeys(List<String> flushkeys) {
+		this.flushkeys = flushkeys;
+	}
 
 	public String getCookiename() {
 		return cookiename;
