@@ -8,12 +8,30 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import com.zzhb.zzoa.utils.TimeUtil;
 
 public class HistoricProcessInstanceVO {
-
+	
+	private String processInstanceId;
 	private String businessKey;
 	private String processDefinitionKey;
 	private String processDefinitionName;
 	private String startTime;
 	private String endTime;
+	private String deleteReason;
+
+	public String getDeleteReason() {
+		return deleteReason;
+	}
+
+	public void setDeleteReason(String deleteReason) {
+		this.deleteReason = deleteReason;
+	}
+
+	public String getProcessInstanceId() {
+		return processInstanceId;
+	}
+
+	public void setProcessInstanceId(String processInstanceId) {
+		this.processInstanceId = processInstanceId;
+	}
 
 	public String getBusinessKey() {
 		return businessKey;
@@ -54,11 +72,20 @@ public class HistoricProcessInstanceVO {
 	public void setProcessDefinitionName(String processDefinitionName) {
 		this.processDefinitionName = processDefinitionName;
 	}
+	
+	@Override
+	public String toString() {
+		return "HistoricProcessInstanceVO [processInstanceId=" + processInstanceId + ", businessKey=" + businessKey
+				+ ", processDefinitionKey=" + processDefinitionKey + ", processDefinitionName=" + processDefinitionName
+				+ ", startTime=" + startTime + ", endTime=" + endTime + ", deleteReason=" + deleteReason + "]";
+	}
 
 	public static List<HistoricProcessInstanceVO> getHistoricProcessInstanceVOs(List<HistoricProcessInstance> hps) {
 		List<HistoricProcessInstanceVO> list = new ArrayList<HistoricProcessInstanceVO>();
 		for (HistoricProcessInstance hp : hps) {
 			HistoricProcessInstanceVO vo = new HistoricProcessInstanceVO();
+			vo.setProcessInstanceId(hp.getId());
+			vo.setDeleteReason(hp.getDeleteReason());
 			vo.setBusinessKey(hp.getBusinessKey());
 			vo.setProcessDefinitionKey(hp.getProcessDefinitionKey());
 			vo.setProcessDefinitionName(hp.getProcessDefinitionName());

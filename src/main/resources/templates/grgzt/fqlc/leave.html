@@ -197,12 +197,29 @@
 	                index = layer.load(1);
 	            },
 	            success: function (data) {
-	            	console.log(data)
 	            	layer.close(index);
 	            	if(data.code >0){
-	            		layer.msg("申请成功,下一个节点："+data.msg, {offset: ['50%'], time: 3000}, function () {
-	            			parent.window.closeTab("leave");
-                        });
+	            		/* layer.msg("申请成功,流水号："+data.bk+",下一个节点："+data.msg, {offset: ['50%'], time: 3000}, function () {
+	            			 parent.window.closeTab("leave");
+                        }); */
+	            		layer.confirm("申请成功,流水号："+data.bk+",下一流程节点："+data.msg, {
+	            			  closeBtn:0,
+	            			  btn: ['确定'] //按钮
+	            			}, function(){
+	            			 parent.window.closeTab("leave");
+            			});
+	            		/* layer.open({
+	            			  type: 1,
+	            			  shade: false,
+	            			  title: false, //不显示标题
+	            			  content: $('.msg'), //捕获的元素，注意：最好该指定的元素要存放在body最外层，否则可能被其它的相对元素所影响
+	            			  cancel: function(){
+		            			 parent.window.closeTab("leave");
+	            			  },
+	            			  success:function(){
+	            				  
+	            			  }
+            			 }); */
 	            	}else{
 	            		layer.msg("申请失败");
 	            	}

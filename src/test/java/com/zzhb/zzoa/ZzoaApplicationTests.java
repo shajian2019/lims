@@ -142,7 +142,6 @@ public class ZzoaApplicationTests {
 	public void testHistoryTaskService() {
 		
 		String processInstanceBusinessKey ="201901171528162";
-		
 		List<HistoricTaskInstance> list = hs.createHistoricTaskInstanceQuery().processInstanceBusinessKey(processInstanceBusinessKey).list();
 		for (HistoricTaskInstance h : list) {
 			 System.out.println(h.getId());

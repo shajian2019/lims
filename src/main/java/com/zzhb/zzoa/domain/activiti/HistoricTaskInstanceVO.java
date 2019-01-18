@@ -24,6 +24,16 @@ public class HistoricTaskInstanceVO {
 	private Long durationInMillis;
 
 	private String claimTime;
+	
+	private String deleteReason;
+
+	public String getDeleteReason() {
+		return deleteReason;
+	}
+
+	public void setDeleteReason(String deleteReason) {
+		this.deleteReason = deleteReason;
+	}
 
 	public String getId() {
 		return id;
@@ -94,9 +104,11 @@ public class HistoricTaskInstanceVO {
 		for (HistoricTaskInstance hp : hps) {
 			HistoricTaskInstanceVO vo = new HistoricTaskInstanceVO();
 			vo.setId(hp.getId());
+			vo.setDeleteReason(hp.getDeleteReason());
 			vo.setName(hp.getName());
 			vo.setStartTime(TimeUtil.getTimeFromDate("yyyy-MM-dd HH:mm:ss", hp.getStartTime()));
 			vo.setEndTime(TimeUtil.getTimeFromDate("yyyy-MM-dd HH:mm:ss", hp.getEndTime()));
+			vo.setClaimTime(TimeUtil.getTimeFromDate("yyyy-MM-dd HH:mm:ss", hp.getClaimTime()));
 			vo.setDurationInMillis(hp.getDurationInMillis());
 			vo.setAssignee(hp.getAssignee());
 			vo.setOwner(hp.getOwner());

@@ -17,9 +17,9 @@ import com.zzhb.zzoa.service.ActivitiService;
 
 @Controller
 @RequestMapping("/grgzt/wfqd")
-public class WfqdController {
+public class DbsxController {
 
-	private static Logger logger = Logger.getLogger(WfqdController.class);
+	private static Logger logger = Logger.getLogger(DbsxController.class);
 
 	@Autowired
 	ActivitiService activitiService;

@@ -83,7 +83,7 @@ public class ActivitiService {
 
 	@Autowired
 	ProcessEngine pe;
-	
+
 	@Autowired
 	UserMapper userMapper;
 
@@ -271,26 +271,26 @@ public class ActivitiService {
 		return dgrm_resource_name;
 	}
 
-	
 	public JSONObject historyTask(String businessKey) {
-		List<HistoricTaskInstance> list = hs.createHistoricTaskInstanceQuery().processInstanceBusinessKey(businessKey).list();
+		List<HistoricTaskInstance> list = hs.createHistoricTaskInstanceQuery().processInstanceBusinessKey(businessKey)
+				.list();
 		List<HistoricTaskInstanceVO> historicTaskInstanceVOs = HistoricTaskInstanceVO.getHistoricTaskInstanceVOs(list);
 		for (HistoricTaskInstanceVO vo : historicTaskInstanceVOs) {
 			String u_id = null;
-			if(vo.getOwner() != null) {
+			if (vo.getOwner() != null) {
 				u_id = vo.getOwner();
 			}
-			if(vo.getAssignee()!= null) {
+			if (vo.getAssignee() != null) {
 				u_id = vo.getAssignee();
 			}
-			if(u_id != null) {
-				User user  = userMapper.getUserById(Integer.parseInt(u_id));
+			if (u_id != null) {
+				User user = userMapper.getUserById(Integer.parseInt(u_id));
 				vo.setAssignee(user.getNickname());
 			}
 		}
 		return LayUiUtil.pagination(historicTaskInstanceVOs.size(), historicTaskInstanceVOs);
 	}
-	
+
 	@Autowired
 	TaskService taskService;
 
@@ -302,6 +302,12 @@ public class ActivitiService {
 
 	@Autowired
 	HistoryService hs;
+
+	@Transactional
+	public Integer deleteProcessInstance(String processInstanceId, String deleteReason) {
+		runtimeService.deleteProcessInstance(processInstanceId, deleteReason);
+		return 1;
+	}
 
 	@Transactional
 	public JSONObject startProcessInstance(String key, Map<String, String> params) {
@@ -323,6 +329,7 @@ public class ActivitiService {
 		task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
 		result.put("code", saveBusiness);
 		result.put("msg", task.getName());
+		result.put("bk", params.get("bk"));
 		return result;
 	}
 
