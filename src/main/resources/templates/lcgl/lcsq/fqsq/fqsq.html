@@ -125,17 +125,16 @@
         	   console.log(data)
         	   layer.open({
 	   	            type: 2,
-	   	            area: ['820px', '550px'],
+	   	            area: ['722px', '516px'],
+	   	         	title: false,
 	   	            fixed: false, //不固定
-	   	            maxmin: true,
 	   	            content: '${ctx}/lcgl/lcsq/fqsq/pop?p_id='+data.id,
 	   	            end: function(){
 	   	            	
 	            	}
            	   })
            }
-        });
-        
+        });     
         form.on('submit(search)', function (data) {
         	var param = dtree.getNowParam(dtreeObj);
         	data.field.protype = param.nodeId;
