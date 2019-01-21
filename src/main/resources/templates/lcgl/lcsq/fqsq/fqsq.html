@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>发起授权</title>
+    <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
+    <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <link rel="stylesheet" href="${ctx}/plugins/layui/extend/dtree/dtree.css">
+    <link rel="stylesheet" href="${ctx}/plugins/layui/extend/dtree/font/dtreefont.css">
+    <style>
+        html,body{margin: 0;height: 100%;}
+ .layui-table, .layui-table-view {margin:0;}
+ .layui-table-tool {
+    position: relative;
+    z-index: 890;
+    width: 100%;
+    min-height: 50px;
+    line-height: 49px;
+    padding: 0px 5px;
+    border-width: 0 0 1px;
+}
+.layui-input{height:32px;line-height: 32px;}
+.dtree{width: 210px;}
+ .left-box{float: left;width:240px;height:100%;padding:3px 0 0 0;box-sizing: border-box;overflow-y: auto;border-right:1px solid #e6e6e6;}
+ .right-box{float: right;width:calc(100% - 249px); ;height:100%;padding: 0 4px 0 0;}
+ .bm_name_tit{height:42px;line-height: 42px;background-color: #f3f5f7;text-align: center;font-size:16px;}
+#pop{margin: 12px auto 0;}
+#pop .layui-form-item{display: flex;align-items: center;}
+#pop .layui-form-item>.layui-inline{width: 320px;}
+#lc_upload_btn{margin: 0 auto;display: block;}
+</style>
+</head>
+<body>
+    <div class="left-box">
+        <h4 class="bm_name_tit">流程分类</h4>
+        <div style="overflow: auto;" id="toolbarDiv">
+            <ul id="left_tree" class="dtree" data-id="0"></ul>
+        </div>
+    </div>
+    <div class="right-box">
+    	 <form class="layui-form" style="padding: 6px 0; ">
+	            <div class="layui-inline">
+	                <input type="text" class="layui-input" name="name" placeholder="流程名称">
+	            </div>
+	            <div class="layui-inline">
+	                <a href="javascript:;" class="layui-btn layui-btn-sm  layui-btn-primary" lay-submit lay-filter="search">查询</a>
+	            </div>
+    	</form>
+        <table class="layui-hide" id="right_tb" lay-filter="right_tb"></table>
+    </div>
+    
+</body>
+<script type="text/html" id="rightBar">
+    <div class="layui-btn-group">
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="authorize">
+            <i class="fa fa-user-o "></i>
+        </a>
+    </div>
+</script>
+</html>
+<script src="${ctx}/plugins/layui/layui.js"></script>
+<script src="${ctx}/js/common/download.js"></script>
+<script>
+    layui.config({
+        base: '${ctx}/plugins/layui/extend/dtree/'
+    }).extend({
+        dtree: 'dtree'
+    })
+    var $ = null,table=null,upload=null,form=null,dtree=null,layer=null,dtreeID=null,tbID=null;
+    layui.use(['table', 'layer', 'form', 'dtree','upload'], function () {
+            $ = layui.jquery,
+            table = layui.table,
+            form = layui.form,
+            dtree = layui.dtree,
+            layer = layui.layer,
+            dtreeID = 'left_tree',
+            tbID = 'right_tb';
+        
+        var dtreeObj = dtree.render({
+            elem: "#" + dtreeID, //绑定元素
+            method:'GET',
+            url: "${ctx}/lcgl/lcdy/lcfl/list",  //异步接口
+            ficon: "-1", // 隐藏一级图标
+            icon: "2",
+            dot: false,
+            skin: "layui",
+            menubar: true,
+            menubarTips:{
+            	group: ["refresh"]
+            }
+        });
+        
+        dtree.on("node('" + dtreeID + "')", function (obj) {
+            rightTB.reload({
+                where: {lastversion:true,protype:obj.param.nodeId}
+            });
+        });
+        
+        var rightTB = table.render({
+            elem: '#' + tbID,
+            id: tbID,
+            height: 'full-45',
+            url: '${ctx}/lcgl/lcdy/list', //数据接口,
+            where:{lastversion:true},
+            page: true,
+            cols: [[
+            	  {field: '序号',width:50,type:'numbers',title:'序号'}
+                , {field: 'deployment_id', width: 100, title: '部署ID',align:'center'}
+                , {field: 'proname', width: 120, title: '流程分类',align:'center'}
+                , {field: 'name', width: 180, title: '流程名称',align:'center'}
+                , {field: 'version', width: 70, title: '版本',align:'center'}
+                , {field: 'createuser', width: 120, title: '创建人',align:'center'}
+                , {field: 'createtime', width: 170, title: '创建时间',align:'center'}
+                , {field: 'description', title: '备注',align:'center'}
+                , {title: '操作', align: 'center', width: 120,toolbar: '#rightBar'}
+          ]]
+        });
+        
+        table.on('tool(' + tbID + ')', function (obj) {
+           var param = dtree.getNowParam(dtreeObj);
+           var data = obj.data;
+           var action = obj.event;
+           if (obj.event === 'authorize') {
+        	   console.log(data)
+        	   layer.open({
+	   	            type: 2,
+	   	            area: ['722px', '516px'],
+	   	         	title: false,
+	   	            fixed: false, //不固定
+	   	            content: '${ctx}/lcgl/lcsq/fqsq/pop?p_id='+data.id,
+	   	            end: function(){
+	   	            	
+	            	}
+           	   })
+           }
+        });     
+        form.on('submit(search)', function (data) {
+        	var param = dtree.getNowParam(dtreeObj);
+        	data.field.protype = param.nodeId;
+        	data.field.lastversion = true;
+           	rightTB.reload({
+                where: data.field
+            });
+            return false;
+        });
+        
+    })
+</script>

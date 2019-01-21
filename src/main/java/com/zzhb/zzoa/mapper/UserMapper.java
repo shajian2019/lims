@@ -1,6 +1,7 @@
 package com.zzhb.zzoa.mapper;
 
 import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
@@ -20,11 +21,10 @@ public interface UserMapper {
 	@Update("UPDATE sys_t_user SET recentlogin = now() WHERE u_id = #{u_id}")
 	public Integer updateRecentlogin(User user);
 
-	public List<User> getAllUsers(Map<String, String> params);
+	public List<Map<String, String>> getAllUsers(Map<String, String> params);
 
-	public List<User> getUsers(Map<String, Object> params);
-
-	public Integer delUserById(Map<String, Object> map);
+	@Delete("DELETE FROM sys_t_user where u_id = #{0}")
+	public Integer delUser(String u_id);
 
 	public Integer addUser(User user);
 
@@ -43,4 +43,6 @@ public interface UserMapper {
 
 	@Select("SELECT COUNT(1) FROM sys_t_user WHERE username = #{0}")
 	public Integer getCountByName(String username);
+	
+	public List<User> getUsersByOid(@Param("o_id") String o_id);
 }

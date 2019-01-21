@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title></title>
+<link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
+</head>
+<body>
+ 	<table id="addTable" lay-filter="addTable"></table>
+</body>
+</html>
+<script type="text/html" id="topbar">
+<div class="layui-inline">
+	<a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-primary" lay-event="save">添加用户</a>
+</div>
+</script>
+ <script src="${ctx}/plugins/layui/layui.js"></script>
+ <script type="text/javascript">
+ layui.use(['table','form'], function(){
+	  var table = layui.table,
+	  	  form = layui.form,
+	  	  $ = layui.jquery,
+	      tableId = 'addTable';
+	  
+	  var tableObj = table.render({
+	     elem: '#'+tableId
+	    ,id: tableId
+	    ,height: 'full-20'
+	    ,url: '${ctx}/xtgl/zzgl/zwgl/adduser/list' //数据接口
+	    ,page: true //开启分页
+	    ,cols: [[ //表头
+	       {type:'checkbox'}
+	      ,{field: 'u_id', hide:true}
+	      ,{field: 'username', title: '用户名', width:100}
+	      ,{field: 'nickname', title: '用户昵称', width:120}
+	      ,{field: 'o_name', title: '所属部门', width:120}
+	      ,{field: 'email', title: '用户邮箱', width:180} 
+	      ,{field: 'remark', title: '备注'}
+	    ]],
+	    toolbar: '#topbar',
+	    defaultToolbar:[]
+	  });
+	  
+	  table.on('toolbar(' + tableId + ')', function (obj) {
+		  var index;
+		  var j_id = "${j_id}"
+          if (obj.event === 'save') {
+        	  var checkStatus = table.checkStatus(tableId);
+        	  if(checkStatus.data.length == 0){
+        		  layer.msg("请选择用户", {offset: ['50%'], time: 1000});
+        	  }else{
+        		  var u_ids="";
+        		  $.each(checkStatus.data,function(index,value){
+        			    u_ids = u_ids+value.u_id+"|";
+        		  });
+        		  u_ids = u_ids.substring(0,u_ids.length-1)
+        		  $.ajax({
+                         type: "post",
+                         data: {j_id: j_id,u_ids:u_ids},
+                         url: "${ctx}/xtgl/zzgl/zwgl/user/add",
+                         beforeSend: function () {
+                             index = layer.load(1);
+                         },
+                         success: function (data) {
+                             layer.close(index);
+                             if (data > 0) {
+                                 layer.msg("保存成功", {offset: ['50%'], time: 1000}, function () {
+                                	 index = parent.layer.getFrameIndex(window.name);
+                                     parent.layer.close(index);
+                                 });
+                             } else {
+                                 layer.msg("操作失败")
+                             }
+                         },
+                         error: function (data) {
+                             layer.msg("服务端异常");
+                         }
+                   });
+        	  }
+       	   }
+       });
+	});
+ </script>

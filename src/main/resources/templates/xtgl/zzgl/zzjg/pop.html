@@ -11,7 +11,7 @@
 </html>
 <script type="text/html" id="topbar">
 <div class="layui-inline">
-	<a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-primary" lay-event="save">保存</a>
+	<a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-primary" lay-event="save">添加用户</a>
 </div>
 </script>
  <script src="${ctx}/plugins/layui/layui.js"></script>
@@ -32,7 +32,8 @@
 	       {type:'checkbox'}
 	      ,{field: 'u_id', hide:true}
 	      ,{field: 'username', title: '用户名', width:100}
-	      ,{field: 'nickname', title: '用户昵称', width:180}
+	      ,{field: 'nickname', title: '用户昵称', width:120}
+	      ,{field: 'j_name', title: '职位名称', width:120}
 	      ,{field: 'email', title: '用户邮箱', width:180} 
 	      ,{field: 'remark', title: '备注'}
 	    ]],
@@ -42,7 +43,7 @@
 	  
 	  table.on('toolbar(' + tableId + ')', function (obj) {
 		  var index;
-		  var groupId = "${groupId}"
+		  var o_id = "${o_id}"
           if (obj.event === 'save') {
         	  var checkStatus = table.checkStatus(tableId);
         	  if(checkStatus.data.length == 0){
@@ -55,7 +56,7 @@
         		  u_ids = u_ids.substring(0,u_ids.length-1)
         		  $.ajax({
                          type: "post",
-                         data: {groupId: groupId,u_ids:u_ids},
+                         data: {o_id: o_id,u_ids:u_ids},
                          url: "${ctx}/xtgl/zzgl/zzjg/user/add",
                          beforeSend: function () {
                              index = layer.load(1);

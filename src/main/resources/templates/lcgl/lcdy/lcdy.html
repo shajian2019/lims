@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>组织架构</title>
+    <title>流程定义</title>
     <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
     <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" />
     <link rel="stylesheet" href="${ctx}/plugins/layui/extend/dtree/dtree.css">
@@ -22,13 +22,21 @@
 }
 .layui-input{height:32px;line-height: 32px;}
 .dtree{width: 210px;}
- .left-box{float: left;width:240px;height:100%;padding:3px;box-sizing: border-box;overflow-y: auto;border-right:1px solid #e6e6e6;}
- .right-box{float: right;width:calc(100% - 242px); ;height:100%;}
+ .left-box{float: left;width:240px;height:100%;padding:3px 0 0 0;box-sizing: border-box;overflow-y: auto;border-right:1px solid #e6e6e6;}
+ .right-box{float: right;width:calc(100% - 249px); ;height:100%;padding: 0 4px 0 0;}
  .bm_name_tit{height:42px;line-height: 42px;background-color: #f3f5f7;text-align: center;font-size:16px;}
 #pop{margin: 12px auto 0;}
 #pop .layui-form-item{display: flex;align-items: center;}
 #pop .layui-form-item>.layui-inline{width: 320px;}
-#lc_upload_btn{margin: 0 auto;}
+.lcdyImg{
+	display:block;
+	width:100%;
+}
+#lc_upload_btn{margin: 0 auto;display: block;}
+.inner{
+   		text-align: center;
+   		margin:0 auto;
+   }
 </style>
 </head>
 <body>
@@ -39,7 +47,7 @@
         </div>
     </div>
     <div class="right-box">
-    	 <form class="layui-form">
+    	 <form class="layui-form" style="padding: 6px 0; ">
 	            <div class="layui-inline">
 	                <input type="text" class="layui-input" name="name" placeholder="流程名称">
 	            </div>
@@ -50,10 +58,14 @@
     	</form>
         <table class="layui-hide" id="right_tb" lay-filter="right_tb"></table>
     </div>
+    
 	<div id="preview" class="hide" style="display: none;">
-		<img alt="" src="">
+		<div class="inner">
+			<img alt="" src="" class="lcdyImg">
+		</div>
 	</div>
-    <div class="pop" id="pop">
+	
+    <div class="pop" id="pop" style="display: none;">
 		<form class="layui-form">
 		      <div class="layui-form-item">
 		          <label class="layui-form-label">流程文件:</label>
@@ -67,10 +79,8 @@
 					    <textarea id="description" name="description" placeholder="请输入内容" class="layui-textarea"></textarea>
 					</div>
 			  </div>
-		      <div class="layui-form-item">
-		          <div class="layui-inline">     
-		                <button type="button" class="layui-btn layui-btn-sm" id="lc_upload_btn">保存</button>                      
-		          </div>
+		      <div class="layui-form-item">    
+	                <button type="button" class="layui-btn layui-btn-sm" id="lc_upload_btn">保存</button>                      
 		      </div>
 		</form>
 	</div>
@@ -219,24 +229,26 @@
         
         dtree.on("node('" + dtreeID + "')", function (obj) {
             rightTB.reload({
-                where: {protype:obj.param.nodeId}
+                where: {lastversion:true,protype:obj.param.nodeId}
             });
         });
         
         var rightTB = table.render({
             elem: '#' + tbID,
             id: tbID,
-            height: 'full-40',
+            height: 'full-45',
             url: '${ctx}/lcgl/lcdy/list', //数据接口,
+            where:{lastversion:true},
             page: true,
             cols: [[
                 {field: '序号',width:50,type:'numbers',title:'序号'}
               , {field: 'deployment_id', width: 100, title: '部署ID',align:'center'}
-              , {field: 'name', width: 200, title: '流程名称'}
+              , {field: 'proname', width: 120, title: '流程分类',align:'center'}
+              , {field: 'name', width: 180, title: '流程名称',align:'center'}
               , {field: 'version', width: 70, title: '版本',align:'center'}
               , {field: 'createuser', width: 120, title: '创建人',align:'center'}
-              , {field: 'createtime', width: 170, title: '创建时间'}
-              , {field: 'description', title: '备注'}
+              , {field: 'createtime', width: 170, title: '创建时间',align:'center'}
+              , {field: 'description', title: '备注',align:'center'}
               , {title: '操作', align: 'center', width: 120,toolbar: '#rightBar'}
           ]]
         });
@@ -260,7 +272,7 @@
                            if (data > 0) {
                                layer.msg("删除成功", {offset: ['50%'], time: 1000}, function () {
                                    rightTB.reload({
-               	                    	where:{protype:param.nodeId}
+               	                    	where:{lastversion:true,protype:param.nodeId}
                	               	   });
                                });
                            } else {
@@ -320,6 +332,7 @@
         form.on('submit(search)', function (data) {
         	var param = dtree.getNowParam(dtreeObj);
         	data.field.protype = param.nodeId;
+        	data.field.lastversion = true;
            	rightTB.reload({
                 where: data.field
             });
@@ -339,7 +352,7 @@
      	            content: $("#pop"),
      	            end: function () {
      	               rightTB.reload({
-    	                    where:{protype:param.nodeId}
+    	                    where:{lastversion:true,protype:param.nodeId}
     	               });
      	            }
      	        });

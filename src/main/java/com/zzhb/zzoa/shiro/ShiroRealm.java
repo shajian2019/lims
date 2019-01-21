@@ -16,7 +16,9 @@ import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.zzhb.zzoa.domain.User;
+import com.zzhb.zzoa.mapper.RoleMapper;
 import com.zzhb.zzoa.mapper.UserMapper;
+import com.zzhb.zzoa.utils.Constant;
 
 /**
  * 
@@ -28,6 +30,9 @@ public class ShiroRealm extends AuthorizingRealm {
 
 	@Autowired
 	UserMapper userMapper;
+
+	@Autowired
+	RoleMapper roleMapper;
 
 	@Override
 	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
@@ -43,8 +48,11 @@ public class ShiroRealm extends AuthorizingRealm {
 				throw new LockedAccountException("账号已锁定");
 			} else if ("2".equals(user.getStatus())) {
 				throw new LockedAccountException("账号已禁用");
-			} else {
-				throw new LockedAccountException("账号未开通权限");
+			}
+		} else {
+			Integer roleIds = roleMapper.getRoleIds(user.getU_id());
+			if (!Constant.SUPERADMIN.equals(user.getUsername()) && roleIds == null) {
+				throw new LockedAccountException("账号尚未分配角色");
 			}
 		}
 		Object credentials = user.getPassword();

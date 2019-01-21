@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>请假流程</title>
+	<link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
+	<link rel="stylesheet" href="${ctx}/plugins/font-awesome/css/font-awesome.min.css" media="all" />
+    <style type="text/css">
+    	.main{width:800px;margin: 5% auto 0;}
+		.img-up-box{max-width: 500px;height: auto;display:flex;align-items: flex-end;flex-wrap: wrap;}
+		.img-up-box .img-box{position: relative;display: inline-block;width: 80px;height:80px;border: 1px solid #e6e6e6;margin-right: 8px;margin-top: 8px;}
+		.img-up-box .img-box .img-close{position: absolute;top: -7px;right: -7px;font-size: 12px;color: #fff;border-radius: 20px;width: 16px;height: 16px;background-color: #000;text-align: center;line-height: 16px;}
+		.img-up-box .img-box>img{width: 100%;height:100%;}
+		#img_up{width: 80px;height:80px;border: 1px solid #e6e6e6;text-align: center;line-height: 80px;font-size: 28px;color: #e6e6e6;background-color: #fff;}
+    </style>
+</head>
+
+<body>
+    <#if !form??>
+	    <form class="layui-form main layui-upload">
+	    	<input type="hidden" name="bk" value="${(leave.bk)!''}">
+	        <div class="layui-form-item">
+	            <label class="layui-form-label"><span style="color:red;">*</span>申请人</label>
+	            <div class="layui-input-inline">
+	                <input type="text" name="sqr" value="${(leave.sqr)!''}" lay-verify="required" placeholder="申请人" autocomplete="off" class="layui-input">
+	            </div>
+	            <label class="layui-form-label"><span style="color:red;">*</span>部门名称</label>
+	            <div class="layui-input-inline">
+	                <input type="text" name="bmmc" value="${(leave.bmmc)!''}" lay-verify="required" placeholder="部门名称" autocomplete="off" class="layui-input">
+	            </div>
+	        </div>
+	        <div class="layui-form-item">
+	            <label class="layui-form-label"><span style="color:red;">*</span>申请日期</label>
+	            <div class="layui-input-inline">
+	                <input type="text" name="sqrq" value="${(leave.sqrq)!''}" readonly="readonly" lay-verify="required" autocomplete="off" class="layui-input">
+	            </div>
+	            <label class="layui-form-label"><span style="color:red;">*</span>请假类别</label>
+	            <div class="layui-input-inline">
+	                <select id="qjlx" name="qjlx" lay-verify="required"></select>
+	            </div>
+	        </div>
+	        <div class="layui-form-item">
+	            <label class="layui-form-label"><span style="color:red;">*</span>开始日期</label>
+	            <div class="layui-input-inline">
+	                <input type="text" id="ksrq" name="ksrq" lay-verify="required" placeholder="开始日期" autocomplete="off"
+	                    class="layui-input">
+	            </div>
+	            <label class="layui-form-label"><span style="color:red;">*</span>结束日期</label>
+	            <div class="layui-input-inline">
+	                <input type="text" id="jsrq" name="jsrq" lay-verify="required" placeholder="结束日期" autocomplete="off"
+	                    class="layui-input">
+	            </div>
+	        </div>
+	        <div class="layui-form-item">
+	        	<label class="layui-form-label"><span style="color:red;">*</span>工作时长</label>
+	            <div class="layui-input-inline">
+	                <select id="gzsc" name="gzsc" lay-verify="required"></select>
+	            </div>
+	             <label class="layui-form-label"><span style="color:red;">*</span>请假天数</label>
+	             <div class="layui-input-inline">
+	                 <input type="text" name="qjts" required lay-verify="required|number" placeholder="请假天数" autocomplete="off" class="layui-input">
+	             </div>
+	        </div>
+	        <div class="layui-form-item layui-form-text">
+	            <label class="layui-form-label">请假理由</label>
+	            <div class="layui-input-block">
+	                <textarea name="qjly" placeholder="请假理由" class="layui-textarea" style="width:500px;"></textarea>
+	            </div>
+	        </div>
+	        <div class="layui-form-item layui-form-text">
+					<label class="layui-form-label">图片</label>
+					<input type="text" name='imgName' class="layui-hide" value="">
+	                <div class="layui-inline img-up-box">
+						  <button type="button" id="img_up"><i class="fa fa-plus"></i></button> 
+					</div>
+	        </div>
+	        <div class="layui-form-item layui-form-text">
+	                <label class="layui-form-label">审批人</label>
+	                <div class="layui-inline">
+					    <input type="text" name="spr" required lay-verify="required" placeholder="待开发" autocomplete="off" class="layui-input">
+					</div>
+	        </div>
+	        <div class="layui-form-item">
+	            <div class="layui-input-block">
+	                <button class="layui-btn layui-btn-primary" lay-submit lay-filter="sq" id="sq">申请</button>
+	                <button type="reset" class="layui-btn layui-btn-primary">取消</button>
+	            </div>
+	        </div>
+	    </form>
+	<#else>
+		<form class="layui-form  main layui-upload">
+	        <div class="layui-form-item">
+	            <label class="layui-form-label"><span style="color:red;">*</span>申请人</label>
+	            <div class="layui-input-inline">
+	                <input type="text" name="sqr" required lay-verify="required" placeholder="申请人" autocomplete="off" class="layui-input">
+	            </div>
+	            <label class="layui-form-label"><span style="color:red;">*</span>所在部门</label>
+	            <div class="layui-input-inline">
+	                <input type="text" name="department" required lay-verify="required" placeholder="部门名称" autocomplete="off" class="layui-input">
+	            </div>
+	        </div>
+	        <div class="layui-form-item">
+	            <label class="layui-form-label"><span style="color:red;">*</span>申请日期</label>
+	            <div class="layui-input-inline">
+	                <input type="text" name="sqrq" required lay-verify="required" autocomplete="off" class="layui-input">
+	            </div>
+	            <label class="layui-form-label"><span style="color:red;">*</span>请假类别</label>
+	            <div class="layui-input-inline">
+	                <select name="qjlx" lay-verify="required">
+	                    <option value="">请假类型</option>
+	                </select>
+	            </div>
+	        </div>
+	        <div class="layui-form-item">
+	            <label class="layui-form-label"><span style="color:red;">*</span>开始日期</label>
+	            <div class="layui-input-inline">
+	                <input type="text" name="ksrq" required lay-verify="required" placeholder="请输入密码" autocomplete="off"
+	                    class="layui-input">
+	            </div>
+	            <label class="layui-form-label"><span style="color:red;">*</span>结束日期</label>
+	            <div class="layui-input-inline">
+	                <input type="text" name="jsrq" required lay-verify="required" placeholder="请输入密码" autocomplete="off"
+	                    class="layui-input">
+	            </div>
+	        </div>
+	        <div class="layui-form-item">
+	                <label class="layui-form-label">请假天数</label>
+	                <div class="layui-input-inline">
+	                    <input type="text" name="qjts" required lay-verify="required" placeholder="" autocomplete="off"
+	                        class="layui-input">
+	                </div>
+	        </div>
+	        <div class="layui-form-item layui-form-text">
+	            <label class="layui-form-label">请假理由</label>
+	            <div class="layui-input-block">
+	                <textarea name="" placeholder="请输入内容" class="layui-textarea" style="width:500px;"></textarea>
+	            </div>
+	        </div>
+    	</form>
+    </#if>
+</body>
+<script src="${ctx}/plugins/layui/layui.all.js"></script>
+<script type="text/javascript">
+	var $ = layui.jquery,laydate = layui.laydate,form=layui.form,upload = layui.upload,index=null;
+	if("${taskDefinitionKey!''}" == ''){
+		$.ajax({
+            type: "get",
+            data: {gtype:'qjlx_type'},
+            url: "${ctx}/dict/get",
+            success: function (data) {
+				$.each(data, function (index, item) {
+                    $('#qjlx').append(new Option(item.name, item.value));// 下拉菜单里添加元素
+                });
+				form.render("select");
+            },
+            error: function (data) {
+                layer.msg("服务端异常");
+            }
+        });
+		
+		$.ajax({
+            type: "get",
+            data: {gtype:'gzsc_type'},
+            url: "${ctx}/dict/get",
+            success: function (data) {
+				$.each(data, function (index, item) {
+                    $('#gzsc').append(new Option(item.name, item.value));// 下拉菜单里添加元素
+                });
+				form.render("select");
+            },
+            error: function (data) {
+                layer.msg("服务端异常");
+            }
+        });
+		
+		laydate.render({
+		   elem: '#ksrq'
+		   ,type: 'datetime'
+		});
+		laydate.render({
+		   elem: '#jsrq'
+		   ,type: 'datetime'
+		});
+		
+  	//多图片上传
+  	var imgUpView = $('#img_up'),imgUpload=upload.render({
+	     elem: '#img_up'
+	     ,url: '${ctx}/file/upload/'
+		 ,data:{"bk":"${(leave.bk)!''}"}
+	     ,multiple: true
+		 ,auto: true
+		 ,choose: function(obj){   
+		      var files = this.files = obj.pushFile(); //将每次选择的文件追加到文件队列
+		      //读取本地文件
+		      obj.preview(function(index, file, result){
+				var img = $([
+					'<div class="img-box">'+
+					'<img src="'+result+'" alt="'+file.name+'" class="layui-upload-img">'+
+					'<i class="fa fa-close img-close"></i>'+
+					'</div>'
+				].join(''));
+		        //删除
+		        img.find('.img-close').on('click', function(){
+		           delete files[index]; //删除对应的文件
+		           var filename = "${(leave.bk)!''}&"+file.name;
+		           $.ajax({
+			            type: "get",
+			            data: {filename:filename},
+			            url: '${ctx}/file/del/',
+			            beforeSend: function () {
+			                index = layer.load(1);
+			            },
+			            success: function (data) {
+			            	layer.close(index);
+			            },
+			            error: function (data) {
+			            	layer.close(index);
+			                layer.msg("服务端异常");
+			            }
+			       });
+		           img.remove();
+		           imgUpload.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
+		        }); 
+				imgUpView.before(img)
+		      });
+	     }
+	     ,done: function(res){
+		     //单张上传完毕
+		     console.log(res)
+	     }
+    });
+
+	form.on('submit(sq)', function(data){
+		 console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
+		 $.ajax({
+	            type: "post",
+	            data: data.field,
+	            url: "${ctx}/grgzt/fqlc/start/leave",
+	            beforeSend: function () {
+	                index = layer.load(1);
+	            },
+	            success: function (data) {
+	            	layer.close(index);
+	            	if(data.code >0){
+	            		/* layer.msg("申请成功,流水号："+data.bk+",下一个节点："+data.msg, {offset: ['50%'], time: 3000}, function () {
+	            			 parent.window.closeTab("leave");
+                        }); */
+	            		layer.confirm("申请成功,流水号："+data.bk+",下一流程节点："+data.msg, {
+	            			  closeBtn:0,
+	            			  btn: ['确定'] //按钮
+	            			}, function(){
+	            			 parent.window.closeTab("leave");
+            			});
+	            		/* layer.open({
+	            			  type: 1,
+	            			  shade: false,
+	            			  title: false, //不显示标题
+	            			  content: $('.msg'), //捕获的元素，注意：最好该指定的元素要存放在body最外层，否则可能被其它的相对元素所影响
+	            			  cancel: function(){
+		            			 parent.window.closeTab("leave");
+	            			  },
+	            			  success:function(){
+	            				  
+	            			  }
+            			 }); */
+	            	}else{
+	            		layer.msg("申请失败");
+	            	}
+	            },
+	            error: function (data) {
+	            	layer.close(index);
+	                layer.msg("服务端异常");
+	            }
+	      });
+		  return false;
+	 });
+	} else if ("${taskDefinitionKey!''}" == 'usertask2'){
+		console.log("usertask2")
+	}
+</script>
+</html>
