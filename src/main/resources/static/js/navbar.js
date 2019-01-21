@@ -105,10 +105,13 @@ layui.define(['layer', 'laytpl', 'element'], function(exports) {
                     _side.removeClass('kit-sided');
                     _doc.find('div.layui-body').removeClass('kit-body-folded');
                     _doc.find('div.layui-footer').removeClass('kit-footer-folded');
+                    $(".layui-header").addClass('layui-header-on');
+
                 } else {
                     _side.addClass('kit-sided');
                     _doc.find('div.layui-body').addClass('kit-body-folded');
                     _doc.find('div.layui-footer').addClass('kit-footer-folded');
+                    $(".layui-header").removeClass('layui-header-on');
                 }
             });
             return that;

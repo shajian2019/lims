@@ -1,0 +1,162 @@
+/*卓正环保主题1.0版本*/
+/*头部*/
+.layui-tit{
+    background-color: #0a8cbf;
+}
+.kit-tab .layui-tab-title{
+    height:34px;
+    line-height: 34px;
+    width: calc(100% - 63px);
+}
+.kit-layout-admin .layui-header{height:40px;}
+.kit-tab .kit-tab-tool{right:0px;}
+.layui-logo .logo{height:56px;margin-top: 1px;}
+.layui-layout-admin .layui-header {
+    background-color: #0982b3;
+    position: absolute;
+    width:calc(100% - 50px);
+    right: 0;
+}
+.layui-layout-admin .layui-header-on{
+    width:calc(100% - 200px);
+}
+.layui-layout-right{
+    margin-top: -52px;
+}
+.kit-nav .layui-nav-item{
+    line-height: 40px;
+}
+.layui-layout-right .layui-nav-child dd a{
+    color:#333;
+}
+.layui-layout-left{
+    left:0px;
+    padding: 0;
+}
+.layui-header-time{
+    position: absolute;
+    right:80px;
+    color:rgba(255,255,255,.8);
+    line-height: 40px;
+}
+.layui-name{
+    height: 60px;
+    line-height: 60px;
+    color: #fff;
+    font-size: 26px;
+    font-weight: 600;
+    margin-left: 200px;
+}
+.layui-tab-card>.layui-tab-title {
+    background-color: #fff;
+}
+.layui-tab-card>.layui-tab-title li{
+    display: inline-block;
+    *display: inline;
+    *zoom: 1;
+    vertical-align: middle;
+    font-size: 13px;
+    transition: all .2s;
+    -webkit-transition: all .2s;
+    position: relative;
+    margin-top: 5px;
+    line-height: 26px;
+    padding: 0 6px;
+    text-align: center;
+    cursor: pointer;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px 8px 0 0;
+    margin-left: 8px;
+    border-bottom: none;
+    background: linear-gradient(#fff, #e5e5e5);
+}
+.kit-tab .kit-tab-tool{
+    height:34px;
+    line-height: 34px;
+}
+.layui-tab-title .layui-this:after{
+    border:none;
+}
+.layui-tab-title li .layui-tab-close{
+    margin-left: 4px;
+}
+.layui-icon{
+    font-size: 14px;
+}
+.kit-nav .layui-this, .layui-layout-left .layui-nav-item:hover {
+    background-color: #fff !important;
+}
+.layui-nav .layui-this a {
+    color: #333;
+}
+.layui-nav .layui-nav-item a {
+    display: block;
+    padding: 0 20px;
+    color: rgba(255,255,255,.8);
+    transition: all .3s;
+    -webkit-transition: all .3s;
+}
+.layui-nav .layui-nav-item a:hover, .layui-nav .layui-this a {
+    color: rgba(0,0,0,.7);
+}
+.layui-form .layui-form-item .layui-inline .layui-input{
+    height:34px;
+    line-height: 34px;
+}
+/*左侧导航*/
+.kit-layout-admin .kit-side{
+    top:60px;
+}
+.layui-bg-black {
+    background-color: #2e3947!important;
+}
+.layui-nav {
+    position: relative;
+    background-color: #2e3947;
+    color: #fff;
+    border-radius: 2px;
+    font-size: 0;
+    box-sizing: border-box;
+}
+.kit-side .layui-side-scroll .kit-side-fold {
+    height: 40px;
+    background-color: #0982b3;
+    color: #ffffff;
+    line-height: 44px;
+    text-align: center;
+    cursor: pointer;
+    border-right: 1px solid rgba(255,255,255,.2)
+}
+.layui-nav-itemed>.layui-nav-child {
+    display: block;
+    padding: 0;
+    background-color: #213043!important;
+}
+.layui-nav-tree .layui-nav-itemed>a {
+    display: block;
+    padding: 0 20px;
+    color: #2cc4ff!important;
+    transition: all .3s;
+    -webkit-transition: all .3s;
+}
+.layui-nav-tree .layui-nav-item a:hover{
+    color: #2cc4ff;
+}
+.layui-nav-tree .layui-nav-item .layui-active{
+    color:#ffa021;
+}
+.layui-nav-tree .layui-nav-item dl dd a:hover {
+    color: #ffa021;
+}
+.layui-nav-tree .layui-nav-bar {
+    width: 5px;
+    height: 0;
+    background-color: #0a8cbf;
+}
+/*右侧内容*/
+.kit-layout-admin .layui-body{
+    top: 100px;
+}
+.kit-tab .layui-tab-content{
+    top:35px;
+}
