@@ -9,7 +9,8 @@
         a.submitter,
         b.username,
         a.submit_time,
-        a.principal
+        a.principal,
+        a.receiver
         FROM aff_t_journal a,sys_t_user b
         <where>
             a.submitter = b.u_id
