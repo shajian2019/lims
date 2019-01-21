@@ -294,4 +294,9 @@ public class ZzoaApplicationTests {
 //		rs.suspendProcessInstanceById(processInstanceId);
 		rs.activateProcessInstanceById(processInstanceId);
 	}
+	
+	@Test //s
+	public void testDeleteTaskService() {
+		
+	}
 }

@@ -101,12 +101,12 @@
 <script type="text/html" id="rightBar">
     <div class="layui-btn-group">
 		{{#  if(d.ASSIGNEE_){ }}
-			<a class="layui-btn layui-btn-xs" lay-event="sprw">
-            	<span>审批</span>
+			<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="sprw">
+				<i class="fa fa-pencil" title="审批任务"></i>
         	</a>
 		{{#  } else { }}
-            <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="lqrw">
-            	<span>领取</span>
+            <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="lqrw">
+				<i class="fa fa-check-square" title="领取任务"></i>
         	</a>
         {{#  } }}
     </div>

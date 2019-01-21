@@ -1,6 +1,7 @@
 package com.zzhb.zzoa.service;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -331,6 +332,29 @@ public class ActivitiService {
 		params.put("proid", pi.getId());
 		Integer saveBusiness = saveBusiness(key, params);
 		task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
+		
+		//添加附件
+		List<String> readFilePath = FileUtil.readFilePath(props.getTempPath(), params.get("bk"));
+		for (String fileName : readFilePath) {
+			String filePath = props.getTempPath()+File.separator+fileName;
+			FileInputStream fileInputStream = null;
+			try {
+				fileInputStream = new FileInputStream(new File(filePath));
+				taskService.createAttachment("图片附件", task.getId(), pi.getId(), fileName.split("&")[1], fileName.split("&")[1], fileInputStream);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} finally {
+				if(fileInputStream != null) {
+					try {
+						fileInputStream.close();
+						FileUtil.delete(filePath);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+		
 		result.put("code", saveBusiness);
 		result.put("msg", task.getName());
 		result.put("bk", params.get("bk"));

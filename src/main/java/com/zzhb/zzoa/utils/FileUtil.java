@@ -20,6 +20,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
 
@@ -53,6 +55,19 @@ public class FileUtil {
 		} else {
 			return false;
 		}
+	}
+	
+	public static List<String> readFilePath(String dir,String key) {
+		List<String> fileNames = new ArrayList<>();
+		File file = new File(dir);
+		File[] listFiles = file.listFiles();
+		for (File file2 : listFiles) {
+			String fileName = file2.getName();
+			if(fileName.startsWith(key)) {
+				fileNames.add(fileName);
+			}
+		}
+		return fileNames;
 	}
 
 	public static boolean deleteDirectory(String dir) {
@@ -459,5 +474,9 @@ public class FileUtil {
 			}
 		}
 		return flag;
+	}
+	
+	public static void main(String[] args) {
+		System.out.println(readFilePath("c:/tmpzzoa", "201901211721278"));
 	}
 }
