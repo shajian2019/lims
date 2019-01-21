@@ -1,5 +1,6 @@
-/*卓正环保主题1.0版本*/
-/*头部*/
+.kit-theme .kit-layout-admin .layui-header {
+    border-bottom: 2px solid #23262E;
+}
 .layui-tit{
     background-color: #0a8cbf;
 }
