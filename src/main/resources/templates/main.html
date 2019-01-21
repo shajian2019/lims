@@ -3,9 +3,169 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>首页</title>
+<link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
+<link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" />
+<link href="${ctx}/css/common/reset.css" rel="stylesheet" />
+<style>
+	/*common*/
+	body{display: flex;}
+	a{display: block;height: 100%;line-height: 100%;}
+	.column{border: 1px solid #e5e5e5;margin-bottom: 8px;}
+	.column .tit{display: flex;align-items: center;justify-content: space-between;padding: 4px 10px;background-color: #f2f5f7;height: 32px;}
+	.column .tit h3 .fa{color: #1196d9;margin-right: 6px;}
+	.column .tit-r{color: #1196d9;height: auto;}
+	.column .tit-r>i{margin-right: 4px;}
+	.left-box{max-width: 275px;flex-grow: 1;}
+	.center-box{margin-left: 5px;flex-grow: 1;max-width: 820px;}
+	/*rwyj*/
+	#rwyj_main ul{padding: 0 5px;}
+	#rwyj_main ul li{display: flex;align-items: center;justify-content: space-between;padding: 5px 12px;border-top:1px dashed #e5e5e5;}
+	#rwyj_main ul li .num{color: #fff;line-height: 24px; border-radius: 200px;margin-right: 8px;padding: 0 15px;}
+	/*快捷菜单*/
+	#kjcd_main ul{padding: 12px 0 0;display: flex;align-items: center;justify-content: space-between;flex-wrap: wrap;}
+	#kjcd_main ul li{width: 33.33%;text-align: center;margin-bottom: 24px;}
+	#kjcd_main ul li>img{display: block;width: 56px;height: 56px;}
+	#kjcd_main ul li p{margin-top: 8px;}
+	/*我的任务*/
+	#wdrw_main .layui-tab{margin: 0;}
+	#wdrw_main .layui-tab-content{padding: 5px 15px;}
+	#wdrw_main .dbsx-list{width: 100%;text-align: center;}
+	#wdrw_main .dbsx-list-tit th{line-height: 30px;border-bottom: 1px solid #e5e5e5; text-align: center;font-weight:400;}
+	#wdrw_main .dbsx-list-main{line-height: 30px;border-bottom: 1px dashed #e5e5e5;}
+	#wdrw_main .dbsx-tit{line-height: 30px;border-bottom: 1px solid #e5e5e5;text-align: center;}
+	/*通知通告,邮件*/
+	.flex-box{display: flex;justify-content: space-between;align-items:stretch;}
+	#tztg,#wdyj{max-width: 405px;flex-grow: 1;}
+	#tztg_main ul,#wdyj_main ul{padding: 0 10px;}
+	#tztg_main ul li>a,#wdyj_main ul li>a{display: flex;align-content: center;justify-content: space-between;line-height: 30px;border-bottom: 1px dashed #e5e5e5;}
+	#tztg_main ul li>a .fa,#wdyj_main ul li>a .fa{color: #6189bb;margin-right: 5px;}
+</style>
 </head>
-<body>
-	Hello World
+<body style="padding:5px;">
+	<section class="left-box">
+		<!-- 任务预警 -->
+		<div id="rwyj" class="column">
+			<div class="tit">
+				<h3><i class="fa fa-warning"></i>任务预警</h3>
+				<a href="#" class="tit-r"><i class="fa fa-refresh"></i>刷新</a>
+			</div>
+			<div class="column-main" id="rwyj_main">
+				<ul>
+					<li><span>今日新待办:</span><span><span class="num" style="background-color:#a189e1;">12</span>条</span></li>
+					<li><span>即将要超时:</span><span><span class="num" style="background-color:#73ca45;">1</span>条</span></li>
+					<li><span>七天内超时:</span><span><span class="num" style="background-color:#13b3c2;">10</span>条</span></li>
+					<li><span>本月已超时:</span><span><span class="num" style="background-color:#4e9de2;">9</span>条</span></li>
+					<li><span>长期未处理:</span><span><span class="num" style="background-color:#ffcd45;">89</span>条</span></li>
+					<li><span>本年已超时:</span><span><span class="num" style="background-color:#e93883;">5</span>条</span></li>
+				</ul>
+			</div>
+			
+		</div>
+		<!-- 快捷菜单 -->
+		<div id="rwyj" class="column">
+				<div class="tit">
+					<h3><i class="fa fa-th-list"></i>快捷菜单</h3>
+					<a href="#" class="tit-r"><i class="fa fa-angle-right"></i>更多</a>
+				</div>
+				<div class="column-main" id="kjcd_main">
+					<ul>
+						<li><a href="#"><img src="${ctx}/image/home/qjsq.png" alt=""><p>请假申请</p></a></li>
+						<li><a href="#"><img src="${ctx}/image/home/fybx.png" alt=""><p>费用报销</p></a></li>
+						<li><a href="#"><img src="${ctx}/image/home/jbdj.png" alt=""><p>加班登记</p></a></li>
+						<li><a href="#"><img src="${ctx}/image/home/gzrz.png" alt=""><p>工作日志</p></a></li>
+						<li><a href="#"><img src="${ctx}/image/home/txzb.png" alt=""><p>填写周报</p></a></li>
+						<li><a href="#"><img src="${ctx}/image/home/txyb.png" alt=""><p>填写月报</p></a></li>
+						<li><a href="#"><img src="${ctx}/image/home/ybsx.png" alt=""><p>已办事项</p></a></li>
+						<li><a href="#"><img src="${ctx}/image/home/yysx.png" alt=""><p>已阅事项</p></a></li>
+						<li><a href="#"><img src="${ctx}/image/home/wfqd.png" alt=""><p>我发起的</p></a></li>
+						<li><a href="#"><img src="${ctx}/image/home/txl.png" alt=""><p>通讯录</p></a></li>
+						<li><a href="#"><img src="${ctx}/image/home/hysq.png" alt=""><p>会议申请</p></a></li>
+						<li><a href="#"><img src="${ctx}/image/home/gzzd.png" alt=""><p>规章制度</p></a></li>
+					</ul>
+				</div>
+				
+			</div>
+	</section>
+	<section class="center-box">
+		<!-- 我的任务 -->
+		<div id="wdrw" class="column">
+				<div class="tit">
+					<h3><i class="fa fa-th-list"></i>我的任务</h3>
+					<a href="#" class="tit-r"><i class="fa fa-angle-right"></i>更多</a>
+				</div>
+				<div class="column-main" id="wdrw_main">
+						<div class="layui-tab layui-tab-brief">
+							<ul class="layui-tab-title ">
+								<li class="layui-this">待办事项</li>
+								<li>待阅事项</li>
+							</ul>
+							<div class="layui-tab-content">
+								<div class="layui-tab-item layui-show">
+									<table class="dbsx-list">
+										<tr class="dbsx-list-tit">
+											<th>流程单号</th>
+											<th>标题</th>
+											<th>状态</th>
+											<th>发起时间</th>
+										</tr>
+										<tr class="dbsx-list-main">
+											<td>AH2018110001</td>
+											<td>程飞-工作日志</td>
+											<td><span>审批中</span></td>
+											<td>2018-11-27</td>
+										</tr>
+									</table>
+								</div>
+								<div class="layui-tab-item">内容2</div>
+							</div>
+						</div>
+				</div>			
+		</div>
+		<div class="flex-box">
+		<!-- 通知通告 -->
+		<div id="tztg" class="column">
+				<div class="tit">
+					<h3><i class="fa fa-th-list"></i>我的任务</h3>
+					<a href="#" class="tit-r"><i class="fa fa-angle-right"></i>更多</a>
+				</div>
+				<div class="column-main" id="tztg_main">
+					<ul>
+						<li><a href="#"><p><i class="fa fa-caret-right"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
+						<li><a href="#"><p><i class="fa fa-caret-right"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
+						<li><a href="#"><p><i class="fa fa-caret-right"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
+						<li><a href="#"><p><i class="fa fa-caret-right"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
+						<li><a href="#"><p><i class="fa fa-caret-right"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
+						<li><a href="#"><p><i class="fa fa-caret-right"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
+					</ul>
+				</div>
+			</div>
+			<!-- 我的邮件 -->
+			<div id="wdyj" class="column">
+				<div class="tit">
+					<h3><i class="fa fa-th-list"></i>我的邮件</h3>
+					<a href="#" class="tit-r"><i class="fa fa-angle-right"></i>更多</a>
+				</div>
+				<div class="column-main" id="wdyj_main">
+					<ul>
+						<li><a href="#"><p><i class="fa fa-caret-right"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
+						<li><a href="#"><p><i class="fa fa-caret-right"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
+						<li><a href="#"><p><i class="fa fa-caret-right"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
+						<li><a href="#"><p><i class="fa fa-caret-right"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
+						<li><a href="#"><p><i class="fa fa-caret-right"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
+						<li><a href="#"><p><i class="fa fa-caret-right"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+	</section>
+	<section class="right-box">
+
+	</section>
 </body>
 </html>
+<script src="${ctx}/plugins/layui/layui.all.js"></script>
+<script>
+var element = layui.element;
+</script>
