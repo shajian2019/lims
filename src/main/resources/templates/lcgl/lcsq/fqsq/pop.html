@@ -101,7 +101,10 @@
                 }
             },
             done:function(data, obj){
-            	var params = dtree.getCheckbarNodesParam(dtreeID);
+            	var params = dtree.getCheckbarNodesParam("popTree");
+                //dtree.chooseDataInit("demoTree", "001,002,003");
+                console.log(data,obj)
+                console.log(params)
             	addPersonnel(params);
             }
         })
@@ -197,7 +200,7 @@
             dtree.chooseDataInit("popTree", nodeId);
             /* dtree.reload(popTree, {
                 done: function (data, obj) {
-                    dtree.chooseDataInit("popTree", nodeId);
+                    dtree.chooseDataInit(popTree, nodeId);
                 }
             }) */
             e.parent().remove();

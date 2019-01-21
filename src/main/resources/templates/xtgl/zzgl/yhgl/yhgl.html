@@ -5,34 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>用户管理</title>
     <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
-    <script src="${ctx}/plugins/layui/layui.js"></script>
+     <link href="${ctx}/css/common/reset.css" rel="stylesheet" />
     <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <style>
+		.layui-table, .layui-table-view { margin: 0px; }
+		#query{margin-bottom: 5px;}
+	</style>
 </head>
-<style>
-    html, body {
-        height: 100%;
-    }
-
-    div {
-        -moz-box-sizing: border-box; /*Firefox3.5+*/
-        -webkit-box-sizing: border-box; /*Safari3.2+*/
-        -o-box-sizing: border-box; /*Opera9.6*/
-        -ms-box-sizing: border-box; /*IE8*/
-        box-sizing: border-box; /*W3C标准(IE9+，Safari5.1+,Chrome10.0+,Opera10.6+都符合box-sizing的w3c标准语法)*/
-    }
-
-    .layui-form-item {
-        margin-bottom: 0px
-    }
-
-    .layui-table, .layui-table-view {
-        margin: 0px 0;
-    }
-</style>
-<body class="layui-layout-body" style="padding: 10px">
-
+<body class="layui-layout-body" style="padding: 5px">
 <form class="layui-form" id="query">
-    <div class="layui-form-item">
         <div class="layui-inline">
             <input class="layui-input" type="text" placeholder="用户账号" name="username" id="username">
         </div>
@@ -43,14 +24,13 @@
             <a class="layui-btn layui-btn-primary" lay-submit="" lay-filter="query" datatype="reload">查询</a>
             <a class="layui-btn layui-btn-primary" onclick="add();">新增</a>
         </div>
-    </div>
 </form>
-
 <div style="height:100%">
     <table class="layui-hidden layui-table" id="dataTable" lay-filter="dataTable"></table>
 </div>
-
 </body>
+</html>
+
 <script type="text/html" id="rightBar">
     <div class="layui-btn-group">
         <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">
@@ -74,7 +54,7 @@
     		<input type="checkbox" name="switch" lay-skin="switch" lay-filter="switchstatus" lay-text="正常|锁定" {{ d.status == '0' ? 'checked' : '' }}>
 		{{# } }}
 </script>
-
+<script src="${ctx}/plugins/layui/layui.js"></script>
 <script>
     var editObj = null, ptable = null, treeGrid = null, tableId = 'dataTable', layer = null, form = null,$=null;
     layui.use('table', function () {
@@ -86,7 +66,7 @@
             , url: '${ctx}/xtgl/zzgl/yhgl/getAllUsers'//后台接受路径
             , page: true
             , id: tableId
-            , height: 'full-80'
+            , height: 'full-48'
             , method: 'get'
             , cols: [[
                 {field: '序号',width:50,fixed:'left',type:'numbers',title:'序号'}
@@ -238,4 +218,3 @@
         layer.full(index);
     }
 </script>
-</html>

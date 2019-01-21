@@ -4,48 +4,21 @@
 	<meta charset="UTF-8">
 	<title>角色管理</title>
 	<link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
+	<link href="${ctx}/css/common/reset.css" rel="stylesheet" />
 	<link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" />
 <style>
-		.layui-table, .layui-table-view {
-    margin: 0 0;
-}
-.head-form{
-	display: flex;
-	align-items: center;
-	padding: 5px 0;
-}
-.head-form .layui-form-item {
-	margin-bottom: 0;
-}
-.head-form .layui-form-item .layui-inline{
-	margin-bottom: 0;
-}
-.head-form .layui-input,.head .layui-select{
-	height:35px;
-	line-height: 35px;
-}
-.head-form .layui-form-label{
-	padding: 7px 10px;
-}
-.layui-btn-container .layui-btn {
-    margin-right: 10px;
-    margin-bottom: 0;
-}
+		.layui-table, .layui-table-view { margin: 0 0;}
+		.head-form{margin-bottom: 5px;}
 </style>
 </head>
-<body class="layui-layout-body" style="padding: 10px">
+<body class="layui-layout-body" style="padding: 5px">
 	<form class="layui-form head-form" accept-charset="utf-8">
-		<div class="layui-form-item">
 			<div class="layui-inline">
 				<input class="layui-input" type="text" placeholder="角色名称" name="rolename">
 			</div>
-		</div>
-		<div class="layui-form-item">
 			<div class="layui-inline">
 				<input class="layui-input" type="text" placeholder="角色编码" name="rolecode">
 			</div>
-		</div>
-		<div class="layui-form-item">
 			<div class="layui-input-inline">
 				<select name="status">
 					<option value="">全部</option>
@@ -53,8 +26,7 @@
 					<option value="0">禁用</option>
 				</select>
 			</div>
-		</div>
-		<div class="layui-btn-container">
+		<div class="layui-inline">
 			<a class="layui-btn layui-btn-primary" lay-submit lay-filter="search">查询</a>
 			<a class="layui-btn layui-btn-primary" id="addBtn">新增</a>
 		</div>

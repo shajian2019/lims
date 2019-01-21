@@ -3,29 +3,30 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>组织架构</title>
+    <title>职位管理</title>
     <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
     <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <link href="${ctx}/css/common/reset.css" rel="stylesheet" />
     <link rel="stylesheet" href="${ctx}/plugins/layui/extend/dtree/dtree.css">
     <link rel="stylesheet" href="${ctx}/plugins/layui/extend/dtree/font/dtreefont.css">
     <style>
-        html,body{margin: 0;height: 100%;}
- .layui-table, .layui-table-view {margin:0;}
- .layui-table-tool {
-    position: relative;
-    z-index: 890;
-    width: 100%;
-    min-height: 50px;
-    line-height: 49px;
-    padding: 0px 5px;
-    border-width: 0 0 1px;
-}
-.layui-input{height:32px;line-height: 32px;}
-.dtree{width: 210px;}
- .left-box{float: left;width:240px;height:100%;padding:3px;box-sizing: border-box;overflow-y: auto;border-right:1px solid #e6e6e6;}
- .right-box{float: right;width:calc(100% - 242px); ;height:100%;}
- .bm_name_tit{height:42px;line-height: 42px;background-color: #f3f5f7;text-align: center;font-size:16px;}
-</style>
+	 .layui-table, .layui-table-view {margin:0;}
+	 .layui-table-tool {
+	    position: relative;
+	    z-index: 890;
+	    width: 100%;
+	    min-height: 50px;
+	    line-height: 49px;
+	    padding: 0px 5px;
+	    border-width: 0 0 1px;
+	}
+	.layui-input{height:32px;line-height: 32px;}
+	.dtree{width: 210px;}
+	 .left-box{float: left;width:230px;height:100%;box-sizing: border-box;overflow-y: auto;border-right:1px solid #e6e6e6;}
+	 .right-box{float: left;width:calc(100% - 240px); ;height:100%;margin-left: 5px;}
+	 .bm_name_tit{height:42px;line-height: 42px;background-color: #f3f5f7;text-align: center;font-size:16px;}
+	 .zdy-head-form{padding: 5px 0;}
+	</style>
 </head>
 <body>
     <div class="left-box">
@@ -35,7 +36,7 @@
         </div>
     </div>
     <div class="right-box">
-    	 <form class="layui-form">
+    	 <form class="layui-form zdy-head-form">
 	            <div class="layui-inline">
 	                <input type="text" class="layui-input" name="username" placeholder="用户账号">
 	            </div>
@@ -191,7 +192,7 @@
         var rightTB = table.render({
             elem: '#' + tbID,
             id: tbID,
-            height: 'full-40',
+            height: 'full-48',
             url: '${ctx}/xtgl/zzgl/zzjg/user/list', //数据接口,
             page: true,
             cols: [[

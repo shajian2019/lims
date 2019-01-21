@@ -4,15 +4,15 @@
 <meta charset="UTF-8">
 <title>字典管理</title>
 <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
+<link href="${ctx}/css/common/reset.css" rel="stylesheet" />
 <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" />
 <style>
-        .layui-table, .layui-table-view {
-            margin: 8px 0 0;
-        }
+.layui-table, .layui-table-view {margin: 0;}
+#zdgl_form{margin-bottom: 5px;}
 </style>
 </head>
-<body style="padding:8px 8px 0;">
-        <form class="layui-form" action="">
+<body style="padding:5px;">
+        <form class="layui-form" id="zdgl_form">
             <div class="layui-inline">
                 <input class="layui-input" type="text" placeholder="字典名称" name="name">
             </div>
@@ -58,7 +58,7 @@
 	        id:tableId,
 	        url:'${ctx}/xtgl/xtsz/zdgl/list?gtypef=gtypef',
 	        title: '参数设置',
-	        height:'full-55',
+	        height:'full-48',
 	        cellMinWidth: 120,
 	        cols: [
 	            [{
