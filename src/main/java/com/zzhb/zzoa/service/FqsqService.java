@@ -19,13 +19,19 @@ public class FqsqService {
 	
 	@Transactional
 	public Integer bindUser(String p_id,String u_ids) {
-		userMapper.delUserProcdef(p_id);
+		userMapper.delUserProcdef(p_id,"");
 		List<String> uIds = Arrays.asList(u_ids.split(","));
 		Map<String,Object> params = new HashMap<>();
 		params.put("p_id", p_id);
 		params.put("u_ids", uIds);
 		Integer addUserProcdef = userMapper.addUserProcdef(params);
 		return addUserProcdef;
+	}
+	
+	@Transactional
+	public Integer unBindUser(String p_id,String u_id) {
+		userMapper.delUserProcdef(p_id, u_id);
+		return 1;
 	}
 }
 

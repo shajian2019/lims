@@ -54,7 +54,6 @@
         </div>
         <div style="text-align: center;width:100%;padding-top:10px;">
             <a href="javascript:;" class="layui-btn layui-btn-sm" lay-submit lay-filter="save">保存</a>
-            <a href="javascript:;" class="layui-btn layui-btn-sm closeBtn layui-bg-gray">取消</a>
         </div>
     </form>
 </body>
@@ -102,9 +101,6 @@
             },
             done:function(data, obj){
             	var params = dtree.getCheckbarNodesParam("popTree");
-                //dtree.chooseDataInit("demoTree", "001,002,003");
-                console.log(data,obj)
-                console.log(params)
             	addPersonnel(params);
             }
         })
@@ -160,12 +156,25 @@
         //右侧清楚全部
         allClear.click(function (e) {
             allClearPersonnel();
-            dtree.chooseDataInit("popTree", '');
-            /* dtree.reload(popTree, {
-                done: function (data, obj) {
-                    dtree.chooseDataInit("popTree", '');
+            $.ajax({
+                type: "POST",
+                data:{u_id:'',p_id:"${p_id}"},
+                url: "${ctx}/lcgl/lcsq/fqsq/unBindUser",
+                beforeSend: function () {
+                    index = layer.load(1);
+                },
+                success: function (data) {
+                    layer.close(index);
+                    if(data > 0){
+                        dtree.reload(popTree)
+                        e.parent().remove();
+                        selectedNum.text(rList.find("li").length);
+                    }
+                },
+                error: function (data) {
+                    layer.msg("服务端异常");
                 }
-            }); */
+         	});
         });
         searchBtn.click(function () {
             search();
@@ -197,14 +206,25 @@
             var arr = nodeId.split(",");
             arr.remove(del);
             var nodeId = arr.join(",");
-            dtree.chooseDataInit("popTree", nodeId);
-            /* dtree.reload(popTree, {
-                done: function (data, obj) {
-                    dtree.chooseDataInit(popTree, nodeId);
+            $.ajax({
+                type: "POST",
+                data:{u_id:del,p_id:"${p_id}"},
+                url: "${ctx}/lcgl/lcsq/fqsq/unBindUser",
+                beforeSend: function () {
+                    index = layer.load(1);
+                },
+                success: function (data) {
+                    layer.close(index);
+                    if(data > 0){
+                        dtree.reload(popTree)
+                        e.parent().remove();
+                        selectedNum.text(rList.find("li").length);
+                    }
+                },
+                error: function (data) {
+                    layer.msg("服务端异常");
                 }
-            }) */
-            e.parent().remove();
-            selectedNum.text(rList.find("li").length);
+         	});
         }
 
         function allClearPersonnel() {

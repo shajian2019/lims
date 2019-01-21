@@ -43,11 +43,10 @@ public interface UserMapper {
 
 	@Select("SELECT COUNT(1) FROM sys_t_user WHERE username = #{0}")
 	public Integer getCountByName(String username);
-	
+
 	public List<User> getUsersByOid(@Param("o_id") String o_id);
-	
-	@Delete("DELETE FROM sys_t_user_procdef WHERE p_id = #{0}")
-	public void delUserProcdef(String p_id);
-	
-	public Integer addUserProcdef(Map<String,Object> params);
+
+	public void delUserProcdef(@Param("p_id") String p_id, @Param("u_id") String u_id);
+
+	public Integer addUserProcdef(Map<String, Object> params);
 }

@@ -44,6 +44,7 @@ public class OrgUserService {
 			checkArrP.add(checkP);
 			parent.put("checkArr", checkArrP);
 			JSONArray children = new JSONArray();
+			Integer chenckFlag = 0;
 			for (User user : listOrgUser) {
 				JSONObject child = new JSONObject();
 				child.put("id", user.getU_id() + "");
@@ -54,12 +55,15 @@ public class OrgUserService {
 				JSONObject checkC = new JSONObject();
 				checkC.put("type", "0");
 				Integer countProcDefByUidAndPid = orgUserMapper.countProcDefByUidAndPid(user.getU_id() + "", p_id);
+				chenckFlag += countProcDefByUidAndPid;
 				checkC.put("isChecked", countProcDefByUidAndPid + "");
-				parent.getJSONArray("checkArr").getJSONObject(0).put("isChecked", countProcDefByUidAndPid + "");
 				JSONArray checkArrC = new JSONArray();
 				checkArrC.add(checkC);
 				child.put("checkArr", checkArrC);
 				children.add(child);
+			}
+			if (chenckFlag > 0) {
+				parent.getJSONArray("checkArr").getJSONObject(0).put("isChecked", "1");
 			}
 			parent.put("children", children);
 			array.add(parent);
