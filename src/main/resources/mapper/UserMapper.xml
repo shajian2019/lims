@@ -141,4 +141,12 @@
 		WHERE uo.o_id = #{o_id}
     </select>
     
+    <insert id="addUserProcdef" parameterType="java.util.Map">
+		INSERT INTO sys_t_user_procdef (u_id,p_id)
+		VALUES
+		<foreach collection="u_ids" item="u_id" index="index" separator=",">
+            (#{u_id}, #{p_id})
+        </foreach>
+	</insert>
+    
 </mapper>
