@@ -1,5 +1,4 @@
 .kit-theme .kit-layout-admin .layui-header {
-    border-bottom: 2px solid #23262E;
 }
 .layui-tit{
     background-color: #0a8cbf;
@@ -60,7 +59,7 @@
     transition: all .2s;
     -webkit-transition: all .2s;
     position: relative;
-    margin-top: 5px;
+    margin-top: 6px;
     line-height: 26px;
     padding: 0 6px;
     text-align: center;
@@ -154,10 +153,16 @@
     height: 0;
     background-color: #0a8cbf;
 }
+.layui-show {
+    display: block!important;
+    height: calc(100% - 5px) ;
+}
+.layui-tab-card{border:none;}
 /*右侧内容*/
 .kit-layout-admin .layui-body{
     top: 100px;
 }
 .kit-tab .layui-tab-content{
+	height: calc(100% - 38px) ;
     top:35px;
 }

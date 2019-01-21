@@ -72,11 +72,11 @@ a, button {
     content: none
 }
 .kit-layout-admin .layui-footer {
-    height: 35px;
-    line-height: 35px
+    height: 24px;
+    line-height: 24px
 }
 .kit-layout-admin .layui-body {
-    bottom: 35px;
+    bottom: 24px;
     top: 50px
 }
 .kit-layout-admin .layui-header {
@@ -200,7 +200,8 @@ a, button {
 }
 .kit-tab {
     border-bottom: 0;
-    box-shadow: none
+    box-shadow: none;
+    height:100%;
 }
 .kit-tab .kit-tab-tool, .kit-tab .kit-tab-tool-body .kit-line {
     border-bottom: 1px solid #e2e2e2
@@ -256,7 +257,8 @@ a, button {
 }
 .kit-tab .layui-tab-content iframe {
     width: 100%;
-    border: 0
+    border: 0;
+    height:100% !important;
 }
 @media (max-width:992px) {
     .kit-layout-admin .layui-body, .kit-layout-admin .layui-footer, .kit-layout-admin .layui-layout-left {
