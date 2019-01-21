@@ -108,14 +108,14 @@
 <script type="text/html" id="rightBar">
     <div class="layui-btn-group">
         <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="details">
-            <i class="fa fa-bars"></i>
+            <i class="fa fa-bars" title="详情"></i>
         </a>
         <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="preview">
-            <i class="fa fa-image"></i>
+            <i class="fa fa-image" title="流程图"></i>
         </a>
 		{{#  if(d.endTime == ''){ }}
-        	<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del">
-            	<i class="fa fa-reply"></i>
+			<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del">
+            	<i class="fa fa-reply" title="撤銷"></i>
         	</a>
         {{#  } }}
     </div>
@@ -225,7 +225,6 @@
         		 });
                  layer.full(index);
             } else if("del" == obj.event){
-            	console.log(data)
             	layer.confirm('确定撤销该【'+data.processDefinitionName+'】吗?', function (index) {
             		$.ajax({
                         type: "post",
