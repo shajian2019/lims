@@ -15,6 +15,7 @@
 		.img-up-box .img-box .img-close{position: absolute;top: -7px;right: -7px;font-size: 12px;color: #fff;border-radius: 20px;width: 16px;height: 16px;background-color: #000;text-align: center;line-height: 16px;}
 		.img-up-box .img-box>img{width: 100%;height:100%;}
 		#img_up{width: 80px;height:80px;border: 1px solid #e6e6e6;text-align: center;line-height: 80px;font-size: 28px;color: #e6e6e6;background-color: #fff;}
+		#spr{width: 80px;height:60px;border: 1px solid #e6e6e6;text-align: center;line-height: 60px;font-size: 28px;color: #e6e6e6;background-color: #fff;}
     </style>
 </head>
 
@@ -79,8 +80,8 @@
 	        </div>
 	        <div class="layui-form-item layui-form-text">
 	                <label class="layui-form-label">审批人</label>
-	                <div class="layui-inline">
-					    <input type="text" name="spr" required lay-verify="required" placeholder="待开发" autocomplete="off" class="layui-input">
+	               <div class="layui-inline img-up-box">
+						  <button type="button" id="spr"><i class="fa fa-plus"></i></button> 
 					</div>
 	        </div>
 	        <div class="layui-form-item">
@@ -268,6 +269,19 @@
 	      });
 		  return false;
 	 });
+	
+	 $("#spr").click(function(){
+		 layer.open({
+	            type: 2,
+	            area: ['722px', '516px'],
+	         	title: false,
+	            fixed: false, //不固定
+	            content: '${ctx}/lcgl/lcsq/fqsq/pop?p_id='+data.id,
+	            end: function(){
+	            	
+         	    }
+    	   })
+	 })
 	} else if ("${taskDefinitionKey!''}" == 'usertask2'){
 		console.log("usertask2")
 	}

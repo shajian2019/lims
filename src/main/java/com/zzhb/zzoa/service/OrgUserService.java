@@ -1,6 +1,7 @@
 package com.zzhb.zzoa.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +36,7 @@ public class OrgUserService {
 			parent.put("title", org.getName());
 			parent.put("level", "1");
 			parent.put("parentId", "0");
-			List<User> listOrgUser = orgUserMapper.listOrgUser(org.getId());
+			List<Map<String,String>> listOrgUser = orgUserMapper.listOrgUser(org.getId());
 			parent.put("isLast", false);
 			JSONObject checkP = new JSONObject();
 			checkP.put("type", "0");
@@ -45,16 +46,21 @@ public class OrgUserService {
 			parent.put("checkArr", checkArrP);
 			JSONArray children = new JSONArray();
 			Integer chenckFlag = 0;
-			for (User user : listOrgUser) {
+			for (Map<String,String> user : listOrgUser) {
 				JSONObject child = new JSONObject();
-				child.put("id", user.getU_id() + "");
-				child.put("title", user.getNickname());
+				child.put("id", String.valueOf(user.get("u_id")));
+				String title = user.get("nickname");
+				String j_name = user.get("j_name");
+				if(j_name != null) {
+					title +="【"+j_name+"】";
+				}
+				child.put("title", title);
 				child.put("isLast", true);
 				child.put("parentId", org.getId());
 				child.put("level", "2");
 				JSONObject checkC = new JSONObject();
 				checkC.put("type", "0");
-				Integer countProcDefByUidAndPid = orgUserMapper.countProcDefByUidAndPid(user.getU_id() + "", p_id);
+				Integer countProcDefByUidAndPid = orgUserMapper.countProcDefByUidAndPid(String.valueOf(user.get("u_id")), p_id);
 				chenckFlag += countProcDefByUidAndPid;
 				checkC.put("isChecked", countProcDefByUidAndPid + "");
 				JSONArray checkArrC = new JSONArray();

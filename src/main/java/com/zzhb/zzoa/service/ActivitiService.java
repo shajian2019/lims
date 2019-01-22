@@ -324,7 +324,8 @@ public class ActivitiService {
 
 		Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
 		taskService.setOwner(task.getId(), user.getU_id() + "");
-
+		String name = task.getName();
+		
 		Map<String, Object> variable = new HashMap<>();
 		variable.put("spr", params.get("spr"));
 		taskService.complete(task.getId(), variable);
@@ -340,7 +341,7 @@ public class ActivitiService {
 			FileInputStream fileInputStream = null;
 			try {
 				fileInputStream = new FileInputStream(new File(filePath));
-				taskService.createAttachment("图片附件", task.getId(), pi.getId(), fileName.split("&")[1], fileName.split("&")[1], fileInputStream);
+				taskService.createAttachment(name+"-图片附件", task.getId(), pi.getId(), fileName.split("&")[1], fileName.split("&")[1], fileInputStream);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} finally {

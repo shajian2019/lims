@@ -34,15 +34,16 @@ public class FqlcController {
 
 	@Autowired
 	FqlcService fqlcService;
-	
+
 	@RequestMapping("/fqlc")
 	public String fqlc() {
 		return "grgzt/fqlc/fqlc";
 	}
-	
+
 	@GetMapping("/list")
 	@ResponseBody
-	public JSONObject fqlcList(@RequestParam(defaultValue="1")Integer page, @RequestParam(defaultValue="0x7fffffff")Integer limit, @RequestParam Map<String, String> params) {
+	public JSONObject fqlcList(@RequestParam(defaultValue = "1") Integer page,
+			@RequestParam(defaultValue = "0x7fffffff") Integer limit, @RequestParam Map<String, String> params) {
 		return fqlcService.fqlcList(page, limit, params);
 	}
 
@@ -84,5 +85,11 @@ public class FqlcController {
 		leave.setBmmc(org.getName());
 		leave.setSqrq(TimeUtil.getTimeByCustom("yyyy-MM-dd HH:mm:ss"));
 		return leave;
+	}
+
+	@GetMapping("/fqlc/spr")
+	public String fqlcSpr(@RequestParam("key") String key, ModelMap modelMap) {
+		modelMap.put("key", key);
+		return "grgzt/fqlc/spr";
 	}
 }
