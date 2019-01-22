@@ -1752,11 +1752,39 @@ layui.define(['jquery','layer','form'], function(exports) {
 		$li_parents.children("."+LI_DIV_ITEM).children("i[data-spread]."+_this.nodeIconClose).removeClass(_this.nodeIconClose);
 		return _this.getCheckbarNodesParam();
 	};
+	
+	//自定义 移除复选框选中状态
+	DTree.prototype.unChooseData = function(unChooseId){
+		var _this = this;
+		var objs = _this.obj.find("ul i[dtree-click='"+eventName.checkNodeClick+"']");
+		if(unChooseId == "all"){
+			objs = _this.obj.find("i[dtree-click='"+eventName.checkNodeClick+"']");
+		}
+		objs.each(function(){
+			if(unChooseId !== "all"){
+				if($(this).attr("data-id") == unChooseId){
+					_this.checkAllOrNot($(this));
+					_this.checkStatus($(this)).noCheck();
+				}
+			}else{
+				_this.checkStatus($(this)).noCheck();
+			}
+		})
+		// 展开选中节点的父节点
+		var $li_parents = _this.obj.find("i[dtree-click='"+eventName.checkNodeClick+"'][data-checked='1']").parents("."+LI_NAV_ITEM);
+		$li_parents.children("ul").addClass(NAV_SHOW);
+		$li_parents.children("."+LI_DIV_ITEM).children("i[data-spread]."+_this.ficonClose).addClass(_this.ficonOpen);
+		$li_parents.children("."+LI_DIV_ITEM).children("i[data-spread]."+_this.ficonClose).removeClass(_this.ficonClose);
+		$li_parents.children("."+LI_DIV_ITEM).children("i[data-spread]."+_this.nodeIconClose).addClass(_this.nodeIconOpen);
+		$li_parents.children("."+LI_DIV_ITEM).children("i[data-spread]."+_this.nodeIconClose).removeClass(_this.nodeIconClose);
+		return _this.getCheckbarNodesParam();
+	};
 
 	//实现复选框点击，子集选中父级也选中
 	DTree.prototype.checkAllOrNot =  function($i) {
 		var _this = this;
 		//$i 当前点击的checkbox
+		console.log($i)
 		var dataPar = $i.attr("data-par"),
 			dataType = $i.attr("data-type"),
 			$li = $i.closest(dataPar),		//当前checkbox的上级li节点
@@ -1766,11 +1794,9 @@ layui.define(['jquery','layer','form'], function(exports) {
 		if ($i.attr("data-checked") == "1") {
 			// 处理当前节点的选中状态
 			_this.checkStatus($i).noCheck();
-
 			// 处理子级节点的选中状态
 			var $child_li_i = $child_li.find(">."+LI_DIV_ITEM+">."+LI_DIV_CHECKBAR+">i[data-type='"+dataType+"']");
 			_this.checkStatus($child_li_i).noCheck();
-
 			// 处理父级节点的选中状态
 			for (var i = 1, item = $parent_li; i < item.length; i++) {
 				var flag = item.eq(i).find(">."+LI_NAV_CHILD+" ."+LI_DIV_CHECKBAR+">i[data-type='"+dataType+"'][data-checked='1']").length;
@@ -2772,6 +2798,18 @@ layui.define(['jquery','layer','form'], function(exports) {
 			}
 			if(chooseIds){
 				return dTree.chooseDataInit(chooseIds);
+			}
+		},
+		unChooseData: function(dTree, chooseIds){	// 初始化复选框的值
+			if(typeof dTree === "string"){
+				dTree = DTrees[dTree];
+			}
+			if(typeof dTree === "undefined"){
+				layer.msg("方法获取失败，请检查ID或对象传递是否正确",{icon:2});
+				return ;
+			}
+			if(chooseIds){
+				return dTree.unChooseData(chooseIds);
 			}
 		},
 		changeCheckbarNodes: function(dTree){	//判断复选框是否发生变更
