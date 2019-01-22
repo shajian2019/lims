@@ -10,14 +10,17 @@
 	<link rel="stylesheet" href="${ctx}/plugins/font-awesome/css/font-awesome.min.css" media="all" />
     <style type="text/css">
     	.main{width:800px;margin: 0% auto 0;}
-		.img-up-box{max-width: 500px;height: auto;display:flex;align-items: flex-end;flex-wrap: wrap;}
+		.img-up-box,#spr_demo{max-width: 500px;height: auto;display:flex;align-items: flex-end;flex-wrap: wrap;}
 		.img-up-box .img-box{position: relative;display: inline-block;width: 80px;height:80px;border: 1px solid #e6e6e6;margin-right: 8px;margin-top: 8px;}
 		.img-up-box .img-box .img-close{position: absolute;top: -7px;right: -7px;font-size: 12px;color: #fff;border-radius: 20px;width: 16px;height: 16px;background-color: #000;text-align: center;line-height: 16px;}
 		.img-up-box .img-box>img{width: 100%;height:100%;}
-		#img_up{width: 80px;height:80px;border: 1px solid #e6e6e6;text-align: center;line-height: 80px;font-size: 28px;color: #e6e6e6;background-color: #fff;}
+		#img_up,#spr_add{width: 80px;height:80px;border: 1px solid #e6e6e6;text-align: center;line-height: 80px;font-size: 28px;color: #e6e6e6;background-color: #fff;}
+		#spr_demo{align-items:flex-start;}
+		#spr_add{width: 70px;height: 70px;line-height: 70px;border-radius: 1000px;}
 		.spr-select{text-align: center;position: relative;margin-right: 15px;display: inline-block;}
 		.spr-box{color: #fff;text-align: center;background-color: cornflowerblue;border-radius: 1000px;font-size: 12px;width: 70px;height: 70px;display: flex;flex-direction: column;justify-content: center;}
-    </style>
+		.spr-close{position: absolute;top: 0;right: -7px;font-size: 12px;color: #fff;border-radius: 20px;width: 16px;background-color: #000;text-align: center;line-height: 16px;}
+	</style>
 </head>
 
 <body>
@@ -83,6 +86,7 @@
 	                <label class="layui-form-label">审批人</label>
 					<div class="layui-inline" id="spr_demo">
 						<div class="spr-select">
+							<i class="fa fa-close spr-close"></i>
 							<div class="spr-box">
 								<p>软件研发</p>
 								<p>java工程师</p>
@@ -90,11 +94,15 @@
 							<p>陈浩杰</p>
 						</div>
 						<div class="spr-select">
+							<i class="fa fa-close spr-close"></i>
 							<div class="spr-box">
 								<p>软件研发</p>
 								<p>java工程师</p>
 							</div>
 							<p>陈浩杰</p>
+						</div>
+						<div id="spr_add">
+							<i class="fa fa-plus"></i>
 						</div>
 					</div>
 	        </div>
@@ -160,6 +168,7 @@
 <script type="text/html" id="spr_demo">
 	{{#  layui.each(d.list, function(index, item){ }}
 	<div class="spr-select">
+			<i class="fa fa-close spr-close"></i>
 			<div class="spr-box">
 				<p>软件研发</p>
 				<p>java工程师</p>
