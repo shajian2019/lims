@@ -35,9 +35,4 @@ public class LcsqController {
 		return fqsqService.bindUser(p_id, u_ids);
 	}
 	
-	@PostMapping("/fqsq/unBindUser")
-	@ResponseBody
-	public Integer unBindUser(@RequestParam("p_id")String p_id,@RequestParam("u_id")String u_id) {
-		return fqsqService.unBindUser(p_id, u_id);
-	}
 }

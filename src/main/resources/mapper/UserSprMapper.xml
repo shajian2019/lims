@@ -3,15 +3,24 @@
 <mapper namespace="com.zzhb.zzoa.mapper.UserSprMapper">
 	
 	<select id="getUserSprs" resultType="com.zzhb.zzoa.domain.activiti.UserSpr" parameterType="java.util.Map">
-		SELECT * FROM oa_t_user_spr
+		SELECT * FROM oa_t_user_spr us LEFT JOIN sys_t_user_org uo on us.uid = uo.u_id
 		<where>
 			<if test="uid !=null and uid !='' ">
-				and uid = #{uid}
+				and us.uid = #{uid}
 			</if>
 			<if test="key !=null and key !='' ">
-				and key = #{key}
+				and us.key = #{key}
+			</if>
+			<if test="id !=null and id !='' ">
+				and us.id = #{id}
 			</if>
 		</where>
 	</select>
+	
+	<update id="updateSprsById" parameterType="java.util.Map">
+		REPLACE INTO oa_t_user_spr (id,uid,`key`,taskkey,sprs)
+			VALUES
+		(#{id},#{uid},#{key},#{taskkey},#{sprs})
+	</update>
 	
 </mapper>

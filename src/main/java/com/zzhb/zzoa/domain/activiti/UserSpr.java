@@ -2,13 +2,37 @@ package com.zzhb.zzoa.domain.activiti;
 
 public class UserSpr {
 
+	private String id;
 	private String uid;
 	private String key;
-	private String name;
+	private String taskkey;
 	private String sprs;
-	private String rev;
-	private String createtime;
-	private String updatetime;
+
+	private String o_id;
+
+	public String getO_id() {
+		return o_id;
+	}
+
+	public void setO_id(String o_id) {
+		this.o_id = o_id;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getTaskkey() {
+		return taskkey;
+	}
+
+	public void setTaskkey(String taskkey) {
+		this.taskkey = taskkey;
+	}
 
 	public String getUid() {
 		return uid;
@@ -26,50 +50,12 @@ public class UserSpr {
 		this.key = key;
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	public String getSprs() {
 		return sprs;
 	}
 
 	public void setSprs(String sprs) {
 		this.sprs = sprs;
-	}
-
-	public String getRev() {
-		return rev;
-	}
-
-	public void setRev(String rev) {
-		this.rev = rev;
-	}
-
-	public String getCreatetime() {
-		return createtime;
-	}
-
-	public void setCreatetime(String createtime) {
-		this.createtime = createtime;
-	}
-
-	public String getUpdatetime() {
-		return updatetime;
-	}
-
-	public void setUpdatetime(String updatetime) {
-		this.updatetime = updatetime;
-	}
-
-	@Override
-	public String toString() {
-		return "UserSpr [uid=" + uid + ", key=" + key + ", name=" + name + ", sprs=" + sprs + ", rev=" + rev
-				+ ", createtime=" + createtime + ", updatetime=" + updatetime + "]";
 	}
 
 }

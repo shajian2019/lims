@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -87,9 +88,16 @@ public class FqlcController {
 		return leave;
 	}
 
-	@GetMapping("/fqlc/spr")
-	public String fqlcSpr(@RequestParam("key") String key, ModelMap modelMap) {
+	@GetMapping("/spr")
+	public String fqlcSpr(@RequestParam("key") String key,@RequestParam("taskkey") String taskkey, ModelMap modelMap) {
 		modelMap.put("key", key);
+		modelMap.put("taskkey", taskkey);
 		return "grgzt/fqlc/spr";
+	}
+	
+	@PostMapping("/saveSpr")
+	@ResponseBody
+	public Integer saveSpr(@RequestParam Map<String,String> params) {
+		return  fqlcService.saveSpr(params);
 	}
 }

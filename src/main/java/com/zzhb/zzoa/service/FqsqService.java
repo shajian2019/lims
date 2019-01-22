@@ -28,11 +28,6 @@ public class FqsqService {
 		return addUserProcdef;
 	}
 	
-	@Transactional
-	public Integer unBindUser(String p_id,String u_id) {
-		userMapper.delUserProcdef(p_id, u_id);
-		return 1;
-	}
 }
 
 

@@ -75,7 +75,6 @@
         //treedemo变量配置
         var dtreeID = "popTree";
         var dtreeSkin = "zzfc";
-        var treeUrl = "${ctx}/lcgl/lcdy/lcfl/list";
         var searchBtn = $("#search_btn");
         var searchInput = $("#search_input");
         var rList = $("#r_list");
@@ -88,7 +87,7 @@
             nodeIconArray: { "2": { "open": "fa fa-address-book", "close": "fa fa-address-book" } },
             skin: 'zzfc',
             method: 'GET',
-            url:"${ctx}/orgUser/list?p_id=${p_id}",
+            url:"${ctx}/orgUser/spr?id=${user.u_id}${key}${(taskkey!'')}&u_id=${user.u_id}",
             type:'all',
             icon: ["2", "1"],
             dot: false,
@@ -116,13 +115,12 @@
             			arr.push(v.nodeId)
             		}
                 });
-            	var u_ids = arr.join(",");
-            	var p_id = "${p_id}";
+            	var sprs = arr.join(",");
             	var index;
             	$.ajax({
                     type: "POST",
-                    data:{u_ids:u_ids,p_id:p_id},
-                    url: "${ctx}/lcgl/lcsq/fqsq/bindUser",
+                    data:{sprs:sprs,id:"${user.u_id}${key}${(taskkey!'')}",uid:"${user.u_id}",key:"${key}",taskkey:"${(taskkey!'')}"},
+                    url: "${ctx}/grgzt/fqlc/saveSpr",
                     beforeSend: function () {
                         index = layer.load(1);
                     },
@@ -156,26 +154,8 @@
         //右侧清楚全部
         allClear.click(function (e) {
             allClearPersonnel();
-            $.ajax({
-                type: "POST",
-                data:{u_id:'',p_id:"${p_id}"},
-                url: "${ctx}/lcgl/lcsq/fqsq/unBindUser",
-                beforeSend: function () {
-                    index = layer.load(1);
-                },
-                success: function (data) {
-                    layer.close(index);
-                    if(data > 0){
-                        dtree.reload(popTree)
-                        e.parent().remove();
-                        selectedNum.text(rList.find("li").length);
-                    }
-                },
-                error: function (data) {
-                    layer.msg("服务端异常");
-                }
-         	});
         });
+        
         searchBtn.click(function () {
             search();
         })
@@ -205,29 +185,13 @@
             });
             var arr = nodeId.split(",");
             arr.remove(del);
-            var nodeId = arr.join(",");
-            $.ajax({
-                type: "POST",
-                data:{u_id:del,p_id:"${p_id}"},
-                url: "${ctx}/lcgl/lcsq/fqsq/unBindUser",
-                beforeSend: function () {
-                    index = layer.load(1);
-                },
-                success: function (data) {
-                    layer.close(index);
-                    if(data > 0){
-                        dtree.reload(popTree)
-                        e.parent().remove();
-                        selectedNum.text(rList.find("li").length);
-                    }
-                },
-                error: function (data) {
-                    layer.msg("服务端异常");
-                }
-         	});
+            e.parent().remove();
+            selectedNum.text(rList.find("li").length);
+            dtree.unChooseData(popTree,del);
         }
 
         function allClearPersonnel() {
+            dtree.unChooseData(popTree,'all');
             rList.empty();
             selectedNum.text("0");
         }

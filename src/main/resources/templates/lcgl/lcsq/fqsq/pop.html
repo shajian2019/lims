@@ -147,6 +147,7 @@
                 this.splice(index, 1);
             }
         };
+        
         //右侧人员删除
         rList.on("click", ".layui-icon-close-fill", function (obj) {
             var element = $(this)
@@ -156,26 +157,8 @@
         //右侧清楚全部
         allClear.click(function (e) {
             allClearPersonnel();
-            $.ajax({
-                type: "POST",
-                data:{u_id:'',p_id:"${p_id}"},
-                url: "${ctx}/lcgl/lcsq/fqsq/unBindUser",
-                beforeSend: function () {
-                    index = layer.load(1);
-                },
-                success: function (data) {
-                    layer.close(index);
-                    if(data > 0){
-                        dtree.reload(popTree)
-                        e.parent().remove();
-                        selectedNum.text(rList.find("li").length);
-                    }
-                },
-                error: function (data) {
-                    layer.msg("服务端异常");
-                }
-         	});
         });
+        
         searchBtn.click(function () {
             search();
         })
@@ -205,29 +188,13 @@
             });
             var arr = nodeId.split(",");
             arr.remove(del);
-            var nodeId = arr.join(",");
-            $.ajax({
-                type: "POST",
-                data:{u_id:del,p_id:"${p_id}"},
-                url: "${ctx}/lcgl/lcsq/fqsq/unBindUser",
-                beforeSend: function () {
-                    index = layer.load(1);
-                },
-                success: function (data) {
-                    layer.close(index);
-                    if(data > 0){
-                        dtree.reload(popTree)
-                        e.parent().remove();
-                        selectedNum.text(rList.find("li").length);
-                    }
-                },
-                error: function (data) {
-                    layer.msg("服务端异常");
-                }
-         	});
+            e.parent().remove();
+            selectedNum.text(rList.find("li").length);
+            dtree.unChooseData(popTree,del);
         }
 
         function allClearPersonnel() {
+            dtree.unChooseData(popTree,'all');
             rList.empty();
             selectedNum.text("0");
         }
