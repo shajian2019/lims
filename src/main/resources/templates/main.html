@@ -10,14 +10,16 @@
 <style>
 	/*common*/
 	body{display: flex;}
+	section{flex-grow: 1;}
 	a{display: block;height: 100%;line-height: 100%;}
 	.column{border: 1px solid #e5e5e5;margin-bottom: 8px;}
 	.column .tit{display: flex;align-items: center;justify-content: space-between;padding: 4px 10px;background-color: #f2f5f7;height: 32px;}
 	.column .tit h3 .fa{color: #1196d9;margin-right: 6px;}
 	.column .tit-r{color: #1196d9;height: auto;}
 	.column .tit-r>i{margin-right: 4px;}
-	.left-box{max-width: 275px;flex-grow: 1;}
-	.center-box{margin-left: 5px;flex-grow: 1;max-width: 820px;}
+	.left-box{min-width: 275px;}
+	.center-box{margin-left: 5px;min-width: 820px;}
+	.right-box{margin-left: 5px;min-width: 400px;}
 	/*rwyj*/
 	#rwyj_main ul{padding: 0 5px;}
 	#rwyj_main ul li{display: flex;align-items: center;justify-content: space-between;padding: 5px 12px;border-top:1px dashed #e5e5e5;}
@@ -36,10 +38,26 @@
 	#wdrw_main .dbsx-tit{line-height: 30px;border-bottom: 1px solid #e5e5e5;text-align: center;}
 	/*通知通告,邮件*/
 	.flex-box{display: flex;justify-content: space-between;align-items:stretch;}
-	#tztg,#wdyj{max-width: 405px;flex-grow: 1;}
-	#tztg_main ul,#wdyj_main ul{padding: 0 10px;}
+	#tztg,#wdyj{min-width: 405px;flex-grow: 1;}
+	#tztg{margin-right: 10px;}
+	#tztg_main ul,#wdyj_main ul{padding: 5px 10px;}
 	#tztg_main ul li>a,#wdyj_main ul li>a{display: flex;align-content: center;justify-content: space-between;line-height: 30px;border-bottom: 1px dashed #e5e5e5;}
 	#tztg_main ul li>a .fa,#wdyj_main ul li>a .fa{color: #6189bb;margin-right: 5px;}
+	/*任务统计*/
+	#rwtj_main{display: flex;align-items: center;padding: 12px 0 0 0;}
+	.rwtj-left,.rwtj-right{flex-grow: 1;padding: 0 12px;}
+	.rwtj-left{border-right: 1px dashed #e5e5e5;}
+	.rwtj-left ul,.rwtj-right ul{display:flex;justify-content: space-between;align-items: center;flex-wrap: wrap;}
+	.rwtj-left ul li,.rwtj-right ul li{background-color: #f2f5f7;text-align: left;padding: 19px 22px 10px 18px;margin-bottom: 12px;min-width: 142px;}
+	.rwtj-left .rwtj-nav{display: flex;align-items: flex-start;}
+	.rwtj-left .rwtj-nav .rwtj-nav-r{margin-left: 15px;}
+	.rwtj-left .rwtj-nav .rwtj-nav-r>span{font-size: 20px;font-weight: 400;}
+	.rwtj-left .rwtj-nav .rwtj-nav-r>p{margin-top: 15px;}
+	.rwtj-right ul li>a{display: flex;align-items: center;color: #3c8ed3;}
+	.rwtj-right ul li>a>p{margin-left: 32px;font-size: 24px;font-weight: 400;}
+	.rwtj-right .rwtj-nav{text-align: center;}
+	.rwtj-right .rwtj-nav>p{margin-top: 5px;}
+	/*统计图表*/
 </style>
 </head>
 <body style="padding:5px;">
@@ -158,14 +176,51 @@
 				</div>
 			</div>
 		</div>
-
+		<!-- 任务统计-->
+		<div id="rwtj" class="column">
+			<div class="tit">
+				<h3><i class="fa fa-th-list"></i>任务统计</h3>
+				<a href="#" class="tit-r"><i class="fa fa-angle-right"></i>更多</a>
+			</div>		
+			<div class="column-main" id="rwtj_main">
+				<div class="rwtj-left">
+					<ul>
+						<li><a href="#"><div class="rwtj-nav"><img src="${ctx}/image/home/rwtj01.png" alt=""><div class="rwtj-nav-r"><span>0</span><p>未读代办</p></div></div></a></li>
+						<li><a href="#"><div class="rwtj-nav"><img src="${ctx}/image/home/rwtj02.png" alt=""><div class="rwtj-nav-r"><span>0</span><p>代办事项</p></div></div></a></li>
+						<li><a href="#"><div class="rwtj-nav"><img src="${ctx}/image/home/rwtj03.png" alt=""><div class="rwtj-nav-r"><span>0</span><p>已办事项</p></div></div></a></li>
+						<li><a href="#"><div class="rwtj-nav"><img src="${ctx}/image/home/rwtj04.png" alt=""><div class="rwtj-nav-r"><span>0</span><p>待阅事项</p></div></div></a></li>
+						<li><a href="#"><div class="rwtj-nav"><img src="${ctx}/image/home/rwtj05.png" alt=""><div class="rwtj-nav-r"><span>0</span><p>已阅事项</p></div></div></a></li>
+						<li><a href="#"><div class="rwtj-nav"><img src="${ctx}/image/home/rwtj06.png" alt=""><div class="rwtj-nav-r"><span>0</span><p>草稿箱&nbsp;&nbsp;</p></div></div></a></li>
+					</ul>
+				</div>
+				<div class="rwtj-right">
+					<ul>
+						<li><a href="#"><div class="rwtj-nav"><img src="${ctx}/image/home/rwtj07.png" alt=""><p>累计发起</p></div><p>3</p></a></li>
+						<li><a href="#"><div class="rwtj-nav"><img src="${ctx}/image/home/rwtj08.png" alt=""><p>累计完成</p></div><p>3</p></a></li>
+						<li><a href="#"><div class="rwtj-nav"><img src="${ctx}/image/home/rwtj09.png" alt=""><p>累计参与</p></div><p>3</p></a></li>
+						<li><a href="#"><div class="rwtj-nav"><img src="${ctx}/image/home/rwtj10.png" alt=""><p>累计作废</p></div><p>3</p></a></li>
+					</ul>
+				</div>
+			</div>	
+		</div>
 	</section>
 	<section class="right-box">
+		<!-- 流程统计图表-->
+		<div id="tj_chart" class="column">
+			<div class="tit">
+				<h3><i class="fa fa-th-list"></i>流程统计图表</h3>
+				<a href="#" class="tit-r"><i class="fa fa-refresh"></i>刷新</a>
+			</div>
+			<div class="column-main" id="chat_main">
 
+			</div>
+		</div>	
 	</section>
 </body>
 </html>
 <script src="${ctx}/plugins/layui/layui.all.js"></script>
+<script src="${ctx}/plugins/echarts.js"></script>
 <script>
 var element = layui.element;
+var $=layui.jquery;
 </script>
