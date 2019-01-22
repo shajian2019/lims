@@ -54,10 +54,11 @@ public class WfqdController {
 		return activitiService.historyTask(businessKey);
 	}
 
+	//撤销请假流程
 	@PostMapping("/revoke")
 	@ResponseBody
 	public Integer revoke(String processInstanceId) {
-		return activitiService.deleteProcessInstance(processInstanceId, "测试");
+		return activitiService.deleteProcessInstance(processInstanceId, "撤销流程");
 	}
 	
 }

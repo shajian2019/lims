@@ -1,5 +1,6 @@
 package com.zzhb.zzoa.controller.grgzt;
 
+import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.FormService;
@@ -89,15 +90,21 @@ public class FqlcController {
 	}
 
 	@GetMapping("/spr")
-	public String fqlcSpr(@RequestParam("key") String key,@RequestParam("taskkey") String taskkey, ModelMap modelMap) {
+	public String fqlcSpr(@RequestParam("key") String key, @RequestParam("taskkey") String taskkey, ModelMap modelMap) {
 		modelMap.put("key", key);
 		modelMap.put("taskkey", taskkey);
 		return "grgzt/fqlc/spr";
 	}
-	
+
 	@PostMapping("/saveSpr")
 	@ResponseBody
-	public Integer saveSpr(@RequestParam Map<String,String> params) {
-		return  fqlcService.saveSpr(params);
+	public Integer saveSpr(@RequestParam Map<String, String> params) {
+		return fqlcService.saveSpr(params);
+	}
+
+	@PostMapping("/getSprs")
+	@ResponseBody
+	public List<Map<String, String>> getSprs(@RequestParam Map<String, String> params) {
+		return fqlcService.getSprs(params);
 	}
 }

@@ -23,4 +23,25 @@
 		(#{id},#{uid},#{key},#{taskkey},#{sprs})
 	</update>
 	
+	<select id="getSprs" resultType="java.util.Map">
+		SELECT
+			cast(u.u_id as char) u_id,
+			u.nickname,
+			j.j_name,
+			o.o_name 
+		FROM
+			sys_t_user u
+			LEFT JOIN sys_t_user_job uj ON u.u_id = uj.u_id
+			LEFT JOIN sys_t_job j ON j.j_id = uj.j_id
+			LEFT JOIN sys_t_user_org uo ON uo.u_id = u.u_id
+			LEFT JOIN sys_t_org o ON o.o_id = uo.o_id
+		<where>
+			<if test="u_ids !=null and u_ids.size() != 0">
+				u.u_id in
+				<foreach collection="u_ids" item="id" index="index" open="(" close=")" separator=",">
+			       #{id}
+			    </foreach>
+			</if>
+		</where>
+	</select>
 </mapper>

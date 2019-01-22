@@ -46,7 +46,7 @@ public class DbsxController {
 		return activitiService.dbsxList(page, limit, params);
 	}
 
-	
+	//领取任务
 	@PostMapping("/calimTask")
 	@ResponseBody
 	public Integer calimTask(String taskId,String u_id) {

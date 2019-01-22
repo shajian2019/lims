@@ -127,7 +127,8 @@
                     success: function (data) {
                         layer.close(index);
                         layer.msg("保存成功", {offset: ['50%'], time: 1000}, function () {
-	                        dtree.reload(popTree)
+                        	index = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(index);
                         });
                     },
                     error: function (data) {
