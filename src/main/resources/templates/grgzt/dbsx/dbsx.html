@@ -201,32 +201,36 @@
         		 });
                  layer.full(index);
             } else if("lqrw" == obj.event){
-            	layer.confirm('确定领取该任务吗?', function (index) {
-            		$.ajax({
-                        type: "post",
-                        data: {u_id:"${user.u_id}", taskId:data.ID_},
-                        url: "${ctx}/grgzt/dbsx/calimTask",
-                        beforeSend: function () {
-                            index = layer.load(1);
-                        },
-                        success: function (data) {
-                            layer.close(index);
-                            if (data > 0) {
-                                layer.msg("领取成功", {offset: ['50%'], time: 1000}, function () {
-                                	table.reload(tableId, {
-                                        where: data.field
-                                    });
-                                });
-                            } else {
-                                layer.msg("操作失败")
-                            }
-                        },
-                        error: function (data) {
-                        	layer.close(index);
-                            layer.msg("服务端异常");
-                        }
-                    });
-            	})
+            	if(data.SUSPENSION_STATE_ != '1'){
+            		layer.msg("【"+data.sqr+"】已中止该流程,暂时无法领取", {offset: ['50%'], time: 2000});
+            	} else {
+	            	layer.confirm('确定领取该任务吗?', function (index) {
+		            		$.ajax({
+		                        type: "post",
+		                        data: {u_id:"${user.u_id}", taskId:data.ID_},
+		                        url: "${ctx}/grgzt/dbsx/calimTask",
+		                        beforeSend: function () {
+		                            index = layer.load(1);
+		                        },
+		                        success: function (data) {
+		                            layer.close(index);
+		                            if (data > 0) {
+		                                layer.msg("领取成功", {offset: ['50%'], time: 1000}, function () {
+		                                	table.reload(tableId, {
+		                                        where: data.field
+		                                    });
+		                                });
+		                            } else {
+		                                layer.msg("操作失败")
+		                            }
+		                        },
+		                        error: function (data) {
+		                        	layer.close(index);
+		                            layer.msg("服务端异常");
+		                        }
+		                    });
+	            	})
+            	}
             }
         })
         
