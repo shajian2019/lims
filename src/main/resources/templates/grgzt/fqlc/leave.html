@@ -149,9 +149,21 @@
     	</form>
     </#if>
 </body>
+<script type="text/html" id="spr_demo">
+	{{#  layui.each(d.list, function(index, item){ }}
+	<div class="spr-select">
+			<i class="fa fa-close spr-close"></i>
+			<div class="spr-box">
+				<p>软件研发</p>
+				<p>java工程师</p>
+			</div>
+			 <p>陈浩杰</p>
+		</div>
+	{{# });}}
+</script>
 <script src="${ctx}/plugins/layui/layui.all.js"></script>
 <script type="text/javascript">
-	var $ = layui.jquery,laydate = layui.laydate,form=layui.form,upload = layui.upload,index=null;
+	var $ = layui.jquery,laydate = layui.laydate,form=layui.form,upload = layui.upload,laytpl=layui.laytpl,index=null;
 	if("${taskDefinitionKey!''}" == ''){
 		$.ajax({
             type: "get",
