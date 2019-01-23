@@ -17,10 +17,14 @@
 		</where>
 	</select>
 	
-	<update id="updateSprsById" parameterType="java.util.Map">
+	<update id="replaceSprsById" parameterType="java.util.Map">
 		REPLACE INTO oa_t_user_spr (id,uid,`key`,taskkey,sprs)
 			VALUES
 		(#{id},#{uid},#{key},#{taskkey},#{sprs})
+	</update>
+	
+	<update id="updateSprs" parameterType="java.util.Map">
+		UPDATE oa_t_user_spr SET sprs = #{sprs} WHERE id = #{id}
 	</update>
 	
 	<select id="getSprs" resultType="java.util.Map">

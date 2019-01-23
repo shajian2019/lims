@@ -264,7 +264,8 @@
 
 	form.on('submit(sq)', function(data){
 		if(sprs.length > 0){
-			 data.field.spr = sprs.join(",")
+			 data.field.sprs = sprs.join(",")
+			 data.field.id = "${user.u_id}leave${taskDefinitionKey!''}";
 			 $.ajax({
 		            type: "post",
 		            data: data.field,
@@ -328,6 +329,7 @@
 	            success: function (data) {
 	            	layer.close(index);
 	            	var html = ""
+            		sprs = [];
 	            	$.each(data,function(i,v){
 	            		sprs.push(v.u_id);
 	            		html +='<div class="spr-select">';

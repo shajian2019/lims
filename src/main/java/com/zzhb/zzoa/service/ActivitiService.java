@@ -369,8 +369,10 @@ public class ActivitiService {
 		taskService.setOwner(task.getId(), user.getU_id() + "");
 		String name = task.getName();
 
+		
+		userSprMapper.updateSprs(params);
 		Map<String, Object> variable = new HashMap<>();
-		variable.put("spr", params.get("spr"));
+		variable.put("sprs", params.get("sprs"));
 		taskService.complete(task.getId(), variable);
 
 		params.put("proid", pi.getId());

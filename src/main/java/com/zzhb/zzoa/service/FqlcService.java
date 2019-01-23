@@ -37,7 +37,7 @@ public class FqlcService {
 	
 	@Transactional
 	public Integer saveSpr(Map<String,String> params) {
-		return userSprMapper.updateSprsById(params);
+		return userSprMapper.replaceSprsById(params);
 	}
 	
 	@Transactional

@@ -14,12 +14,12 @@ public class AtivitiTaskListener implements TaskListener {
 	public void notify(DelegateTask delegateTask) {
 		String eventName = delegateTask.getEventName();
 		if ("create".endsWith(eventName)) {
-			System.out.println("=========create=========" + delegateTask.getVariable("spr").toString());
-			String spr = delegateTask.getVariable("spr").toString();
-			if(spr.indexOf(",") == -1) {
-				delegateTask.setAssignee(spr);
+			System.out.println("=========create=========" + delegateTask.getVariable("sprs").toString());
+			String sprs = delegateTask.getVariable("sprs").toString();
+			if(sprs.indexOf(",") == -1) {
+				delegateTask.setAssignee(sprs);
 			}else {
-				List<String> candidateUsers = Arrays.asList(spr.split(","));
+				List<String> candidateUsers = Arrays.asList(sprs.split(","));
 				delegateTask.addCandidateUsers(candidateUsers);
 			}
 		} else if ("assignment".endsWith(eventName)) {

@@ -11,7 +11,9 @@ public interface UserSprMapper {
 
 	public UserSpr getUserSprs(Map<String, String> params);
 
-	public Integer updateSprsById(Map<String,String> params);
+	public Integer replaceSprsById(Map<String,String> params);
+	
+	public Integer updateSprs(Map<String,String> params);
 	
 	public List<Map<String,String>> getSprs(@Param("u_ids")List<String> uIds);
 	
