@@ -94,7 +94,7 @@
 </body>
 
 </html>
-<script type="text/html" id="lczt">
+<script type="text/html" id="clzt">
    {{#  if(d.deleteReason == null){ }}
 		{{#  if(d.endTime == ''){ }}
 			<span style="color: #FFC125;">审核中</span>
@@ -103,6 +103,13 @@
    		{{#  } }}
    {{#  } else { }}
 		<span style="color: red">已撤销</span>
+   {{#  } }}
+</script>
+<script type="text/html" id="lczt">
+   {{#  if(d.suspended){ }}
+		<span style="color: red">中止</span>
+   {{#  } else { }}
+		<span style="color: green">正常</span>
    {{#  } }}
 </script>
 <script type="text/html" id="rightBar">
@@ -114,9 +121,18 @@
             <i class="fa fa-image" title="流程图"></i>
         </a>
 		{{#  if(d.endTime == ''){ }}
-			<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del">
-            	<i class="fa fa-reply" title="撤銷"></i>
-        	</a>
+			 {{#  if(d.suspended){ }}
+				<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="play">
+					<i class="fa fa-play" title="激活"></i>
+				</a>
+   			 {{#  } else { }}
+				<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="pause">
+					<i class="fa fa-pause" title="挂起"></i>
+				</a>
+   			 {{#  } }}
+			 	<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del">
+            		<i class="fa fa-reply" title="撤銷"></i>
+        		</a>
         {{#  } }}
     </div>
 </script>
@@ -196,8 +212,14 @@
                     align: 'center'
                 },{
                     field: 'endTime',
-                    title: '流程状态',
+                    title: '处理状态',
                 	width: 150,
+                    align: 'center',
+                    templet: '#clzt'
+                },{
+                    field: 'suspended',
+                    title: '流程状态',
+                	width: 100,
                     align: 'center',
                     templet: '#lczt'
                 }, {
@@ -250,7 +272,34 @@
                         }
                     });
             	})
+            } else if("pause" == obj.event || "play" == obj.event){
+           		$.ajax({
+                       type: "post",
+                       data: {processInstanceId: data.processInstanceId},
+                       url: "${ctx}/grgzt/wfqd/pauseAndPlay/"+obj.event,
+                       beforeSend: function () {
+                           index = layer.load(1);
+                       },
+                       success: function (data) {
+                           layer.close(index);
+                           if (data > 0) {
+                               layer.msg("操作成功", {offset: ['50%'], time: 1000}, function () {
+                               	table.reload(tableId, {
+                                       where: data.field
+                                   });
+                               });
+                           } else {
+                           	   layer.close(index);
+                               layer.msg("操作失败")
+                           }
+                       },
+                       error: function (data) {
+                           layer.close(index);
+                           layer.msg("服务端异常");
+                       }
+                   });
             }
+            
         })
         
         form.on('submit(query)', function (data) {

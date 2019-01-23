@@ -31,7 +31,6 @@ import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
 import org.activiti.image.ProcessDiagramGenerator;
 import org.slf4j.Logger;
@@ -311,7 +310,7 @@ public class ActivitiService {
 				vo.setAssignee(user.getNickname());
 			}
 		}
-		Task ruTask = taskService.createTaskQuery().processInstanceBusinessKey(businessKey).active().singleResult();
+		Task ruTask = taskService.createTaskQuery().processInstanceBusinessKey(businessKey).singleResult();
 		if (ruTask != null) {
 			HistoricTaskInstanceVO vo = new HistoricTaskInstanceVO();
 			vo.setId(ruTask.getId());
@@ -343,6 +342,16 @@ public class ActivitiService {
 	@Transactional
 	public Integer deleteProcessInstance(String processInstanceId, String deleteReason) {
 		runtimeService.deleteProcessInstance(processInstanceId, deleteReason);
+		return 1;
+	}
+	
+	@Transactional
+	public Integer pauseAndPlay(String event, String processInstanceId) {
+		if("play".equals(event)) {
+			runtimeService.activateProcessInstanceById(processInstanceId);
+		}else {
+			runtimeService.suspendProcessInstanceById(processInstanceId);
+		}
 		return 1;
 	}
 
@@ -412,6 +421,14 @@ public class ActivitiService {
 		String dateS = params.get("dateS");
 		String dateE = params.get("dateE");
 		String keys = params.get("keys");
+		String finish = params.get("finish");
+		if (finish != null && !"".equals(finish)) {
+			if ("0".equals(finish)) {
+				hpiq.unfinished();
+			} else {
+				hpiq.finished();
+			}
+		}
 		if (businessKey != null && !"".equals(businessKey)) {
 			hpiq.processInstanceBusinessKey(businessKey);
 		}
@@ -429,6 +446,18 @@ public class ActivitiService {
 		List<HistoricProcessInstance> hps = hpiq.listPage((page - 1) * limit, page * limit);
 		List<HistoricProcessInstanceVO> historicProcessInstanceVOs = HistoricProcessInstanceVO
 				.getHistoricProcessInstanceVOs(hps);
+		for (HistoricProcessInstanceVO hio : historicProcessInstanceVOs) {
+			hio.setSuspended(false);
+			Task ruTask = taskService.createTaskQuery().processInstanceId(hio.getProcessInstanceId()).suspended()
+					.singleResult();
+			if (ruTask != null) {
+				hio.setSuspended(true);
+			}
+			if (params.get("u_id") == null) {
+				User user = userMapper.getUserById(Integer.parseInt(hio.getOwerId()));
+				hio.setOwerId(user.getNickname());
+			}
+		}
 		return LayUiUtil.pagination(count, historicProcessInstanceVOs);
 	}
 

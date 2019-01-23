@@ -68,6 +68,7 @@ public class ZzoaApplicationTests {
 	public void contextLoads3() {
 		String deploymentId = "40001";
 		repositoryService.deleteDeployment(deploymentId, true);
+
 	}
 
 	@Test // 删除运行中的流程
@@ -101,17 +102,18 @@ public class ZzoaApplicationTests {
 
 	@Test
 	public void testTaskQuery() {
-//		List<Task> list = ts.createTaskQuery().taskAssignee("test").list();
-//		for (Task task : list) {
-//			task.getAssignee();
-//		}
-//		list = ts.createTaskQuery().taskCandidateUser("2").list();
-//		for (Task task : list) {
-//			System.out.println(task.getId());
-//			ts.claim(task.getId(), "1");
-//		}
+		// List<Task> list = ts.createTaskQuery().taskAssignee("test").list();
+		// for (Task task : list) {
+		// task.getAssignee();
+		// }
+		// list = ts.createTaskQuery().taskCandidateUser("2").list();
+		// for (Task task : list) {
+		// System.out.println(task.getId());
+		// ts.claim(task.getId(), "1");
+		// }
 		List<Task> list = ts.createTaskQuery().taskAssignee("3").list();
 		list = ts.createTaskQuery().taskCandidateUser("3").list();
+
 		for (Task task : list) {
 			System.out.println(task.getAssignee());
 			System.out.println(task.getId());
@@ -133,34 +135,41 @@ public class ZzoaApplicationTests {
 		 * System.out.println(h.getTaskDefinitionKey()); }
 		 */
 
-		/*List<HistoricProcessInstance> hps = hs.createHistoricProcessInstanceQuery().startedBy("2").list();
-		for (HistoricProcessInstance hp : hps) {
-			System.out.println(hp.getBusinessKey());
-			System.out.println(hp.getProcessDefinitionKey());
-			System.out.println(hp.getStartActivityId());
-			System.out.println(hp.getProcessDefinitionName());
-			System.out.println(hp.getStartTime());
-			System.out.println(hp.getEndTime());
-		}*/
+		/*
+		 * List<HistoricProcessInstance> hps =
+		 * hs.createHistoricProcessInstanceQuery().startedBy("2").list(); for
+		 * (HistoricProcessInstance hp : hps) { System.out.println(hp.getBusinessKey());
+		 * System.out.println(hp.getProcessDefinitionKey());
+		 * System.out.println(hp.getStartActivityId());
+		 * System.out.println(hp.getProcessDefinitionName());
+		 * System.out.println(hp.getStartTime()); System.out.println(hp.getEndTime()); }
+		 */
 		String processInstanceId = "247507";
 		hs.deleteHistoricProcessInstance(processInstanceId);
 
 	}
-	
+
 	@Test
 	public void testHistoryTaskService() {
-		
-		String processInstanceBusinessKey ="201901171528162";
-		List<HistoricTaskInstance> list = hs.createHistoricTaskInstanceQuery().processInstanceBusinessKey(processInstanceBusinessKey).list();
+		String processInstanceBusinessKey = "201901171528162";
+		List<HistoricTaskInstance> list = hs.createHistoricTaskInstanceQuery()
+				.processInstanceBusinessKey(processInstanceBusinessKey).list();
 		for (HistoricTaskInstance h : list) {
-			 System.out.println(h.getId());
-			 System.out.println(h.getName()); 
-			 System.out.println(h.getStartTime());
-			 System.out.println(h.getEndTime()); 
-			 System.out.println(h.getAssignee());
-			 System.out.println(h.getDurationInMillis());
-			 System.out.println(h.getClaimTime());
-		 }
+			System.out.println(h.getId());
+			System.out.println(h.getName());
+			System.out.println(h.getStartTime());
+			System.out.println(h.getEndTime());
+			System.out.println(h.getAssignee());
+			System.out.println(h.getDurationInMillis());
+			System.out.println(h.getClaimTime());
+		}
+	}
+
+	@Test
+	public void testSuspend() {
+		String processInstanceId = "255001";
+		rs.suspendProcessInstanceById(processInstanceId);
+//		rs.activateProcessInstanceById(processInstanceId);
 	}
 
 	@Autowired
@@ -287,17 +296,16 @@ public class ZzoaApplicationTests {
 		}
 		return highLightedFlowIds;
 	}
-	
-	
-	@Test //中止与激活流程
+
+	@Test // 中止与激活流程
 	public void testSupend() {
 		String processInstanceId = "160011";
-//		rs.suspendProcessInstanceById(processInstanceId);
+		// rs.suspendProcessInstanceById(processInstanceId);
 		rs.activateProcessInstanceById(processInstanceId);
 	}
-	
-	@Test //s
+
+	@Test // s
 	public void testDeleteTaskService() {
-		
+
 	}
 }

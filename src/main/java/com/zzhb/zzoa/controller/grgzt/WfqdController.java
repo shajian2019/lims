@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -59,6 +60,13 @@ public class WfqdController {
 	@ResponseBody
 	public Integer revoke(String processInstanceId) {
 		return activitiService.deleteProcessInstance(processInstanceId, "撤销流程");
+	}
+	
+	//流程挂起与激活
+	@PostMapping("/pauseAndPlay/{event}")
+	@ResponseBody
+	public Integer pauseAndPlay(@PathVariable("event") String event,String processInstanceId) {
+		return activitiService.pauseAndPlay(event, processInstanceId);
 	}
 	
 }

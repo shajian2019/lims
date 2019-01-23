@@ -16,6 +16,8 @@ public class HistoricProcessInstanceVO {
 	private String startTime;
 	private String endTime;
 	private String deleteReason;
+	private String owerId;
+	private boolean suspended;
 
 	public String getDeleteReason() {
 		return deleteReason;
@@ -73,6 +75,23 @@ public class HistoricProcessInstanceVO {
 		this.processDefinitionName = processDefinitionName;
 	}
 	
+	public String getOwerId() {
+		return owerId;
+	}
+
+	public void setOwerId(String owerId) {
+		this.owerId = owerId;
+	}
+	
+
+	public boolean isSuspended() {
+		return suspended;
+	}
+
+	public void setSuspended(boolean suspended) {
+		this.suspended = suspended;
+	}
+
 	@Override
 	public String toString() {
 		return "HistoricProcessInstanceVO [processInstanceId=" + processInstanceId + ", businessKey=" + businessKey
@@ -91,6 +110,7 @@ public class HistoricProcessInstanceVO {
 			vo.setProcessDefinitionName(hp.getProcessDefinitionName());
 			vo.setStartTime(TimeUtil.getTimeFromDate("yyyy-MM-dd HH:mm:ss", hp.getStartTime()));
 			vo.setEndTime(TimeUtil.getTimeFromDate("yyyy-MM-dd HH:mm:ss", hp.getEndTime()));
+			vo.setOwerId(hp.getStartUserId());
 			list.add(vo);
 		}
 		return list;
