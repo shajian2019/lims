@@ -24,147 +24,20 @@
 </head>
 
 <body>
-    <#if !form??>
-	    <form class="layui-form main layui-upload">
-	    	<input type="hidden" name="bk" value="${(leave.bk)!''}">
-	        <div class="layui-form-item">
-	            <label class="layui-form-label"><span style="color:red;">*</span>申请人</label>
-	            <div class="layui-input-inline">
-	                <input type="text" name="sqr" value="${(leave.sqr)!''}" lay-verify="required" readonly="readonly" placeholder="申请人" autocomplete="off" class="layui-input">
-	            </div>
-	            <label class="layui-form-label"><span style="color:red;">*</span>部门名称</label>
-	            <div class="layui-input-inline">
-	                <input type="text" name="bmmc" value="${(leave.bmmc)!''}" lay-verify="required" readonly="readonly" placeholder="部门名称" autocomplete="off" class="layui-input">
-	            </div>
-	        </div>
-	        <div class="layui-form-item">
-	            <label class="layui-form-label"><span style="color:red;">*</span>申请日期</label>
-	            <div class="layui-input-inline">
-	                <input type="text" name="sqrq" value="${(leave.sqrq)!''}" readonly="readonly" lay-verify="required" autocomplete="off" class="layui-input">
-	            </div>
-	            <label class="layui-form-label"><span style="color:red;">*</span>请假类别</label>
-	            <div class="layui-input-inline">
-	                <select id="qjlx" name="qjlx" lay-verify="required"></select>
-	            </div>
-	        </div>
-	        <div class="layui-form-item">
-	            <label class="layui-form-label"><span style="color:red;">*</span>开始日期</label>
-	            <div class="layui-input-inline">
-	                <input type="text" id="ksrq" name="ksrq" lay-verify="required" placeholder="开始日期" autocomplete="off"
-	                    class="layui-input">
-	            </div>
-	            <label class="layui-form-label"><span style="color:red;">*</span>结束日期</label>
-	            <div class="layui-input-inline">
-	                <input type="text" id="jsrq" name="jsrq" lay-verify="required" placeholder="结束日期" autocomplete="off"
-	                    class="layui-input">
-	            </div>
-	        </div>
-	        <div class="layui-form-item">
-	        	<label class="layui-form-label"><span style="color:red;">*</span>工作时长</label>
-	            <div class="layui-input-inline">
-	                <select id="gzsc" name="gzsc" lay-verify="required"></select>
-	            </div>
-	             <label class="layui-form-label"><span style="color:red;">*</span>请假天数</label>
-	             <div class="layui-input-inline">
-	                 <input type="text" name="qjts" required lay-verify="required|number" placeholder="请假天数" autocomplete="off" class="layui-input">
-	             </div>
-	        </div>
-	        <div class="layui-form-item layui-form-text">
-	            <label class="layui-form-label">请假理由</label>
-	            <div class="layui-input-block">
-	                <textarea name="qjly" placeholder="请假理由" class="layui-textarea" style="width:500px;min-height: 70px;"></textarea>
-	            </div>
-	        </div>
-	        <div class="layui-form-item layui-form-text">
-					<label class="layui-form-label">图片</label>
-					<input type="text" name='imgName' class="layui-hide" value="">
-	                <div class="layui-inline img-up-box">
-						  <button type="button" id="img_up"><i class="fa fa-plus"></i></button> 
-					</div>
-	        </div>
-	        <div class="layui-form-item layui-form-text">
-	                <label class="layui-form-label">审批人</label>
-					<div class="layui-inline" id="spr">
-						<div id="spr_add">
-							<i class="fa fa-plus"></i>
-						</div>
-					</div>
-	        </div>
-	        <div class="layui-form-item">
-	            <div class="layui-input-block">
-	                <button class="layui-btn layui-btn-primary" lay-submit lay-filter="sq" id="sq">申请</button>
-	                <button type="reset" class="layui-btn layui-btn-primary">取消</button>
-	            </div>
-	        </div>
-	    </form>
-	<#else>
-		<form class="layui-form  main layui-upload">
-	        <div class="layui-form-item">
-	            <label class="layui-form-label"><span style="color:red;">*</span>申请人</label>
-	            <div class="layui-input-inline">
-	                <input type="text" name="sqr" required lay-verify="required" placeholder="申请人" autocomplete="off" class="layui-input">
-	            </div>
-	            <label class="layui-form-label"><span style="color:red;">*</span>所在部门</label>
-	            <div class="layui-input-inline">
-	                <input type="text" name="department" required lay-verify="required" placeholder="部门名称" autocomplete="off" class="layui-input">
-	            </div>
-	        </div>
-	        <div class="layui-form-item">
-	            <label class="layui-form-label"><span style="color:red;">*</span>申请日期</label>
-	            <div class="layui-input-inline">
-	                <input type="text" name="sqrq" required lay-verify="required" autocomplete="off" class="layui-input">
-	            </div>
-	            <label class="layui-form-label"><span style="color:red;">*</span>请假类别</label>
-	            <div class="layui-input-inline">
-	                <select name="qjlx" lay-verify="required">
-	                    <option value="">请假类型</option>
-	                </select>
-	            </div>
-	        </div>
-	        <div class="layui-form-item">
-	            <label class="layui-form-label"><span style="color:red;">*</span>开始日期</label>
-	            <div class="layui-input-inline">
-	                <input type="text" name="ksrq" required lay-verify="required" placeholder="请输入密码" autocomplete="off"
-	                    class="layui-input">
-	            </div>
-	            <label class="layui-form-label"><span style="color:red;">*</span>结束日期</label>
-	            <div class="layui-input-inline">
-	                <input type="text" name="jsrq" required lay-verify="required" placeholder="请输入密码" autocomplete="off"
-	                    class="layui-input">
-	            </div>
-	        </div>
-	        <div class="layui-form-item">
-	                <label class="layui-form-label">请假天数</label>
-	                <div class="layui-input-inline">
-	                    <input type="text" name="qjts" required lay-verify="required" placeholder="" autocomplete="off"
-	                        class="layui-input">
-	                </div>
-	        </div>
-	        <div class="layui-form-item layui-form-text">
-	            <label class="layui-form-label">请假理由</label>
-	            <div class="layui-input-block">
-	                <textarea name="" placeholder="请输入内容" class="layui-textarea" style="width:500px;"></textarea>
-	            </div>
-	        </div>
-    	</form>
-    </#if>
+		${(form!'开发中')}
 </body>
-<script type="text/html" id="spr_demo">
-	{{#  layui.each(d.list, function(index, item){ }}
-	<div class="spr-select">
-			<i class="fa fa-close spr-close"></i>
-			<div class="spr-box">
-				<p>软件研发</p>
-				<p>java工程师</p>
-			</div>
-			 <p>陈浩杰</p>
-		</div>
-	{{# });}}
-</script>
 <script src="${ctx}/plugins/layui/layui.all.js"></script>
 <script type="text/javascript">
-	var $ = layui.jquery,laydate = layui.laydate,form=layui.form,upload = layui.upload,laytpl=layui.laytpl,index=null;
-	if("${taskDefinitionKey!''}" == ''){
+	var $ = layui.jquery,laydate = layui.laydate,form=layui.form,upload = layui.upload,laytpl=layui.laytpl,index=null,formFilter="leave";
+	var formkey = "${formkey!''}";
+	if(formkey == 'leave_startevent1.html'){
+		
+		form.val(formFilter, {
+			  "sqr": "${(leave.sqr)!''}",
+			  "sqrq": "${(leave.sqrq)!''}", 
+			  "bmmc": "${(leave.bmmc)!''}", 
+		})
+		
 		$.ajax({
             type: "get",
             data: {gtype:'qjlx_type'},
@@ -241,6 +114,8 @@
 			                index = layer.load(1);
 			            },
 			            success: function (data) {
+			            	fileNameArray.remove(file.name)
+			            	console.log(fileNameArray)
 			            	layer.close(index);
 			            },
 			            error: function (data) {
@@ -265,7 +140,8 @@
 	form.on('submit(sq)', function(data){
 		if(sprs.length > 0){
 			 data.field.sprs = sprs.join(",")
-			 data.field.id = "${user.u_id}leave${taskDefinitionKey!''}";
+			 data.field.id = "${user.u_id}leave${formkey!''}";
+			 data.field.bk = "${(leave.bk)!''}";
 			 $.ajax({
 		            type: "post",
 		            data: data.field,
@@ -303,7 +179,7 @@
 	            area: ['722px', '516px'],
 	         	title: false,
 	            fixed: false, //不固定
-	            content: '${ctx}/grgzt/fqlc/spr?key=leave&taskkey=${taskDefinitionKey!''}',
+	            content: '${ctx}/grgzt/fqlc/spr?key=leave&formkey=${formkey!''}',
 	            end: function(){
 	            	getSprs();
          	    }
@@ -321,7 +197,7 @@
 	 function getSprs(){
 			$.ajax({
 	            type: "post",
-	            data: {id:"${user.u_id}leave${taskDefinitionKey!''}"},
+	            data: {id:"${user.u_id}leave${formkey!''}"},
 	            url: "${ctx}/grgzt/fqlc/getSprs",
 	            beforeSend: function () {
 	                index = layer.load(1);
@@ -356,8 +232,12 @@
 	      });
 	 }
 	 
-	} else if ("${taskDefinitionKey!''}" == 'usertask2'){
+	} else if (formkey == 'usertask2'){
 		console.log("usertask2")
+		form.on('submit(sp)', function(data){
+			 console.log(data)
+			 return false;
+		});
 	}
 </script>
 </html>

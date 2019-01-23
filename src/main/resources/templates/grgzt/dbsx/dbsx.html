@@ -189,9 +189,8 @@
         
         table.on('tool(tableBox)', function (obj) {
             var data = obj.data;
-            console.log(data)
             if (obj.event == 'sprw') {
-            	sprw(data.NAME_,data.ID_)
+            	sprw(data.NAME_,data.ID_,data.bk)
             } else if("preview" == obj.event){
             	index = layer.open({
              		  type: 2,
@@ -258,12 +257,12 @@
         
     })
     
-    function sprw(title,key){
+    function sprw(title,key,bk){
     	var options = {};
     	options.id = key;
     	options.title = title;
     	options.icon = "fa-pencil";
-    	options.url = "${ctx}/grgzt/dbsx/viewTask/"+key;
+    	options.url = "${ctx}/grgzt/dbsx/viewTask/"+key+"?bk="+bk;
     	parent.window.addTab(options);
     }
     

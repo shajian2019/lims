@@ -344,12 +344,12 @@ public class ActivitiService {
 		runtimeService.deleteProcessInstance(processInstanceId, deleteReason);
 		return 1;
 	}
-	
+
 	@Transactional
 	public Integer pauseAndPlay(String event, String processInstanceId) {
-		if("play".equals(event)) {
+		if ("play".equals(event)) {
 			runtimeService.activateProcessInstanceById(processInstanceId);
-		}else {
+		} else {
 			runtimeService.suspendProcessInstanceById(processInstanceId);
 		}
 		return 1;
@@ -362,24 +362,18 @@ public class ActivitiService {
 		ProcessDefinition pd = repositoryService.createProcessDefinitionQuery().processDefinitionKey(key)
 				.latestVersion().singleResult();
 		is.setAuthenticatedUserId(user.getU_id() + "");
-		Map<String, String> vars = new HashMap<>();
-		ProcessInstance pi = formService.submitStartFormData(pd.getId(), params.get("bk"), vars);
 
-		Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
-		taskService.setOwner(task.getId(), user.getU_id() + "");
-		String name = task.getName();
-
-		
-		userSprMapper.updateSprs(params);
-		Map<String, Object> variable = new HashMap<>();
-		variable.put("sprs", params.get("sprs"));
-		taskService.complete(task.getId(), variable);
+		ProcessInstance pi = formService.submitStartFormData(pd.getId(), params.get("bk"), params);
 
 		params.put("proid", pi.getId());
 		Integer saveBusiness = saveBusiness(key, params);
-		task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
+
+		userSprMapper.updateSprs(params);
+
+		Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
 
 		// 添加附件
+		String name = task.getName();
 		List<String> readFilePath = FileUtil.readFilePath(props.getTempPath(), params.get("bk"));
 		for (String fileName : readFilePath) {
 			String filePath = props.getTempPath() + File.separator + fileName;

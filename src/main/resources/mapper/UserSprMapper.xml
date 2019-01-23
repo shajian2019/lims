@@ -18,9 +18,9 @@
 	</select>
 	
 	<update id="replaceSprsById" parameterType="java.util.Map">
-		REPLACE INTO oa_t_user_spr (id,uid,`key`,taskkey,sprs)
+		REPLACE INTO oa_t_user_spr (id,uid,`key`,formkey,sprs)
 			VALUES
-		(#{id},#{uid},#{key},#{taskkey},#{sprs})
+		(#{id},#{uid},#{key},#{formkey},#{sprs})
 	</update>
 	
 	<update id="updateSprs" parameterType="java.util.Map">

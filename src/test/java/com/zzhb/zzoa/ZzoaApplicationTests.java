@@ -20,6 +20,7 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.Task;
 import org.activiti.image.ProcessDiagramGenerator;
 import org.junit.Test;
@@ -66,11 +67,11 @@ public class ZzoaApplicationTests {
 
 	@Test
 	public void contextLoads3() {
-		String deploymentId = "40001";
-		repositoryService.deleteDeployment(deploymentId, true);
-
+		ProcessDefinition singleResult = repositoryService.createProcessDefinitionQuery().processDefinitionName("leave").singleResult();
+		System.out.println(singleResult);
 	}
 
+	
 	@Test // 删除运行中的流程
 	public void deleteProcessInstance() {
 		System.out.println(rs.createProcessInstanceQuery().count());

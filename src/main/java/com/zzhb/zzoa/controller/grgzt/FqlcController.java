@@ -64,11 +64,16 @@ public class FqlcController {
 	@Autowired
 	ActivitiService as;
 
-	@RequestMapping("/beforeStart/{key}")
-	public String beforeStart(@PathVariable("key") String key, ModelMap modelMap) {
+	@RequestMapping("/beforeStart/{processDefinitionId}")
+	public String beforeStart(@PathVariable("processDefinitionId") String processDefinitionId, ModelMap modelMap) {
+		String key = processDefinitionId.split(":")[0];
 		User user = SessionUtils.getUser();
+		Object renderedStartForm = formService.getRenderedStartForm(processDefinitionId);
+		String startFormKey = formService.getStartFormKey(processDefinitionId);
 		String businessKey = TimeUtil.getTimeByCustom("yyyyMMddHHmmss") + user.getU_id();
 		modelMap.put(key, initLeave(user, businessKey));
+		modelMap.put("form", renderedStartForm);
+		modelMap.put("formkey", startFormKey);
 		return "grgzt/fqlc/" + key;
 	}
 
@@ -79,20 +84,20 @@ public class FqlcController {
 		return as.startProcessInstance(key, params);
 	}
 
-	private Leave initLeave(User user, String businessKey) {
+	private Leave initLeave(User user, String bk) {
 		Leave leave = new Leave();
-		leave.setBk(businessKey);
 		leave.setSqr(user.getNickname());
 		Org org = SessionUtils.getOrg();
+		leave.setBk(bk);
 		leave.setBmmc(org.getName());
 		leave.setSqrq(TimeUtil.getTimeByCustom("yyyy-MM-dd HH:mm:ss"));
 		return leave;
 	}
 
 	@GetMapping("/spr")
-	public String fqlcSpr(@RequestParam("key") String key, @RequestParam("taskkey") String taskkey, ModelMap modelMap) {
+	public String fqlcSpr(@RequestParam("key") String key, @RequestParam("formkey") String formkey, ModelMap modelMap) {
 		modelMap.put("key", key);
-		modelMap.put("taskkey", taskkey);
+		modelMap.put("formkey", formkey);
 		return "grgzt/fqlc/spr";
 	}
 

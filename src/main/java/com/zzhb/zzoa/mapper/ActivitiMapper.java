@@ -34,4 +34,6 @@ public interface ActivitiMapper {
 	public Integer addProcessDefinitionType(ProcessDefinitionType processDefinitionType);
 	
 	public List<Map<String,Object>> getTodoTaskAndToClaimTask(Map<String, Object> params);
+	
+	public Map<String,String> getBusinessByBk(Map<String,String> params);
 }

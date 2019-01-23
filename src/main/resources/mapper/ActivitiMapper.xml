@@ -109,4 +109,13 @@
 		ORDER BY
 		CREATE_TIME_ DESC
 	</select>
+	
+	<select id="getBusinessByBk" resultType="java.util.Map" parameterType="java.util.Map">
+		SELECT * FROM ${tablename} 
+		<where>
+			<if test="bk !=null and bk !='' ">
+				and bk = #{bk}
+			</if>
+		</where>
+	</select>
 </mapper>

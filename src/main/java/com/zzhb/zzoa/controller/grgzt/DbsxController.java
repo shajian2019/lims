@@ -1,5 +1,6 @@
 package com.zzhb.zzoa.controller.grgzt;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.FormService;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
 import com.zzhb.zzoa.service.ActivitiService;
+import com.zzhb.zzoa.service.DbsxService;
+import com.zzhb.zzoa.utils.Constant;
 
 @Controller
 @RequestMapping("/grgzt/dbsx")
@@ -27,18 +30,18 @@ public class DbsxController {
 
 	@Autowired
 	ActivitiService activitiService;
-	
+
 	@Autowired
 	TaskService taskService;
-	
+
 	@Autowired
 	FormService formService;
-	
+
 	@RequestMapping("/dbsx")
 	public String dbsx() {
 		return "grgzt/dbsx/dbsx";
 	}
-	
+
 	@RequestMapping("/list")
 	@ResponseBody
 	public JSONObject dbsxList(@RequestParam(defaultValue = "1") Integer page,
@@ -46,21 +49,29 @@ public class DbsxController {
 		return activitiService.dbsxList(page, limit, params);
 	}
 
-	//领取任务
+	// 领取任务
 	@PostMapping("/calimTask")
 	@ResponseBody
-	public Integer calimTask(String taskId,String u_id) {
+	public Integer calimTask(String taskId, String u_id) {
 		return activitiService.calimTask(taskId, u_id);
 	}
-	
+
+	@Autowired
+	DbsxService dbsxService;
+
 	@GetMapping("/viewTask/{taskId}")
-	public String viewTask(@PathVariable("taskId")String taskId,ModelMap modelMap) {
+	public String viewTask(String bk, @PathVariable("taskId") String taskId, ModelMap modelMap) {
 		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
 		String key = task.getProcessDefinitionId().split(":")[0];
 		Object renderedTaskForm = formService.getRenderedTaskForm(taskId);
 		modelMap.put("form", renderedTaskForm);
 		modelMap.put("taskDefinitionKey", task.getTaskDefinitionKey());
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("bk", bk);
+		params.put("tablename", Constant.OATPREIX + key);
+		params = dbsxService.getBusinessByBk(params);
+		modelMap.put(key, params);
 		return "grgzt/fqlc/" + key;
 	}
-	
+
 }

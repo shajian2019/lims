@@ -87,7 +87,7 @@
             nodeIconArray: { "2": { "open": "fa fa-address-book", "close": "fa fa-address-book" } },
             skin: 'zzfc',
             method: 'GET',
-            url:"${ctx}/orgUser/spr?id=${user.u_id}${key}${(taskkey!'')}&u_id=${user.u_id}",
+            url:"${ctx}/orgUser/spr?id=${user.u_id}${key}${(formkey!'')}&u_id=${user.u_id}",
             type:'all',
             icon: ["2", "1"],
             dot: false,
@@ -119,7 +119,7 @@
             	var index;
             	$.ajax({
                     type: "POST",
-                    data:{sprs:sprs,id:"${user.u_id}${key}${(taskkey!'')}",uid:"${user.u_id}",key:"${key}",taskkey:"${(taskkey!'')}"},
+                    data:{sprs:sprs,id:"${user.u_id}${key}${(formkey!'')}",uid:"${user.u_id}",key:"${key}",formkey:"${(formkey!'')}"},
                     url: "${ctx}/grgzt/fqlc/saveSpr",
                     beforeSend: function () {
                         index = layer.load(1);

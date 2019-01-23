@@ -19,6 +19,7 @@ spring:
     check-process-definitions: true
     process-definition-location-prefix: classpath:/processes/
     async-executor-activate: false
+    deployment-name: zzoa
     history-level: full
     rest-api-enabled: true
     rest-api-mapping: /ac/**
