@@ -157,6 +157,10 @@
     display: block!important;
     height: calc(100% - 5px) ;
 }
+.layui-nav-item .layui-show{
+	display:block!important;
+	height:auto;
+}
 .layui-tab-card{border:none;}
 /*右侧内容*/
 .kit-layout-admin .layui-body{
