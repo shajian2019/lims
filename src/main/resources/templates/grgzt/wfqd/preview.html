@@ -25,7 +25,7 @@
    {{#  if(d.assignee == null){ }}
 		<span style="color: #1E9FFF;">未领取</span>
    {{#  } else { }}
-		{{#  if(d.endTime == ''){ }}
+		{{#  if(d.endTime == '' || d.endTime == null){ }}
 			<span style="color: #FFC125;">未处理</span>
    		{{#  } else { }}
 			<span style="color: green">已处理</span>

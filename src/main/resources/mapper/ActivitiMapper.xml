@@ -4,7 +4,9 @@
 	<insert id="addProcessDefinitionExt" parameterType="com.zzhb.zzoa.domain.activiti.ProcessDefinitionExt">
 		INSERT INTO ext_act_re_procdef (id,name,`key`,version,deployment_id,resource_name,dgrm_resource_name,createtime,createuser,protype,description)
 		VALUES
-		(#{id},#{name},#{key},#{version},#{deployment_id},#{resource_name},#{dgrm_resource_name},now(),#{createuser},#{protype},#{description})
+		<foreach collection ="pdes" item="pde" index= "index" separator =",">
+			(#{pde.id},#{pde.name},#{pde.key},#{pde.version},#{pde.deployment_id},#{pde.resource_name},#{pde.dgrm_resource_name},now(),#{pde.createuser},#{pde.protype},#{pde.description})
+		</foreach>
 	</insert>
 	
 	<select id="getProcessDefinitionExts" resultType="com.zzhb.zzoa.domain.activiti.ProcessDefinitionExt">

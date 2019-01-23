@@ -112,7 +112,6 @@ public class HistoricTaskInstanceVO {
 			vo.setDurationInMillis(hp.getDurationInMillis());
 			vo.setAssignee(hp.getAssignee());
 			vo.setOwner(hp.getOwner());
-			vo.setAssignee(hp.getAssignee());
 			list.add(vo);
 		}
 		return list;

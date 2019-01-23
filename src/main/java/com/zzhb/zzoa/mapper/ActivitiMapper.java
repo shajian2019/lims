@@ -3,6 +3,7 @@ package com.zzhb.zzoa.mapper;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import com.zzhb.zzoa.domain.User;
@@ -14,7 +15,7 @@ public interface ActivitiMapper {
 	@Select("SELECT NAME_ FROM act_ge_bytearray WHERE DEPLOYMENT_ID_ = #{0}")
 	public List<String> getDeployResourceNameByDepId(String deploymentId);
 
-	public Integer addProcessDefinitionExt(ProcessDefinitionExt pde);
+	public Integer addProcessDefinitionExt(@Param("pdes") List<ProcessDefinitionExt> pdes);
 
 	public List<ProcessDefinitionExt> getProcessDefinitionExts(Map<String, String> params);
 

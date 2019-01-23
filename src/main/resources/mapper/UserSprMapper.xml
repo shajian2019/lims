@@ -44,4 +44,13 @@
 			</if>
 		</where>
 	</select>
+	
+	<delete id="delSprs" parameterType="java.util.Map">
+		DELETE FROM oa_t_user_spr
+		<where>
+			<if test="key !=null and key !='' ">
+				and `key` = #{key}
+			</if>
+		</where>
+	</delete>
 </mapper>

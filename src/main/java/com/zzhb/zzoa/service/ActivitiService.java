@@ -31,6 +31,7 @@ import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
 import org.activiti.image.ProcessDiagramGenerator;
 import org.slf4j.Logger;
@@ -57,6 +58,7 @@ import com.zzhb.zzoa.domain.activiti.ProcessDefinitionType;
 import com.zzhb.zzoa.mapper.ActivitiMapper;
 import com.zzhb.zzoa.mapper.LeaveMapper;
 import com.zzhb.zzoa.mapper.UserMapper;
+import com.zzhb.zzoa.mapper.UserSprMapper;
 import com.zzhb.zzoa.utils.CustomProcessDiagramGenerator;
 import com.zzhb.zzoa.utils.FileUtil;
 import com.zzhb.zzoa.utils.LayUiUtil;
@@ -74,7 +76,7 @@ public class ActivitiService {
 
 	@Autowired
 	ActivitiMapper activitiMapper;
-	
+
 	@Autowired
 	RepositoryService repositoryService;
 
@@ -96,20 +98,25 @@ public class ActivitiService {
 		Deployment deploy = repositoryService.createDeployment()
 				.addZipInputStream(new ZipInputStream(file.getInputStream())).name(resourceName).deploy();
 
-		ProcessDefinition pdf = repositoryService.createProcessDefinitionQuery().deploymentId(deploy.getId())
-				.singleResult();
-		ProcessDefinitionExt pde = new ProcessDefinitionExt();
-		pde.setId(pdf.getId());
-		pde.setDeployment_id(deploy.getId());
-		pde.setCreateuser(params.get("createuser"));
-		pde.setDescription(params.get("description"));
-		pde.setDgrm_resource_name(pdf.getDiagramResourceName());
-		pde.setKey(pdf.getKey());
-		pde.setName(pdf.getName());
-		pde.setResource_name(pdf.getResourceName());
-		pde.setVersion(pdf.getVersion());
-		pde.setProtype(params.get("protype"));
-		Integer addProcessDefinitionExt = activitiMapper.addProcessDefinitionExt(pde);
+		List<ProcessDefinition> pdfs = repositoryService.createProcessDefinitionQuery().deploymentId(deploy.getId())
+				.list();
+		List<ProcessDefinitionExt> pdes = new ArrayList<ProcessDefinitionExt>();
+		for (ProcessDefinition pdf : pdfs) {
+			ProcessDefinitionExt pde = new ProcessDefinitionExt();
+			pde.setId(pdf.getId());
+			pde.setDeployment_id(deploy.getId());
+			pde.setCreateuser(params.get("createuser"));
+			pde.setDescription(params.get("description"));
+			pde.setDgrm_resource_name(pdf.getDiagramResourceName());
+			pde.setKey(pdf.getKey());
+			pde.setName(pdf.getName());
+			pde.setResource_name(pdf.getResourceName());
+			pde.setVersion(pdf.getVersion());
+			pde.setProtype(params.get("protype"));
+			pdes.add(pde);
+		}
+
+		Integer addProcessDefinitionExt = activitiMapper.addProcessDefinitionExt(pdes);
 		return addProcessDefinitionExt;
 	}
 
@@ -185,9 +192,22 @@ public class ActivitiService {
 		return activitiMapper.addProcessDefinitionType(pt);
 	}
 
+	@Autowired
+	UserSprMapper userSprMapper;
+
 	@Transactional
-	public Integer lcdyDel(Map<String, String> params) {
-		repositoryService.deleteDeployment(params.get("deployment_id"), true);
+	public long lcdyDel(Map<String, String> params) {
+		boolean sfjl = "0".equals(params.get("sfjl")) ? false : true;
+		if (!sfjl) {
+			long count = hs.createHistoricProcessInstanceQuery().deploymentId(params.get("deployment_id")).unfinished()
+					.count();
+			if (count > 0) {
+				return 0 - count;
+			}
+		}
+		repositoryService.deleteDeployment(params.get("deployment_id"), sfjl);
+		userMapper.delUserProcdef(params.get("p_id"), null);
+		userSprMapper.delSprs(params);
 		return activitiMapper.delProcessDefinitionExt(params);
 	}
 
@@ -276,7 +296,7 @@ public class ActivitiService {
 
 	public JSONObject historyTask(String businessKey) {
 		List<HistoricTaskInstance> list = hs.createHistoricTaskInstanceQuery().processInstanceBusinessKey(businessKey)
-				.list();
+				.finished().orderByTaskCreateTime().asc().list();
 		List<HistoricTaskInstanceVO> historicTaskInstanceVOs = HistoricTaskInstanceVO.getHistoricTaskInstanceVOs(list);
 		for (HistoricTaskInstanceVO vo : historicTaskInstanceVOs) {
 			String u_id = null;
@@ -291,6 +311,20 @@ public class ActivitiService {
 				vo.setAssignee(user.getNickname());
 			}
 		}
+		Task ruTask = taskService.createTaskQuery().processInstanceBusinessKey(businessKey).active().singleResult();
+		if (ruTask != null) {
+			HistoricTaskInstanceVO vo = new HistoricTaskInstanceVO();
+			vo.setId(ruTask.getId());
+			vo.setDeleteReason(null);
+			vo.setName(ruTask.getName());
+			vo.setStartTime(TimeUtil.getTimeFromDate("yyyy-MM-dd HH:mm:ss", ruTask.getCreateTime()));
+			if (ruTask.getAssignee() != null) {
+				User user = userMapper.getUserById(Integer.parseInt(ruTask.getAssignee()));
+				vo.setAssignee(user.getNickname());
+			}
+			historicTaskInstanceVOs.add(vo);
+		}
+
 		return LayUiUtil.pagination(historicTaskInstanceVOs.size(), historicTaskInstanceVOs);
 	}
 
@@ -325,7 +359,7 @@ public class ActivitiService {
 		Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
 		taskService.setOwner(task.getId(), user.getU_id() + "");
 		String name = task.getName();
-		
+
 		Map<String, Object> variable = new HashMap<>();
 		variable.put("spr", params.get("spr"));
 		taskService.complete(task.getId(), variable);
@@ -333,19 +367,20 @@ public class ActivitiService {
 		params.put("proid", pi.getId());
 		Integer saveBusiness = saveBusiness(key, params);
 		task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
-		
-		//添加附件
+
+		// 添加附件
 		List<String> readFilePath = FileUtil.readFilePath(props.getTempPath(), params.get("bk"));
 		for (String fileName : readFilePath) {
-			String filePath = props.getTempPath()+File.separator+fileName;
+			String filePath = props.getTempPath() + File.separator + fileName;
 			FileInputStream fileInputStream = null;
 			try {
 				fileInputStream = new FileInputStream(new File(filePath));
-				taskService.createAttachment(name+"-图片附件", task.getId(), pi.getId(), fileName.split("&")[1], fileName.split("&")[1], fileInputStream);
+				taskService.createAttachment(name + "-图片附件", task.getId(), pi.getId(), fileName.split("&")[1],
+						fileName.split("&")[1], fileInputStream);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} finally {
-				if(fileInputStream != null) {
+				if (fileInputStream != null) {
 					try {
 						fileInputStream.close();
 						FileUtil.delete(filePath);
@@ -355,7 +390,7 @@ public class ActivitiService {
 				}
 			}
 		}
-		
+
 		result.put("code", saveBusiness);
 		result.put("msg", task.getName());
 		result.put("bk", params.get("bk"));
@@ -384,10 +419,10 @@ public class ActivitiService {
 			hpiq.processDefinitionKeyIn(Arrays.asList(keys.split(",")));
 		}
 		if (dateS != null && !"".equals(dateS)) {
-			hpiq.startedAfter(TimeUtil.getDateByCustom("yyyy-MM-dd HH:mm:ss", dateS+" 00:00:00"));
+			hpiq.startedAfter(TimeUtil.getDateByCustom("yyyy-MM-dd HH:mm:ss", dateS + " 00:00:00"));
 		}
 		if (dateE != null && !"".equals(dateE)) {
-			hpiq.startedBefore(TimeUtil.getDateByCustom("yyyy-MM-dd HH:mm:ss", dateE+" 23:59:59"));
+			hpiq.startedBefore(TimeUtil.getDateByCustom("yyyy-MM-dd HH:mm:ss", dateE + " 23:59:59"));
 		}
 		long count = hpiq.count();
 		hpiq = hpiq.orderByProcessInstanceStartTime().desc();
@@ -485,14 +520,13 @@ public class ActivitiService {
 	}
 
 	@Transactional
-	public Integer calimTask(String taskId,String u_id) {
+	public Integer calimTask(String taskId, String u_id) {
 		taskService.claim(taskId, u_id);
 		return 1;
 	}
-	
-	
+
 	@Transactional
-	public void viewTask(String taskId,ModelMap modelMap) {
+	public void viewTask(String taskId, ModelMap modelMap) {
 		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
 		String processDefinitionId = task.getProcessDefinitionId();
 		Object renderedTaskForm = formService.getRenderedTaskForm(taskId);

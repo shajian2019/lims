@@ -68,7 +68,6 @@ public class ZzoaApplicationTests {
 	public void contextLoads3() {
 		String deploymentId = "40001";
 		repositoryService.deleteDeployment(deploymentId, true);
-
 	}
 
 	@Test // 删除运行中的流程
@@ -134,7 +133,7 @@ public class ZzoaApplicationTests {
 		 * System.out.println(h.getTaskDefinitionKey()); }
 		 */
 
-		List<HistoricProcessInstance> hps = hs.createHistoricProcessInstanceQuery().startedBy("2").list();
+		/*List<HistoricProcessInstance> hps = hs.createHistoricProcessInstanceQuery().startedBy("2").list();
 		for (HistoricProcessInstance hp : hps) {
 			System.out.println(hp.getBusinessKey());
 			System.out.println(hp.getProcessDefinitionKey());
@@ -142,7 +141,9 @@ public class ZzoaApplicationTests {
 			System.out.println(hp.getProcessDefinitionName());
 			System.out.println(hp.getStartTime());
 			System.out.println(hp.getEndTime());
-		}
+		}*/
+		String processInstanceId = "247507";
+		hs.deleteHistoricProcessInstance(processInstanceId);
 
 	}
 	
