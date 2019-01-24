@@ -60,6 +60,7 @@ server:
 logging:
   level:
     com.zzhb.zzoa: DEBUG
+    #com.zzhb.zzoa.mapper: DEBUG
     org.springframework.scheduling: INFO
     org.activiti.engine.impl.persistence.entity: DEBUG
 
