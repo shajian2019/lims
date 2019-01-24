@@ -9,6 +9,7 @@ import java.util.Map;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.SequenceFlow;
+import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngine;
@@ -21,6 +22,7 @@ import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
 import org.activiti.image.ProcessDiagramGenerator;
 import org.junit.Test;
@@ -44,11 +46,17 @@ public class ZzoaApplicationTests {
 	
 	@Autowired
 	FileController fileController;
+	
+	@Autowired
+	FormService formService;
 
 	@Test
 	public void contextLoads() {
-		String taskId = "325054";
-		fileController.taskAttachments(taskId);
+		
+		List<Comment> taskComments = ts.getTaskComments("390048");
+		for (Comment comment : taskComments) {
+			System.out.println(comment.getFullMessage());
+		}
 	}
 
 	@Test

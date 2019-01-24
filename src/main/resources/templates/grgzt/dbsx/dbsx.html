@@ -109,6 +109,9 @@
 				<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="sprw">
 					<i class="fa fa-pencil" title="审批任务"></i>
         		</a>
+				<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="cxlq">
+					<i class="fa fa-undo" title="撤销领取"></i>
+        		</a>
    			{{#  } }}
 		{{#  } else { }}
 			{{#  if(d.SUSPENSION_STATE_ == 2){ }}
@@ -244,6 +247,39 @@
 		                                        where: data.field
 		                                    });
 		                                });
+		                            } else {
+		                                layer.msg("操作失败")
+		                            }
+		                        },
+		                        error: function (data) {
+		                        	layer.close(index);
+		                            layer.msg("服务端异常");
+		                        }
+		                    });
+	            	})
+            	}
+            } else if ("cxlq" == obj.event){
+            	if(data.SUSPENSION_STATE_ != '1'){
+            		layer.msg("【"+data.sqr+"】已中止该流程,暂时无法撤销", {offset: ['50%'], time: 2000});
+            	} else {
+	            	layer.confirm('确定放弃处理该任务吗?', function (index) {
+		            		$.ajax({
+		                        type: "post",
+		                        data: {taskId:data.ID_},
+		                        url: "${ctx}/grgzt/dbsx/calimTask",
+		                        beforeSend: function () {
+		                            index = layer.load(1);
+		                        },
+		                        success: function (data) {
+		                            layer.close(index);
+		                            if (data > 0) {
+		                                layer.msg("放弃成功", {offset: ['50%'], time: 1000}, function () {
+		                                	table.reload(tableId, {
+		                                        where: data.field
+		                                    });
+		                                });
+		                            } else if (data == 0) {
+		                                layer.msg("您是唯一指定审批人，无法放弃处理", {offset: ['50%'], time: 2000})
 		                            } else {
 		                                layer.msg("操作失败")
 		                            }

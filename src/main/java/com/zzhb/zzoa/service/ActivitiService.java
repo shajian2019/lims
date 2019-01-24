@@ -31,6 +31,7 @@ import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
 import org.activiti.image.ProcessDiagramGenerator;
 import org.slf4j.Logger;
@@ -38,7 +39,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.ModelMap;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -395,10 +395,46 @@ public class ActivitiService {
 
 		params.put("proid", pi.getId());
 		Integer saveBusiness = saveBusiness(key, params);
-		
+
 		result.put("code", saveBusiness);
 		result.put("msg", task.getName());
 		result.put("bk", params.get("bk"));
+		return result;
+	}
+
+	@Transactional
+	public JSONObject submitTaskFormData(String taskId, Map<String, String> params) {
+		User user = SessionUtils.getUser();
+		JSONObject result = new JSONObject();
+		String bk = params.get("bk");
+
+		// 更新审批人表
+		userSprMapper.updateSprs(params);
+
+		// 保存审批备注表
+		Task ruTask = taskService.createTaskQuery().taskId(taskId).singleResult();
+		String processInstanceId = ruTask.getProcessInstanceId();
+		is.setAuthenticatedUserId(user.getU_id() + "");
+		JSONObject json = new JSONObject();
+		json.put("spyj", params.get("spyj"));
+		json.put("agree", params.get("agree"));
+		taskService.addComment(taskId, processInstanceId, JSON.toJSONString(json));
+
+		// 完成当前任务
+		formService.submitTaskFormData(taskId, params);
+
+		params.put("assignee", ruTask.getAssignee());
+		params.put("taskId", taskId);
+		activitiMapper.updateHiTaskInst(params);
+
+		Task task = taskService.createTaskQuery().processInstanceBusinessKey(bk).singleResult();
+		if (task != null) {
+			System.out.println(task.getAssignee());
+			result.put("code", 1);
+			result.put("msg", task.getName());
+		} else {
+			result.put("code", 0);
+		}
 		return result;
 	}
 
@@ -523,7 +559,6 @@ public class ActivitiService {
 							earliestStamp = highLightedFlowStartTime;
 						}
 					}
-
 					highLightedFlowIds.add(highLightedFlowId);
 				}
 
@@ -545,16 +580,17 @@ public class ActivitiService {
 	}
 
 	@Transactional
-	public Integer calimTask(String taskId, String u_id) {
-		taskService.claim(taskId, u_id);
+	public Integer claimTask(String taskId, String u_id) {
+		if (u_id != null) {
+			taskService.claim(taskId, u_id);
+		} else {
+			List<IdentityLink> identityLinksForTask = taskService.getIdentityLinksForTask(taskId);
+			if (identityLinksForTask.size() > 1) {
+				taskService.setAssignee(taskId, null);
+			} else {
+				return 0;
+			}
+		}
 		return 1;
-	}
-
-	@Transactional
-	public void viewTask(String taskId, ModelMap modelMap) {
-		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
-		String processDefinitionId = task.getProcessDefinitionId();
-		Object renderedTaskForm = formService.getRenderedTaskForm(taskId);
-		modelMap.put("form", renderedTaskForm);
 	}
 }

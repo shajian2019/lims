@@ -1,12 +1,9 @@
 package com.zzhb.zzoa.controller.grgzt;
 
-import java.io.InputStream;
-import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.FormService;
 import org.activiti.engine.TaskService;
-import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.Task;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.zzhb.zzoa.service.ActivitiService;
 import com.zzhb.zzoa.service.DbsxService;
@@ -31,7 +29,7 @@ public class DbsxController {
 
 	@Autowired
 	ActivitiService activitiService;
-
+	
 	@Autowired
 	TaskService taskService;
 
@@ -50,11 +48,11 @@ public class DbsxController {
 		return activitiService.dbsxList(page, limit, params);
 	}
 
-	// 领取任务
+	// 领取或放弃领取任务
 	@PostMapping("/calimTask")
 	@ResponseBody
-	public Integer calimTask(String taskId, String u_id) {
-		return activitiService.calimTask(taskId, u_id);
+	public Integer claimTask(String taskId, String u_id) {
+		return activitiService.claimTask(taskId, u_id);
 	}
 
 	@Autowired
@@ -68,7 +66,17 @@ public class DbsxController {
 		modelMap.put("form", renderedTaskForm);
 		modelMap.put("formkey", task.getFormKey());
 		modelMap.put("taskId", taskId);
+		modelMap.put("bk", bk);
 		return "grgzt/fqlc/" + key;
 	}
+	
+	@RequestMapping("/complete/{taskId}")
+	@ResponseBody
+	public JSONObject complete(@PathVariable("taskId") String taskId, @RequestParam Map<String, String> params) {
+		logger.info(taskId + "=" + JSON.toJSONString(params));
+		JSONObject submitTaskFormData = activitiService.submitTaskFormData(taskId, params);
+		return submitTaskFormData;
+	}
+
 
 }
