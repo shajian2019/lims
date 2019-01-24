@@ -24,7 +24,91 @@
 </head>
 
 <body>
-		${(form!'开发中')}
+		<!-- ${(form!'开发中')} -->
+<form class="layui-form main layui-upload" lay-filter="leave">
+     <div class="layui-form-item">
+         <label class="layui-form-label"><span style="color:red;">*</span>申请人</label>
+         <div class="layui-input-inline">
+             <input type="text" name="sqr" lay-verify="required" readonly="readonly" placeholder="申请人" autocomplete="off" class="layui-input">
+         </div>
+         <label class="layui-form-label"><span style="color:red;">*</span>部门名称</label>
+         <div class="layui-input-inline">
+             <input type="text" name="bmmc" lay-verify="required" readonly="readonly" placeholder="部门名称" autocomplete="off" class="layui-input">
+         </div>
+     </div>
+     <div class="layui-form-item">
+         <label class="layui-form-label"><span style="color:red;">*</span>申请日期</label>
+         <div class="layui-input-inline">
+             <input type="text" name="sqrq" readonly="readonly" lay-verify="required" autocomplete="off" class="layui-input">
+         </div>
+         <label class="layui-form-label"><span style="color:red;">*</span>请假类别</label>
+         <div class="layui-input-inline">
+             <select id="qjlx" name="qjlx" lay-verify="required"></select>
+         </div>
+     </div>
+     <div class="layui-form-item">
+         <label class="layui-form-label"><span style="color:red;">*</span>开始日期</label>
+         <div class="layui-input-inline">
+             <input type="text" id="ksrq" name="ksrq" lay-verify="required" placeholder="开始日期" autocomplete="off"
+                 class="layui-input">
+         </div>
+         <label class="layui-form-label"><span style="color:red;">*</span>结束日期</label>
+         <div class="layui-input-inline">
+             <input type="text" id="jsrq" name="jsrq" lay-verify="required" placeholder="结束日期" autocomplete="off"
+                 class="layui-input">
+         </div>
+     </div>
+     <div class="layui-form-item">
+     	<label class="layui-form-label"><span style="color:red;">*</span>工作时长</label>
+         <div class="layui-input-inline">
+             <select id="gzsc" name="gzsc" lay-verify="required"></select>
+         </div>
+          <label class="layui-form-label"><span style="color:red;">*</span>请假天数</label>
+          <div class="layui-input-inline">
+              <input type="text" name="qjts" required lay-verify="required|number" placeholder="请假天数" autocomplete="off" class="layui-input">
+          </div>
+     </div>
+     <div class="layui-form-item layui-form-text">
+         <label class="layui-form-label">请假理由</label>
+         <div class="layui-input-block">
+             <textarea name="qjly" placeholder="请假理由" class="layui-textarea" style="width:500px;min-height: 70px;"></textarea>
+         </div>
+     </div>
+     <div class="layui-form-item layui-form-text">
+		<label class="layui-form-label">图片</label>
+		<input type="text" name='imgName' class="layui-hide" value="">
+	             <div class="layui-inline img-up-box">
+			  <button type="button" id="img_up"><i class="fa fa-plus"></i></button> 
+		</div>
+     </div>
+     <div class="layui-form-item layui-form-text">
+	    <label class="layui-form-label">是否同意</label>
+	    <div class="layui-input-block">
+	      <input type="radio" name="sftg" value="1" title="同意" checked="">
+	      <input type="radio" name="sftg" value="0" title="不同意">
+	    </div>
+  	 </div>
+  	 <div class="layui-form-item layui-form-text">
+         <label class="layui-form-label">审批意见</label>
+         <div class="layui-input-block">
+             <textarea name="spyj" placeholder="审批意见" class="layui-textarea" style="width:500px;min-height: 70px;"></textarea>
+         </div>
+     </div>
+     <div class="layui-form-item layui-form-text">
+             <label class="layui-form-label">审批人</label>
+	<div class="layui-inline" id="spr">
+		<div id="spr_add">
+			<i class="fa fa-plus"></i>
+		</div>
+	</div>
+     </div>
+     <div class="layui-form-item">
+           <div class="layui-input-block">
+               <button class="layui-btn layui-btn-primary" lay-submit lay-filter="sp" id="sp">审批</button>
+           </div>
+       </div>
+</form>
+
 </body>
 <script src="${ctx}/plugins/layui/layui.all.js"></script>
 <script type="text/javascript">
