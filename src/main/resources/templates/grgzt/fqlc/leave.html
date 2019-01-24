@@ -128,7 +128,7 @@
             url: "${ctx}/dict/get",
             success: function (data) {
 				$.each(data, function (index, item) {
-                    $('#qjlx').append(new Option(item.name, item.value));// 下拉菜单里添加元素
+                    $('#qjlx').append(new Option(item.name, item.name));// 下拉菜单里添加元素
                 });
 				form.render("select");
             },
