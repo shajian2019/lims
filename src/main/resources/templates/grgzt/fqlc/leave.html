@@ -8,8 +8,9 @@
     <title>请假流程</title>
 	<link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
 	<link rel="stylesheet" href="${ctx}/plugins/font-awesome/css/font-awesome.min.css" media="all" />
-    <style type="text/css">
-    	.main{width:800px;margin: 0% auto 0;}
+	<style type="text/css">
+		.layui-form-item{margin-bottom: 10px;}
+    	.main{width:800px;margin: 1% auto 0;}
 		.img-up-box,#spr{max-width: 500px;height: auto;display:flex;align-items: flex-end;flex-wrap: wrap;}
 		.img-up-box .img-box{position: relative;display: inline-block;width: 80px;height:80px;border: 1px solid #e6e6e6;margin-right: 8px;margin-top: 8px;}
 		.img-up-box .img-box .img-close{position: absolute;top: -7px;right: -7px;font-size: 12px;color: #fff;border-radius: 20px;width: 16px;height: 16px;background-color: #000;text-align: center;line-height: 16px;}
@@ -20,7 +21,14 @@
 		.spr-select{text-align: center;position: relative;margin-right: 15px;display: inline-block;}
 		.spr-box{color: #fff;text-align: center;background-color: cornflowerblue;border-radius: 1000px;font-size: 12px;width: 70px;height: 70px;display: flex;flex-direction: column;justify-content: center;}
 		.spr-close{cursor: pointer;position: absolute;top: 0;right: -7px;font-size: 12px;color: #fff;border-radius: 20px;width: 16px;background-color: #000;text-align: center;line-height: 16px;}
-    </style>
+		#layer-photos{display:flex;align-items: center;max-width: 500px;flex-wrap: wrap;}
+/* 		.sq-img{position: relative;width: 80px;height: 80px;margin-right: 8px;}
+		.sq-img img{width: 100%;height: 100%;}
+		.sq-img .img-btn{position: absolute;top: 0;left: 0;z-index: 10;width: 100%;height: 100%;background-color: rgba(0, 0,0, 0.6);display: none;}
+		.sq-img:hover .img-btn{display: block;text-align: center;}
+		.sq-img .img-btn .layui-btn{margin-left: 0;margin-top: 6px;} */
+		#layer-photos img{width: 80px; height: 80px;display: block;margin-right: 8px;}
+	</style>
 </head>
 
 <body>
@@ -74,13 +82,25 @@
              <textarea name="qjly" placeholder="请假理由" class="layui-textarea" style="width:500px;min-height: 70px;"></textarea>
          </div>
      </div>
-     <div class="layui-form-item layui-form-text">
+	<div class="layui-form-item layui-form-text">
 		<label class="layui-form-label">图片</label>
-		<input type="text" name='imgName' class="layui-hide" value="">
-	             <div class="layui-inline img-up-box">
-			  <button type="button" id="img_up"><i class="fa fa-plus"></i></button> 
+		<!-- 		<input type="text" name='imgName' class="layui-hide" value="">
+		             <div class="layui-inline img-up-box">
+				  <button type="button" id="img_up"><i class="fa fa-plus"></i></button>  -->
+		<div class="layui-input-block layer-photo" id="layer-photos">
+				<img layer-src="${ctx}/image/logo.png" src="${ctx}/image/logo.png">
+				<img layer-src="${ctx}/image/logo.png" src="${ctx}/image/logo.png">
+				<img layer-src="${ctx}/image/logo.png" src="${ctx}/image/logo.png">
+				<img layer-src="${ctx}/image/logo.png" src="${ctx}/image/logo.png">
+<!-- 			<div class="sq-img">
+				<img layer-src="${ctx}/image/home/gzrz.png" src="${ctx}/image/home/gzrz.png">
+				<div class="img-btn">
+					<a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-normal img-preview">预览</a>
+					<a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-normal img-download">下载</a>
+				</div>
+			</div> -->
 		</div>
-     </div>
+	</div>
      <div class="layui-form-item layui-form-text">
 	    <label class="layui-form-label">是否同意</label>
 	    <div class="layui-input-block">
@@ -105,6 +125,7 @@
      <div class="layui-form-item">
            <div class="layui-input-block">
                <button class="layui-btn layui-btn-primary" lay-submit lay-filter="sp" id="sp">审批</button>
+               <button type="button" class="layui-btn layui-btn-primary" id="download">下载附件</button>
            </div>
        </div>
 </form>
@@ -323,5 +344,10 @@
 			 return false;
 		});
 	}
+//图片预览
+layer.photos({
+  photos: '#layer-photos'
+  ,anim: 5
+});
 </script>
 </html>
