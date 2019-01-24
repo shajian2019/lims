@@ -1,10 +1,12 @@
 package com.zzhb.zzoa.controller.grgzt;
 
-import java.util.HashMap;
+import java.io.InputStream;
+import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.FormService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.Task;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +22,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONObject;
 import com.zzhb.zzoa.service.ActivitiService;
 import com.zzhb.zzoa.service.DbsxService;
-import com.zzhb.zzoa.utils.Constant;
 
 @Controller
 @RequestMapping("/grgzt/dbsx")
@@ -65,12 +66,8 @@ public class DbsxController {
 		String key = task.getProcessDefinitionId().split(":")[0];
 		Object renderedTaskForm = formService.getRenderedTaskForm(taskId);
 		modelMap.put("form", renderedTaskForm);
-		modelMap.put("taskDefinitionKey", task.getTaskDefinitionKey());
-		Map<String, String> params = new HashMap<String, String>();
-		params.put("bk", bk);
-		params.put("tablename", Constant.OATPREIX + key);
-		params = dbsxService.getBusinessByBk(params);
-		modelMap.put(key, params);
+		modelMap.put("formkey", task.getFormKey());
+		modelMap.put("taskId", taskId);
 		return "grgzt/fqlc/" + key;
 	}
 

@@ -380,6 +380,7 @@
             return false;
         });
         
+        var index;
         upload.render({
              elem: '#lc_upload'
             ,url: '${ctx}/lcgl/lcdy/deploy'
@@ -398,7 +399,11 @@
            		  }
              }
             ,bindAction: '#lc_upload_btn'
+           	,before: function(obj){ //obj参数包含的信息，跟 choose回调完全一致，可参见上文。
+           		index = layer.load(1);
+             }
             ,done: function(res){
+            	layer.close(index);
 				if(res.code < 0){
 					layer.msg(res.msg, {offset: ['50%'], time: 2000});
 				}else{

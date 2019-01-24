@@ -17,7 +17,7 @@ public class DbsxService {
 	@Autowired
 	ActivitiMapper activitiMapper;
 
-	public Map<String, String> getBusinessByBk(Map<String, String> params) {
+	public Map<String, String> getBusinessByBks(Map<String, String> params) {
 		Map<String, String> data = activitiMapper.getBusinessByBk(params);
 		return data;
 	}

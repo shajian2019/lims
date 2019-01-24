@@ -101,15 +101,34 @@
 <script type="text/html" id="rightBar">
     <div class="layui-btn-group">
 		{{#  if(d.ASSIGNEE_){ }}
-			<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="sprw">
-				<i class="fa fa-pencil" title="审批任务"></i>
-        	</a>
+ 			{{#  if(d.SUSPENSION_STATE_ == 2){ }}
+				<a class="layui-btn layui-btn-primary layui-btn-xs layui-btn-disabled">
+					<i class="fa fa-pencil" title="审批任务"></i>
+        		</a>
+   			{{#  } else { }}
+				<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="sprw">
+					<i class="fa fa-pencil" title="审批任务"></i>
+        		</a>
+   			{{#  } }}
 		{{#  } else { }}
-            <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="lqrw">
-				<i class="fa fa-check-square" title="领取任务"></i>
-        	</a>
+			{{#  if(d.SUSPENSION_STATE_ == 2){ }}
+				<a class="layui-btn layui-btn-primary layui-btn-xs layui-btn-disabled">
+					<i class="fa fa-check-square" title="领取任务"></i>
+        		</a>
+   			{{#  } else { }}
+				<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="lqrw">
+					<i class="fa fa-check-square" title="领取任务"></i>
+        		</a>
+   			{{#  } }}
         {{#  } }}
     </div>
+</script>
+<script type="text/html" id="lczt">
+   {{#  if(d.SUSPENSION_STATE_ == 2){ }}
+		<span style="color: red">中止</span>
+   {{#  } else { }}
+		<span style="color: green">正常</span>
+   {{#  } }}
 </script>
 <script src="${ctx}/plugins/layui/layui.js"></script>
 <script>
@@ -176,6 +195,12 @@
                     width: 200,
                     align: 'center'
                 }, {
+                    field: 'SUSPENSION_STATE_',
+                    title: '流程状态',
+                    width: 200,
+                    align: 'center',
+                    templet: '#lczt'
+                },{
                     title: '操作', align: 'center',
                     width: 140,
                     templet: '#rightBar'
@@ -257,13 +282,12 @@
         
     })
     
-    function sprw(title,key,bk){
+    function sprw(title,taskId,bk){
     	var options = {};
-    	options.id = key;
+    	options.id = taskId;
     	options.title = title;
     	options.icon = "fa-pencil";
-    	options.url = "${ctx}/grgzt/dbsx/viewTask/"+key+"?bk="+bk;
+    	options.url = "${ctx}/grgzt/dbsx/viewTask/"+taskId+"?bk="+bk;
     	parent.window.addTab(options);
     }
-    
 </script>

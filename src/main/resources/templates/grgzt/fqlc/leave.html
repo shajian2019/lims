@@ -22,114 +22,12 @@
 		.spr-box{color: #fff;text-align: center;background-color: cornflowerblue;border-radius: 1000px;font-size: 12px;width: 70px;height: 70px;display: flex;flex-direction: column;justify-content: center;}
 		.spr-close{cursor: pointer;position: absolute;top: 0;right: -7px;font-size: 12px;color: #fff;border-radius: 20px;width: 16px;background-color: #000;text-align: center;line-height: 16px;}
 		#layer-photos{display:flex;align-items: center;max-width: 500px;flex-wrap: wrap;}
-/* 		.sq-img{position: relative;width: 80px;height: 80px;margin-right: 8px;}
-		.sq-img img{width: 100%;height: 100%;}
-		.sq-img .img-btn{position: absolute;top: 0;left: 0;z-index: 10;width: 100%;height: 100%;background-color: rgba(0, 0,0, 0.6);display: none;}
-		.sq-img:hover .img-btn{display: block;text-align: center;}
-		.sq-img .img-btn .layui-btn{margin-left: 0;margin-top: 6px;} */
-		#layer-photos img{width: 80px; height: 80px;display: block;margin-right: 8px;}
+		#layer-photos img{width: 80px; height: 80px;display: block;margin-right: 5px;margin-bottom: 5px;}
 	</style>
 </head>
 
 <body>
-		<!-- ${(form!'开发中')} -->
-<form class="layui-form main layui-upload" lay-filter="leave">
-     <div class="layui-form-item">
-         <label class="layui-form-label"><span style="color:red;">*</span>申请人</label>
-         <div class="layui-input-inline">
-             <input type="text" name="sqr" lay-verify="required" readonly="readonly" placeholder="申请人" autocomplete="off" class="layui-input">
-         </div>
-         <label class="layui-form-label"><span style="color:red;">*</span>部门名称</label>
-         <div class="layui-input-inline">
-             <input type="text" name="bmmc" lay-verify="required" readonly="readonly" placeholder="部门名称" autocomplete="off" class="layui-input">
-         </div>
-     </div>
-     <div class="layui-form-item">
-         <label class="layui-form-label"><span style="color:red;">*</span>申请日期</label>
-         <div class="layui-input-inline">
-             <input type="text" name="sqrq" readonly="readonly" lay-verify="required" autocomplete="off" class="layui-input">
-         </div>
-         <label class="layui-form-label"><span style="color:red;">*</span>请假类别</label>
-         <div class="layui-input-inline">
-             <select id="qjlx" name="qjlx" lay-verify="required"></select>
-         </div>
-     </div>
-     <div class="layui-form-item">
-         <label class="layui-form-label"><span style="color:red;">*</span>开始日期</label>
-         <div class="layui-input-inline">
-             <input type="text" id="ksrq" name="ksrq" lay-verify="required" placeholder="开始日期" autocomplete="off"
-                 class="layui-input">
-         </div>
-         <label class="layui-form-label"><span style="color:red;">*</span>结束日期</label>
-         <div class="layui-input-inline">
-             <input type="text" id="jsrq" name="jsrq" lay-verify="required" placeholder="结束日期" autocomplete="off"
-                 class="layui-input">
-         </div>
-     </div>
-     <div class="layui-form-item">
-     	<label class="layui-form-label"><span style="color:red;">*</span>工作时长</label>
-         <div class="layui-input-inline">
-             <select id="gzsc" name="gzsc" lay-verify="required"></select>
-         </div>
-          <label class="layui-form-label"><span style="color:red;">*</span>请假天数</label>
-          <div class="layui-input-inline">
-              <input type="text" name="qjts" required lay-verify="required|number" placeholder="请假天数" autocomplete="off" class="layui-input">
-          </div>
-     </div>
-     <div class="layui-form-item layui-form-text">
-         <label class="layui-form-label">请假理由</label>
-         <div class="layui-input-block">
-             <textarea name="qjly" placeholder="请假理由" class="layui-textarea" style="width:500px;min-height: 70px;"></textarea>
-         </div>
-     </div>
-	<div class="layui-form-item layui-form-text">
-		<label class="layui-form-label">图片</label>
-		<!-- 		<input type="text" name='imgName' class="layui-hide" value="">
-		             <div class="layui-inline img-up-box">
-				  <button type="button" id="img_up"><i class="fa fa-plus"></i></button>  -->
-		<div class="layui-input-block layer-photo" id="layer-photos">
-				<img layer-src="${ctx}/image/logo.png" src="${ctx}/image/logo.png">
-				<img layer-src="${ctx}/image/logo.png" src="${ctx}/image/logo.png">
-				<img layer-src="${ctx}/image/logo.png" src="${ctx}/image/logo.png">
-				<img layer-src="${ctx}/image/logo.png" src="${ctx}/image/logo.png">
-<!-- 			<div class="sq-img">
-				<img layer-src="${ctx}/image/home/gzrz.png" src="${ctx}/image/home/gzrz.png">
-				<div class="img-btn">
-					<a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-normal img-preview">预览</a>
-					<a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-normal img-download">下载</a>
-				</div>
-			</div> -->
-		</div>
-	</div>
-     <div class="layui-form-item layui-form-text">
-	    <label class="layui-form-label">是否同意</label>
-	    <div class="layui-input-block">
-	      <input type="radio" name="sftg" value="1" title="同意" checked="">
-	      <input type="radio" name="sftg" value="0" title="不同意">
-	    </div>
-  	 </div>
-  	 <div class="layui-form-item layui-form-text">
-         <label class="layui-form-label">审批意见</label>
-         <div class="layui-input-block">
-             <textarea name="spyj" placeholder="审批意见" class="layui-textarea" style="width:500px;min-height: 70px;"></textarea>
-         </div>
-     </div>
-     <div class="layui-form-item layui-form-text">
-             <label class="layui-form-label">审批人</label>
-	<div class="layui-inline" id="spr">
-		<div id="spr_add">
-			<i class="fa fa-plus"></i>
-		</div>
-	</div>
-     </div>
-     <div class="layui-form-item">
-           <div class="layui-input-block">
-               <button class="layui-btn layui-btn-primary" lay-submit lay-filter="sp" id="sp">审批</button>
-               <button type="button" class="layui-btn layui-btn-primary" id="download">下载附件</button>
-           </div>
-       </div>
-</form>
-
+		${(form!'开发中')}
 </body>
 <script src="${ctx}/plugins/layui/layui.all.js"></script>
 <script type="text/javascript">
@@ -278,19 +176,6 @@
 		  return false;
 	 });
 	
-	 $("#spr_add").click(function(){
-		 layer.open({
-	            type: 2,
-	            area: ['722px', '516px'],
-	         	title: false,
-	            fixed: false, //不固定
-	            content: '${ctx}/grgzt/fqlc/spr?key=leave&formkey=${formkey!''}',
-	            end: function(){
-	            	getSprs();
-         	    }
-    	   })
-	 })
-	 
 	  //数组对象对应删除
      Array.prototype.remove = function (val) {
          var index = this.indexOf(val);
@@ -336,18 +221,78 @@
 	            }
 	      });
 	 }
-	 
-	} else if (formkey == 'usertask2'){
-		console.log("usertask2")
+	} else if (formkey == 'leave_usertask1.html'){
+		getSprs();
+		//图片预览
+		$.getJSON('${ctx}/file/taskAttachments/${taskId!''}', function(json){
+			var imgHtml = "";
+			$.each(json,function(i,v){
+				var detail = v.split("@");
+				imgHtml += "<img layer-src='/"+v+"' src='/"+v+"' alt='"+detail[1]+"''>"
+			})
+			$("#layer-photos").html(imgHtml)
+			layer.photos({
+			   photos: "#layer-photos"
+			   ,shade:[0.1, '#ffffff']
+			   ,anim: 5
+			});
+		});
+		
 		form.on('submit(sp)', function(data){
 			 console.log(data)
 			 return false;
 		});
 	}
-//图片预览
-layer.photos({
-  photos: '#layer-photos'
-  ,anim: 5
-});
+	
+	$("#spr_add").click(function(){
+		 layer.open({
+            type: 2,
+            area: ['722px', '516px'],
+         	title: false,
+            fixed: false, //不固定
+            content: '${ctx}/grgzt/fqlc/spr?key=leave&formkey=${formkey!''}',
+            end: function(){
+            	getSprs();
+       	    }
+   	   })
+	})
+
+	function getSprs(){
+		$.ajax({
+            type: "post",
+            data: {id:"${user.u_id}leave${formkey!''}"},
+            url: "${ctx}/grgzt/fqlc/getSprs",
+            beforeSend: function () {
+                index = layer.load(1);
+            },
+            success: function (data) {
+            	layer.close(index);
+            	var html = ""
+        		sprs = [];
+            	$.each(data,function(i,v){
+            		sprs.push(v.u_id);
+            		html +='<div class="spr-select">';
+            			html +='<i class="fa fa-close spr-close" data-id="'+v.u_id+'"></i>';
+						html +='<div class="spr-box">'
+							html +='<p>'+v.o_name+'</p>';
+							html +='<p>'+v.j_name+'</p>';
+						html +='</div>';
+						html +='<p>'+v.nickname+'</p>';
+					html +='</div>';
+            	})
+            	
+            	$("#spr_add").prevAll().remove();
+            	$("#spr_add").before(html);
+            	$("#spr .spr-select").on('click','.spr-close',function () { 
+            		sprs.remove($(this).attr("data-id"))
+            		$(this).parent().remove();
+            	})
+            },
+            error: function (data) {
+            	layer.close(index);
+                layer.msg("服务端异常");
+            }
+      });
+ }
 </script>
 </html>

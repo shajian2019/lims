@@ -30,6 +30,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.CollectionUtils;
 
+import com.zzhb.zzoa.controller.FileController;
 import com.zzhb.zzoa.controller.xtgl.ZzglController;
 import com.zzhb.zzoa.utils.CustomProcessDiagramGenerator;
 import com.zzhb.zzoa.utils.FileUtil;
@@ -40,9 +41,14 @@ public class ZzoaApplicationTests {
 
 	@Autowired
 	ZzglController zzglController;
+	
+	@Autowired
+	FileController fileController;
 
 	@Test
 	public void contextLoads() {
+		String taskId = "325054";
+		fileController.taskAttachments(taskId);
 	}
 
 	@Test

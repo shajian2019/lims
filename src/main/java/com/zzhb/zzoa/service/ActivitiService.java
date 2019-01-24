@@ -365,9 +365,6 @@ public class ActivitiService {
 
 		ProcessInstance pi = formService.submitStartFormData(pd.getId(), params.get("bk"), params);
 
-		params.put("proid", pi.getId());
-		Integer saveBusiness = saveBusiness(key, params);
-
 		userSprMapper.updateSprs(params);
 
 		Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
@@ -396,6 +393,9 @@ public class ActivitiService {
 			}
 		}
 
+		params.put("proid", pi.getId());
+		Integer saveBusiness = saveBusiness(key, params);
+		
 		result.put("code", saveBusiness);
 		result.put("msg", task.getName());
 		result.put("bk", params.get("bk"));
