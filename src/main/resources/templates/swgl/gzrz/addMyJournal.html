@@ -8,7 +8,7 @@
     <style type="text/css">
         /* layui重置 */
         .layui-form {
-            width: 530px;
+            width: 600px;
             margin: 10px auto 0;
         }
 
@@ -16,9 +16,9 @@
             display: flex;
             align-items: flex-start;
         }
-
+        .layui-form-label{width: 130px;}
         .layui-form-item .layui-inline, .layui-form-item .layui-input-block {
-            width: 348px;
+            width: 450px;
         }
 
         .layui-form-item > a {
@@ -32,7 +32,8 @@
         }
 
         .layui-btn-container {
-            width: 512px;
+            width: 600px;
+            margin: 0 auto;
             text-align: center;
         }
 
@@ -191,7 +192,6 @@
             max-width: 500px;
             flex-wrap: wrap;
         }
-
         #layer-photos img {
             width: 80px;
             height: 80px;
@@ -204,23 +204,22 @@
 </head>
 <body>
 
-<form class="layui-form layui-form-pane" lay-filter="edit"
-      style="position: absolute;top: 15%;left:50%;margin:0 0 0 -265px ;">
+<form class="layui-form" lay-filter="edit" style="margin: 5% auto 0;">
     <div class="layui-form-item">
-        <label class="layui-form-label">工作内容:</label>
+        <label class="layui-form-label">工作内容：</label>
         <div class="layui-inline">
-            <input class="layui-input" type="text" name="work_content" placeholder="工作内容" lay-verify="required">
+            <textarea name="work_content" placeholder="请输入内容" class="layui-textarea" lay-verify="required"></textarea>
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">图片</label>
+        <label class="layui-form-label">选择图片：</label>
         <input type="text" name='imgName' class="layui-hide" value="">
         <div class="layui-inline img-up-box">
             <button type="button" id="img_up"><i class="fa fa-plus"></i></button>
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">主要负责人</label>
+        <label class="layui-form-label">主要负责人：</label>
         <div class="layui-inline" id="spr1">
             <div id="spr_add1">
                 <i class="fa fa-plus"></i>
@@ -228,7 +227,7 @@
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">接收人</label>
+        <label class="layui-form-label">接收人：</label>
         <div class="layui-inline" id="spr">
             <div id="spr_add">
                 <i class="fa fa-plus"></i>
@@ -237,7 +236,7 @@
     </div>
 
     <div class="layui-btn-container">
-        <a class="layui-btn  layui-btn-primary" lay-submit lay-filter="save">保存1</a>
+        <a class="layui-btn  layui-btn-primary" lay-submit lay-filter="save">保存</a>
         <a id="cancel" class="layui-btn  layui-bg-gray">取消</a>
     </div>
     </div>
