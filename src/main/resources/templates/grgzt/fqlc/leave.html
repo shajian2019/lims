@@ -213,7 +213,7 @@
 		            			  closeBtn:0,
 		            			  btn: ['确定'] //按钮
 		            			}, function(){
-		            			layer.close(index);           			 
+		            			parent.window.closeTab(data.taskId);
 	            			});
 		            	}else if(data.code == "0") {
 		            		layer.msg("审批成功", {offset: ['50%'], time: 2000});

@@ -443,6 +443,7 @@ public class ActivitiService {
 		if (task != null) {
 			result.put("code", 1);
 			result.put("msg", task.getName());
+			result.put("taskId", taskId);
 		} else {
 			result.put("code", 0);
 		}
