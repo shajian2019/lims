@@ -408,7 +408,7 @@ public class ActivitiService {
 		JSONObject result = new JSONObject();
 		String bk = params.get("bk");
 
-		// 更新审批人表
+		// 更新审批人缓存表
 		userSprMapper.updateSprs(params);
 
 		// 保存审批备注表
@@ -423,13 +423,13 @@ public class ActivitiService {
 		// 完成当前任务
 		formService.submitTaskFormData(taskId, params);
 
+		// 更新历史UserTask表
 		params.put("assignee", ruTask.getAssignee());
 		params.put("taskId", taskId);
 		activitiMapper.updateHiTaskInst(params);
 
 		Task task = taskService.createTaskQuery().processInstanceBusinessKey(bk).singleResult();
 		if (task != null) {
-			System.out.println(task.getAssignee());
 			result.put("code", 1);
 			result.put("msg", task.getName());
 		} else {
@@ -485,7 +485,7 @@ public class ActivitiService {
 			if (ruTask != null) {
 				hio.setSuspended(true);
 			}
-			if (params.get("u_id") == null) {
+			if (params.get("u_id") == null && hio.getOwerId() != null) {
 				User user = userMapper.getUserById(Integer.parseInt(hio.getOwerId()));
 				hio.setOwerId(user.getNickname());
 			}

@@ -214,10 +214,9 @@
 		            			layer.close(index);           			 
 	            			});
 		            	}else if(data.code == "0") {
-		            		layer.msg("审批成功", {offset: ['50%'], time: 2000},function(){
-		            		});
+		            		layer.msg("审批成功", {offset: ['50%'], time: 2000});
 		            	}else {
-		            		layer.msg("审批失败");
+		            		layer.msg("审批失败", {offset: ['50%'], time: 2000});
 		            	}
 		            },
 		            error: function (data) {

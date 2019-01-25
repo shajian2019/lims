@@ -21,7 +21,7 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
-import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
 import org.activiti.image.ProcessDiagramGenerator;
@@ -43,16 +43,16 @@ public class ZzoaApplicationTests {
 
 	@Autowired
 	ZzglController zzglController;
-	
+
 	@Autowired
 	FileController fileController;
-	
+
 	@Autowired
 	FormService formService;
 
 	@Test
 	public void contextLoads() {
-		
+
 		List<Comment> taskComments = ts.getTaskComments("390048");
 		for (Comment comment : taskComments) {
 			System.out.println(comment.getFullMessage());
@@ -81,11 +81,13 @@ public class ZzoaApplicationTests {
 
 	@Test
 	public void contextLoads3() {
-		ProcessDefinition singleResult = repositoryService.createProcessDefinitionQuery().processDefinitionName("leave").singleResult();
-		System.out.println(singleResult);
+		String processDefinitionKey = "leave";
+		Map<String, Object> params = new HashMap<>();
+		params.put("sprs", "3");
+		ProcessInstance processInstance = rs.startProcessInstanceByKey(processDefinitionKey, params);
+		System.out.println(processInstance.getId());
 	}
 
-	
 	@Test // 删除运行中的流程
 	public void deleteProcessInstance() {
 		System.out.println(rs.createProcessInstanceQuery().count());
@@ -184,7 +186,7 @@ public class ZzoaApplicationTests {
 	public void testSuspend() {
 		String processInstanceId = "255001";
 		rs.suspendProcessInstanceById(processInstanceId);
-//		rs.activateProcessInstanceById(processInstanceId);
+		// rs.activateProcessInstanceById(processInstanceId);
 	}
 
 	@Autowired

@@ -110,7 +110,13 @@
 					<i class="fa fa-pencil" title="审批任务"></i>
         		</a>
 				<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="cxlq">
-					<i class="fa fa-undo" title="撤销领取"></i>
+					<i class="fa fa-undo" title="放弃处理"></i>
+        		</a>
+				<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="wt">
+					<i class="fa fa-hand-stop-o" title="委托"></i>
+        		</a>
+				<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="zp">
+					<i class="fa fa-hand-o-right" title="指派"></i>
         		</a>
    			{{#  } }}
 		{{#  } else { }}
@@ -288,9 +294,13 @@
 		                        	layer.close(index);
 		                            layer.msg("服务端异常");
 		                        }
-		                    });
+		                     });
 	            	})
             	}
+            } else if ("wt" == obj.event){
+            	layer.msg("开发中...", {offset: ['50%'], time: 2000});
+            } else if ("zp" == obj.event){
+            	layer.msg("开发中...", {offset: ['50%'], time: 2000});
             }
         })
         
