@@ -31,6 +31,7 @@ import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
 import org.activiti.image.ProcessDiagramGenerator;
@@ -309,6 +310,15 @@ public class ActivitiService {
 				User user = userMapper.getUserById(Integer.parseInt(u_id));
 				vo.setAssignee(user.getNickname());
 			}
+			String spyj = "";
+			boolean sftg = true;
+			List<Comment> taskComments = taskService.getTaskComments(vo.getId(), "comment");
+			for (Comment comment : taskComments) {
+				spyj = JSON.parseObject(comment.getFullMessage()).getString("spyj");
+				sftg = JSON.parseObject(comment.getFullMessage()).getBoolean("agree");
+			}
+			vo.setSftg(sftg);
+			vo.setSpyj(spyj);
 		}
 		Task ruTask = taskService.createTaskQuery().processInstanceBusinessKey(businessKey).singleResult();
 		if (ruTask != null) {
@@ -370,14 +380,15 @@ public class ActivitiService {
 		Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
 
 		// 添加附件
-		String name = task.getName();
-		List<String> readFilePath = FileUtil.readFilePath(props.getTempPath(), params.get("bk"));
+		List<String> readFilePath = FileUtil.readFilePath(props.getTempPath(), "&" + params.get("bk") + "&");
 		for (String fileName : readFilePath) {
 			String filePath = props.getTempPath() + File.separator + fileName;
+			String attachmentType = fileName.split("&" + params.get("bk") + "&")[0];
+			String attachmentName = fileName.split("&" + params.get("bk") + "&")[1];
 			FileInputStream fileInputStream = null;
 			try {
 				fileInputStream = new FileInputStream(new File(filePath));
-				taskService.createAttachment(name + "-图片附件", task.getId(), pi.getId(), fileName.split("&")[1],
+				taskService.createAttachment(attachmentType, task.getId(), pi.getId(), attachmentName,
 						fileName.split("&")[1], fileInputStream);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
@@ -484,6 +495,10 @@ public class ActivitiService {
 					.singleResult();
 			if (ruTask != null) {
 				hio.setSuspended(true);
+			}
+			if (!"".endsWith(hio.getEndTime()) && hio.getDeleteReason() == null) {
+				List<Comment> comments = taskService.getProcessInstanceComments(hio.getProcessInstanceId(), "comment");
+				hio.setSftg(JSON.parseObject(comments.get(0).getFullMessage()).getBoolean("agree"));
 			}
 			if (params.get("u_id") == null && hio.getOwerId() != null) {
 				User user = userMapper.getUserById(Integer.parseInt(hio.getOwerId()));

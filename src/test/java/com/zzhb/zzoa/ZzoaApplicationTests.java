@@ -52,11 +52,6 @@ public class ZzoaApplicationTests {
 
 	@Test
 	public void contextLoads() {
-
-		List<Comment> taskComments = ts.getTaskComments("390048");
-		for (Comment comment : taskComments) {
-			System.out.println(comment.getFullMessage());
-		}
 	}
 
 	@Test

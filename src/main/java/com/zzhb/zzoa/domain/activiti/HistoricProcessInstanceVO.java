@@ -8,7 +8,7 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import com.zzhb.zzoa.utils.TimeUtil;
 
 public class HistoricProcessInstanceVO {
-	
+
 	private String processInstanceId;
 	private String businessKey;
 	private String processDefinitionKey;
@@ -18,6 +18,7 @@ public class HistoricProcessInstanceVO {
 	private String deleteReason;
 	private String owerId;
 	private boolean suspended;
+	private boolean sftg;
 
 	public String getDeleteReason() {
 		return deleteReason;
@@ -74,7 +75,7 @@ public class HistoricProcessInstanceVO {
 	public void setProcessDefinitionName(String processDefinitionName) {
 		this.processDefinitionName = processDefinitionName;
 	}
-	
+
 	public String getOwerId() {
 		return owerId;
 	}
@@ -82,7 +83,6 @@ public class HistoricProcessInstanceVO {
 	public void setOwerId(String owerId) {
 		this.owerId = owerId;
 	}
-	
 
 	public boolean isSuspended() {
 		return suspended;
@@ -90,6 +90,14 @@ public class HistoricProcessInstanceVO {
 
 	public void setSuspended(boolean suspended) {
 		this.suspended = suspended;
+	}
+
+	public boolean isSftg() {
+		return sftg;
+	}
+
+	public void setSftg(boolean sftg) {
+		this.sftg = sftg;
 	}
 
 	@Override

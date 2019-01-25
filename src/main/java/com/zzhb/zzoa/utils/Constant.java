@@ -11,4 +11,6 @@ public class Constant {
 	public static final String APICOUNT = "APICOUNT"; // 接口统计
 	public static final String OATPREIX = "oa_t_"; // 工作流业务表前缀
 
+	public static final String ATTACH_IMG = "image";
+
 }

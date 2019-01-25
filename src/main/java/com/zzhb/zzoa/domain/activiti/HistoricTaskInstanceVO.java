@@ -3,13 +3,14 @@ package com.zzhb.zzoa.domain.activiti;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
 
 import com.zzhb.zzoa.utils.TimeUtil;
 
 public class HistoricTaskInstanceVO {
 	private String id;
+
+	private String processInstanceId;
 
 	private String name;
 
@@ -18,14 +19,34 @@ public class HistoricTaskInstanceVO {
 	private String endTime;
 
 	private String assignee;
-	
+
 	private String owner;
 
 	private Long durationInMillis;
 
 	private String claimTime;
-	
+
 	private String deleteReason;
+
+	private String spyj;
+
+	private boolean sftg;
+
+	public boolean isSftg() {
+		return sftg;
+	}
+
+	public void setSftg(boolean sftg) {
+		this.sftg = sftg;
+	}
+
+	public String getProcessInstanceId() {
+		return processInstanceId;
+	}
+
+	public void setProcessInstanceId(String processInstanceId) {
+		this.processInstanceId = processInstanceId;
+	}
 
 	public String getDeleteReason() {
 		return deleteReason;
@@ -90,7 +111,7 @@ public class HistoricTaskInstanceVO {
 	public void setClaimTime(String claimTime) {
 		this.claimTime = claimTime;
 	}
-	
+
 	public String getOwner() {
 		return owner;
 	}
@@ -99,10 +120,19 @@ public class HistoricTaskInstanceVO {
 		this.owner = owner;
 	}
 
+	public String getSpyj() {
+		return spyj;
+	}
+
+	public void setSpyj(String spyj) {
+		this.spyj = spyj;
+	}
+
 	public static List<HistoricTaskInstanceVO> getHistoricTaskInstanceVOs(List<HistoricTaskInstance> hps) {
 		List<HistoricTaskInstanceVO> list = new ArrayList<HistoricTaskInstanceVO>();
 		for (HistoricTaskInstance hp : hps) {
 			HistoricTaskInstanceVO vo = new HistoricTaskInstanceVO();
+			vo.setProcessInstanceId(hp.getProcessInstanceId());
 			vo.setId(hp.getId());
 			vo.setDeleteReason(hp.getDeleteReason());
 			vo.setName(hp.getName());

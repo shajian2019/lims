@@ -56,14 +56,14 @@ public class FileUtil {
 			return false;
 		}
 	}
-	
-	public static List<String> readFilePath(String dir,String key) {
+
+	public static List<String> readFilePath(String dir, String key) {
 		List<String> fileNames = new ArrayList<>();
 		File file = new File(dir);
 		File[] listFiles = file.listFiles();
 		for (File file2 : listFiles) {
 			String fileName = file2.getName();
-			if(fileName.startsWith(key)) {
+			if (fileName.indexOf(key) != -1) {
 				fileNames.add(fileName);
 			}
 		}
@@ -475,7 +475,7 @@ public class FileUtil {
 		}
 		return flag;
 	}
-	
+
 	public static void main(String[] args) {
 		System.out.println(readFilePath("c:/tmpzzoa", "201901211721278"));
 	}

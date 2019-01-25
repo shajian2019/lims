@@ -99,7 +99,11 @@
 		{{#  if(d.endTime == ''){ }}
 			<span style="color: #FFC125;">审核中</span>
    		{{#  } else { }}
-			<span style="color: green">已审核</span>
+			{{#  if(d.sftg){ }}
+				<span style="color: green">已通过</span>
+   			{{#  } else { }}
+				<span style="color: red">未通过</span>
+   			{{#  } }}
    		{{#  } }}
    {{#  } else { }}
 		<span style="color: red">已撤销</span>
