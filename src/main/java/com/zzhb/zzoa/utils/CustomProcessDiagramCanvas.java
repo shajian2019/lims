@@ -76,6 +76,7 @@ public class CustomProcessDiagramCanvas {
 	protected static Color			CONNECTION_COLOR				= new Color(88, 88, 88);
 	protected static Color			CONDITIONAL_INDICATOR_COLOR		= new Color(255, 255, 255);
 	// protected static Color HIGHLIGHT_COLOR = Color.RED;
+	
 	protected static Color			HIGHLIGHT_COLOR					= Color.GREEN;
 	protected static Color			LABEL_COLOR						= new Color(112, 146, 190);
 	protected static Color			TASK_BORDER_COLOR				= new Color(187, 187, 187);

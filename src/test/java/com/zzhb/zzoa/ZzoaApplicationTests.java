@@ -55,18 +55,30 @@ public class ZzoaApplicationTests {
 	public void contextLoads() {
 	}
 
+	@Autowired
+	ProcessEngine pes;
+
 	@Test
 	public void contextLoads1() {
+		String fontName = "宋体";
 		String processDefinitionId = "leave:1:432508";
+		List<String> list = new ArrayList<>();
 		BpmnModel model = repositoryService.getBpmnModel(processDefinitionId);
 		if (model != null) {
 			Collection<FlowElement> flowElements = model.getMainProcess().getFlowElements();
 			for (FlowElement e : flowElements) {
 				System.out.println("flowelement id:" + e.getId() + "  name:" + e.getName() + "   class:"
 						+ e.getClass().toString());
+				list.add(e.getId());
 			}
 		}
 
+		ProcessDiagramGenerator processDiagramGenerator = new CustomProcessDiagramGenerator();
+
+		InputStream generateDiagram = processDiagramGenerator.generateDiagram(model, "png", list, list, fontName,
+				fontName, fontName, null, 1.0);
+		
+		FileUtil.saveFileFromInputStream(generateDiagram, "D:/", "2.png");
 	}
 
 	@Test

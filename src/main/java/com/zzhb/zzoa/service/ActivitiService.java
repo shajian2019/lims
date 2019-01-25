@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.zip.ZipInputStream;
 
@@ -314,8 +315,15 @@ public class ActivitiService {
 			boolean sftg = true;
 			List<Comment> taskComments = taskService.getTaskComments(vo.getId(), "comment");
 			for (Comment comment : taskComments) {
-				spyj = JSON.parseObject(comment.getFullMessage()).getString("spyj");
-				sftg = JSON.parseObject(comment.getFullMessage()).getBoolean("agree");
+				JSONObject commentJ = JSON.parseObject(comment.getFullMessage());
+				sftg = commentJ.getBoolean("agree");
+				Set<String> keySet = commentJ.keySet();
+				for (String string : keySet) {
+					if (string.endsWith("spyj")) {
+						spyj = commentJ.getString(string);
+						break;
+					}
+				}
 			}
 			vo.setSftg(sftg);
 			vo.setSpyj(spyj);
@@ -426,10 +434,7 @@ public class ActivitiService {
 		Task ruTask = taskService.createTaskQuery().taskId(taskId).singleResult();
 		String processInstanceId = ruTask.getProcessInstanceId();
 		is.setAuthenticatedUserId(user.getU_id() + "");
-		JSONObject json = new JSONObject();
-		json.put("spyj", params.get("spyj"));
-		json.put("agree", params.get("agree"));
-		taskService.addComment(taskId, processInstanceId, JSON.toJSONString(json));
+		taskService.addComment(taskId, processInstanceId, JSON.toJSONString(params));
 
 		// 完成当前任务
 		formService.submitTaskFormData(taskId, params);
@@ -443,10 +448,10 @@ public class ActivitiService {
 		if (task != null) {
 			result.put("code", 1);
 			result.put("msg", task.getName());
-			result.put("taskId", taskId);
 		} else {
 			result.put("code", 0);
 		}
+		result.put("taskId", taskId);
 		return result;
 	}
 
