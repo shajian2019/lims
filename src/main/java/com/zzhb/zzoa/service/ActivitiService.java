@@ -87,7 +87,7 @@ public class ActivitiService {
 	LeaveMapper leaveMapper;
 
 	@Autowired
-	ProcessEngine pe;
+	ProcessEngine pes;
 
 	@Autowired
 	UserMapper userMapper;
@@ -271,7 +271,7 @@ public class ActivitiService {
 		// 如果还没完成，流程图高亮颜色为绿色，如果已经完成为红色
 		if (!CollectionUtils.isEmpty(historicFinishedProcessInstances)) {
 			// 如果不为空，说明已经完成
-			processDiagramGenerator = pe.getProcessEngineConfiguration().getProcessDiagramGenerator();
+			processDiagramGenerator = pes.getProcessEngineConfiguration().getProcessDiagramGenerator();
 		} else {
 			processDiagramGenerator = new CustomProcessDiagramGenerator();
 		}
