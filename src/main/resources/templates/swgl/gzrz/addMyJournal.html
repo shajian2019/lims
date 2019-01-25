@@ -1,0 +1,149 @@
+<#assign ctx=req.contextPath />
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet"/>
+    <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet"/>
+    <style>
+        /* layui重置 */
+        .layui-form {
+            width: 530px;
+            margin: 10px auto 0;
+        }
+
+        .layui-form-item .layui-inline, .layui-form-item .layui-input-block {
+            width: 400px;
+        }
+
+        .layui-form-item .radio-box {
+            border: 1px solid #e6e6e6;
+        }
+
+        .layui-btn-container {
+            width: 512px;
+            text-align: center;
+        }
+
+        /* 自定义 */
+        div.icon-box {
+            height: 36px;
+            border: 1px solid #e6e6e6;
+            border-left: none;
+            background-color: #fff;
+            border-radius: 2px;
+        }
+
+        .icon-box .icon {
+            width: 36px;
+            height: 36px;
+            text-align: center;
+            line-height: 36px;
+            border-right: 1px solid #e6e6e6;
+            display: inline-block;
+        }
+
+        .icon-box .layui-inline-block {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .icon-box .icon-input {
+            display: inline-block;
+            border: none;
+            flex-grow: 1;
+            padding: 0 10px;
+        }
+    </style>
+</head>
+<body>
+
+<form class="layui-form layui-form-pane" lay-filter="edit" style="position: absolute;top: 50%;left:50%;margin:-210px 0 0 -265px ;">
+    <div class="layui-form-item">
+        <label class="layui-form-label">工作内容:</label>
+        <div class="layui-inline">
+            <input class="layui-input" type="text" name="work_content" placeholder="工作内容" lay-verify="required">
+        </div>
+        <label class="layui-form-label">主要负责人:</label>
+        <div class="layui-inline">
+            <input class="layui-input-inline" type="text" name="principal" placeholder="主要负责人" lay-event="authorize" value="1231"
+                   lay-verify="required" readonly="true">
+            <a class="layui-btn layui-btn-sm layui-btn-primary layui-bg-green" id="principalBtn">选择</a>
+        </div>
+        <label class="layui-form-label">接收人:</label>
+        <div class="layui-inline">
+            <input class="layui-input-inline" type="text" name="receiver" placeholder="接收人" lay-event="authorize"
+                   lay-verify="required" readonly="true">
+            <a class="layui-btn layui-btn-sm layui-btn-primary layui-bg-green" id="receiverBtn">选择</a>
+        </div>
+        <div class="layui-btn-container">
+            <a class="layui-btn layui-btn-sm layui-btn-primary" lay-submit lay-filter="save">保存</a>
+            <a id="cancel" class="layui-btn layui-btn-sm layui-bg-gray">取消</a>
+        </div>
+    </div>
+</form>
+
+<script src="${ctx}/plugins/layui/layui.js"></script>
+<script type="text/javascript">
+
+    layui.config({
+        base: '${ctx}/plugins/layui/extend/dtree/'
+    }).extend({
+        dtree: 'dtree'
+    })
+
+    layui.use(['form', 'layer', 'dtree', 'upload', 'laydate'], function () {
+        var laydate = layui.laydate;
+        var dtree = layui.dtree;
+        laydate.render({
+            elem: '#buy_time'
+            , type: 'datetime'
+        });
+        laydate.render({
+            elem: '#next_inspection_time'
+            , type: 'datetime'
+        });
+
+        var $ = layui.jquery, treeSelect = layui.treeSelect, form = layui.form, layer = layui.layer;
+
+        form.on('submit(save)', function (data) {
+            var url = "${ctx}/swgl/clgl/editCar";
+            data.field.c_id = '${(car.c_id)!''}';
+            var index;
+            $.ajax({
+                type: "POST",
+                data: data.field,
+                url: url,
+                beforeSend: function () {
+                    index = layer.load(1);
+                },
+                success: function (data) {
+                    layer.close(index);
+                    if (data > 0) {
+                        var msg = "保存成功";
+                        layer.msg(msg, {offset: ['50%'], time: 1000}, function () {
+                            index = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(index);
+                        });
+                    } else {
+                        layer.msg("操作失败")
+                    }
+                },
+                error: function (data) {
+                    layer.msg("服务端异常");
+                }
+            });
+            return false;
+        });
+
+        //取消
+        $("#cancel").click(function () {
+            debugger;
+            var index = parent.layer.getFrameIndex(window.name);
+            parent.layer.close(index);
+        })
+    })
+</script>
+</body>
+</html>
