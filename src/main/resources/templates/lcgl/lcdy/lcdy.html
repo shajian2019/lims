@@ -90,13 +90,13 @@
 <script type="text/html" id="rightBar">
     <div class="layui-btn-group">
         <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="preview">
-            <i class="fa fa-image "></i>
+            <i class="fa fa-image" title="流程图"></i>
         </a>
         <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="download">
-            <i class="fa fa-download"></i>
+            <i class="fa fa-download" title="下载"></i>
         </a>
         <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del">
-            <i class="fa fa-trash-o"></i>
+            <i class="fa fa-trash-o" title="删除"></i>
         </a>
     </div>
 </script>
@@ -253,35 +253,55 @@
           ]]
         });
         
+        /* 删除流程定义 */
+        function delLcdy(data,param){
+        	 $.ajax({
+                 type: "post",
+                 data: data,
+                 url: "${ctx}/lcgl/lcdy/del",
+                 beforeSend: function () {
+                     index = layer.load(1);
+                 },
+                 success: function (data) {
+                     layer.close(index);
+                     if (data > 0) {
+                         layer.msg("删除成功", {offset: ['50%'], time: 1000}, function () {
+                             rightTB.reload({
+         	                    	where:{lastversion:true,protype:param.nodeId}
+         	               	 });
+                         });
+                     } else {
+                         var confirmMsg = "该流程定义存在"+Math.abs(data)+"个未结束的流程实例，无法删除";
+                         layer.confirm(confirmMsg, {
+	            			  closeBtn:0,
+	            			  btn: ['确定'] //按钮
+	            			}, function(index){
+	            				layer.close(index);
+           				 });
+                     }
+                 },
+                 error: function (data) {
+                     layer.msg("服务端异常");
+                 }
+             });
+        }
+        
         table.on('tool(' + tbID + ')', function (obj) {
            var param = dtree.getNowParam(dtreeObj);
            var data = obj.data;
            var action = obj.event;
        	   var index;
            if (obj.event === 'del') {
+               var requestParam = {deployment_id: data.deployment_id,p_id: data.id,key: data.key}
         	   layer.confirm('确定删除该流程定义吗?', function (index) {
-                   $.ajax({
-                       type: "post",
-                       data: {deployment_id: data.deployment_id},
-                       url: "${ctx}/lcgl/lcdy/del",
-                       beforeSend: function () {
-                           index = layer.load(1);
-                       },
-                       success: function (data) {
-                           layer.close(index);
-                           if (data > 0) {
-                               layer.msg("删除成功", {offset: ['50%'], time: 1000}, function () {
-                                   rightTB.reload({
-               	                    	where:{lastversion:true,protype:param.nodeId}
-               	               	   });
-                               });
-                           } else {
-                               layer.msg("操作失败")
-                           }
-                       },
-                       error: function (data) {
-                           layer.msg("服务端异常");
-                       }
+        		   layer.confirm("是否级联删除？", {
+                       btn: ["是","否"]
+                   }, function(){
+                	   requestParam.sfjl = "1";
+                	   delLcdy(requestParam,param)
+                   }, function(){
+                	   requestParam.sfjl = "0";
+                	   delLcdy(requestParam,param)
                    });
           		})
            }else if("download" == action){
@@ -360,6 +380,7 @@
             return false;
         });
         
+        var index;
         upload.render({
              elem: '#lc_upload'
             ,url: '${ctx}/lcgl/lcdy/deploy'
@@ -378,7 +399,11 @@
            		  }
              }
             ,bindAction: '#lc_upload_btn'
+           	,before: function(obj){ //obj参数包含的信息，跟 choose回调完全一致，可参见上文。
+           		index = layer.load(1);
+             }
             ,done: function(res){
+            	layer.close(index);
 				if(res.code < 0){
 					layer.msg(res.msg, {offset: ['50%'], time: 2000});
 				}else{

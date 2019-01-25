@@ -3,18 +3,20 @@ package com.zzhb.zzoa.mapper;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import com.zzhb.zzoa.domain.User;
 import com.zzhb.zzoa.domain.activiti.ProcessDefinitionExt;
 import com.zzhb.zzoa.domain.activiti.ProcessDefinitionType;
 
 public interface ActivitiMapper {
-	
+
 	@Select("SELECT NAME_ FROM act_ge_bytearray WHERE DEPLOYMENT_ID_ = #{0}")
 	public List<String> getDeployResourceNameByDepId(String deploymentId);
 
-	public Integer addProcessDefinitionExt(ProcessDefinitionExt pde);
+	public Integer addProcessDefinitionExt(@Param("pdes") List<ProcessDefinitionExt> pdes);
 
 	public List<ProcessDefinitionExt> getProcessDefinitionExts(Map<String, String> params);
 
@@ -31,6 +33,11 @@ public interface ActivitiMapper {
 	public List<ProcessDefinitionExt> getProcessDefinitionExtByProType(String proType);
 
 	public Integer addProcessDefinitionType(ProcessDefinitionType processDefinitionType);
-	
-	public List<Map<String,Object>> getTodoTaskAndToClaimTask(Map<String, Object> params);
+
+	public List<Map<String, Object>> getTodoTaskAndToClaimTask(Map<String, Object> params);
+
+	public Map<String, String> getBusinessByBk(Map<String, String> params);
+
+	@Update("UPDATE ACT_HI_TASKINST SET ASSIGNEE_ = #{assignee} WHERE ID_ = #{taskId}")
+	public Integer updateHiTaskInst(Map<String, String> params);
 }

@@ -3,9 +3,401 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,minimal-ui">
+<title>首页</title>
+<link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
+<link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" />
+<link href="${ctx}/css/common/reset.css" rel="stylesheet" />
+<style>
+	/*common*/
+	body{display: flex;align-items: stretch;}
+	section{flex-grow: 1;}
+	a{display: block;height: 100%;line-height: 100%;}
+	.column{border: 1px solid #e5e5e5;margin-bottom: 8px;}
+	.column .tit{display: flex;align-items: center;justify-content: space-between;padding: 4px 10px;background-color: #f2f5f7;height: 32px;}
+	.column .tit h3 .fa{color: #1196d9;margin-right: 6px;}
+	.column .tit-r{color: #1196d9;height: auto;}
+	.column .tit-r>i{margin-right: 4px;}
+	.left-box{min-width: 230px;}
+	.center-box{margin-left: 5px;min-width: 770px;}
+	.right-box{margin-left: 5px;min-width: 380px;}
+	/*rwyj*/
+	#rwyj_main ul{padding: 0 5px;}
+	#rwyj_main ul li{display: flex;align-items: center;justify-content: space-between;padding: 5px 12px;border-top:1px dashed #e5e5e5;}
+	#rwyj_main ul li .num{color: #fff;line-height: 24px; border-radius: 200px;margin-right: 8px;padding: 0 15px;}
+	/*快捷菜单*/
+	#kjcd_main ul{padding: 12px 0 0;display: flex;align-items: center;justify-content: space-between;flex-wrap: wrap;}
+	#kjcd_main ul li{width: 33.33%;text-align: center;margin-bottom: 24px;}
+	#kjcd_main ul li>img{display: block;width: 56px;height: 56px;}
+	#kjcd_main ul li p{margin-top: 8px;}
+	/*我的任务*/
+	#wdrw_main .layui-tab{margin: 0;}
+	#wdrw_main .layui-tab-content{padding: 5px 15px;}
+	#wdrw_main .dbsx-list{width: 100%;text-align: center;}
+	#wdrw_main .dbsx-list-tit th{line-height: 30px;border-bottom: 1px solid #e5e5e5; text-align: center;font-weight:400;}
+	#wdrw_main .dbsx-list-main{line-height: 30px;border-bottom: 1px dashed #e5e5e5;}
+	#wdrw_main .dbsx-tit{line-height: 30px;border-bottom: 1px solid #e5e5e5;text-align: center;}
+	.layui-tab-brief>.layui-tab-title .layui-this {color: #0a8cbf;}
+	.layui-tab-brief>.layui-tab-more li.layui-this:after, .layui-tab-brief>.layui-tab-title .layui-this:after{border-bottom: 2px solid #0a8cbf;}
+	/*通知通告,邮件*/
+	.flex-box{display: flex;justify-content: space-between;align-items:stretch;}
+	#tztg,#wdyj{min-width: 380px;flex-grow: 1;}
+	#tztg{margin-right: 10px;}
+	#tztg_main ul,#wdyj_main ul{padding: 5px 10px;}
+	#tztg_main ul li>a,#wdyj_main ul li>a{display: flex;align-content: center;justify-content: space-between;line-height: 30px;border-bottom: 1px dashed #e5e5e5;}
+	#tztg_main ul li>a .fa,#wdyj_main ul li>a .fa{color: #6189bb;margin-right: 5px;}
+	/*任务统计*/
+	#rwtj_main{display: flex;align-items: center;padding-top:8px;}
+	.rwtj-left,.rwtj-right{flex-grow: 1;}
+	.rwtj-left{border-right: 1px dashed #e5e5e5;}
+	.rwtj-left ul,.rwtj-right ul{display:flex;align-items: center;flex-wrap: wrap;}
+	.rwtj-left ul li,.rwtj-right ul li{background-color: #f2f5f7;text-align: left;padding: 19px 22px 10px 18px;margin-bottom: 8px;min-width: 142px;margin-left: 8px;}
+	.rwtj-left .rwtj-nav{display: flex;align-items: flex-start;}
+	.rwtj-left .rwtj-nav .rwtj-nav-r{margin-left: 15px;}
+	.rwtj-left .rwtj-nav .rwtj-nav-r>span{font-size: 20px;font-weight: 400;}
+	.rwtj-left .rwtj-nav .rwtj-nav-r>p{margin-top: 15px;}
+	.rwtj-right ul li>a{display: flex;align-items: center;color: #3c8ed3;}
+	.rwtj-right ul li>a>p{margin-left: 32px;font-size: 24px;font-weight: 400;}
+	.rwtj-right .rwtj-nav{text-align: center;}
+	.rwtj-right .rwtj-nav>p{margin-top: 5px;}
+	/*统计图表*/
+	#chat_main{width: 380px;height: 240px;}
+	/*日程计划*/
+	.laydate-theme-zdy{width: 100%;border: none !important;box-shadow: none !important;}
+	.laydate-theme-zdy .layui-laydate-main{width: 380px;}
+	.laydate-theme-zdy .layui-laydate-content{padding: 0;}
+	.laydate-theme-zdy .layui-laydate-content table{width: 100%;}
+	.layui-laydate .layui-this{background-color: #0a8cbf!important;}
+	.rcjh-plan{line-height: 30px;border-top: 1px solid #e5e5e5;padding-left: 10px;}
+	.rcjh-plan>span{color: #0a8cbf;margin-right: 10px;}
+	/*系统消息*/
+	#xtxx_main ul{padding: 5px 10px;}
+	#xtxx_main ul li>a{display: flex;align-content: center;justify-content: space-between;line-height: 30px;border-bottom: 1px dashed #e5e5e5;}
+	#xtxx_main ul li>a .fa{color: #6189bb;margin-right: 5px;}	
+</style>
 </head>
-<body>
-	Hello World
+<body style="padding:5px;">
+	<section class="left-box">
+		<!-- 任务预警 -->
+		<div id="rwyj" class="column">
+			<div class="tit">
+				<h3><i class="fa fa-warning"></i>任务预警</h3>
+				<a href="#" class="tit-r"><i class="fa fa-refresh"></i>刷新</a>
+			</div>
+			<div class="column-main" id="rwyj_main">
+				<ul>
+					<li><span>今日新待办:</span><span><span class="num" style="background-color:#a189e1;">12</span>条</span></li>
+					<li><span>即将要超时:</span><span><span class="num" style="background-color:#73ca45;">1</span>条</span></li>
+					<li><span>七天内超时:</span><span><span class="num" style="background-color:#13b3c2;">10</span>条</span></li>
+					<li><span>本月已超时:</span><span><span class="num" style="background-color:#4e9de2;">9</span>条</span></li>
+					<li><span>长期未处理:</span><span><span class="num" style="background-color:#ffcd45;">89</span>条</span></li>
+					<li><span>本年已超时:</span><span><span class="num" style="background-color:#e93883;">5</span>条</span></li>
+				</ul>
+			</div>
+			
+		</div>
+		<!-- 快捷菜单 -->
+		<div id="rwyj" class="column">
+				<div class="tit">
+					<h3><i class="fa fa-th-list"></i>快捷菜单</h3>
+					<a href="#" class="tit-r"><i class="fa fa-angle-right"></i>更多</a>
+				</div>
+				<div class="column-main" id="kjcd_main">
+					<ul>
+						<li><a href="#"><img src="${ctx}/image/home/qjsq.png" alt=""><p>请假申请</p></a></li>
+						<li><a href="#"><img src="${ctx}/image/home/fybx.png" alt=""><p>费用报销</p></a></li>
+						<li><a href="#"><img src="${ctx}/image/home/jbdj.png" alt=""><p>加班登记</p></a></li>
+						<li><a href="#"><img src="${ctx}/image/home/gzrz.png" alt=""><p>工作日志</p></a></li>
+						<li><a href="#"><img src="${ctx}/image/home/txzb.png" alt=""><p>填写周报</p></a></li>
+						<li><a href="#"><img src="${ctx}/image/home/txyb.png" alt=""><p>填写月报</p></a></li>
+						<li><a href="#"><img src="${ctx}/image/home/ybsx.png" alt=""><p>已办事项</p></a></li>
+						<li><a href="#"><img src="${ctx}/image/home/yysx.png" alt=""><p>已阅事项</p></a></li>
+						<li><a href="#"><img src="${ctx}/image/home/wfqd.png" alt=""><p>我发起的</p></a></li>
+						<li><a href="#"><img src="${ctx}/image/home/txl.png" alt=""><p>通讯录</p></a></li>
+						<li><a href="#"><img src="${ctx}/image/home/hysq.png" alt=""><p>会议申请</p></a></li>
+						<li><a href="#"><img src="${ctx}/image/home/gzzd.png" alt=""><p>规章制度</p></a></li>
+					</ul>
+				</div>
+				
+			</div>
+	</section>
+	<section class="center-box">
+		<!-- 我的任务 -->
+		<div id="wdrw" class="column">
+				<div class="tit">
+					<h3><i class="fa fa-calendar-check-o"></i>我的任务</h3>
+					<a href="#" class="tit-r"><i class="fa fa-angle-right"></i>更多</a>
+				</div>
+				<div class="column-main" id="wdrw_main">
+						<div class="layui-tab layui-tab-brief">
+							<ul class="layui-tab-title ">
+								<li class="layui-this">待办事项</li>
+								<li>待阅事项</li>
+							</ul>
+							<div class="layui-tab-content">
+								<div class="layui-tab-item layui-show">
+									<table class="dbsx-list">
+										<tr class="dbsx-list-tit">
+											<th>流程单号</th>
+											<th>标题</th>
+											<th>状态</th>
+											<th>发起时间</th>
+										</tr>
+										<tr class="dbsx-list-main">
+											<td>AH2018110001</td>
+											<td>程飞-工作日志</td>
+											<td><span>审批中</span></td>
+											<td>2018-11-27</td>
+										</tr>
+										<tr class="dbsx-list-main">
+											<td>AH2018110001</td>
+											<td>程飞-工作日志</td>
+											<td><span>审批中</span></td>
+											<td>2018-11-27</td>
+										</tr>
+										<tr class="dbsx-list-main">
+											<td>AH2018110001</td>
+											<td>程飞-工作日志</td>
+											<td><span>审批中</span></td>
+											<td>2018-11-27</td>
+										</tr>
+										<tr class="dbsx-list-main">
+											<td>AH2018110001</td>
+											<td>程飞-工作日志</td>
+											<td><span>审批中</span></td>
+											<td>2018-11-27</td>
+										</tr>
+									</table>
+								</div>
+								<div class="layui-tab-item">内容2</div>
+							</div>
+						</div>
+				</div>			
+		</div>
+		<div class="flex-box">
+		<!-- 通知通告 -->
+		<div id="tztg" class="column">
+				<div class="tit">
+					<h3><i class="fa fa-volume-up"></i>通知通告</h3>
+					<a href="#" class="tit-r"><i class="fa fa-angle-right"></i>更多</a>
+				</div>
+				<div class="column-main" id="tztg_main">
+					<ul>
+						<li><a href="#"><p><i class="fa fa-caret-right"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
+						<li><a href="#"><p><i class="fa fa-caret-right"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
+						<li><a href="#"><p><i class="fa fa-caret-right"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
+						<li><a href="#"><p><i class="fa fa-caret-right"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
+						<li><a href="#"><p><i class="fa fa-caret-right"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
+						<li><a href="#"><p><i class="fa fa-caret-right"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
+					</ul>
+				</div>
+			</div>
+			<!-- 我的邮件 -->
+			<div id="wdyj" class="column">
+				<div class="tit">
+					<h3><i class="fa fa-envelope"></i>我的邮件</h3>
+					<a href="#" class="tit-r"><i class="fa fa-angle-right"></i>更多</a>
+				</div>
+				<div class="column-main" id="wdyj_main">
+					<ul>
+						<li><a href="#"><p><i class="fa fa-envelope-o"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
+						<li><a href="#"><p><i class="fa fa-envelope-o"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
+						<li><a href="#"><p><i class="fa fa-envelope-o"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
+						<li><a href="#"><p><i class="fa fa-envelope-o"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
+						<li><a href="#"><p><i class="fa fa-envelope-open-o"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
+						<li><a href="#"><p><i class="fa fa-envelope-open-o"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<!-- 任务统计-->
+		<div id="rwtj" class="column">
+			<div class="tit">
+				<h3><i class="fa fa-th-large"></i>任务统计</h3>
+				<a href="#" class="tit-r"><i class="fa fa-angle-right"></i>更多</a>
+			</div>		
+			<div class="column-main" id="rwtj_main">
+				<div class="rwtj-left">
+					<ul>
+						<li><a href="#"><div class="rwtj-nav"><img src="${ctx}/image/home/rwtj01.png" alt=""><div class="rwtj-nav-r"><span>0</span><p>未读代办</p></div></div></a></li>
+						<li><a href="#"><div class="rwtj-nav"><img src="${ctx}/image/home/rwtj02.png" alt=""><div class="rwtj-nav-r"><span>0</span><p>代办事项</p></div></div></a></li>
+						<li><a href="#"><div class="rwtj-nav"><img src="${ctx}/image/home/rwtj03.png" alt=""><div class="rwtj-nav-r"><span>0</span><p>已办事项</p></div></div></a></li>
+						<li><a href="#"><div class="rwtj-nav"><img src="${ctx}/image/home/rwtj04.png" alt=""><div class="rwtj-nav-r"><span>0</span><p>待阅事项</p></div></div></a></li>
+						<li><a href="#"><div class="rwtj-nav"><img src="${ctx}/image/home/rwtj05.png" alt=""><div class="rwtj-nav-r"><span>0</span><p>已阅事项</p></div></div></a></li>
+						<li><a href="#"><div class="rwtj-nav"><img src="${ctx}/image/home/rwtj06.png" alt=""><div class="rwtj-nav-r"><span>0</span><p>草稿箱&nbsp;&nbsp;</p></div></div></a></li>
+					</ul>
+				</div>
+				<div class="rwtj-right">
+					<ul>
+						<li><a href="#"><div class="rwtj-nav"><img src="${ctx}/image/home/rwtj07.png" alt=""><p>累计发起</p></div><p>3</p></a></li>
+						<li><a href="#"><div class="rwtj-nav"><img src="${ctx}/image/home/rwtj08.png" alt=""><p>累计完成</p></div><p>3</p></a></li>
+						<li><a href="#"><div class="rwtj-nav"><img src="${ctx}/image/home/rwtj09.png" alt=""><p>累计参与</p></div><p>3</p></a></li>
+						<li><a href="#"><div class="rwtj-nav"><img src="${ctx}/image/home/rwtj10.png" alt=""><p>累计作废</p></div><p>3</p></a></li>
+					</ul>
+				</div>
+			</div>	
+		</div>
+	</section>
+	<section class="right-box">
+		<!-- 流程统计图表-->
+		<div id="tj_chart" class="column">
+			<div class="tit">
+				<h3><i class="fa fa-pie-chart"></i>流程统计图表</h3>
+				<a href="#" class="tit-r"><i class="fa fa-refresh"></i>刷新</a>
+			</div>
+			<div class="column-main" id="chat_main">
+
+			</div>
+		</div>
+		<!-- 日程计划 -->	
+		<div class="column" id="rcjh">
+			<div class="tit">
+				<h3><i class="fa fa-calendar"></i>日程计划</h3>
+				<a href="#" class="tit-r"><i class="fa fa-refresh"></i>刷新</a>
+			</div>
+			<div class="column-main" id="rcjh_main">
+				<div id="rcjh_date">
+
+				</div>
+				<p class="rcjh-plan"><span>日程计划:</span>暂无日程计划</p>
+			</div>
+		</div>
+		<!-- 系统消息 -->	
+		<div class="column" id="xtxx">
+				<div class="tit">
+					<h3><i class="fa fa-bell"></i>系统消息</h3>
+					<a href="#" class="tit-r"><i class="fa fa-refresh"></i>更多</a>
+				</div>
+				<div class="column-main" id="xtxx_main">
+					<ul>
+						<li><a href="#"><p><i class="fa fa-caret-right"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
+						<li><a href="#"><p><i class="fa fa-caret-right"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
+						<li><a href="#"><p><i class="fa fa-caret-right"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
+						<li><a href="#"><p><i class="fa fa-caret-right"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
+						<li><a href="#"><p><i class="fa fa-caret-right"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
+						<li><a href="#"><p><i class="fa fa-caret-right"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
+					</ul>
+				</div>
+			</div>
+	</section>
 </body>
 </html>
+<script src="${ctx}/plugins/layui/layui.all.js"></script>
+<script src="${ctx}/plugins/echarts.js"></script>
+<script>
+var element = layui.element,laydate=layui.laydate;
+var $=layui.jquery;
+
+//
+laydate.render({
+  elem: '#rcjh_date',
+  position: 'static',
+  theme: 'zdy',
+  btns: [],
+  showBottom: false
+});
+</script>
+<script>
+        var myChart = echarts.init(document.getElementById('chat_main'));
+
+// 指定图表的配置项和数据
+var option = {
+    tooltip: {
+        trigger: "item",
+        formatter: "{a} <br/>{b} : {c} ({d}%)",
+        show: true
+    },
+    legend: {
+        orient: "vertical",
+        x: "right",
+        data: ["草稿", "运行中", "已完成", "挂起中", "驳回提单", "已作废"],
+        selectedMode: "multiple",
+        y: "bottom"
+    },
+    toolbox: {
+        show: true,
+        feature: {
+            dataView: {
+                readOnly: true
+            }
+        },
+        showTitle: true
+    },
+    calculable: true,
+    series: [
+        {
+            name: "流程数量",
+            type: "pie",
+            itemStyle: {
+                normal: {
+                    label: {
+                        show: true
+                    },
+                    labelLine: {
+                        show: true
+                    }
+                },
+                emphasis: {
+                    label: {
+                        show: true,
+                        position: "center",
+                        textStyle: {
+                            fontSize: "30",
+                            fontWeight: "bold"
+                        }
+                    }
+                }
+            },
+            data: [
+                {
+                    value: 2,
+                    name: "草稿"
+                },
+                {
+                    value: 25,
+                    name: "运行中"
+                },
+                {
+                    value: 120,
+                    name: "已完成"
+                },
+                {
+                    value: 22,
+                    name: "挂起中"
+                },
+                {
+                    value: 12,
+                    name: "驳回提单"
+                },
+                {
+                    value: 1,
+                    name: "已作废"
+                }
+            ],
+            radius: ["28%", "46%"],
+            markPoint: {
+                data: []
+            },
+            startAngle: 32,
+            selectedMode: false
+        }
+    ],
+    title: {
+        text: "流程占比统计",
+        textStyle: {
+            fontSize: 14,
+            fontStyle: "normal",
+            fontWeight: "bold"
+        },
+        x: "center",
+        backgroundColor: "rgba(0,0,0,0)",
+        y: 20
+    },
+    animation: true,
+    animationEasing: "ExponentialOut",
+    color: ["#ff7f50", "#87cefa", "#da70d6", "#32cd32", "#6495ed", "#ff69b4", "#ba55d3", "#cd5c5c", "#ffa500", "#40e0d0", "#1e90ff", "#ff6347", "#7b68ee", "#00fa9a", "#ffd700", "#6699FF", "#ff6666", "#3cb371", "#b8860b", "#30e0e0"]
+};
+
+// 使用刚指定的配置项和数据显示图表。
+myChart.setOption(option);
+</script>

@@ -6,20 +6,22 @@ import java.util.List;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
 
-public class AtivitiTaskListener implements TaskListener {
+public class UserTaskListener implements TaskListener {
 
 	private static final long serialVersionUID = -945873544868871911L;
 
 	@Override
 	public void notify(DelegateTask delegateTask) {
 		String eventName = delegateTask.getEventName();
+
+		System.out.println("===========name======" + delegateTask.getName());
+		System.out.println("=========create====sprs=====" + delegateTask.getVariable("sprs").toString());
+		String sprs = delegateTask.getVariable("sprs").toString();
 		if ("create".endsWith(eventName)) {
-			System.out.println("=========create=========" + delegateTask.getVariable("spr").toString());
-			String spr = delegateTask.getVariable("spr").toString();
-			if(spr.indexOf(",") == -1) {
-				delegateTask.setAssignee(spr);
-			}else {
-				List<String> candidateUsers = Arrays.asList(spr.split(","));
+			if (sprs.indexOf(",") == -1) {
+				delegateTask.setAssignee(sprs);
+			} else {
+				List<String> candidateUsers = Arrays.asList(sprs.split(","));
 				delegateTask.addCandidateUsers(candidateUsers);
 			}
 		} else if ("assignment".endsWith(eventName)) {

@@ -3,13 +3,13 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>发起流程</title>
+    <title>我发起的</title>
     <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
     <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <link href="${ctx}/css/common/reset.css" rel="stylesheet" />
     <link rel="stylesheet" href="${ctx}/plugins/layui/extend/dtree/dtree.css">
     <link rel="stylesheet" href="${ctx}/plugins/layui/extend/dtree/font/dtreefont.css">
     <style>
-        html,body{margin: 0;height: 100%;}
  .layui-table, .layui-table-view {margin:0;}
  .layui-table-tool {
     position: relative;
@@ -22,47 +22,41 @@
 }
 .layui-input{height:32px;line-height: 32px;}
 .dtree{width: 210px;}
- .left-box{float: left;width:240px;height:100%;padding:3px;box-sizing: border-box;overflow-y: auto;border-right:1px solid #e6e6e6;}
- .right-box{float: right;width:calc(100% - 249px); ;height:100%;padding: 0 4px 0 0;}
+ .left-box{float: left;width:230px;height:100%;box-sizing: border-box;overflow-y: auto;border-right:1px solid #e6e6e6;}
+ .right-box{float: left;width:calc(100% - 240px); ;height:100%;margin-left: 5px;}
+#query{margin: 5px 0;}
  .bm_name_tit{height:42px;line-height: 42px;background-color: #f3f5f7;text-align: center;font-size:16px;}
- * {
-            box-sizing: border-box;
-   }
-
-   .flex-box {
-       padding: 8px;
-   }
-
-   .zdy-list {
-       display: flex;
-       align-items: center;
-       justify-content: space-between;
-       flex-wrap: wrap;
-   }
-
-   .zdy-list>li {
-       width: 20%;
-       padding: 10px;
-       margin-bottom: 12px;
-   }
-
-   .zdy-list .zdy-list-box {
-       background-color: #f3f5f7;
-       border: 1px solid #e6e6e6;
-       border-radius: 4px;
-       display: flex;
-       flex-direction: column;
-       height: 140px;
-       justify-content: space-between;
-       padding: 10px;
-   }
-   .zdy-icon{margin-right: 5px;}
-   
-   .inner{
-   		padding: 10px;
-   		text-align: center;
-   		margin:0 auto;
-   }
+	   .flex-box {
+	       padding: 8px;
+	   }
+	   .zdy-list {
+	       display: flex;
+	       align-items: center;
+	       justify-content: space-between;
+	       flex-wrap: wrap;
+	   }
+	   .zdy-list>li {
+	       width: 20%;
+	       padding: 10px;
+	       margin-bottom: 12px;
+	   }
+	   .zdy-list .zdy-list-box {
+	       background-color: #f3f5f7;
+	       border: 1px solid #e6e6e6;
+	       border-radius: 4px;
+	       display: flex;
+	       flex-direction: column;
+	       height: 140px;
+	       justify-content: space-between;
+	       padding: 10px;
+	   }
+	   .zdy-icon{margin-right: 5px;}
+	   
+	   .inner{
+	   		padding: 10px;
+	   		text-align: center;
+	   		margin:0 auto;
+	   }
 </style>
 </head>
 <body>
@@ -71,12 +65,11 @@
         <div style="overflow: auto;" id="toolbarDiv">
             <ul id="left_tree" class="dtree" data-id="0"></ul>
         </div>
-    </div>
-    
+    </div> 
     <div class="right-box">
     	<form class="layui-form" id="query">
 		    <div class="layui-inline">
-		        <input class="layui-input" type="text" placeholder="流水号" name="businessKey">
+		        <input class="layui-input" type="text" placeholder="流程单号" name="businessKey">
 		    </div>
 		    <div class="layui-inline">
 		        <input type="text" id="dateS" name="dateS" placeholder="申请时间起" autocomplete="off" class="layui-input">
@@ -101,29 +94,49 @@
 </body>
 
 </html>
-<script type="text/html" id="lczt">
+<script type="text/html" id="clzt">
    {{#  if(d.deleteReason == null){ }}
 		{{#  if(d.endTime == ''){ }}
 			<span style="color: #FFC125;">审核中</span>
    		{{#  } else { }}
-			<span style="color: green">已审核</span>
+			{{#  if(d.sftg){ }}
+				<span style="color: green">已通过</span>
+   			{{#  } else { }}
+				<span style="color: red">未通过</span>
+   			{{#  } }}
    		{{#  } }}
    {{#  } else { }}
 		<span style="color: red">已撤销</span>
    {{#  } }}
 </script>
+<script type="text/html" id="lczt">
+   {{#  if(d.suspended){ }}
+		<span style="color: red">中止</span>
+   {{#  } else { }}
+		<span style="color: green">正常</span>
+   {{#  } }}
+</script>
 <script type="text/html" id="rightBar">
     <div class="layui-btn-group">
         <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="details">
-            <i class="fa fa-bars"></i>
+            <i class="fa fa-bars" title="详情"></i>
         </a>
         <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="preview">
-            <i class="fa fa-image"></i>
+            <i class="fa fa-image" title="流程图"></i>
         </a>
 		{{#  if(d.endTime == ''){ }}
-        	<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del">
-            	<i class="fa fa-reply"></i>
-        	</a>
+			 {{#  if(d.suspended){ }}
+				<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="play">
+					<i class="fa fa-play" title="激活"></i>
+				</a>
+   			 {{#  } else { }}
+				<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="pause">
+					<i class="fa fa-pause" title="挂起"></i>
+				</a>
+   			 {{#  } }}
+			 	<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del">
+            		<i class="fa fa-reply" title="撤銷"></i>
+        		</a>
         {{#  } }}
     </div>
 </script>
@@ -189,7 +202,7 @@
                     width: 50
                 }, {
                     field: 'businessKey',
-                    title: '流水号',
+                    title: '流程单号',
                    	width: 200,
                     align: 'center'
                 }, {
@@ -203,8 +216,14 @@
                     align: 'center'
                 },{
                     field: 'endTime',
-                    title: '流程状态',
+                    title: '处理状态',
                 	width: 150,
+                    align: 'center',
+                    templet: '#clzt'
+                },{
+                    field: 'suspended',
+                    title: '流程状态',
+                	width: 100,
                     align: 'center',
                     templet: '#lczt'
                 }, {
@@ -232,7 +251,6 @@
         		 });
                  layer.full(index);
             } else if("del" == obj.event){
-            	console.log(data)
             	layer.confirm('确定撤销该【'+data.processDefinitionName+'】吗?', function (index) {
             		$.ajax({
                         type: "post",
@@ -258,7 +276,34 @@
                         }
                     });
             	})
+            } else if("pause" == obj.event || "play" == obj.event){
+           		$.ajax({
+                       type: "post",
+                       data: {processInstanceId: data.processInstanceId},
+                       url: "${ctx}/grgzt/wfqd/pauseAndPlay/"+obj.event,
+                       beforeSend: function () {
+                           index = layer.load(1);
+                       },
+                       success: function (data) {
+                           layer.close(index);
+                           if (data > 0) {
+                               layer.msg("操作成功", {offset: ['50%'], time: 1000}, function () {
+                               	table.reload(tableId, {
+                                       where: data.field
+                                   });
+                               });
+                           } else {
+                           	   layer.close(index);
+                               layer.msg("操作失败")
+                           }
+                       },
+                       error: function (data) {
+                           layer.close(index);
+                           layer.msg("服务端异常");
+                       }
+                   });
             }
+            
         })
         
         form.on('submit(query)', function (data) {

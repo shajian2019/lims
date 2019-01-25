@@ -1,14 +1,14 @@
 package com.zzhb.zzoa.mapper;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import com.zzhb.zzoa.domain.User;
-
-import java.util.List;
-import java.util.Map;
 
 public interface UserMapper {
 
@@ -43,6 +43,10 @@ public interface UserMapper {
 
 	@Select("SELECT COUNT(1) FROM sys_t_user WHERE username = #{0}")
 	public Integer getCountByName(String username);
-	
+
 	public List<User> getUsersByOid(@Param("o_id") String o_id);
+
+	public void delUserProcdef(@Param("p_id") String p_id, @Param("u_id") String u_id);
+
+	public Integer addUserProcdef(Map<String, Object> params);
 }

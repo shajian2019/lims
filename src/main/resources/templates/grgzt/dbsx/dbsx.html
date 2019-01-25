@@ -101,15 +101,43 @@
 <script type="text/html" id="rightBar">
     <div class="layui-btn-group">
 		{{#  if(d.ASSIGNEE_){ }}
-			<a class="layui-btn layui-btn-xs" lay-event="sprw">
-            	<span>审批</span>
-        	</a>
+ 			{{#  if(d.SUSPENSION_STATE_ == 2){ }}
+				<a class="layui-btn layui-btn-primary layui-btn-xs layui-btn-disabled">
+					<i class="fa fa-pencil" title="审批任务"></i>
+        		</a>
+   			{{#  } else { }}
+				<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="sprw">
+					<i class="fa fa-pencil" title="审批任务"></i>
+        		</a>
+				<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="cxlq">
+					<i class="fa fa-undo" title="放弃处理"></i>
+        		</a>
+				<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="wt">
+					<i class="fa fa-hand-stop-o" title="委托"></i>
+        		</a>
+				<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="zp">
+					<i class="fa fa-hand-o-right" title="指派"></i>
+        		</a>
+   			{{#  } }}
 		{{#  } else { }}
-            <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="lqrw">
-            	<span>领取</span>
-        	</a>
+			{{#  if(d.SUSPENSION_STATE_ == 2){ }}
+				<a class="layui-btn layui-btn-primary layui-btn-xs layui-btn-disabled">
+					<i class="fa fa-check-square" title="领取任务"></i>
+        		</a>
+   			{{#  } else { }}
+				<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="lqrw">
+					<i class="fa fa-check-square" title="领取任务"></i>
+        		</a>
+   			{{#  } }}
         {{#  } }}
     </div>
+</script>
+<script type="text/html" id="lczt">
+   {{#  if(d.SUSPENSION_STATE_ == 2){ }}
+		<span style="color: red">中止</span>
+   {{#  } else { }}
+		<span style="color: green">正常</span>
+   {{#  } }}
 </script>
 <script src="${ctx}/plugins/layui/layui.js"></script>
 <script>
@@ -167,6 +195,10 @@
                     title: '流程名称',
                     align: 'center'
                 }, {
+                    field: 'NAME_',
+                    title: '流程节点',
+                    align: 'center'
+                },{
                     field: 'sqr',
                     title: '申请人',
                     align: 'center'
@@ -176,6 +208,11 @@
                     width: 200,
                     align: 'center'
                 }, {
+                    field: 'SUSPENSION_STATE_',
+                    title: '流程状态',
+                    align: 'center',
+                    templet: '#lczt'
+                },{
                     title: '操作', align: 'center',
                     width: 140,
                     templet: '#rightBar'
@@ -189,9 +226,8 @@
         
         table.on('tool(tableBox)', function (obj) {
             var data = obj.data;
-            console.log(data)
             if (obj.event == 'sprw') {
-            	sprw(data.NAME_,data.ID_)
+            	sprw(data.NAME_,data.ID_,data.bk)
             } else if("preview" == obj.event){
             	index = layer.open({
              		  type: 2,
@@ -201,32 +237,73 @@
         		 });
                  layer.full(index);
             } else if("lqrw" == obj.event){
-            	layer.confirm('确定领取该任务吗?', function (index) {
-            		$.ajax({
-                        type: "post",
-                        data: {u_id:"${user.u_id}", taskId:data.ID_},
-                        url: "${ctx}/grgzt/dbsx/calimTask",
-                        beforeSend: function () {
-                            index = layer.load(1);
-                        },
-                        success: function (data) {
-                            layer.close(index);
-                            if (data > 0) {
-                                layer.msg("领取成功", {offset: ['50%'], time: 1000}, function () {
-                                	table.reload(tableId, {
-                                        where: data.field
-                                    });
-                                });
-                            } else {
-                                layer.msg("操作失败")
-                            }
-                        },
-                        error: function (data) {
-                        	layer.close(index);
-                            layer.msg("服务端异常");
-                        }
-                    });
-            	})
+            	if(data.SUSPENSION_STATE_ != '1'){
+            		layer.msg("【"+data.sqr+"】已中止该流程,暂时无法领取", {offset: ['50%'], time: 2000});
+            	} else {
+	            	layer.confirm('确定领取该任务吗?', function (index) {
+		            		$.ajax({
+		                        type: "post",
+		                        data: {u_id:"${user.u_id}", taskId:data.ID_},
+		                        url: "${ctx}/grgzt/dbsx/calimTask",
+		                        beforeSend: function () {
+		                            index = layer.load(1);
+		                        },
+		                        success: function (data) {
+		                            layer.close(index);
+		                            if (data > 0) {
+		                                layer.msg("领取成功", {offset: ['50%'], time: 1000}, function () {
+		                                	table.reload(tableId, {
+		                                        where: data.field
+		                                    });
+		                                });
+		                            } else {
+		                                layer.msg("操作失败")
+		                            }
+		                        },
+		                        error: function (data) {
+		                        	layer.close(index);
+		                            layer.msg("服务端异常");
+		                        }
+		                    });
+	            	})
+            	}
+            } else if ("cxlq" == obj.event){
+            	if(data.SUSPENSION_STATE_ != '1'){
+            		layer.msg("【"+data.sqr+"】已中止该流程,暂时无法撤销", {offset: ['50%'], time: 2000});
+            	} else {
+	            	layer.confirm('确定放弃处理该任务吗?', function (index) {
+		            		$.ajax({
+		                        type: "post",
+		                        data: {taskId:data.ID_},
+		                        url: "${ctx}/grgzt/dbsx/calimTask",
+		                        beforeSend: function () {
+		                            index = layer.load(1);
+		                        },
+		                        success: function (data) {
+		                            layer.close(index);
+		                            if (data > 0) {
+		                                layer.msg("放弃成功", {offset: ['50%'], time: 1000}, function () {
+		                                	table.reload(tableId, {
+		                                        where: data.field
+		                                    });
+		                                });
+		                            } else if (data == 0) {
+		                                layer.msg("您是唯一指定审批人，无法放弃处理", {offset: ['50%'], time: 2000})
+		                            } else {
+		                                layer.msg("操作失败")
+		                            }
+		                        },
+		                        error: function (data) {
+		                        	layer.close(index);
+		                            layer.msg("服务端异常");
+		                        }
+		                     });
+	            	})
+            	}
+            } else if ("wt" == obj.event){
+            	layer.msg("开发中...", {offset: ['50%'], time: 2000});
+            } else if ("zp" == obj.event){
+            	layer.msg("开发中...", {offset: ['50%'], time: 2000});
             }
         })
         
@@ -254,13 +331,12 @@
         
     })
     
-    function sprw(title,key){
+    function sprw(title,taskId,bk){
     	var options = {};
-    	options.id = key;
+    	options.id = taskId;
     	options.title = title;
     	options.icon = "fa-pencil";
-    	options.url = "${ctx}/grgzt/fqlc/beforeStart/"+key;
+    	options.url = "${ctx}/grgzt/dbsx/viewTask/"+taskId+"?bk="+bk;
     	parent.window.addTab(options);
     }
-    
 </script>

@@ -1,6 +1,7 @@
 package com.zzhb.zzoa.service;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -30,6 +31,8 @@ import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Comment;
+import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
 import org.activiti.image.ProcessDiagramGenerator;
 import org.slf4j.Logger;
@@ -55,6 +58,7 @@ import com.zzhb.zzoa.domain.activiti.ProcessDefinitionType;
 import com.zzhb.zzoa.mapper.ActivitiMapper;
 import com.zzhb.zzoa.mapper.LeaveMapper;
 import com.zzhb.zzoa.mapper.UserMapper;
+import com.zzhb.zzoa.mapper.UserSprMapper;
 import com.zzhb.zzoa.utils.CustomProcessDiagramGenerator;
 import com.zzhb.zzoa.utils.FileUtil;
 import com.zzhb.zzoa.utils.LayUiUtil;
@@ -72,7 +76,7 @@ public class ActivitiService {
 
 	@Autowired
 	ActivitiMapper activitiMapper;
-	
+
 	@Autowired
 	RepositoryService repositoryService;
 
@@ -83,7 +87,7 @@ public class ActivitiService {
 	LeaveMapper leaveMapper;
 
 	@Autowired
-	ProcessEngine pe;
+	ProcessEngine pes;
 
 	@Autowired
 	UserMapper userMapper;
@@ -94,20 +98,25 @@ public class ActivitiService {
 		Deployment deploy = repositoryService.createDeployment()
 				.addZipInputStream(new ZipInputStream(file.getInputStream())).name(resourceName).deploy();
 
-		ProcessDefinition pdf = repositoryService.createProcessDefinitionQuery().deploymentId(deploy.getId())
-				.singleResult();
-		ProcessDefinitionExt pde = new ProcessDefinitionExt();
-		pde.setId(pdf.getId());
-		pde.setDeployment_id(deploy.getId());
-		pde.setCreateuser(params.get("createuser"));
-		pde.setDescription(params.get("description"));
-		pde.setDgrm_resource_name(pdf.getDiagramResourceName());
-		pde.setKey(pdf.getKey());
-		pde.setName(pdf.getName());
-		pde.setResource_name(pdf.getResourceName());
-		pde.setVersion(pdf.getVersion());
-		pde.setProtype(params.get("protype"));
-		Integer addProcessDefinitionExt = activitiMapper.addProcessDefinitionExt(pde);
+		List<ProcessDefinition> pdfs = repositoryService.createProcessDefinitionQuery().deploymentId(deploy.getId())
+				.list();
+		List<ProcessDefinitionExt> pdes = new ArrayList<ProcessDefinitionExt>();
+		for (ProcessDefinition pdf : pdfs) {
+			ProcessDefinitionExt pde = new ProcessDefinitionExt();
+			pde.setId(pdf.getId());
+			pde.setDeployment_id(deploy.getId());
+			pde.setCreateuser(params.get("createuser"));
+			pde.setDescription(params.get("description"));
+			pde.setDgrm_resource_name(pdf.getDiagramResourceName());
+			pde.setKey(pdf.getKey());
+			pde.setName(pdf.getName());
+			pde.setResource_name(pdf.getResourceName());
+			pde.setVersion(pdf.getVersion());
+			pde.setProtype(params.get("protype"));
+			pdes.add(pde);
+		}
+
+		Integer addProcessDefinitionExt = activitiMapper.addProcessDefinitionExt(pdes);
 		return addProcessDefinitionExt;
 	}
 
@@ -183,9 +192,22 @@ public class ActivitiService {
 		return activitiMapper.addProcessDefinitionType(pt);
 	}
 
+	@Autowired
+	UserSprMapper userSprMapper;
+
 	@Transactional
-	public Integer lcdyDel(Map<String, String> params) {
-		repositoryService.deleteDeployment(params.get("deployment_id"), true);
+	public long lcdyDel(Map<String, String> params) {
+		boolean sfjl = "0".equals(params.get("sfjl")) ? false : true;
+		if (!sfjl) {
+			long count = hs.createHistoricProcessInstanceQuery().deploymentId(params.get("deployment_id")).unfinished()
+					.count();
+			if (count > 0) {
+				return 0 - count;
+			}
+		}
+		repositoryService.deleteDeployment(params.get("deployment_id"), sfjl);
+		userMapper.delUserProcdef(params.get("p_id"), null);
+		userSprMapper.delSprs(params);
 		return activitiMapper.delProcessDefinitionExt(params);
 	}
 
@@ -249,7 +271,7 @@ public class ActivitiService {
 		// 如果还没完成，流程图高亮颜色为绿色，如果已经完成为红色
 		if (!CollectionUtils.isEmpty(historicFinishedProcessInstances)) {
 			// 如果不为空，说明已经完成
-			processDiagramGenerator = pe.getProcessEngineConfiguration().getProcessDiagramGenerator();
+			processDiagramGenerator = pes.getProcessEngineConfiguration().getProcessDiagramGenerator();
 		} else {
 			processDiagramGenerator = new CustomProcessDiagramGenerator();
 		}
@@ -274,7 +296,7 @@ public class ActivitiService {
 
 	public JSONObject historyTask(String businessKey) {
 		List<HistoricTaskInstance> list = hs.createHistoricTaskInstanceQuery().processInstanceBusinessKey(businessKey)
-				.list();
+				.finished().orderByTaskCreateTime().asc().list();
 		List<HistoricTaskInstanceVO> historicTaskInstanceVOs = HistoricTaskInstanceVO.getHistoricTaskInstanceVOs(list);
 		for (HistoricTaskInstanceVO vo : historicTaskInstanceVOs) {
 			String u_id = null;
@@ -288,7 +310,30 @@ public class ActivitiService {
 				User user = userMapper.getUserById(Integer.parseInt(u_id));
 				vo.setAssignee(user.getNickname());
 			}
+			String spyj = "";
+			boolean sftg = true;
+			List<Comment> taskComments = taskService.getTaskComments(vo.getId(), "comment");
+			for (Comment comment : taskComments) {
+				spyj = JSON.parseObject(comment.getFullMessage()).getString("spyj");
+				sftg = JSON.parseObject(comment.getFullMessage()).getBoolean("agree");
+			}
+			vo.setSftg(sftg);
+			vo.setSpyj(spyj);
 		}
+		Task ruTask = taskService.createTaskQuery().processInstanceBusinessKey(businessKey).singleResult();
+		if (ruTask != null) {
+			HistoricTaskInstanceVO vo = new HistoricTaskInstanceVO();
+			vo.setId(ruTask.getId());
+			vo.setDeleteReason(null);
+			vo.setName(ruTask.getName());
+			vo.setStartTime(TimeUtil.getTimeFromDate("yyyy-MM-dd HH:mm:ss", ruTask.getCreateTime()));
+			if (ruTask.getAssignee() != null) {
+				User user = userMapper.getUserById(Integer.parseInt(ruTask.getAssignee()));
+				vo.setAssignee(user.getNickname());
+			}
+			historicTaskInstanceVOs.add(vo);
+		}
+
 		return LayUiUtil.pagination(historicTaskInstanceVOs.size(), historicTaskInstanceVOs);
 	}
 
@@ -311,28 +356,97 @@ public class ActivitiService {
 	}
 
 	@Transactional
+	public Integer pauseAndPlay(String event, String processInstanceId) {
+		if ("play".equals(event)) {
+			runtimeService.activateProcessInstanceById(processInstanceId);
+		} else {
+			runtimeService.suspendProcessInstanceById(processInstanceId);
+		}
+		return 1;
+	}
+
+	@Transactional
 	public JSONObject startProcessInstance(String key, Map<String, String> params) {
 		User user = SessionUtils.getUser();
 		JSONObject result = new JSONObject();
 		ProcessDefinition pd = repositoryService.createProcessDefinitionQuery().processDefinitionKey(key)
 				.latestVersion().singleResult();
 		is.setAuthenticatedUserId(user.getU_id() + "");
-		Map<String, String> vars = new HashMap<>();
-		ProcessInstance pi = formService.submitStartFormData(pd.getId(), params.get("bk"), vars);
+
+		ProcessInstance pi = formService.submitStartFormData(pd.getId(), params.get("bk"), params);
+
+		userSprMapper.updateSprs(params);
 
 		Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
-		taskService.setOwner(task.getId(), user.getU_id() + "");
 
-		Map<String, Object> variable = new HashMap<>();
-		variable.put("spr", params.get("spr"));
-		taskService.complete(task.getId(), variable);
+		// 添加附件
+		List<String> readFilePath = FileUtil.readFilePath(props.getTempPath(), "&" + params.get("bk") + "&");
+		for (String fileName : readFilePath) {
+			String filePath = props.getTempPath() + File.separator + fileName;
+			String attachmentType = fileName.split("&" + params.get("bk") + "&")[0];
+			String attachmentName = fileName.split("&" + params.get("bk") + "&")[1];
+			FileInputStream fileInputStream = null;
+			try {
+				fileInputStream = new FileInputStream(new File(filePath));
+				taskService.createAttachment(attachmentType, task.getId(), pi.getId(), attachmentName,
+						fileName.split("&")[1], fileInputStream);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} finally {
+				if (fileInputStream != null) {
+					try {
+						fileInputStream.close();
+						FileUtil.delete(filePath);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
 
 		params.put("proid", pi.getId());
 		Integer saveBusiness = saveBusiness(key, params);
-		task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
+
 		result.put("code", saveBusiness);
 		result.put("msg", task.getName());
 		result.put("bk", params.get("bk"));
+		return result;
+	}
+
+	@Transactional
+	public JSONObject submitTaskFormData(String taskId, Map<String, String> params) {
+		User user = SessionUtils.getUser();
+		JSONObject result = new JSONObject();
+		String bk = params.get("bk");
+
+		// 更新审批人缓存表
+		userSprMapper.updateSprs(params);
+
+		// 保存审批备注表
+		Task ruTask = taskService.createTaskQuery().taskId(taskId).singleResult();
+		String processInstanceId = ruTask.getProcessInstanceId();
+		is.setAuthenticatedUserId(user.getU_id() + "");
+		JSONObject json = new JSONObject();
+		json.put("spyj", params.get("spyj"));
+		json.put("agree", params.get("agree"));
+		taskService.addComment(taskId, processInstanceId, JSON.toJSONString(json));
+
+		// 完成当前任务
+		formService.submitTaskFormData(taskId, params);
+
+		// 更新历史UserTask表
+		params.put("assignee", ruTask.getAssignee());
+		params.put("taskId", taskId);
+		activitiMapper.updateHiTaskInst(params);
+
+		Task task = taskService.createTaskQuery().processInstanceBusinessKey(bk).singleResult();
+		if (task != null) {
+			result.put("code", 1);
+			result.put("msg", task.getName());
+			result.put("taskId", taskId);
+		} else {
+			result.put("code", 0);
+		}
 		return result;
 	}
 
@@ -351,6 +465,14 @@ public class ActivitiService {
 		String dateS = params.get("dateS");
 		String dateE = params.get("dateE");
 		String keys = params.get("keys");
+		String finish = params.get("finish");
+		if (finish != null && !"".equals(finish)) {
+			if ("0".equals(finish)) {
+				hpiq.unfinished();
+			} else {
+				hpiq.finished();
+			}
+		}
 		if (businessKey != null && !"".equals(businessKey)) {
 			hpiq.processInstanceBusinessKey(businessKey);
 		}
@@ -358,16 +480,32 @@ public class ActivitiService {
 			hpiq.processDefinitionKeyIn(Arrays.asList(keys.split(",")));
 		}
 		if (dateS != null && !"".equals(dateS)) {
-			hpiq.startedAfter(TimeUtil.getDateByCustom("yyyy-MM-dd HH:mm:ss", dateS+" 00:00:00"));
+			hpiq.startedAfter(TimeUtil.getDateByCustom("yyyy-MM-dd HH:mm:ss", dateS + " 00:00:00"));
 		}
 		if (dateE != null && !"".equals(dateE)) {
-			hpiq.startedBefore(TimeUtil.getDateByCustom("yyyy-MM-dd HH:mm:ss", dateE+" 23:59:59"));
+			hpiq.startedBefore(TimeUtil.getDateByCustom("yyyy-MM-dd HH:mm:ss", dateE + " 23:59:59"));
 		}
 		long count = hpiq.count();
 		hpiq = hpiq.orderByProcessInstanceStartTime().desc();
 		List<HistoricProcessInstance> hps = hpiq.listPage((page - 1) * limit, page * limit);
 		List<HistoricProcessInstanceVO> historicProcessInstanceVOs = HistoricProcessInstanceVO
 				.getHistoricProcessInstanceVOs(hps);
+		for (HistoricProcessInstanceVO hio : historicProcessInstanceVOs) {
+			hio.setSuspended(false);
+			Task ruTask = taskService.createTaskQuery().processInstanceId(hio.getProcessInstanceId()).suspended()
+					.singleResult();
+			if (ruTask != null) {
+				hio.setSuspended(true);
+			}
+			if (!"".endsWith(hio.getEndTime()) && hio.getDeleteReason() == null) {
+				List<Comment> comments = taskService.getProcessInstanceComments(hio.getProcessInstanceId(), "comment");
+				hio.setSftg(JSON.parseObject(comments.get(0).getFullMessage()).getBoolean("agree"));
+			}
+			if (params.get("u_id") == null && hio.getOwerId() != null) {
+				User user = userMapper.getUserById(Integer.parseInt(hio.getOwerId()));
+				hio.setOwerId(user.getNickname());
+			}
+		}
 		return LayUiUtil.pagination(count, historicProcessInstanceVOs);
 	}
 
@@ -437,7 +575,6 @@ public class ActivitiService {
 							earliestStamp = highLightedFlowStartTime;
 						}
 					}
-
 					highLightedFlowIds.add(highLightedFlowId);
 				}
 
@@ -459,8 +596,17 @@ public class ActivitiService {
 	}
 
 	@Transactional
-	public Integer calimTask(String taskId,String u_id) {
-		taskService.claim(taskId, u_id);
+	public Integer claimTask(String taskId, String u_id) {
+		if (u_id != null) {
+			taskService.claim(taskId, u_id);
+		} else {
+			List<IdentityLink> identityLinksForTask = taskService.getIdentityLinksForTask(taskId);
+			if (identityLinksForTask.size() > 1) {
+				taskService.setAssignee(taskId, null);
+			} else {
+				return 0;
+			}
+		}
 		return 1;
 	}
 }
