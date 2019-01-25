@@ -11,11 +11,11 @@
             width: 530px;
             margin: 10px auto 0;
         }
-
+        .layui-form-item{display: flex;align-items: flex-start ;}
         .layui-form-item .layui-inline, .layui-form-item .layui-input-block {
-            width: 400px;
+            width: 348px;
         }
-
+        .layui-form-item>a{display: inline-block;height:36px;line-height: 36px;}
         .layui-form-item .radio-box {
             border: 1px solid #e6e6e6;
         }
@@ -59,27 +59,32 @@
 </head>
 <body>
 
-<form class="layui-form layui-form-pane" lay-filter="edit" style="position: absolute;top: 50%;left:50%;margin:-210px 0 0 -265px ;">
+<form class="layui-form layui-form-pane" lay-filter="edit" style="position: absolute;top: 15%;left:50%;margin:0 0 0 -265px ;">
     <div class="layui-form-item">
         <label class="layui-form-label">工作内容:</label>
         <div class="layui-inline">
             <input class="layui-input" type="text" name="work_content" placeholder="工作内容" lay-verify="required">
         </div>
+    </div>
+    <div class="layui-form-item">
         <label class="layui-form-label">主要负责人:</label>
         <div class="layui-inline">
-            <input class="layui-input-inline" type="text" name="principal" placeholder="主要负责人" lay-event="authorize" value="1231"
+            <input class="layui-input layui-inlne" type="text" name="principal" placeholder="主要负责人" lay-event="authorize" value="1231"
                    lay-verify="required" readonly="true">
-            <a class="layui-btn layui-btn-sm layui-btn-primary layui-bg-green" id="principalBtn">选择</a>
         </div>
+         <a class="layui-btn layui-btn-sm layui-btn-primary " id="principalBtn">选择</a>
+     </div>
+     <div class="layui-form-item">
         <label class="layui-form-label">接收人:</label>
         <div class="layui-inline">
-            <input class="layui-input-inline" type="text" name="receiver" placeholder="接收人" lay-event="authorize"
+            <input class="layui-input" type="text" name="receiver" placeholder="接收人" lay-event="authorize"
                    lay-verify="required" readonly="true">
-            <a class="layui-btn layui-btn-sm layui-btn-primary layui-bg-green" id="receiverBtn">选择</a>
         </div>
+        <a class="layui-btn layui-btn-sm layui-btn-primary " id="receiverBtn">选择</a>
+      </div>
         <div class="layui-btn-container">
-            <a class="layui-btn layui-btn-sm layui-btn-primary" lay-submit lay-filter="save">保存</a>
-            <a id="cancel" class="layui-btn layui-btn-sm layui-bg-gray">取消</a>
+            <a class="layui-btn  layui-btn-primary" lay-submit lay-filter="save">保存</a>
+            <a id="cancel" class="layui-btn  layui-bg-gray">取消</a>
         </div>
     </div>
 </form>

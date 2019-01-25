@@ -47,10 +47,10 @@ public class GzrzController {
      * 进入添加新日志页面
      * @return
      */
-    @GetMapping("/addjournal")
+    @GetMapping("/addMyJournal")
     public ModelAndView goAddJournalPage(){
         ModelAndView mv = new ModelAndView();
-        mv.setViewName("swgl/gzrz/edit");
+        mv.setViewName("swgl/gzrz/addMyJournal");
         return mv;
     }
 
