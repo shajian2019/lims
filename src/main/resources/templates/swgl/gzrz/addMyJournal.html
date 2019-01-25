@@ -69,7 +69,9 @@
     <div class="layui-form-item">
         <label class="layui-form-label">主要负责人:</label>
         <div class="layui-inline">
-            <input class="layui-input layui-inlne" type="text" name="principal" placeholder="主要负责人" lay-event="authorize" value="1231"
+            <input class="layui-input layui-inlne" type="text" name="principalName" placeholder="主要负责人" id="principalName"
+                   lay-verify="required" readonly="true">
+            <input class="layui-input layui-inlne" type="hidden" name="principal" placeholder="主要负责人" id="principal"
                    lay-verify="required" readonly="true">
         </div>
          <a class="layui-btn layui-btn-sm layui-btn-primary " id="principalBtn">选择</a>
@@ -77,7 +79,9 @@
      <div class="layui-form-item">
         <label class="layui-form-label">接收人:</label>
         <div class="layui-inline">
-            <input class="layui-input" type="text" name="receiver" placeholder="接收人" lay-event="authorize"
+            <input class="layui-input" type="text" name="receiverName" placeholder="接收人" id="receiverName"
+                   lay-verify="required" readonly="true">
+            <input class="layui-input layui-inlne" type="hidden" name="receiver" placeholder="接收人" id="receiver"
                    lay-verify="required" readonly="true">
         </div>
         <a class="layui-btn layui-btn-sm layui-btn-primary " id="receiverBtn">选择</a>
@@ -99,16 +103,7 @@
     })
 
     layui.use(['form', 'layer', 'dtree', 'upload', 'laydate'], function () {
-        var laydate = layui.laydate;
         var dtree = layui.dtree;
-        laydate.render({
-            elem: '#buy_time'
-            , type: 'datetime'
-        });
-        laydate.render({
-            elem: '#next_inspection_time'
-            , type: 'datetime'
-        });
 
         var $ = layui.jquery, treeSelect = layui.treeSelect, form = layui.form, layer = layui.layer;
 
@@ -144,9 +139,38 @@
 
         //取消
         $("#cancel").click(function () {
-            debugger;
             var index = parent.layer.getFrameIndex(window.name);
             parent.layer.close(index);
+        })
+
+        $("#principalBtn").click(function () {
+            layer.open({
+                type: 2,
+                area: ['722px', '516px'],
+                title: false,
+                fixed: false, //不固定
+                // btn:['确定','取消'],
+                // btnAlign: 'c',
+                content: '${ctx}/swgl/gzrz/empTree',
+                yes: function(){
+
+                }
+            })
+        })
+
+        $("#receiverBtn").click(function () {
+            layer.open({
+                type: 2,
+                area: ['722px', '516px'],
+                title: false,
+                fixed: false, //不固定
+                // btn:['确定','取消'],
+                // btnAlign: 'c',
+                content: '${ctx}/swgl/gzrz/empTree',
+                yes: function(){
+
+                }
+            })
         })
     })
 </script>

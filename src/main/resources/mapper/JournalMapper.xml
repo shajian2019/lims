@@ -10,10 +10,12 @@
         b.username,
         a.submit_time,
         a.principal,
-        a.receiver
-        FROM aff_t_journal a,sys_t_user b
+        c.username as principalName,
+        a.receiver,
+        d.username as receiverName
+        FROM aff_t_journal a,sys_t_user b,sys_t_user c,sys_t_user d
         <where>
-            a.submitter = b.u_id
+            a.submitter = b.u_id and a.principal=c.u_id and a.receiver=d.u_id
             <if test="submitter != null and submitter != ''">
                 AND a.submitter = #{submitter}
             </if>

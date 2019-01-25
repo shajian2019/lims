@@ -79,4 +79,9 @@ public class GzrzController {
         return "swgl/gzrz/rzyb";
     }
 
+    @GetMapping("/empTree")
+    public String goPopPage(){
+        return "swgl/gzrz/pop";
+    }
+
 }
