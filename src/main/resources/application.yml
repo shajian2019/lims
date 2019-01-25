@@ -9,7 +9,7 @@ spring:
   datasource: 
     username: root
     password: 123456
-    url: jdbc:mysql://212.64.91.135:3306/zzoa?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&failOverReadOnly=false&useSSL=false
+    url: jdbc:mysql://192.168.1.108:3306/zzoa?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&failOverReadOnly=false&useSSL=false
     driver-class-name: com.mysql.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
     initialSize: 5

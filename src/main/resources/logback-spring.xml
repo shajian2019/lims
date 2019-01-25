@@ -144,13 +144,13 @@
 	</appender>
 	
 	<springProfile name="local">
-		<root level="INFO">
+		<root level="ERROR">
 			<appender-ref ref="CONSOLE" />
 		</root>
 	</springProfile>
 	
 	<springProfile name="dev">
-		<root level="INFO">
+		<root level="ERROR">
 			<appender-ref ref="CONSOLE" />
 		</root>
 	</springProfile>

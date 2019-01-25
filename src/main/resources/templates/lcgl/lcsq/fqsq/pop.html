@@ -54,7 +54,6 @@
         </div>
         <div style="text-align: center;width:100%;padding-top:10px;">
             <a href="javascript:;" class="layui-btn layui-btn-sm" lay-submit lay-filter="save">保存</a>
-            <a href="javascript:;" class="layui-btn layui-btn-sm closeBtn layui-bg-gray">取消</a>
         </div>
     </form>
 </body>
@@ -62,93 +61,6 @@
 
 <script src="${ctx}/plugins/layui/layui.js"></script>
 <script type="text/javascript">
-    var demoData = [{
-        "id": "001",
-        "title": "湖南省",
-        "isLast": false,
-        "level": "1",
-        "parentId": "0",
-        "checkArr": [{ "type": "0", "isChecked": "1" }],
-        "children": [{
-            "id": "001001",
-            "title": "长沙市",
-            "isLast": true,
-            "parentId": "001",
-            "checkArr": [{ "type": "0", "isChecked": "1" }],
-            "level": "2"
-        }, {
-            "id": "001002",
-            "title": "株洲市",
-            "isLast": true,
-            "parentId": "001",
-            "checkArr": [{ "type": "0", "isChecked": "1" }],
-            "level": "2"
-        }, {
-            "id": "001003",
-            "title": "湘潭市",
-            "isLast": true,
-            "parentId": "001",
-            "checkArr": [{ "type": "0", "isChecked": "1" }],
-            "level": "2"
-        }, {
-            "id": "001004",
-            "title": "衡阳市",
-            "isLast": true,
-            "parentId": "001",
-            "checkArr": [{ "type": "0", "isChecked": "0" }],
-            "level": "2"
-        }, {
-            "id": "001005",
-            "title": "郴州市",
-            "isLast": true,
-            "parentId": "001",
-            "checkArr": [{ "type": "0", "isChecked": "0" }],
-            "level": "2"
-        }]
-    }, {
-        "id": "002",
-        "title": "湖北省",
-        "isLast": false,
-        "parentId": "0",
-        "level": "1",
-        "checkArr": [{ "type": "0", "isChecked": "0" }],
-        "children": [{
-            "id": "002001",
-            "title": "武汉市",
-            "isLast": true,
-            "checkArr": [{ "type": "0", "isChecked": "0" }],
-            "level": "2"
-        }, {
-            "id": "002002",
-            "title": "黄冈市",
-            "checkArr": [{ "type": "0", "isChecked": "0" }],
-            "isLast": true,
-            "parentId": "002",
-            "level": "2"
-        }, {
-            "id": "002003",
-            "title": "潜江市",
-            "isLast": true,
-            "parentId": "002",
-            "checkArr": [{ "type": "0", "isChecked": "0" }],
-            "level": "2"
-        }, {
-            "id": "002004",
-            "title": "荆州市",
-            "isLast": true,
-            "parentId": "002",
-            "checkArr": [{ "type": "0", "isChecked": "0" }],
-            "level": "2"
-        }, {
-            "id": "002005",
-            "title": "襄阳市",
-            "isLast": true,
-            "parentId": "002",
-            "checkArr": [{ "type": "0", "isChecked": "0" }],
-            "level": "2"
-        }]
-    }];
-
     layui.config({
         base: '${ctx}/plugins/layui/extend/dtree/'
     }).extend({
@@ -175,8 +87,8 @@
             elem: "#" + dtreeID,
             nodeIconArray: { "2": { "open": "fa fa-address-book", "close": "fa fa-address-book" } },
             skin: 'zzfc',
-            data: demoData,
-            //url:"${ctx}/lcgl/lcdy/lcfl/list",
+            method: 'GET',
+            url:"${ctx}/orgUser/list?p_id=${p_id}",
             type:'all',
             icon: ["2", "1"],
             dot: false,
@@ -188,14 +100,44 @@
                 }
             },
             done:function(data, obj){
-            	var params = dtree.getCheckbarNodesParam(dtreeID);
+            	var params = dtree.getCheckbarNodesParam("popTree");
             	addPersonnel(params);
             }
         })
 
         form.on('submit(save)', function (data) {
         	var params = dtree.getCheckbarNodesParam(popTree);
-        	console.log(params);
+        	if(params.length == 0){
+        		layer.msg("请选择用户", {offset: ['50%'], time: 2000});
+        	} else {
+        		var arr = [];
+            	$.each(params, function (i, v) {
+            		if(v.level == '2'){
+            			arr.push(v.nodeId)
+            		}
+                });
+            	var u_ids = arr.join(",");
+            	var p_id = "${p_id}";
+            	var index;
+            	$.ajax({
+                    type: "POST",
+                    data:{u_ids:u_ids,p_id:p_id},
+                    url: "${ctx}/lcgl/lcsq/fqsq/bindUser",
+                    beforeSend: function () {
+                        index = layer.load(1);
+                    },
+                    success: function (data) {
+                        layer.close(index);
+                        layer.msg("授权成功", {offset: ['50%'], time: 1000}, function () {
+	                        index = parent.layer.getFrameIndex(window.name);
+					    	parent.layer.close(index);
+                        });
+                    },
+                    error: function (data) {
+                        layer.msg("服务端异常");
+                    }
+             	});
+        	}
             return false;
         });
         
@@ -206,6 +148,7 @@
                 this.splice(index, 1);
             }
         };
+        
         //右侧人员删除
         rList.on("click", ".layui-icon-close-fill", function (obj) {
             var element = $(this)
@@ -215,18 +158,13 @@
         //右侧清楚全部
         allClear.click(function (e) {
             allClearPersonnel();
-            dtree.reload(popTree, {
-                done: function (data, obj) {
-                    dtree.chooseDataInit("popTree", '');
-                }
-            });
         });
+        
         searchBtn.click(function () {
             search();
         })
 
         function addPersonnel(obj) {
-        	console.log(obj)
             var html = '';
             $.each(obj, function (i, val) {
                 if (val.isLeaf === true) {
@@ -251,17 +189,13 @@
             });
             var arr = nodeId.split(",");
             arr.remove(del);
-            var nodeId = arr.join(",");
-            dtree.reload(popTree, {
-                done: function (data, obj) {
-                    dtree.chooseDataInit("popTree", nodeId);
-                }
-            })
             e.parent().remove();
             selectedNum.text(rList.find("li").length);
+            dtree.unChooseData(popTree,del);
         }
 
         function allClearPersonnel() {
+            dtree.unChooseData(popTree,'all');
             rList.empty();
             selectedNum.text("0");
         }

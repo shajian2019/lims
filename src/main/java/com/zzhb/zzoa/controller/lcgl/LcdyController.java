@@ -74,7 +74,7 @@ public class LcdyController {
 
 	@PostMapping("/del")
 	@ResponseBody
-	public Integer lcdyDel(@RequestParam Map<String, String> params) {
+	public Long lcdyDel(@RequestParam Map<String, String> params) {
 		return activitiService.lcdyDel(params);
 	}
 

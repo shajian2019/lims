@@ -8,7 +8,7 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import com.zzhb.zzoa.utils.TimeUtil;
 
 public class HistoricProcessInstanceVO {
-	
+
 	private String processInstanceId;
 	private String businessKey;
 	private String processDefinitionKey;
@@ -16,6 +16,9 @@ public class HistoricProcessInstanceVO {
 	private String startTime;
 	private String endTime;
 	private String deleteReason;
+	private String owerId;
+	private boolean suspended;
+	private boolean sftg;
 
 	public String getDeleteReason() {
 		return deleteReason;
@@ -72,7 +75,31 @@ public class HistoricProcessInstanceVO {
 	public void setProcessDefinitionName(String processDefinitionName) {
 		this.processDefinitionName = processDefinitionName;
 	}
-	
+
+	public String getOwerId() {
+		return owerId;
+	}
+
+	public void setOwerId(String owerId) {
+		this.owerId = owerId;
+	}
+
+	public boolean isSuspended() {
+		return suspended;
+	}
+
+	public void setSuspended(boolean suspended) {
+		this.suspended = suspended;
+	}
+
+	public boolean isSftg() {
+		return sftg;
+	}
+
+	public void setSftg(boolean sftg) {
+		this.sftg = sftg;
+	}
+
 	@Override
 	public String toString() {
 		return "HistoricProcessInstanceVO [processInstanceId=" + processInstanceId + ", businessKey=" + businessKey
@@ -91,6 +118,7 @@ public class HistoricProcessInstanceVO {
 			vo.setProcessDefinitionName(hp.getProcessDefinitionName());
 			vo.setStartTime(TimeUtil.getTimeFromDate("yyyy-MM-dd HH:mm:ss", hp.getStartTime()));
 			vo.setEndTime(TimeUtil.getTimeFromDate("yyyy-MM-dd HH:mm:ss", hp.getEndTime()));
+			vo.setOwerId(hp.getStartUserId());
 			list.add(vo);
 		}
 		return list;
