@@ -2,11 +2,13 @@ package com.zzhb.zzoa;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.engine.FormService;
@@ -22,7 +24,6 @@ import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
 import org.activiti.image.ProcessDiagramGenerator;
 import org.junit.Test;
@@ -52,6 +53,20 @@ public class ZzoaApplicationTests {
 
 	@Test
 	public void contextLoads() {
+	}
+
+	@Test
+	public void contextLoads1() {
+		String processDefinitionId = "leave:1:432508";
+		BpmnModel model = repositoryService.getBpmnModel(processDefinitionId);
+		if (model != null) {
+			Collection<FlowElement> flowElements = model.getMainProcess().getFlowElements();
+			for (FlowElement e : flowElements) {
+				System.out.println("flowelement id:" + e.getId() + "  name:" + e.getName() + "   class:"
+						+ e.getClass().toString());
+			}
+		}
+
 	}
 
 	@Test
