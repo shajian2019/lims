@@ -28,6 +28,7 @@ public class OrgUserController {
 	@GetMapping("/spr")
 	@ResponseBody
 	public JSONObject spr(@RequestParam Map<String,String> params) {
+		System.out.println(params.toString());
 		return orgUserService.sprList(params);
 	}
 }
