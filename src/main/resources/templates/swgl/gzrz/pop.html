@@ -170,6 +170,7 @@
         var selectedNum = $("#selected_num");
         var allClear = $("#all_clear");
 
+        var backdate;
         //弹出框树
         var popTree = dtree.render({
             elem: "#" + dtreeID,
@@ -184,6 +185,7 @@
             checkbar: true,
             checkbarFun:{
                 chooseDone: function(checkbarNodesParam) { //复选框点击事件完毕后，返回该树关于复选框操作的全部信息。
+                    backdate = checkbarNodesParam;
                     addPersonnel(checkbarNodesParam);
                     return false;
                 }
@@ -196,7 +198,36 @@
 
         form.on('submit(save)', function (data) {
             var params = dtree.getCheckbarNodesParam(popTree);
-            console.log(params);
+            if(params.length == 0){
+                layer.msg("请选择用户", {offset: ['50%'], time: 2000});
+            } else {
+                var arr = [];
+                $.each(params, function (i, v) {
+                    if(v.level == '2'){
+                        arr.push(v.nodeId)
+                    }
+                });
+                var sprs = arr.join(",");
+                var index;
+                $.ajax({
+                    type: "POST",
+                    data:{sprs:sprs,id:"${user.u_id}${key}${(formkey!'')}",uid:"${user.u_id}",key:"${key}",formkey:"${(formkey!'')}"},
+                    url: "${ctx}/grgzt/fqlc/saveSpr",
+                    beforeSend: function () {
+                        index = layer.load(1);
+                    },
+                    success: function (data) {
+                        layer.close(index);
+                        layer.msg("保存成功", {offset: ['50%'], time: 1000}, function () {
+                            index = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(index);
+                        });
+                    },
+                    error: function (data) {
+                        layer.msg("服务端异常");
+                    }
+                });
+            }
             return false;
         });
 

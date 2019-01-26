@@ -301,9 +301,9 @@
                 fixed: false, //不固定
                 // btn:['确定','取消'],
                 // btnAlign: 'c',
-                content: '${ctx}/swgl/gzrz/empTree',
-                yes: function () {
-
+                content: '${ctx}/swgl/gzrz/empTree?key=journal&formkey=principal',
+                end: function () {
+                    getSprs("spr_add","spr","principal");
                 }
             })
         })
@@ -317,12 +317,53 @@
                 fixed: false, //不固定
                 // btn:['确定','取消'],
                 // btnAlign: 'c',
-                content: '${ctx}/swgl/gzrz/empTree',
-                yes: function () {
-
+                content: '${ctx}/swgl/gzrz/empTree?key=journal&formkey=receiver',
+                end: function () {
+                    getSprs("spr_add1","spr1","receiver");
                 }
             })
         })
+        function getSprs(ele,ele1,ele2){
+            $.ajax({
+                type: "post",
+                data: {id:"${user.u_id}journal"+ele2},
+                url: "${ctx}/grgzt/fqlc/getSprs",
+                beforeSend: function () {
+                    index = layer.load(1);
+                },
+                success: function (data) {
+                    console.log("success");
+                    console.log(data);
+                    layer.close(index);
+                    var html = ""
+                    var sprs = [];
+                    $.each(data,function(i,v){
+                        sprs.push(v.u_id);
+                        html +='<div class="spr-select">';
+                        html +='<i class="fa fa-close spr-close" data-id="'+v.u_id+'"></i>';
+                        html +='<div class="spr-box">'
+                        html +='<p>'+v.o_name+'</p>';
+                        html +='<p>'+v.j_name+'</p>';
+                        html +='</div>';
+                        html +='<p>'+v.nickname+'</p>';
+                        html +='</div>';
+                    })
+
+                    $("#"+ele).prevAll().remove();
+                    $("#"+ele).before(html);
+                    $("#"+ele1+" .spr-select").on('click','.spr-close',function () {
+                        sprs.remove($(this).attr("data-id"))
+                        $(this).parent().remove();
+                    })
+                },
+                error: function (data) {
+                    layer.close(index);
+                    layer.msg("服务端异常");
+                }
+            });
+        }
+
+
     })
 </script>
 </body>

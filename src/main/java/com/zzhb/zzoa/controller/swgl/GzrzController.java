@@ -80,8 +80,12 @@ public class GzrzController {
     }
 
     @GetMapping("/empTree")
-    public String goPopPage(){
-        return "swgl/gzrz/pop";
+    public ModelAndView goPopPage(@RequestParam Map<String, String> params){
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("swgl/gzrz/pop");
+        mv.addObject("key",params.get("key"));
+        mv.addObject("formkey",params.get("formkey"));
+        return mv;
     }
 
 }
