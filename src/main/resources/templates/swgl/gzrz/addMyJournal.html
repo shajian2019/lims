@@ -244,7 +244,7 @@
 
 <script src="${ctx}/plugins/layui/layui.js"></script>
 <script type="text/javascript">
-
+    var $ = layui.jquery, treeSelect = layui.treeSelect, form = layui.form, layer = layui.layer,upload = layui.upload;
     layui.config({
         base: '${ctx}/plugins/layui/extend/dtree/'
     }).extend({
@@ -252,10 +252,10 @@
     })
 
     layui.use(['form', 'layer', 'dtree', 'upload', 'laydate'], function () {
+        var upload = layui.upload
+        var $ = layui.jquery
         var dtree = layui.dtree;
-
-        var $ = layui.jquery, treeSelect = layui.treeSelect, form = layui.form, layer = layui.layer;
-
+        var form = layui.form
         form.on('submit(save)', function (data) {
             var url = "${ctx}/swgl/clgl/editCar";
             data.field.c_id = '${(car.c_id)!''}';
@@ -363,6 +363,70 @@
             });
         }
 
+//图片上传
+        var fileNameArray = [];
+        var imgUpView = $('#img_up');
+        var imgUpload=upload.render({
+            elem: '#img_up'
+            ,url: '${ctx}/file/upload'
+            ,data:{"bk":"${(leave.bk)!''}"}
+            ,multiple: true
+            ,auto: true
+            ,accept:'images'
+            ,acceptMime:'image/*'
+            ,size: parseInt("${(image_upload_max_size)!'4096'}")
+            ,choose: function(obj){
+                var files = this.files = obj.pushFile(); //将每次选择的文件追加到文件队列
+                //读取本地文件
+                obj.preview(function(index, file, result){
+                    if(fileNameArray.indexOf(file.name) != -1){
+                        layer.msg("图片已存在");
+                        return;
+                    }
+                    var img = $([
+                        '<div class="img-box">'+
+                        '<img src="'+result+'" alt="'+file.name+'" class="layui-upload-img">'+
+                        '<i class="fa fa-close img-close"></i>'+
+                        '</div>'
+                    ].join(''));
+                    //删除
+                    img.find('.img-close').on('click', function(){
+                        delete files[index]; //删除对应的文件
+                        var filename = "${(leave.bk)!''}&"+file.name;
+                        $.ajax({
+                            type: "get",
+                            data: {filename:filename},
+                            url: '${ctx}/file/del/',
+                            beforeSend: function () {
+                                index = layer.load(1);
+                            },
+                            success: function (data) {
+                                fileNameArray.remove(file.name)
+                                console.log(fileNameArray)
+                                layer.close(index);
+                            },
+                            error: function (data) {
+                                layer.close(index);
+                                layer.msg("服务端异常");
+                            }
+                        });
+                        img.remove();
+                        imgUpload.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
+                    });
+                    imgUpView.before(img)
+                    fileNameArray.push(file.name);
+                });
+            }
+            ,done: function(res){
+                //单张上传完毕
+            }
+        });
+        Array.prototype.remove = function (val) {
+            var index = this.indexOf(val);
+            if (index > -1) {
+                this.splice(index, 1);
+            }
+        };
 
     })
 </script>
