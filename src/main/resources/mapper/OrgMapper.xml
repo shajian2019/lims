@@ -6,16 +6,23 @@
 		SELECT
 			o_id id,
 			o_name name,
+			o_level level,
+			o_status status,
+			o_remark remark,
 			createtime,
-			updatetime
-		FROM sys_t_org
+			updatetime,
+			o_sort sort,
+			p_oid parentid
+		FROM
+			sys_t_org
+		order by o_sort
 	</select>
 	
 	<insert id="addOrg" parameterType="com.zzhb.zzoa.domain.Org">
 		INSERT INTO sys_t_org 
-			(o_name,createtime)
+			(o_name,o_level,o_status,o_remark,createtime,o_sort,p_oid)
 		VALUES
-			(#{name},now())
+			(#{name},#{level},#{status},#{remark},now(),#{sort},#{parentid})
 	</insert>
 	
 	<update id="updateOrg" parameterType="com.zzhb.zzoa.domain.Org">

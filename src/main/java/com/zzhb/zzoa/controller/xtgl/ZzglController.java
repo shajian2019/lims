@@ -117,9 +117,9 @@ public class ZzglController {
 		return zzjgService.zzjgList();
 	}
 
-	@PostMapping("/zzjg/add")
+	@PostMapping("/zzjg/saveOrUpdate")
 	@ResponseBody
-	public Integer zzjgAdd(Org org) {
+	public Integer saveOrUpdate(Org org) {
 		return zzjgService.zzjgAdd(org);
 	}
 

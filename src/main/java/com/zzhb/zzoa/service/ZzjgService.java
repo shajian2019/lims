@@ -16,7 +16,6 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zzhb.zzoa.domain.Job;
 import com.zzhb.zzoa.domain.Org;
-import com.zzhb.zzoa.domain.User;
 import com.zzhb.zzoa.mapper.ActivitiMapper;
 import com.zzhb.zzoa.mapper.JobMapper;
 import com.zzhb.zzoa.mapper.OrgMapper;
@@ -39,23 +38,14 @@ public class ZzjgService {
 	OrgMapper orgMapper;
 
 	public JSONObject zzjgList() {
-		List<Org> list = orgMapper.getOrgs(null);
 		JSONObject result = new JSONObject();
-		JSONArray data = new JSONArray();
-		JSONArray children = new JSONArray();
-		for (Org org : list) {
-			JSONObject groupJ = new JSONObject();
-			groupJ.put("id", org.getId());
-			groupJ.put("title", org.getName());
-			groupJ.put("parentId", "0");
-			groupJ.put("children", children);
-			data.add(groupJ);
-		}
-		result.put("data", data);
-		JSONObject status = new JSONObject();
-		status.put("code", 200);
-		status.put("message", "操作成功");
-		result.put("status", status);
+		List<Org> list = orgMapper.getOrgs(null);
+		result.put("code", 0);
+		result.put("msg", "");
+		result.put("count", list.size());
+		result.put("is", true);
+		result.put("data", list);
+		result.put("tip", "操作成功");
 		return result;
 	}
 
@@ -80,7 +70,11 @@ public class ZzjgService {
 
 	@Transactional
 	public Integer zzjgAdd(Org org) {
-		Integer addOrg = orgMapper.addOrg(org);
+		Integer addOrg = 0;
+		String id = org.getId();
+		if (id == null) {
+			addOrg = orgMapper.addOrg(org);
+		}
 		return addOrg;
 	}
 
@@ -134,32 +128,32 @@ public class ZzjgService {
 		Integer addjob = jobMapper.addJob(job);
 		return addjob;
 	}
-	
+
 	@Transactional
 	public Integer zwglEdit(Job job) {
 		Integer updatejob = jobMapper.updateJob(job);
 		return updatejob;
 	}
-	
+
 	public JSONObject zwglUserList(Integer page, Integer limit, Map<String, String> params) {
 		PageHelper.startPage(page, limit);
 		List<Map<String, String>> list = jobMapper.getUsers(params);
 		PageInfo<Map<String, String>> pageInfo = new PageInfo<>(list);
 		return LayUiUtil.pagination(pageInfo);
 	}
-	
+
 	@Transactional
 	public Integer zwglUserDel(String u_id) {
 		return jobMapper.delUserJobByUid(u_id);
 	}
-	
+
 	public JSONObject zwglAddUserList(Integer page, Integer limit, Map<String, String> params) {
 		PageHelper.startPage(page, limit);
 		List<Map<String, String>> addUsers = jobMapper.getAddUsers(params);
 		PageInfo<Map<String, String>> pageInfo = new PageInfo<Map<String, String>>(addUsers);
 		return LayUiUtil.pagination(pageInfo);
 	}
-	
+
 	@Transactional
 	public Integer zwglUserAdd(String j_id, String u_ids) {
 		List<String> asList = Arrays.asList(u_ids.split("\\|"));
@@ -168,7 +162,7 @@ public class ZzjgService {
 		params.put("j_id", j_id);
 		return jobMapper.addUserJob(params);
 	}
-	
+
 	@Transactional
 	public Integer zwglDel(String j_id) {
 		jobMapper.delUserJobByJid(j_id);

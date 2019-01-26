@@ -1,290 +1,231 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-    <meta charset="UTF-8">
-    <title>职位管理</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>组织机构</title>
     <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
-    <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" />
     <link href="${ctx}/css/common/reset.css" rel="stylesheet" />
-    <link rel="stylesheet" href="${ctx}/plugins/layui/extend/dtree/dtree.css">
-    <link rel="stylesheet" href="${ctx}/plugins/layui/extend/dtree/font/dtreefont.css">
-    <style>
-	 .layui-table, .layui-table-view {margin:0;}
-	 .layui-table-tool {
-	    position: relative;
-	    z-index: 890;
-	    width: 100%;
-	    min-height: 50px;
-	    line-height: 49px;
-	    padding: 0px 5px;
-	    border-width: 0 0 1px;
-	}
-	.layui-input{height:32px;line-height: 32px;}
-	.dtree{width: 210px;}
-	 .left-box{float: left;width:230px;height:100%;box-sizing: border-box;overflow-y: auto;border-right:1px solid #e6e6e6;}
-	 .right-box{float: left;width:calc(100% - 240px); ;height:100%;margin-left: 5px;}
-	 .bm_name_tit{height:42px;line-height: 42px;background-color: #f3f5f7;text-align: center;font-size:16px;}
-	 .zdy-head-form{padding: 5px 0;}
+    <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" />
+	<style>
+	    .layui-table, .layui-table-view {
+		    margin: 0px;
+		}
+		#cdgl_form{margin-bottom: 5px;}
 	</style>
 </head>
-<body>
-    <div class="left-box">
-        <h4 class="bm_name_tit">部门名称</h4>
-        <div style="overflow: auto;" id="toolbarDiv">
-            <ul id="left_tree" class="dtree" data-id="0"></ul>
-        </div>
-    </div>
-    <div class="right-box">
-    	 <form class="layui-form zdy-head-form">
-	            <div class="layui-inline">
-	                <input type="text" class="layui-input" name="username" placeholder="用户账号">
-	            </div>
-	            <div class="layui-inline">
-	                <input type="text" class="layui-input" name="nickname" placeholder="用户昵称">
-	            </div>
-	            <div class="layui-inline">
-	                <a href="javascript:;" class="layui-btn layui-btn-sm  layui-btn-primary" lay-submit lay-filter="search">查询</a>
-	                <a href="javascript:;" class="layui-btn layui-btn-sm  layui-btn-primary" lay-submit lay-filter="add">添加部门成员</a>
-	            </div>
-    	</form>
-        <table class="layui-hide" id="right_tb" lay-filter="right_tb"></table>
-    </div>
-</body>
-
-</html>
-<script type="text/html" id="rightBar">
-	<div class="layui-btn-group">
-		<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del">
-		    <i class="fa fa-trash-o" title="删除"></i>
-		</a>
+<body class="layui-layout-body" style="padding: 5px">
+<form class="layui-form" id="cdgl_form">
+       <div class="layui-inline">
+       	<input class="layui-input" type="text" placeholder="菜单名称" name="title">		
+       </div>
+       <div class="layui-inline">
+       	<button class="layui-btn layui-btn-primary" lay-submit="" lay-filter="query">查询</button>
+ 	 	<a class="layui-btn layui-btn-primary" onclick="add();">新增</a>
+ 	 	<a class="layui-btn layui-btn-primary" onclick="openAll();">展开/折叠</a>
+       	<button class="layui-btn layui-btn-primary" lay-submit="" lay-filter="updateSort">保存排序</button>
+       </div>
+</form>
+    <table class="layui-hidden layui-table" id="treeTable" lay-filter="treeTable"></table>
+    
+    <div class="pop" id="pop" style="display: none;">
+		<form class="layui-form">
+		      <div class="layui-form-item">
+		         <label class="layui-form-label">单位（科室）名称</label>
+		         <div class="layui-inline">
+		            <input class="layui-input" type="text" name="name" placeholder="单位（科室）名称" lay-verify="required">
+		         </div>
+			   </div>
+		      <div class="layui-form-item">
+		         <label class="layui-form-label">排序</label>
+		         <div class="layui-inline">
+		            <input class="layui-input" type="text" name="sort" placeholder="排序" lay-verify="required|number">
+		         </div>
+			   </div>
+		      <div class="layui-form-item">
+		         <label class="layui-form-label">备注</label>
+		            <div class="layui-input-block">
+		             	<textarea class="layui-textarea" name="remark" placeholder="备注"></textarea>
+		         	</div>
+			   </div>
+			   <div class="layui-form-item">
+			        <label class="layui-form-label">状态:</label>
+			        <div class="layui-input-block radio-box">
+				          <input type="radio" name="status" value="1" title="正常" checked>
+				          <input type="radio" name="status" value="0" title="禁用">
+			        </div>
+			    </div>
+			    <div class="layui-btn-container">
+  					<a class="layui-btn layui-btn-sm layui-btn-primary" lay-submit lay-filter="saveOrUpdate">保存</a>
+				</div>
+		</form>
 	</div>
+</body>
+</html>
+<script type="text/html" id="status" >
+{{# if (d.status == 1) { }}
+     <span>正常</span>
+{{# } else { }}
+    <span>禁用</span>
+{{# } }}
 </script>
 <script src="${ctx}/plugins/layui/layui.js"></script>
 <script>
+    var editObj=null,ptable=null,treeGrid=null,tableId='treeTable',layer=null,form=null,index = null;
     layui.config({
-        base: '${ctx}/plugins/layui/extend/dtree/'
+        base: '${ctx}/plugins/layui/extend/'
     }).extend({
-        dtree: 'dtree'
-    })
-    layui.use(['table', 'layer', 'form', 'dtree'], function () {
-        var $ = layui.jquery,
-            table = layui.table,
-            form = layui.form,
-            dtree = layui.dtree,
-            layer = layui.layer,
-            dtreeID = 'left_tree',
-            tbID = 'right_tb';
-        
-        var dtreeObj = dtree.render({
-            elem: "#" + dtreeID, //绑定元素
-            method:'GET',
-            url: "${ctx}/xtgl/zzgl/zzjg/list",  //异步接口
-            ficon: "-1", // 隐藏一级图标
-            icon: "2",
-            dot: false,
-            skin: "layui",
-            menubar: true,
-            menubarTips: {
-                group: [{
-                    menubarId: "add",
-                    icon: "dtree-icon-jia",
-                    title: "新增",
-                    handler: function (node, $div) {
-                       var index = layer.prompt({
-                            formType: 0,
-                            title: '新增部门' //自定义文本域宽高
-                        }, function (value, index, elem) {
-                            layer.close(index);
-                            $.ajax({
-		                         type: "post",
-		                         data: {name: value},
-		                         url: "${ctx}/xtgl/zzgl/zzjg/add",
-		                         beforeSend: function () {
-		                             index = layer.load(1);
-		                         },
-		                         success: function (data) {
-		                             layer.close(index);
-		                             if (data > 0) {
-		                                 layer.msg("新增成功", {offset: ['50%'], time: 1000}, function () {
-		                                	 dtree.reload(dtreeObj);
-		                                 });
-		                             } else {
-		                                 layer.msg("操作失败")
-		                             }
-		                         },
-		                         error: function (data) {
-		                             layer.msg("服务端异常");
-		                         }
-		                    });
-                        });
-                    } 
-                },'refresh']
-            },
-            toolbar: true,
-            toolbarScroll: "#toolbarDiv", //划重点，必须配置，属性含义请参考文档
-            toolbarStyle:{title:"部门", area:["60%","80%"] },
-            toolbarShow: ["delete"],
-            toolbarLoad: "node",
-            toolbarExt: [{
-                toolbarId: "edit",
-                icon: "dtree-icon-bianji",
-                title: "编辑部门",
-                handler: function (node, $div) {
-                    var index = layer.prompt({
-                        formType: 0,
-                        value: node.context,
-                        title: '修改部门'
-                    }, function (value, index, elem) {
-                        layer.close(index);
-                        $.ajax({
-	                         type: "post",
-	                         data: {id: node.nodeId,name:value},
-	                         url: "${ctx}/xtgl/zzgl/zzjg/edit",
-	                         beforeSend: function () {
-	                             index = layer.load(1);
-	                         },
-	                         success: function (data) {
-	                             layer.close(index);
-	                             if (data > 0) {
-	                                 layer.msg("修改成功", {offset: ['50%'], time: 1000}, function () {
-	                                	 dtree.reload(dtreeObj);
-	                                 });
-	                             } else {
-	                                 layer.msg("操作失败")
-	                             }
-	                         },
-	                         error: function (data) {
-	                             layer.msg("服务端异常");
-	                         }
-	                    });
-                    });
-                }
-            }],
-            toolbarFun:{
-            	delTreeNode: function(treeNode, $div){ //删除树后调用的函数，用于用户自定义，如未指定则树不会发生变化
-            	    dtreeObj.changeTreeNodeDel(true); // 调用内置函数，删除节点后改变节点内容。传入false，则树不会发生变化
-            	    $.ajax({
-                        type: "post",
-                        data: {o_id: treeNode.nodeId},
-                        url: "${ctx}/xtgl/zzgl/zzjg/del",
-                        success: function (data) {
-                            if (data > 0) {
-                                layer.msg("删除成功", {offset: ['50%'], time: 1000});
-                            } else {
-                                layer.msg("操作失败")
-                            }
-                        },
-                        error: function (data) {
-                            layer.msg("服务端异常");
+        treeGrid:'treeGrid'
+    }).use(['jquery','treeGrid','layer','form'], function(){
+        var $=layui.jquery;
+        treeGrid = layui.treeGrid;//很重要
+        layer=layui.layer;
+        form=layui.form;
+        ptable=treeGrid.render({
+            id:tableId
+            ,elem: '#'+tableId
+            ,idField:'id'
+            ,url:'${ctx}/xtgl/zzgl/zzjg/list'
+            ,treeId:'id'//树形id字段名称
+            ,treeUpId:'parentid'//树形父id字段名称
+            ,treeShowName:'name'//以树形式显示的字段
+            ,height:'full-50'
+            ,isFilter:false
+            ,iconOpen:true//是否显示图标【默认显示】
+            ,isOpenDefault:true//节点默认是展开还是折叠【默认展开】
+            ,method:'get'
+            ,cols: [[
+                 {field:'id', width:80,title: '单位ID',align:'center'}
+                ,{field:'name', width:400, title: '单位（科室）名称'}
+                ,{field:'createtime', width:200, title: '创建时间'}
+                ,{field:'remark', title: '备注'}
+                ,{field:'status', width:100, title: '状态',align:'center',templet:'#status'}
+                ,{field:'sort', width:100, title: '排序',align:'center',edit:'text'}
+                ,{title: '操作', align:'center',templet: function(d){
+                        var html='';
+                        	html +='<button class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit"><i class="fa fa-pencil" title="修改"></i></button>';
+                        	html +='<button class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del"><i class="fa fa-trash-o" title="删除"></i></button>';
+                        if(d.level != '2'){
+                        	html +='<button class="layui-btn layui-btn-primary layui-btn-xs" lay-event="add"><i class="fa fa-plus-square-o" title="新增"></i></button>';
                         }
-                   });
-            	}
-            }
-        });
-        
-        dtree.on("node('" + dtreeID + "')", function (obj) {
-            rightTB.reload({
-                where: {o_id:obj.param.nodeId}
-            });
-        });
-        
-        var rightTB = table.render({
-            elem: '#' + tbID,
-            id: tbID,
-            height: 'full-48',
-            url: '${ctx}/xtgl/zzgl/zzjg/user/list', //数据接口,
-            page: true,
-            cols: [[
-                    {
-                        field: 'u_id',
-                        hide:true
-                    },
-                    {
-                        type:'numbers',
-                        title: '序号',
-                        width: 60
-                    },
-                    {
-                        field: 'username',
-                        title: '用户名',
-                        width: 120
-                    }, {
-                        field: 'nickname',
-                        title: '用户昵称',
-                    }, {
-                        field: 'email',
-                        title: '用户邮箱',
-                    }, {
-                        field: 'j_name',
-                        title: '职位名称',
-                    }, {
-                        field: 'o_name',
-                        title: '部门名称',
-                    }, {
-                        title: '操作', align: 'center',width: 80,
-                        toolbar: '#rightBar'
+                        return html;
                     }
-                ]
-            ]
+                }
+            ]]
         });
         
-        table.on('tool(' + tbID + ')', function (obj) {
-       	   var index;
-           if (obj.event === 'del') {
-        	   $.ajax({
-                   type: "post",
-                   data: {u_id: obj.data.u_id},
-                   url: "${ctx}/xtgl/zzgl/zzjg/user/del",
-                   beforeSend: function () {
-                       index = layer.load(1);
-                   },
-                   success: function (data) {
-                       layer.close(index);
-                       if (data > 0) {
-                           layer.msg("删除成功", {offset: ['50%'], time: 1000}, function () {
-                        	   rightTB.reload();
-                           });
-                       } else {
-                           layer.msg("操作失败")
-                       }
-                   },
-                   error: function (data) {
-                       layer.msg("服务端异常");
-                   }
-              });
-           }
+        //点击行事件
+        treeGrid.on('tool('+tableId+')',function (obj) {
+        	var objdata = obj.data;
+        	var action = obj.event;
+        	if(action == 'del'){
+        	    
+        	}else if(action == 'add'){
+        		form.on('submit(saveOrUpdate)', function(data){
+		        	data.field.level = (parseInt(objdata.level)+1)+"";
+		        	data.field.parentid = objdata.id;
+		        	console.log(data.field)
+		        	$.ajax({
+          			    type: "post",
+          			    data: data.field,
+          			    url: "${ctx}/xtgl/zzgl/zzjg/saveOrUpdate",
+          			    beforeSend: function () {
+          			    	index = layer.load(1);
+          			    },
+          			    success: function (data) {
+          			    	layer.close(index);
+          			    	if(data > 0){
+          			    		layer.msg("新增成功",{offset:['50%'],time: 1000},function(){
+          			    			layer.closeAll();
+          	                    });
+          			    	}else{
+          			    		layer.msg("操作失败")
+          			    	}
+          			    },
+          			    error: function (data) {
+          			    	layer.msg("服务端异常");
+          			    }
+          		 	});
+		            return false;
+		        });
+        		index = layer.open({
+     	            title: '新增',
+     	            type: 1,
+     	            area: ['600px', '400px'],
+     	            fixed: false,
+     	            content: $("#pop"),
+     	            end: function () {
+     	            	treeGrid.reload(tableId)
+     	            }
+     	        });
+        	}
         });
         
-        form.on('submit(search)', function (data) {
-        	var param = dtree.getNowParam(dtreeObj);
-        	data.field.o_id = param.nodeId;
-           	rightTB.reload({
-                where: data.field
+        form.on('submit(query)', function(data){
+        	treeGrid.reload(tableId,{
+        		where:data.field
             });
             return false;
         });
         
-        form.on('submit(add)', function (data) {
-        	var param = dtree.getNowParam(dtreeObj);
-     	    if(!param.nodeId){
-     		   layer.msg("请选择部门", {offset: ['50%'], time: 1000});
-     	    }else{
-     		   var index = layer.open({
-     	            title: '分配用户',
-     	            type: 2,
-     	            area: ['690px', '400px'],
-     	            fixed: false, //不固定
-     	            maxmin: true,
-     	            content: '${ctx}/xtgl/zzgl/zzjg/adduser?o_id='+param.nodeId,
-     	            end: function () {
-     	                rightTB.reload({
-     	                    where:{o_id:param.nodeId}
-     	                });
-     	            }
-     	       });
-     	    }
+        form.on('submit(updateSort)', function(data){
+            var map=treeGrid.getDataMap(tableId);
+            var array = [];
+            for(var item in map){
+     	        var json = {};
+             	json.id = item;
+             	json.sort = map[item].sort
+             	array.push(json)
+            }
+            var index;
+            $.ajax({
+    		    type: "post",
+    		    data: {ids:JSON.stringify(array)},
+    		    url: '${ctx}/xtgl/xtsz/cdgl/updateSort',
+    		    beforeSend: function () {
+    		    	index = layer.load(1);
+    		    },
+    		    success: function (data) {
+    		    	layer.close(index)
+    		    	var msg = "";
+    		    	if(data > 0){
+    		    		msg = "修改成功";
+    		    	}else{
+    		    		msg = "修改失败";
+    		    	}
+    		    	layer.msg(msg,{offset:['50%'],time: 1000},function(){
+    		    		 treeGrid.reload(tableId)
+                    });
+    		    },
+    		    error: function (data) {
+    		    	layer.close(index)
+    		    	layer.msg("服务器异常",{icon:2});
+    		    }
+    		});
             return false;
         });
-    })
+    });
+    
+    function add() {
+    	var url = "${ctx}/xtgl/xtsz/cdgl/edit?flag=add";
+    	var index = layer.open({
+       		  title:'新增一级菜单',
+       		  type: 2,
+       		  area: ['620px', '400px'],
+       		  fixed: false, //不固定
+       		  maxmin: true,
+       		  content: url,
+       		  end: function(){
+       			  treeGrid.reload(tableId)
+       		  }
+        });
+       	layer.full(index);
+    }
+
+    
+    function openAll() {
+        var treedata=treeGrid.getDataTreeList(tableId);
+        treeGrid.treeOpenAll(tableId,!treedata[0][treeGrid.config.cols.isOpen]);
+    }
+    
 </script>
