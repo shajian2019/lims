@@ -59,21 +59,28 @@
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">上传附件：</label>
-        <input type="text" name='attachment_id' class="layui-hide" value="">
-        <div class="layui-inline img-up-box">
-            <button type="button" id="img_up" class="layui-btn layui-btn-primary">选择</button>
-        </div>
-    </div>
-    <div class="layui-form-item">
         <label class="layui-form-label">接收人：</label>
         <div class="layui-inline" id="spr">
             <div id="spr_add" name="spr_add" class="layui-input"></div>
         </div>
     </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">上传附件：</label>
+        <!--<input type="text" name='attachment_id' class="layui-hide" value="">-->
+        <!--<div class="layui-inline img-up-box">-->
+            <!--<button type="button" id="img_up" class="layui-btn layui-btn-primary">选择</button>-->
+        <!--</div>-->
+        <button type="button" class="layui-btn layui-btn-normal" id="testList">选择文件</button>
+        <button type="button" class="layui-btn" id="testListAction">开始上传</button>
+        <div class="layui-upload-list">
+            <table class="layui-table">
+                <tbody id="demoList"></tbody>
+            </table>
+        </div>
+
+    </div>
         <div class="layui-btn-container">
             <a class="layui-btn  layui-btn-primary" lay-submit lay-filter="sq">保存</a>
-            <a id="cancel" class="layui-btn  layui-bg-gray">取消</a>
         </div>
 </form>
 
@@ -143,7 +150,8 @@
                 area: ['728px', '516px'],
                 title: false,
                 offset: '15px',
-                content: '${ctx}/swgl/gzrz/empTree?key=journal&formkey=receiver',
+                // content: '${ctx}/swgl/gzrz/empTree?key=journal&formkey=receiver',
+                content: '${ctx}/grgzt/fqlc/spr?key=journal&formkey=receiver',
                 end: function () {
                     getSprs("spr_add", "spr", "receiver");
                 }
@@ -188,64 +196,62 @@
             });
         }
 
-//图片上传
-        var fileNameArray = [];
-        var imgUpView = $('#img_up');
-        var imgUpload = upload.render({
-            elem: '#img_up'
-            , url: '${ctx}/file/upload'
-            , data: {"bk": "${(leave.bk)!''}"}
-            , multiple: true
-            , auto: true
-            , accept: 'images'
-            , acceptMime: 'image/*'
-            , size: parseInt("${(image_upload_max_size)!'4096'}")
-            , choose: function (obj) {
+        //多文件列表示例
+        var demoListView = $('#demoList')
+            ,uploadListIns = upload.render({
+            elem: '#testList'
+            ,url: '/upload/'
+            ,accept: 'file'
+            ,multiple: true
+            ,auto: false
+            ,bindAction: '#testListAction'
+            ,choose: function(obj){
                 var files = this.files = obj.pushFile(); //将每次选择的文件追加到文件队列
                 //读取本地文件
-                obj.preview(function (index, file, result) {
-                    console.log(file);
-                    if (fileNameArray.indexOf(file.name) != -1) {
-                        layer.msg("图片已存在");
-                        return;
-                    }
-                    var img = $([
-                        '<div class="img-box">' +
-                        '<img src="' + result + '" alt="' + file.name + '" class="layui-upload-img">' +
-                        '<i class="fa fa-close img-close"></i>' +
-                        '</div>'
-                    ].join(''));
-                    //删除
-                    img.find('.img-close').on('click', function () {
-                        delete files[index]; //删除对应的文件
-                        var filename = "${(leave.bk)!''}&" + file.name;
-                        $.ajax({
-                            type: "get",
-                            data: {filename: filename},
-                            url: '${ctx}/file/del/',
-                            beforeSend: function () {
-                                index = layer.load(1);
-                            },
-                            success: function (data) {
-                                fileNameArray.remove(file.name)
-                                layer.close(index);
-                            },
-                            error: function (data) {
-                                layer.close(index);
-                                layer.msg("服务端异常");
-                            }
-                        });
-                        img.remove();
-                        imgUpload.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
+                obj.preview(function(index, file, result){
+                    var tr = $(['<tr id="upload-'+ index +'">'
+                        ,'<td>'+ file.name +'</td>'
+                        ,'<td>'+ (file.size/1014).toFixed(1) +'kb</td>'
+                        ,'<td>等待上传</td>'
+                        ,'<td>'
+                        ,'<button class="layui-btn layui-btn-xs demo-reload layui-hide">重传</button>'
+                        ,'<button class="layui-btn layui-btn-xs layui-btn-danger demo-delete">删除</button>'
+                        ,'</td>'
+                        ,'</tr>'].join(''));
+
+                    //单个重传
+                    tr.find('.demo-reload').on('click', function(){
+                        obj.upload(index, file);
                     });
-                    imgUpView.before(img)
-                    fileNameArray.push(file.name);
+
+                    //删除
+                    tr.find('.demo-delete').on('click', function(){
+                        delete files[index]; //删除对应的文件
+                        tr.remove();
+                        uploadListIns.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
+                    });
+
+                    demoListView.append(tr);
                 });
             }
-            , done: function (res) {
-                //单张上传完毕
+            ,done: function(res, index, upload){
+                if(res.code == 0){ //上传成功
+                    var tr = demoListView.find('tr#upload-'+ index)
+                        ,tds = tr.children();
+                    tds.eq(2).html('<span style="color: #5FB878;">上传成功</span>');
+                    tds.eq(3).html(''); //清空操作
+                    return delete this.files[index]; //删除文件队列已经上传成功的文件
+                }
+                this.error(index, upload);
+            }
+            ,error: function(index, upload){
+                var tr = demoListView.find('tr#upload-'+ index)
+                    ,tds = tr.children();
+                tds.eq(2).html('<span style="color: #FF5722;">上传失败</span>');
+                tds.eq(3).find('.demo-reload').removeClass('layui-hide'); //显示重传
             }
         });
+
         Array.prototype.remove = function (val) {
             var index = this.indexOf(val);
             if (index > -1) {
