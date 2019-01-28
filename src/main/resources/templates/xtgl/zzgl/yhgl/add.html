@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet"/>
     <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="${ctx}/plugins/layui/extend/dtree/dtree.css">
+    <link rel="stylesheet" href="${ctx}/plugins/layui/extend/dtree/font/dtreefont.css">
     <style>
         /* layui重置 */
         .layui-form {
@@ -55,6 +57,8 @@
             flex-grow: 1;
             padding: 0 10px;
         }
+        .dw-search{display: flex;align-items: center;padding: 5px 15px;}
+        .dw-search>.layui-input{height: 32px;line-height: 32px;margin-right: 12px;}
     </style>
 </head>
 <body>
@@ -111,8 +115,8 @@
 	    </select>
 	</div>
 	<label class="layui-form-label">单位（科室）:</label>
-	<div class="layui-inline">
-	    <ul id="left_tree" class="dtree" data-id="0"></ul>
+	<div class="layui-inline">   
+        <div class="layui-input" id="dw"></div>
 	</div>
 </div>
 
@@ -120,6 +124,13 @@
     <a class="layui-btn layui-btn-sm layui-btn-primary" lay-submit lay-filter="save">保存</a>
 </div>
 </form>
+<div id="dw_box" style="display:none;">
+    <div class="dw-search">
+        <input type="text" class="layui-input" id="dw_input">
+<a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-primary" id="dw_search">搜索</a>
+    </div>
+    <ul id="left_tree" class="dtree" data-id="0" ></ul>
+</div>
 
 <script src="${ctx}/plugins/layui/layui.js"></script>
 <script type="text/javascript">
@@ -129,9 +140,8 @@
 	    dtree: 'dtree'
 	})
 	var $ = null,table=null,upload=null,form=null,dtree=null,layer=null,dtreeID=null,tbID=null,index = null,dtreeObj;
-    layui.use(['form', 'layer'], function () {
+    layui.use(['form', 'layer','dtree'], function () {
     	 $ = layui.jquery,
-         table = layui.table,
          form = layui.form,
          dtree = layui.dtree,
          layer = layui.layer,
@@ -145,22 +155,33 @@
              icon: "2",
              dot: false,
              skin: "layui",
-             menubar: true,
-             menubarTips: {
-                 group: ['searchNode','refresh']
-             }
+            done: function(data, obj){
+                console.log(data,obj)
+            }
          });
-    	 var index = layer.open({
-             title: '单位（科室）',
-             type: 2,
-             area: ['620px', '400px'],
-             fixed: false, //不固定
-             maxmin: true,
-             content: url,
-             end: function () {
-                 table.reload(tableId)
-             }
-         });
+         //$("#dw_search").unbind("click");
+                $("#dw_search").click(function(){  
+                    dtree.reload(dtreeObj, {})              
+                var value = $("#dw_input").val();
+                if(value){
+                var flag = dtreeObj.searchNode(value); // 内置方法查找节点
+                if (!flag) {layer.msg("该名称节点不存在！", {icon:5});}
+                } else {
+                    console.log(233)
+                    dtreeObj.menubarMethod().refreshTree(); // 内置方法刷新树
+                }
+                });
+         $("#dw").click(function(){
+             console.log(2)
+            layer.open({
+                title: '单位（科室）',
+                type: 1,
+                area: ['350px', '390px'],
+                maxmin: true,
+                content:$("#dw_box")
+            });
+         })
+    	 var index = 
         form.verify({
             onlyUname: function (value) {
                 if (value == '') {
