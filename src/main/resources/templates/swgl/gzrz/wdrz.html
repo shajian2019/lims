@@ -40,9 +40,7 @@
         <div class="layui-inline">
             <input class="layui-input" type="text" placeholder="提交人" name="username" id="username">
         </div>
-        <div class="layui-inline">
-            <input class="layui-input" type="text" placeholder="主要负责人" name="principal" id="principal">
-        </div>
+
         <div class="layui-inline">
             <a class="layui-btn layui-btn-primary" lay-submit="" lay-filter="query" datatype="reload">查询</a>
             <a class="layui-btn layui-btn-primary" onclick="add();">写日志</a>
@@ -83,9 +81,8 @@
             , method: 'get'
             , cols: [[
                 {field: '序号',width:50,fixed:'left',type:'numbers',title:'序号'}
-                ,{field: 'work_content', title: '工作内容'}
+                ,{field: 'today_work_content', title: '当日工作内容'}
                 , {field: 'submit_time', width: 150, title: '提交时间'}
-                , {field: 'principalName', width: 100,title: '主要负责人'}
                 , {field: 'attachment_id', width: 140, title: '附件'}
                 ,{field: 'receiverName', width: 140, title: '接收人'}
                 // ,{

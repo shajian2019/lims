@@ -88,4 +88,10 @@ public class GzrzController {
         return mv;
     }
 
+    @RequestMapping("/addJournal")
+    @ResponseBody
+    public JSONObject addJournal(@RequestParam Map<String, String> params){
+        return null;
+    }
+
 }

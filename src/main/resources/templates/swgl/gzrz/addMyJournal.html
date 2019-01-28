@@ -16,7 +16,11 @@
             display: flex;
             align-items: flex-start;
         }
-        .layui-form-label{width: 130px;}
+
+        .layui-form-label {
+            width: 130px;
+        }
+
         .layui-form-item .layui-inline, .layui-form-item .layui-input-block {
             width: 450px;
         }
@@ -77,7 +81,7 @@
             margin: 1% auto 0;
         }
 
-        .img-up-box, #spr,#spr1 {
+        .img-up-box, #spr, #spr1 {
             max-width: 500px;
             height: auto;
             display: flex;
@@ -114,7 +118,7 @@
             height: 100%;
         }
 
-        #img_up, #spr_add {
+        #img_up {
             width: 80px;
             height: 80px;
             border: 1px solid #e6e6e6;
@@ -124,6 +128,7 @@
             color: #e6e6e6;
             background-color: #fff;
         }
+
         #spr_add1 {
             width: 80px;
             height: 80px;
@@ -135,16 +140,16 @@
             background-color: #fff;
         }
 
-        #spr,#spr1 {
+        #spr, #spr1 {
             align-items: flex-start;
         }
 
-        #spr_add {
-            width: 70px;
-            height: 70px;
-            line-height: 70px;
-            border-radius: 1000px;
-        }
+        /*#spr_add {*/
+        /*width: 70px;*/
+        /*height: 70px;*/
+        /*line-height: 70px;*/
+        /*border-radius: 1000px;*/
+        /*}*/
         #spr_add1 {
             width: 70px;
             height: 70px;
@@ -192,6 +197,7 @@
             max-width: 500px;
             flex-wrap: wrap;
         }
+
         #layer-photos img {
             width: 80px;
             height: 80px;
@@ -206,45 +212,49 @@
 
 <form class="layui-form" lay-filter="edit" style="margin: 5% auto 0;">
     <div class="layui-form-item">
-        <label class="layui-form-label">工作内容：</label>
+        <label class="layui-form-label">今日工作内容：</label>
         <div class="layui-inline">
-            <textarea name="work_content" placeholder="请输入内容" class="layui-textarea" lay-verify="required"></textarea>
+            <textarea name="today_work_content" placeholder="请输入内容" class="layui-textarea"
+                      lay-verify="required"></textarea>
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">选择图片：</label>
-        <input type="text" name='imgName' class="layui-hide" value="">
+        <label class="layui-form-label">未完成工作：</label>
+        <div class="layui-inline">
+            <textarea name="unfinished_work" placeholder="请输入内容" class="layui-textarea"></textarea>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">需协调工作：</label>
+        <div class="layui-inline">
+            <textarea name="coordinated_work" placeholder="请输入内容" class="layui-textarea"></textarea>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">选择附件：</label>
+        <input type="text" name='attachment_id' class="layui-hide" value="">
         <div class="layui-inline img-up-box">
             <button type="button" id="img_up"><i class="fa fa-plus"></i></button>
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">主要负责人：</label>
-        <div class="layui-inline" id="spr1">
-            <div id="spr_add1">
-                <i class="fa fa-plus"></i>
-            </div>
+        <label class="layui-form-label">接收人：</label>
+        <div class="layui-inline" id="spr">
+            <div id="spr_add" name="spr_add" class="layui-textarea"></div>
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">接收人：</label>
-        <div class="layui-inline" id="spr">
-            <div id="spr_add">
-                <i class="fa fa-plus"></i>
-            </div>
+        <div class="layui-btn-container">
+            <a class="layui-btn  layui-btn-primary" lay-submit lay-filter="sq">保存</a>
+            <a id="cancel" class="layui-btn  layui-bg-gray">取消</a>
         </div>
-    </div>
-
-    <div class="layui-btn-container">
-        <a class="layui-btn  layui-btn-primary" lay-submit lay-filter="save">保存</a>
-        <a id="cancel" class="layui-btn  layui-bg-gray">取消</a>
-    </div>
     </div>
 </form>
 
 <script src="${ctx}/plugins/layui/layui.js"></script>
 <script type="text/javascript">
-    var $ = layui.jquery, treeSelect = layui.treeSelect, form = layui.form, layer = layui.layer,upload = layui.upload;
+    var $ = layui.jquery, treeSelect = layui.treeSelect, form = layui.form, layer = layui.layer, upload = layui.upload;
+    var sprs = [];
     layui.config({
         base: '${ctx}/plugins/layui/extend/dtree/'
     }).extend({
@@ -256,33 +266,41 @@
         var $ = layui.jquery
         var dtree = layui.dtree;
         var form = layui.form
-        form.on('submit(save)', function (data) {
-            var url = "${ctx}/swgl/clgl/editCar";
-            data.field.c_id = '${(car.c_id)!''}';
-            var index;
-            $.ajax({
-                type: "POST",
-                data: data.field,
-                url: url,
-                beforeSend: function () {
-                    index = layer.load(1);
-                },
-                success: function (data) {
-                    layer.close(index);
-                    if (data > 0) {
-                        var msg = "保存成功";
-                        layer.msg(msg, {offset: ['50%'], time: 1000}, function () {
-                            index = parent.layer.getFrameIndex(window.name);
-                            parent.layer.close(index);
-                        });
-                    } else {
-                        layer.msg("操作失败")
+        getSprs("spr_add","spr","receiver");
+
+        form.on('submit(sq)', function (data) {
+            if (sprs.length > 0) {
+                data.field.sprs = sprs.join(",")
+                data.field.id = "${user.u_id}";
+                console.log(data.field)
+                $.ajax({
+                    type: "post",
+                    data: data.field,
+                    url: "${ctx}/swgl/gzrz/addJournal",
+                    beforeSend: function () {
+                        index = layer.load(1);
+                    },
+                    success: function (data) {
+                        layer.close(index);
+                        if (data.code > 0) {
+                            layer.confirm("保存成功", {
+                                closeBtn: 0,
+                                btn: ['确定'] //按钮
+                            }, function () {
+                                parent.window.closeTab("leave");
+                            });
+                        } else {
+                            layer.msg("保存失败");
+                        }
+                    },
+                    error: function (data) {
+                        layer.close(index);
+                        layer.msg("服务端异常");
                     }
-                },
-                error: function (data) {
-                    layer.msg("服务端异常");
-                }
-            });
+                });
+            } else {
+                layer.msg("请选择人员", {offset: ['50%'], time: 2000});
+            }
             return false;
         });
 
@@ -292,24 +310,8 @@
             parent.layer.close(index);
         })
 
-        //主要负责人
-        $("#spr_add").click(function () {
-            layer.open({
-                type: 2,
-                area: ['722px', '516px'],
-                title: false,
-                fixed: false, //不固定
-                // btn:['确定','取消'],
-                // btnAlign: 'c',
-                content: '${ctx}/swgl/gzrz/empTree?key=journal&formkey=principal',
-                end: function () {
-                    getSprs("spr_add","spr","principal");
-                }
-            })
-        })
-
         //接收人
-        $("#spr_add1").click(function () {
+        $("#spr_add").click(function () {
             layer.open({
                 type: 2,
                 area: ['722px', '516px'],
@@ -319,41 +321,40 @@
                 // btnAlign: 'c',
                 content: '${ctx}/swgl/gzrz/empTree?key=journal&formkey=receiver',
                 end: function () {
-                    getSprs("spr_add1","spr1","receiver");
+                    getSprs("spr_add", "spr", "receiver");
                 }
             })
         })
-        function getSprs(ele,ele1,ele2){
+
+        function getSprs(ele, ele1, ele2) {
             $.ajax({
                 type: "post",
-                data: {id:"${user.u_id}journal"+ele2},
+                data: {id: "${user.u_id}journal" + ele2},
                 url: "${ctx}/grgzt/fqlc/getSprs",
                 beforeSend: function () {
                     index = layer.load(1);
                 },
                 success: function (data) {
-                    console.log("success");
+                    console.log(321);
                     console.log(data);
                     layer.close(index);
-                    var html = ""
-                    var sprs = [];
-                    $.each(data,function(i,v){
-                        sprs.push(v.u_id);
-                        html +='<div class="spr-select">';
-                        html +='<i class="fa fa-close spr-close" data-id="'+v.u_id+'"></i>';
-                        html +='<div class="spr-box">'
-                        html +='<p>'+v.o_name+'</p>';
-                        html +='<p>'+v.j_name+'</p>';
-                        html +='</div>';
-                        html +='<p>'+v.nickname+'</p>';
-                        html +='</div>';
+                    var html = "";
+                    $.each(data, function (i, v) {
+                        console.log(123);
+                        console.log(v);
+                        var msg = "{" + ele2 + ":" + v.u_id + "}";
+                        sprs.push(msg);
+                        html += '<div class="spr-select">';
+                        html += '<i class="fa fa-close spr-close" data-id="' + v.u_id + '"></i>';
+                        html += '<p>' + v.nickname + '</p>';
+                        html += '</div>';
                     })
 
-                    $("#"+ele).prevAll().remove();
-                    $("#"+ele).before(html);
-                    $("#"+ele1+" .spr-select").on('click','.spr-close',function () {
-                        sprs.remove($(this).attr("data-id"))
-                        $(this).parent().remove();
+                    $("#" + ele).empty();
+                    $("#" + ele).append(html);
+                    $("#" + ele + " .spr-select").on('click', '.spr-close', function () {
+                        sprs.remove($(this).attr("data-id"));
+                        $(this).remove();
                     })
                 },
                 error: function (data) {
@@ -366,43 +367,43 @@
 //图片上传
         var fileNameArray = [];
         var imgUpView = $('#img_up');
-        var imgUpload=upload.render({
+        var imgUpload = upload.render({
             elem: '#img_up'
-            ,url: '${ctx}/file/upload'
-            ,data:{"bk":"${(leave.bk)!''}"}
-            ,multiple: true
-            ,auto: true
-            ,accept:'images'
-            ,acceptMime:'image/*'
-            ,size: parseInt("${(image_upload_max_size)!'4096'}")
-            ,choose: function(obj){
+            , url: '${ctx}/file/upload'
+            , data: {"bk": "${(leave.bk)!''}"}
+            , multiple: true
+            , auto: true
+            , accept: 'images'
+            , acceptMime: 'image/*'
+            , size: parseInt("${(image_upload_max_size)!'4096'}")
+            , choose: function (obj) {
                 var files = this.files = obj.pushFile(); //将每次选择的文件追加到文件队列
                 //读取本地文件
-                obj.preview(function(index, file, result){
-                    if(fileNameArray.indexOf(file.name) != -1){
+                obj.preview(function (index, file, result) {
+                    console.log(file);
+                    if (fileNameArray.indexOf(file.name) != -1) {
                         layer.msg("图片已存在");
                         return;
                     }
                     var img = $([
-                        '<div class="img-box">'+
-                        '<img src="'+result+'" alt="'+file.name+'" class="layui-upload-img">'+
-                        '<i class="fa fa-close img-close"></i>'+
+                        '<div class="img-box">' +
+                        '<img src="' + result + '" alt="' + file.name + '" class="layui-upload-img">' +
+                        '<i class="fa fa-close img-close"></i>' +
                         '</div>'
                     ].join(''));
                     //删除
-                    img.find('.img-close').on('click', function(){
+                    img.find('.img-close').on('click', function () {
                         delete files[index]; //删除对应的文件
-                        var filename = "${(leave.bk)!''}&"+file.name;
+                        var filename = "${(leave.bk)!''}&" + file.name;
                         $.ajax({
                             type: "get",
-                            data: {filename:filename},
+                            data: {filename: filename},
                             url: '${ctx}/file/del/',
                             beforeSend: function () {
                                 index = layer.load(1);
                             },
                             success: function (data) {
                                 fileNameArray.remove(file.name)
-                                console.log(fileNameArray)
                                 layer.close(index);
                             },
                             error: function (data) {
@@ -417,7 +418,7 @@
                     fileNameArray.push(file.name);
                 });
             }
-            ,done: function(res){
+            , done: function (res) {
                 //单张上传完毕
             }
         });

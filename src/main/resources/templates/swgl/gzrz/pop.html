@@ -54,7 +54,8 @@
     </div>
     <div style="text-align: center;width:100%;padding-top:10px;">
         <a href="javascript:;" class="layui-btn layui-btn-sm" lay-submit lay-filter="save">保存</a>
-        <a href="javascript:;" class="layui-btn layui-btn-sm closeBtn layui-bg-gray">取消</a>
+        <!--<a href="javascript:;" class="layui-btn layui-btn-sm closeBtn layui-bg-gray">取消</a>-->
+        <!--<a id="cancel" class="layui-btn layui-btn-sm layui-bg-gray">取消</a>-->
     </div>
 </form>
 </body>
@@ -178,7 +179,7 @@
             skin: 'zzfc',
             method: 'GET',
             // data: demoData,
-            url:"${ctx}/orgUser/spr?u_id=${user.u_id}&id=${user.u_id}",
+            url:"${ctx}/orgUser/spr?u_id=${user.u_id}&id=${user.u_id}journalreceiver",
             type:'all',
             icon: ["2", "1"],
             dot: false,
@@ -315,6 +316,8 @@
                 $("#popTree").children().removeClass("layui-hide")
             }
         }
+
+
     });
 
 </script>
