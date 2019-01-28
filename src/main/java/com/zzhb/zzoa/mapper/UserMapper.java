@@ -28,7 +28,7 @@ public interface UserMapper {
 
 	public Integer addUser(User user);
 
-	public Integer updateUser(Map<String, Object> map);
+	public Integer updateUser(Map<String, String> map);
 
 	public Integer updateUserByUser(User user);
 

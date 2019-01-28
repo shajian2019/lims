@@ -48,10 +48,12 @@ public class ShiroRealm extends AuthorizingRealm {
 				throw new LockedAccountException("账号已锁定");
 			} else if ("2".equals(user.getStatus())) {
 				throw new LockedAccountException("账号已禁用");
+			} else if ("3".equals(user.getStatus())) {
+				throw new LockedAccountException("分配角色已禁用");
 			}
 		} else {
-			Integer roleIds = roleMapper.getRoleIds(user.getU_id());
-			if (!Constant.SUPERADMIN.equals(user.getUsername()) && roleIds == null) {
+			Integer r_id = user.getR_id();
+			if (!Constant.SUPERADMIN.equals(user.getUsername()) && r_id == null) {
 				throw new LockedAccountException("账号尚未分配角色");
 			}
 		}

@@ -50,7 +50,6 @@ public class UserService {
 
 	@Transactional
 	public Integer delUserById(String u_id) {
-		roleMapper.delUserRoleByUId(u_id);
 		orgMapper.delUserOrgByUid(u_id);
 		return userMapper.delUser(u_id);
 	}
@@ -82,7 +81,7 @@ public class UserService {
 	}
 
 	@Transactional
-	public Integer updateUser(Map<String, Object> map) {
+	public Integer updateUser(Map<String, String> map) {
 		Integer updateUser = 0;
 		if (map.containsKey("password")) {
 			String password = (String) map.get("password");

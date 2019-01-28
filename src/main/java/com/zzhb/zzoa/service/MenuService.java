@@ -39,7 +39,7 @@ public class MenuService {
 		List<Menu> menus = menuMapper.getMenus(params);
 		return getFormatMenus(menus);
 	}
-	
+
 	@CacheEvict(value = "ALLMENUS", allEntries = true)
 	public void flushAllMenu() {
 	}

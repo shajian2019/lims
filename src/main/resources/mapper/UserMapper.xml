@@ -4,13 +4,19 @@
     <select id="getAllUsers" resultType="java.util.Map" parameterType="java.util.Map">
       SELECT
 		u.*,
-		r.rolename
-		FROM
-	sys_t_user u
-		LEFT JOIN ( SELECT ur.u_id, r.* FROM sys_t_user_role ur LEFT JOIN sys_t_role r ON ur.r_id = r.r_id ) r ON u.u_id = r.u_id
+		r.rolename,
+		org.o_id,
+		org.o_name 
+	 FROM
+		sys_t_user u
+		LEFT JOIN sys_t_role r ON u.r_id = r.r_id
+		LEFT JOIN ( SELECT uo.*, o.o_name FROM sys_t_user_org uo LEFT JOIN sys_t_org o ON uo.o_id = o.o_id ) org ON u.u_id = org.u_id
       <where>
           <if test="true">
               AND u.username != 'superadmin'
+          </if>
+          <if test="o_id != null and o_id != ''">
+              AND org.o_id = #{o_id}
           </if>
           <if test="username != null and username != ''">
               <bind name="_username" value="'%'+username+'%'"/>
@@ -63,11 +69,8 @@
             <if test="u_id != null and u_id !='' ">
               	AND u_id = #{u_id}
             </if>
-            <if test="u_ids != null and u_ids.size() > 0 ">
-              	AND u_id in
-	            <foreach collection="u_ids" item="u_id" index="index" open="(" close=")" separator=",">
-				  #{u_id}
-				</foreach>
+            <if test="r_id != null and r_id !='' ">
+              	AND r_id = #{r_id}
             </if>
         </where>
     </update>

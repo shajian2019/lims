@@ -1,5 +1,7 @@
 package com.zzhb.zzoa.service;
 
+import java.util.List;
+
 import org.apache.shiro.session.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,12 +33,12 @@ public class LoginService {
 
 	@Transactional
 	public void initLoginUser(User user, Session session) {
-		Role role = roleMapper.getRol(user.getU_id());
+		Role role = roleMapper.getRol(user.getR_id());
 		logger.debug("=======user======" + user.getUsername() + "=======role====" + role);
 		session.setAttribute(Constant.ROLE, role);
 		session.setAttribute(Constant.USER, user);
-		Org org = orgMapper.getOrgByUid(user.getU_id() + "");
-		session.setAttribute(Constant.ORG, org);
+		List<Org> orgs = orgMapper.getOrgByUid(user.getU_id() + "");
+		session.setAttribute(Constant.ORG, orgs);
 		userMapper.updateRecentlogin(user);
 		logger.debug("=====更新用户登录时间==user======" + user.getUsername());
 	}

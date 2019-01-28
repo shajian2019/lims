@@ -4,7 +4,6 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,6 +44,11 @@ public class ZzglController {
 	public String yhgl() {
 		return "xtgl/zzgl/yhgl/yhgl";
 	}
+	
+	@GetMapping("/yhgl2")
+	public String yhgl2() {
+		return "xtgl/zzgl/yhgl/yhgl2";
+	}
 
 	@GetMapping("/yhgl/getAllUsers")
 	@ResponseBody
@@ -67,8 +71,6 @@ public class ZzglController {
 			String username = map.get("username");
 			User user = userMapper.getUser(username);
 			model.addObject("echouser", user);
-			Integer r_id = roleMapper.getRoleIds(user.getU_id());
-			model.addObject("echor_id", r_id);
 		}
 		model.addObject("map", map);
 		model.setViewName(url);
@@ -83,13 +85,13 @@ public class ZzglController {
 
 	@PostMapping("/yhgl/updateUser")
 	@ResponseBody
-	public Integer updateUser(@RequestParam Map<String, Object> map) {
+	public Integer updateUser(@RequestParam Map<String, String> map) {
 		return userService.updateUser(map);
 	}
 
-	@GetMapping("/yhgl/getAllRole")
+	@GetMapping("/yhgl/getRoleSelect")
 	@ResponseBody
-	public JSONObject getAllRole(@RequestParam Map<String, String> map) {
+	public JSONObject getRoleSelect(@RequestParam Map<String, String> map) {
 		return roleService.listRoles(1, Integer.MAX_VALUE, map);
 	}
 
@@ -112,6 +114,12 @@ public class ZzglController {
 
 	@Autowired
 	ZzjgService zzjgService;
+
+	@GetMapping("/zzjg/dtree/list")
+	@ResponseBody
+	public JSONObject zzjgDtreeList() {
+		return zzjgService.zzjgDtreeList();
+	}
 
 	// 组织架构查询
 	@GetMapping("/zzjg/list")

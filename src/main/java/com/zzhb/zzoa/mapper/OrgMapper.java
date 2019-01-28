@@ -31,7 +31,7 @@ public interface OrgMapper {
 
 	public List<Map<String, String>> getUsers(Map<String, String> params);
 
-	public Org getOrgByUid(String u_id);
+	public List<Org> getOrgByUid(String u_id);
 
 	public List<Map<String, String>> getAddUsers(Map<String, String> params);
 

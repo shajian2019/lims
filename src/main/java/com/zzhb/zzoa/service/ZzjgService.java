@@ -49,6 +49,38 @@ public class ZzjgService {
 		return result;
 	}
 
+	public JSONObject zzjgDtreeList() {
+		Map<String, String> params = new HashMap<>();
+		params.put("parentid", "0");
+		List<Org> list = orgMapper.getOrgs(params);
+		JSONObject result = new JSONObject();
+		JSONArray data = new JSONArray();
+		for (Org org : list) {
+			JSONObject groupJ = new JSONObject();
+			groupJ.put("id", org.getId());
+			groupJ.put("title", org.getName());
+			groupJ.put("parentId", org.getParentid());
+			params.put("parentid", org.getId());
+			JSONArray children = new JSONArray();
+			list = orgMapper.getOrgs(params);
+			for (Org orgC : list) {
+				JSONObject orgJC = new JSONObject();
+				orgJC.put("id", orgC.getId());
+				orgJC.put("title", orgC.getName());
+				orgJC.put("parentId", orgC.getParentid());
+				children.add(orgJC);
+			}
+			groupJ.put("children", children);
+			data.add(groupJ);
+		}
+		result.put("data", data);
+		JSONObject status = new JSONObject();
+		status.put("code", 200);
+		status.put("message", "操作成功");
+		result.put("status", status);
+		return result;
+	}
+
 	public JSONObject zzjgUserList(Integer page, Integer limit, Map<String, String> params) {
 		PageHelper.startPage(page, limit);
 		List<Map<String, String>> list = orgMapper.getUsers(params);
