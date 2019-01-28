@@ -219,7 +219,7 @@ layui.define(['layer', 'laytpl', 'element'], function(exports) {
                 	navbarLoadIndex && layer.close(navbarLoadIndex);
                 	_elem.html("");
                 }
-            }, 50);
+            }, 1000);
             return that;
         }
     };

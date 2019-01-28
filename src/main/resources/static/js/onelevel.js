@@ -112,7 +112,7 @@ layui.define(['jquery', 'laytpl', 'element'], function(exports) {
                     navbarLoadIndex && layer.close(navbarLoadIndex);
                     typeof _config.renderAfter === 'function' && _config.renderAfter(_elem);
                 });
-            }, 50);
+            },1000)
             return that;
         }
     };
