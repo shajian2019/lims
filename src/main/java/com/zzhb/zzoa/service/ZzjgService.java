@@ -55,11 +55,17 @@ public class ZzjgService {
 		List<Org> list = orgMapper.getOrgs(params);
 		JSONObject result = new JSONObject();
 		JSONArray data = new JSONArray();
+		JSONArray checkArr = new JSONArray();
+		JSONObject checked = new JSONObject();
+		checked.put("type", "0");
+		checked.put("isChecked", "0");
+		checkArr.add(checked);
 		for (Org org : list) {
 			JSONObject groupJ = new JSONObject();
 			groupJ.put("id", org.getId());
 			groupJ.put("title", org.getName());
 			groupJ.put("parentId", org.getParentid());
+			groupJ.put("checkArr", checkArr);
 			params.put("parentid", org.getId());
 			JSONArray children = new JSONArray();
 			list = orgMapper.getOrgs(params);
@@ -68,6 +74,7 @@ public class ZzjgService {
 				orgJC.put("id", orgC.getId());
 				orgJC.put("title", orgC.getName());
 				orgJC.put("parentId", orgC.getParentid());
+				orgJC.put("checkArr", checkArr);
 				children.add(orgJC);
 			}
 			groupJ.put("children", children);

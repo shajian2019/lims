@@ -116,7 +116,9 @@
 	</div>
 	<label class="layui-form-label">单位（科室）:</label>
 	<div class="layui-inline">   
-        <div class="layui-input" id="dw"></div>
+        <div class="layui-input" id="dw">
+        	
+        </div>
 	</div>
 </div>
 
@@ -125,10 +127,6 @@
 </div>
 </form>
 <div id="dw_box" style="display:none;">
-    <div class="dw-search">
-        <input type="text" class="layui-input" id="dw_input">
-<a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-primary" id="dw_search">搜索</a>
-    </div>
     <ul id="left_tree" class="dtree" data-id="0" ></ul>
 </div>
 
@@ -155,33 +153,23 @@
              icon: "2",
              dot: false,
              skin: "layui",
-            done: function(data, obj){
-                console.log(data,obj)
-            }
+             checkbar:true,
+             menubar:true,
+	         done: function(data, obj){
+	              console.log(data,obj)
+	         }
          });
-         //$("#dw_search").unbind("click");
-                $("#dw_search").click(function(){  
-                    dtree.reload(dtreeObj, {})              
-                var value = $("#dw_input").val();
-                if(value){
-                var flag = dtreeObj.searchNode(value); // 内置方法查找节点
-                if (!flag) {layer.msg("该名称节点不存在！", {icon:5});}
-                } else {
-                    console.log(233)
-                    dtreeObj.menubarMethod().refreshTree(); // 内置方法刷新树
-                }
-                });
-         $("#dw").click(function(){
-             console.log(2)
+    	 
+        $("#dw").click(function(){
             layer.open({
                 title: '单位（科室）',
                 type: 1,
-                area: ['350px', '390px'],
+                area: ['400px', '390px'],
                 maxmin: true,
                 content:$("#dw_box")
             });
-         })
-    	 var index = 
+        })
+    	var index = 
         form.verify({
             onlyUname: function (value) {
                 if (value == '') {
