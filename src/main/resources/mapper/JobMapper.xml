@@ -6,16 +6,32 @@
 		SELECT
 			j_id id,
 			j_name name,
+			j_sort sort,
+			j_remark remark,
+			j_status status,
 			createtime,
 			updatetime
 		FROM sys_t_job
+		<where>
+			<if test="name !=null and name !=''">
+				and j_name = #{name}
+			</if>
+			<if test="likename !=null and likename !=''">
+				<bind name="_likename" value="'%'+likename+'%'"></bind>
+				and j_name like #{_likename}
+			</if>
+			<if test="code !=null and code !=''">
+				and j_code = #{code}
+			</if>
+		</where>
+		order by j_sort
 	</select>
 	
 	<insert id="addJob" parameterType="com.zzhb.zzoa.domain.Job">
 		INSERT INTO sys_t_job
-			(j_name,createtime)
+			(j_name,j_sort,j_remark,j_status,createtime)
 		VALUES
-			(#{name},now())
+			(#{name},#{sort},#{remark},#{status},now())
 	</insert>
 	
 	<update id="updateJob" parameterType="com.zzhb.zzoa.domain.Job">
@@ -23,6 +39,15 @@
 		<set>
 			<if test="name !=null and name !=''">
 				j_name = #{name},
+			</if>
+			<if test="sort !=null and sort !=''">
+				j_sort = #{sort},
+			</if>
+			<if test="status !=null and status !=''">
+				j_status = #{status},
+			</if>
+			<if test="remark !=null and remark !=''">
+				j_remark = #{remark},
 			</if>
 			<if test="true">
 				updatetime = now(),

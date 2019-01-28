@@ -16,6 +16,16 @@ public class Org implements Serializable {
 	private String sort;
 	private String parentid;
 
+	private String likename;
+
+	public String getLikename() {
+		return likename;
+	}
+
+	public void setLikename(String likename) {
+		this.likename = likename;
+	}
+
 	public String getId() {
 		return id;
 	}

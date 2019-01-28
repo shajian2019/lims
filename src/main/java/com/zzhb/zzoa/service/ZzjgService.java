@@ -37,9 +37,9 @@ public class ZzjgService {
 	@Autowired
 	OrgMapper orgMapper;
 
-	public JSONObject zzjgList() {
+	public JSONObject zzjgList(Map<String, String> params) {
 		JSONObject result = new JSONObject();
-		List<Org> list = orgMapper.getOrgs(null);
+		List<Org> list = orgMapper.getOrgs(params);
 		result.put("code", 0);
 		result.put("msg", "");
 		result.put("count", list.size());
@@ -70,12 +70,40 @@ public class ZzjgService {
 
 	@Transactional
 	public Integer zzjgAdd(Org org) {
+		Map<String, String> params = new HashMap<>();
 		Integer addOrg = 0;
 		String id = org.getId();
 		if (id == null) {
-			addOrg = orgMapper.addOrg(org);
+			params.put("name", org.getName());
+			params.put("parentid", org.getParentid());
+			List<Org> orgs = orgMapper.getOrgs(params);
+			if (orgs.isEmpty()) {
+				addOrg = orgMapper.addOrg(org);
+			} else {
+				return -1;
+			}
+		} else {
+			addOrg = orgMapper.checkOrgName(org);
+			if (addOrg > 0) {
+				return -1;
+			} else {
+				addOrg = orgMapper.updateOrg(org);
+			}
 		}
 		return addOrg;
+	}
+
+	@Transactional
+	public Integer updateZzjgSort(JSONArray array) {
+		Integer updateOrg = 0;
+		for (int i = 0; i < array.size(); i++) {
+			JSONObject json = array.getJSONObject(i);
+			Org org = new Org();
+			org.setId(json.getString("id"));
+			org.setSort(json.getString("sort"));
+			updateOrg += orgMapper.updateOrg(org);
+		}
+		return updateOrg;
 	}
 
 	@Transactional
@@ -85,9 +113,13 @@ public class ZzjgService {
 	}
 
 	@Transactional
-	public Integer zzjgDel(String o_id) {
-		orgMapper.delUserOrgByOid(o_id);
-		return orgMapper.delOrg(o_id);
+	public Integer zzjgDel(Org org) {
+		Map<String, String> params = new HashMap<>();
+		params.put("parentid", org.getId());
+		List<Org> orgs = orgMapper.getOrgs(params);
+		orgs.add(org);
+		orgMapper.delUserOrgByOid(orgs);
+		return orgMapper.delOrg(orgs);
 	}
 
 	@Transactional
@@ -102,30 +134,33 @@ public class ZzjgService {
 	@Autowired
 	JobMapper jobMapper;
 
-	public JSONObject zwglList() {
-		List<Job> list = jobMapper.getJobs(null);
-		JSONObject result = new JSONObject();
-		JSONArray data = new JSONArray();
-		JSONArray children = new JSONArray();
-		for (Job job : list) {
-			JSONObject groupJ = new JSONObject();
-			groupJ.put("id", job.getId());
-			groupJ.put("title", job.getName());
-			groupJ.put("parentId", "0");
-			groupJ.put("children", children);
-			data.add(groupJ);
-		}
-		result.put("data", data);
-		JSONObject status = new JSONObject();
-		status.put("code", 200);
-		status.put("message", "操作成功");
-		result.put("status", status);
-		return result;
+	public JSONObject zwglList(Integer page, Integer limit, Map<String, String> params) {
+		PageHelper.startPage(page, limit);
+		List<Job> list = jobMapper.getJobs(params);
+		PageInfo<Job> pageInfo = new PageInfo<>(list);
+		return LayUiUtil.pagination(pageInfo);
 	}
 
 	@Transactional
-	public Integer zwglAdd(Job job) {
-		Integer addjob = jobMapper.addJob(job);
+	public Integer zwglAddOrUpdate(Job job) {
+		Integer addjob = 0;
+		Map<String, String> params = new HashMap<>();
+		if (job.getId() == null) {
+			params.put("name", job.getName());
+			List<Job> jobs = jobMapper.getJobs(params);
+			if (jobs.isEmpty()) {
+				addjob = jobMapper.addJob(job);
+			} else {
+				return -1;
+			}
+		} else {
+			addjob = jobMapper.checkJobName(job);
+			if (addjob > 0) {
+				return -1;
+			} else {
+				addjob = jobMapper.updateJob(job);
+			}
+		}
 		return addjob;
 	}
 
@@ -164,8 +199,21 @@ public class ZzjgService {
 	}
 
 	@Transactional
-	public Integer zwglDel(String j_id) {
-		jobMapper.delUserJobByJid(j_id);
-		return jobMapper.delJob(j_id);
+	public Integer zwglDel(Job job) {
+		jobMapper.delUserJobByJid(job);
+		return jobMapper.delJob(job);
+	}
+
+	@Transactional
+	public Integer updateZwglSort(JSONArray array) {
+		Integer updateOrg = 0;
+		for (int i = 0; i < array.size(); i++) {
+			JSONObject json = array.getJSONObject(i);
+			Job job = new Job();
+			job.setId(json.getString("id"));
+			job.setSort(json.getString("sort"));
+			updateOrg += jobMapper.updateJob(job);
+		}
+		return updateOrg;
 	}
 }

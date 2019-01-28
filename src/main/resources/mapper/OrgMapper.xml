@@ -15,6 +15,18 @@
 			p_oid parentid
 		FROM
 			sys_t_org
+		<where>
+			<if test="parentid !=null and parentid !=''">
+				and p_oid = #{parentid}
+			</if>
+			<if test="name !=null and name !=''">
+				and o_name = #{name}
+			</if>
+			<if test="likename !=null and likename !=''">
+				<bind name="_likename" value="'%'+likename+'%'"></bind>
+				and o_name like #{_likename}
+			</if>
+		</where>
 		order by o_sort
 	</select>
 	
@@ -30,6 +42,15 @@
 		<set>
 			<if test="name !=null and name !=''">
 				o_name = #{name},
+			</if>
+			<if test="remark !=null and remark !=''">
+				o_remark = #{remark},
+			</if>
+			<if test="status !=null and status !=''">
+				o_status = #{status},
+			</if>
+			<if test="sort !=null and sort !=''">
+				o_sort = #{sort},
 			</if>
 			<if test="true">
 				updatetime = now(),
@@ -93,4 +114,28 @@
 			o.u_id IS NULL 
 			AND u.username != 'superadmin'
 	</select>
+	
+	<delete id="delUserOrgByOid" parameterType="java.util.List">
+		DELETE FROM sys_t_user_org
+		<where>
+			<if test="orgs !=null and orgs.size() != 0">
+				and o_id in 
+				<foreach collection="orgs" item="org" open="(" separator="," close=")">
+           			#{org.id}
+        		</foreach>
+			</if>
+		</where>
+	</delete>
+	
+	<delete id="delOrg" parameterType="java.util.List">
+		DELETE FROM sys_t_org
+		<where>
+			<if test="orgs !=null and orgs.size() != 0">
+				and o_id in 
+				<foreach collection="orgs" item="org" open="(" separator="," close=")">
+           			#{org.id}
+        		</foreach>
+			</if>
+		</where>
+	</delete>
 </mapper>

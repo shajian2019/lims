@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.zzhb.zzoa.domain.Job;
 import com.zzhb.zzoa.domain.Org;
@@ -111,116 +113,70 @@ public class ZzglController {
 	@Autowired
 	ZzjgService zzjgService;
 
+	// 组织架构查询
 	@GetMapping("/zzjg/list")
 	@ResponseBody
-	public JSONObject zzjgList() {
-		return zzjgService.zzjgList();
+	public JSONObject zzjgList(@RequestParam Map<String, String> params) {
+		return zzjgService.zzjgList(params);
 	}
 
+	// 组织架构新增或修改
 	@PostMapping("/zzjg/saveOrUpdate")
 	@ResponseBody
 	public Integer saveOrUpdate(Org org) {
 		return zzjgService.zzjgAdd(org);
 	}
 
-	@PostMapping("/zzjg/edit")
+	// 组织架构排序修改
+	@PostMapping("/zzjg/updateSort")
 	@ResponseBody
-	public Integer zzjgEdit(Org org) {
-		return zzjgService.zzjgEdit(org);
+	public Integer updateZzjgSort(@RequestParam("ids") String ids) {
+		JSONArray array = JSON.parseArray(ids);
+		System.out.println(array);
+		return zzjgService.updateZzjgSort(array);
 	}
 
+	// 组织架构删除
 	@PostMapping("/zzjg/del")
 	@ResponseBody
-	public Integer zzjgDel(String o_id) {
-		return zzjgService.zzjgDel(o_id);
+	public Integer zzjgDel(Org org) {
+		return zzjgService.zzjgDel(org);
 	}
 
-	@GetMapping("/zzjg/user/list")
-	@ResponseBody
-	public JSONObject zzjgUserList(Integer page, Integer limit, @RequestParam Map<String, String> params) {
-		return zzjgService.zzjgUserList(page, limit, params);
-	}
-
-	@GetMapping("/zzjg/adduser")
-	public String zzjgAddUser(String o_id, ModelMap map) {
-		map.put("o_id", o_id);
-		return "xtgl/zzgl/zzjg/pop";
-	}
-
-	@GetMapping("/zzjg/adduser/list")
-	@ResponseBody
-	public JSONObject zzjgAddUserList(Integer page, Integer limit, @RequestParam Map<String, String> params) {
-		return zzjgService.zzjgAddUserList(page, limit, params);
-	}
-
-	@PostMapping("/zzjg/user/del")
-	@ResponseBody
-	public Integer zzjgUserDel(String u_id) {
-		return zzjgService.zzjgUserDel(u_id);
-	}
-
-	@PostMapping("/zzjg/user/add")
-	@ResponseBody
-	public Integer zzjgUserAdd(String o_id, String u_ids) {
-		return zzjgService.zzjgUserAdd(o_id, u_ids);
-	}
-	
 	@GetMapping("/zwgl")
 	public String zwgl() {
 		return "xtgl/zzgl/zwgl/zwgl";
 	}
-	
+
 	@GetMapping("/zwgl/list")
 	@ResponseBody
-	public JSONObject zwglList() {
-		return zzjgService.zwglList();
+	public JSONObject zwglList(Integer page, Integer limit, @RequestParam Map<String, String> params) {
+		return zzjgService.zwglList(page, limit, params);
 	}
-	
-	@PostMapping("/zwgl/add")
+
+	@PostMapping("/zwgl/addOrUpdate")
 	@ResponseBody
-	public Integer zwglAdd(Job job) {
-		return zzjgService.zwglAdd(job);
+	public Integer zwglAddOrUpdate(Job job) {
+		return zzjgService.zwglAddOrUpdate(job);
 	}
-	
+
 	@PostMapping("/zwgl/edit")
 	@ResponseBody
 	public Integer zwglEdit(Job job) {
 		return zzjgService.zwglEdit(job);
 	}
-	
-	@GetMapping("/zwgl/user/list")
-	@ResponseBody
-	public JSONObject zwglUserList(Integer page, Integer limit, @RequestParam Map<String, String> params) {
-		return zzjgService.zwglUserList(page, limit, params);
-	}
-	
-	@PostMapping("/zwgl/user/del")
-	@ResponseBody
-	public Integer zwglUserDel(String u_id) {
-		return zzjgService.zwglUserDel(u_id);
-	}
-	
-	@GetMapping("/zwgl/adduser/list")
-	@ResponseBody
-	public JSONObject zwglAddUserList(Integer page, Integer limit, @RequestParam Map<String, String> params) {
-		return zzjgService.zwglAddUserList(page, limit, params);
-	}
-	
-	@GetMapping("/zwgl/adduser")
-	public String zwglAddUser(String j_id, ModelMap map) {
-		map.put("j_id", j_id);
-		return "xtgl/zzgl/zwgl/pop";
-	}
-	
-	@PostMapping("/zwgl/user/add")
-	@ResponseBody
-	public Integer zwglUserAdd(String j_id, String u_ids) {
-		return zzjgService.zwglUserAdd(j_id, u_ids);
-	}
-	
+
 	@PostMapping("/zwgl/del")
 	@ResponseBody
-	public Integer zwglDel(String j_id) {
-		return zzjgService.zwglDel(j_id);
+	public Integer zwglDel(Job job) {
+		return zzjgService.zwglDel(job);
+	}
+
+	@PostMapping("/zwgl/updateSort")
+	@ResponseBody
+	public Integer updateZwglSort(@RequestParam("ids") String ids) {
+		JSONArray array = JSON.parseArray(ids);
+		System.out.println(array);
+		return zzjgService.updateZwglSort(array);
 	}
 }
