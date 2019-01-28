@@ -8,7 +8,7 @@
     <style type="text/css">
         /* layui重置 */
         .layui-form { width: 600px; margin: 10px auto 0; }
-        .layui-form-item { display: flex; align-items: flex-start; }
+        .layui-form-item { display: flex; align-items: flex-start;flex-wrap:wrap;}
         .layui-form-label { width: 100px; }
         .layui-form-item .layui-inline, .layui-form-item .layui-input-block { width: 450px; }
         .layui-form-item > a { display: inline-block; height: 36px; line-height: 36px; }
@@ -33,7 +33,7 @@
         #layer-photos { display: flex; align-items: center; max-width: 500px; flex-wrap: wrap; }
         #layer-photos img { width: 70px; height: 70px; display: block; margin-right: 5px; margin-bottom: 5px; }
         .layui-btn-container{position: fixed;bottom:0;left: 0;width:100%;height:auto;background-color:#fff;border-top:1px solid #e6e6e6;padding-top:10px;}
-
+        .layui-upload-list {margin:0;width:450px;margin-left:130px;}
     </style>
 </head>
 <body>
@@ -65,13 +65,15 @@
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">上传附件：</label>
+        <label class="layui-form-label">附件：</label>
         <!--<input type="text" name='attachment_id' class="layui-hide" value="">-->
         <!--<div class="layui-inline img-up-box">-->
             <!--<button type="button" id="img_up" class="layui-btn layui-btn-primary">选择</button>-->
         <!--</div>-->
-        <button type="button" class="layui-btn layui-btn-normal" id="testList">选择文件</button>
-        <button type="button" class="layui-btn" id="testListAction">开始上传</button>
+        <div class="layui-inline">
+             <button type="button" class="layui-btn layui-btn-primary" id="testList">选择</button>
+             <button type="button" class="layui-btn layui-btn-normal" id="testListAction" style="margin-left:12px;">上传</button>
+        </div>
         <div class="layui-upload-list">
             <table class="layui-table">
                 <tbody id="demoList"></tbody>
@@ -195,7 +197,6 @@
                 }
             });
         }
-
         //多文件列表示例
         var demoListView = $('#demoList')
             ,uploadListIns = upload.render({
