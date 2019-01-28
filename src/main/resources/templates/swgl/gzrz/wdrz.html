@@ -150,18 +150,16 @@
     function add() {
         var url = "${ctx}/swgl/gzrz/addMyJournal";
         var table = layui.table;
-        var index = layer.open({
+         layer.open({
             title: '新增日志',
             type: 2,
-            area: ['620px', '400px'],
-            fixed: false, //不固定
-            maxmin: true,
+            offset: '50px',
+            area: ['1135px', '630px'],
             content: url,
             end: function () {
                 table.reload(tableId)
             }
         });
-        layer.full(index);
     }
 </script>
 </html>

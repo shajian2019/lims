@@ -7,210 +7,38 @@
     <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet"/>
     <style type="text/css">
         /* layui重置 */
-        .layui-form {
-            width: 600px;
-            margin: 10px auto 0;
-        }
-
-        .layui-form-item {
-            display: flex;
-            align-items: flex-start;
-        }
-
-        .layui-form-label {
-            width: 130px;
-        }
-
-        .layui-form-item .layui-inline, .layui-form-item .layui-input-block {
-            width: 450px;
-        }
-
-        .layui-form-item > a {
-            display: inline-block;
-            height: 36px;
-            line-height: 36px;
-        }
-
-        .layui-form-item .radio-box {
-            border: 1px solid #e6e6e6;
-        }
-
-        .layui-btn-container {
-            width: 600px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
+        .layui-form { width: 600px; margin: 10px auto 0; }
+        .layui-form-item { display: flex; align-items: flex-start; }
+        .layui-form-label { width: 100px; }
+        .layui-form-item .layui-inline, .layui-form-item .layui-input-block { width: 450px; }
+        .layui-form-item > a { display: inline-block; height: 36px; line-height: 36px; }
+        .layui-form-item .radio-box { border: 1px solid #e6e6e6; }
+        .layui-btn-container { width: 600px; margin: 0 auto; text-align: center; }
+        .layui-textarea{min-height:48px;}
         /* 自定义 */
-        div.icon-box {
-            height: 36px;
-            border: 1px solid #e6e6e6;
-            border-left: none;
-            background-color: #fff;
-            border-radius: 2px;
-        }
-
-        .icon-box .icon {
-            width: 36px;
-            height: 36px;
-            text-align: center;
-            line-height: 36px;
-            border-right: 1px solid #e6e6e6;
-            display: inline-block;
-        }
-
-        .icon-box .layui-inline-block {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .icon-box .icon-input {
-            display: inline-block;
-            border: none;
-            flex-grow: 1;
-            padding: 0 10px;
-        }
-
-        .layui-form-item {
-            margin-bottom: 10px;
-        }
-
-        .main {
-            width: 800px;
-            margin: 1% auto 0;
-        }
-
-        .img-up-box, #spr, #spr1 {
-            max-width: 500px;
-            height: auto;
-            display: flex;
-            align-items: flex-end;
-            flex-wrap: wrap;
-        }
-
-        .img-up-box .img-box {
-            position: relative;
-            display: inline-block;
-            width: 80px;
-            height: 80px;
-            border: 1px solid #e6e6e6;
-            margin-right: 8px;
-            margin-top: 8px;
-        }
-
-        .img-up-box .img-box .img-close {
-            position: absolute;
-            top: -7px;
-            right: -7px;
-            font-size: 12px;
-            color: #fff;
-            border-radius: 20px;
-            width: 16px;
-            height: 16px;
-            background-color: #000;
-            text-align: center;
-            line-height: 16px;
-        }
-
-        .img-up-box .img-box > img {
-            width: 100%;
-            height: 100%;
-        }
-
-        #img_up {
-            width: 80px;
-            height: 80px;
-            border: 1px solid #e6e6e6;
-            text-align: center;
-            line-height: 80px;
-            font-size: 28px;
-            color: #e6e6e6;
-            background-color: #fff;
-        }
-
-        #spr_add1 {
-            width: 80px;
-            height: 80px;
-            border: 1px solid #e6e6e6;
-            text-align: center;
-            line-height: 80px;
-            font-size: 28px;
-            color: #e6e6e6;
-            background-color: #fff;
-        }
-
-        #spr, #spr1 {
-            align-items: flex-start;
-        }
-
-        /*#spr_add {*/
-        /*width: 70px;*/
-        /*height: 70px;*/
-        /*line-height: 70px;*/
-        /*border-radius: 1000px;*/
-        /*}*/
-        #spr_add1 {
-            width: 70px;
-            height: 70px;
-            line-height: 70px;
-            border-radius: 1000px;
-        }
-
-        .spr-select {
-            text-align: center;
-            position: relative;
-            margin-right: 15px;
-            display: inline-block;
-        }
-
-        .spr-box {
-            color: #fff;
-            text-align: center;
-            background-color: cornflowerblue;
-            border-radius: 1000px;
-            font-size: 12px;
-            width: 70px;
-            height: 70px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .spr-close {
-            cursor: pointer;
-            position: absolute;
-            top: 0;
-            right: -7px;
-            font-size: 12px;
-            color: #fff;
-            border-radius: 20px;
-            width: 16px;
-            background-color: #000;
-            text-align: center;
-            line-height: 16px;
-        }
-
-        #layer-photos {
-            display: flex;
-            align-items: center;
-            max-width: 500px;
-            flex-wrap: wrap;
-        }
-
-        #layer-photos img {
-            width: 80px;
-            height: 80px;
-            display: block;
-            margin-right: 5px;
-            margin-bottom: 5px;
-        }
+        div.icon-box { height: 36px; border: 1px solid #e6e6e6; border-left: none; background-color: #fff; border-radius: 2px; }
+        .icon-box .icon { width: 36px; height: 36px; text-align: center; line-height: 36px; border-right: 1px solid #e6e6e6; display: inline-block; }
+        .icon-box .layui-inline-block { display: flex; align-items: center; justify-content: space-between; }
+        .icon-box .icon-input { display: inline-block; border: none; flex-grow: 1; padding: 0 10px; }
+        .layui-form-item { margin-bottom: 10px; }
+        .main { width: 800px; margin: 1% auto 0; }
+        .img-up-box, #spr, #spr1 { max-width: 500px; height: auto; display: flex; align-items: flex-end; flex-wrap: wrap; }
+        .img-up-box .img-box { position: relative; display: inline-block; width: 80px; height: 80px; border: 1px solid #e6e6e6; margin-right: 8px; margin-top: 8px; }
+        .img-up-box .img-box .img-close { position: absolute; top: -7px; right: -7px; font-size: 12px; color: #fff; border-radius: 20px; width: 16px; height: 16px; background-color: #000; text-align: center; line-height: 16px; }
+        .img-up-box .img-box > img { width: 100%; height: 100%; }
+        #spr_add{ display: flex;;align-items: center;}
+        .spr-select {text-align: center;margin-right: 15px;display: flex;align-items: center;}
+        .spr-box { color: #fff; text-align: center; background-color: cornflowerblue; border-radius: 1000px; font-size: 12px; width: 70px; height: 70px; display: flex; flex-direction: column; justify-content: center; }
+        .spr-close { cursor: pointer;font-size: 14px; color: #999;width: 16px;}
+        #layer-photos { display: flex; align-items: center; max-width: 500px; flex-wrap: wrap; }
+        #layer-photos img { width: 70px; height: 70px; display: block; margin-right: 5px; margin-bottom: 5px; }
+        .layui-btn-container{position: fixed;bottom:0;left: 0;width:100%;height:auto;background-color:#fff;border-top:1px solid #e6e6e6;padding-top:10px;}
 
     </style>
 </head>
 <body>
 
-<form class="layui-form" lay-filter="edit" style="margin: 5% auto 0;">
+<form class="layui-form" lay-filter="edit" style="margin: 5% auto 0;padding-bottom: 60px;">
     <div class="layui-form-item">
         <label class="layui-form-label">今日工作内容：</label>
         <div class="layui-inline">
@@ -231,24 +59,22 @@
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">选择附件：</label>
+        <label class="layui-form-label">上传附件：</label>
         <input type="text" name='attachment_id' class="layui-hide" value="">
         <div class="layui-inline img-up-box">
-            <button type="button" id="img_up"><i class="fa fa-plus"></i></button>
+            <button type="button" id="img_up" class="layui-btn layui-btn-primary">选择</button>
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">接收人：</label>
         <div class="layui-inline" id="spr">
-            <div id="spr_add" name="spr_add" class="layui-textarea"></div>
+            <div id="spr_add" name="spr_add" class="layui-input"></div>
         </div>
     </div>
-    <div class="layui-form-item">
         <div class="layui-btn-container">
             <a class="layui-btn  layui-btn-primary" lay-submit lay-filter="sq">保存</a>
             <a id="cancel" class="layui-btn  layui-bg-gray">取消</a>
         </div>
-    </div>
 </form>
 
 <script src="${ctx}/plugins/layui/layui.js"></script>
@@ -314,11 +140,9 @@
         $("#spr_add").click(function () {
             layer.open({
                 type: 2,
-                area: ['722px', '516px'],
+                area: ['728px', '516px'],
                 title: false,
-                fixed: false, //不固定
-                // btn:['确定','取消'],
-                // btnAlign: 'c',
+                offset: '15px',
                 content: '${ctx}/swgl/gzrz/empTree?key=journal&formkey=receiver',
                 end: function () {
                     getSprs("spr_add", "spr", "receiver");
@@ -345,8 +169,8 @@
                         var msg = "{" + ele2 + ":" + v.u_id + "}";
                         sprs.push(msg);
                         html += '<div class="spr-select">';
-                        html += '<i class="fa fa-close spr-close" data-id="' + v.u_id + '"></i>';
                         html += '<p>' + v.nickname + '</p>';
+                        html += '<i class="fa fa-close spr-close" data-id="' + v.u_id + '"></i>';
                         html += '</div>';
                     })
 
