@@ -186,8 +186,8 @@
         
         form.on('submit(search)', function (data) {
         	var param = dtree.getNowParam(dtreeObj);
-        	data.field.protype = param.nodeId;
-        	data.field.lastversion = true;
+        	console.log(param)
+        	data.field.o_id = param.nodeId
            	rightTB.reload({
                 where: data.field
             });
