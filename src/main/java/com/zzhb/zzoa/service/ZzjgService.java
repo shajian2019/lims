@@ -57,6 +57,7 @@ public class ZzjgService {
 		for (Org org : list) {
 			JSONObject orgJ = new JSONObject();
 			orgJ.put("id", org.getId());
+			orgJ.put("tId", org.getId());
 			orgJ.put("name", org.getName());
 			orgJ.put("checked", false);
 			orgJ.put("level", org.getLevel());
@@ -68,6 +69,7 @@ public class ZzjgService {
 			for (Org orgC : list) {
 				JSONObject orgCJ = new JSONObject();
 				orgCJ.put("id", orgC.getId());
+				orgCJ.put("tId", orgC.getId());
 				orgCJ.put("name", orgC.getName());
 				orgCJ.put("checked", false);
 				orgCJ.put("level", orgC.getLevel());
@@ -206,6 +208,21 @@ public class ZzjgService {
 		List<Map<String, String>> list = jobMapper.getUsers(params);
 		PageInfo<Map<String, String>> pageInfo = new PageInfo<>(list);
 		return LayUiUtil.pagination(pageInfo);
+	}
+
+	public JSONArray zwglZtreeList() {
+		List<Job> jobs = jobMapper.getJobs(null);
+		JSONArray result = new JSONArray();
+		for (Job job : jobs) {
+			JSONObject orgJ = new JSONObject();
+			orgJ.put("id", job.getId());
+			orgJ.put("name", job.getName());
+			orgJ.put("checked", false);
+			orgJ.put("parentid", "0");
+			orgJ.put("children", new JSONArray());
+			result.add(orgJ);
+		}
+		return result;
 	}
 
 	@Transactional

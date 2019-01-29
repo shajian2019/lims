@@ -16,6 +16,9 @@
 			<if test="name !=null and name !=''">
 				and j_name = #{name}
 			</if>
+			<if test="status !=null and status !=''">
+				and j_status = #{status}
+			</if>
 			<if test="likename !=null and likename !=''">
 				<bind name="_likename" value="'%'+likename+'%'"></bind>
 				and j_name like #{_likename}

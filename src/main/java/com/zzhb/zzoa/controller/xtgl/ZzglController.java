@@ -44,7 +44,7 @@ public class ZzglController {
 	public String yhgl() {
 		return "xtgl/zzgl/yhgl/yhgl";
 	}
-	
+
 	@GetMapping("/yhgl2")
 	public String yhgl2() {
 		return "xtgl/zzgl/yhgl/yhgl2";
@@ -160,6 +160,18 @@ public class ZzglController {
 	@ResponseBody
 	public JSONObject zwglList(Integer page, Integer limit, @RequestParam Map<String, String> params) {
 		return zzjgService.zwglList(page, limit, params);
+	}
+
+	@GetMapping("/zwgl/ztree/list")
+	@ResponseBody
+	public JSONArray zwglZtreeList() {
+		return zzjgService.zwglZtreeList();
+	}
+
+	@GetMapping("/zwgl/getJobSelect")
+	@ResponseBody
+	public JSONObject getJobSelect(@RequestParam Map<String, String> map) {
+		return zzjgService.zwglList(1, Integer.MAX_VALUE, map);
 	}
 
 	@PostMapping("/zwgl/addOrUpdate")

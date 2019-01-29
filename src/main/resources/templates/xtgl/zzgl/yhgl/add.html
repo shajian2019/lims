@@ -58,17 +58,15 @@
             padding: 0 10px;
         }
         input:-webkit-autofill {-webkit-box-shadow: 0 0 0px 1000px white inset !important; }  
-        #dw_box{display: flex;flex-direction: column;align-items: center;}
+        .dw_box{display: flex;flex-direction: column;align-items: center;}
         .dw-search-box{display: flex;align-items: center;}
         .dw-fn{margin-left: 9px;color: #0a8cbf;font-size: 20px;}
         .tree-box{height:260px;overflow-y: auto;}
         .ztree{width:276px;margin: 0 auto;}
         .dw-input{line-height: 32px;border: 1px solid #e6e6e6;border-radius: 4px;display: inline-block;margin: 5px auto;}
-        #dw_input{line-height: 32px;border:none;padding: 0 5px;}
+        .dw_input{line-height: 32px;border:none;padding: 0 5px;}
         .dw-input .fa-search{color: #999;margin-right: 8px;}
         .dw-btn{display: inline-block;height: 32px;line-height: 32px;width: 36px;text-align: center;border: 1px solid #e6e6e6;border-radius: 4px;margin: 0 auto;}
- 
-
     </style>
 </head>
 <body>
@@ -97,7 +95,7 @@
 	               lay-verify="sedPwd">
 	    </div>
 	</#if>
-	<label class="layui-form-label">邮箱:</label>
+	<label class="layui-form-label">电子邮箱:</label>
 	<div class="layui-inline">
 	    <input class="layui-input" type="text" name="email" value="${(echouser.email)!''}" placeholder="邮箱"
 	           lay-verify="email">
@@ -118,11 +116,17 @@
 	<div class="layui-inline">
 	    <input class="layui-input" type="text" name="phonexh" value="${(echouser.phonexh)!''}" placeholder="手机小号">
 	</div>
-	<label class="layui-form-label">角色:</label>
+	<label class="layui-form-label">用户角色:</label>
 	<div class="layui-inline">
 	    <select name="role" id="role" lay-search>
 	        	<option value=""></option>
 	    </select>
+	</div>
+	<label class="layui-form-label">职务名称:</label>
+	<div class="layui-inline">
+	    <div class="layui-input" id="zw">
+        	
+        </div>
 	</div>
 	<label class="layui-form-label">单位（科室）:</label>
 	<div class="layui-inline">   
@@ -135,177 +139,284 @@
 <div class="layui-btn-container">
     <a class="layui-btn layui-btn-sm layui-btn-primary" lay-submit lay-filter="save">保存</a>
 </div>
+
 </form>
-<div id="dw_box" style="display:none;">
+
+<div id="dw_box" class="dw_box" style="display:none;">
     <div class="dw-search-box">
         <div class="dw-input">
-                <input type="text" id="dw_input"/><i class="fa fa-search"></i>
+                <input type="text" id="dw_input" class="dw_input" placeholder="关键字"/><i class="fa fa-search"></i>
         </div>
-        <div class="dw-fn" id="dw_fn"><i class="fa fa-unsorted"></i></div>
+        <div class="dw-fn" id="dw_fn"><i class="fa fa-angle-double-up"></i></div>
     </div>
     <div class="tree-box">
             <ul id="left_tree" class="ztree"></ul>
     </div>
-    
     <a href="javascript:;" class="dw-btn" id="dw_save">保存</a>   
 </div>
+
+<div id="zw_box" class="dw_box" style="display:none;">
+    <div class="dw-search-box">
+        <div class="dw-input">
+               <input type="text" id="zw_input" class="dw_input" placeholder="关键字"/><i class="fa fa-search"></i>
+        </div>
+        <div class="dw-fn" id="zw_fn"><i class="fa fa-angle-double-up"></i></div>
+    </div>
+    <div class="tree-box">
+            <ul id="left_tree_zw" class="ztree"></ul>
+    </div>
+    <a href="javascript:;" class="dw-btn" id="zw_save">保存</a>   
+</div>
+
+<script type="text/html" id="dw_demo">
+	{{# layui.each(d, function(index, item){ }}
+		<span data-id="{{item.id}}">{{item.name}}<i class="fa fa-times"></i></span>
+	{{# }); }} 
+</script>
 <script src="${ctx}/plugins/ztree/js/jquery-1.4.4.min.js"></script>
 <script src="${ctx}/plugins/ztree/js/jquery.ztree.all.js"></script>
 <script src="${ctx}/plugins/ztree/js/jquery.ztree.exhide.js"></script>
 <script src="${ctx}/plugins/ztree/js/fuzzysearch.js"></script>
-<script></script>
 <script src="${ctx}/plugins/layui/layui.js"></script>
 
 <script type="text/javascript">
-   var table=null,upload=null,form=null,dtree=null,layer=null,dtreeID=null,tbID=null,index = null,dtreeObj;
-    layui.use(['form', 'layer'], function () {
-         form = layui.form,
-         dtree = layui.dtree,
-         layer = layui.layer,
-        $("#dw").click(function(){
-           var dwPop=layer.open({
-                title: '单位（科室）',
-                type: 1,
-                area: ['314px', '400px'],
-                maxmin: true,
-                content:$("#dw_box"),
-                success:function(layero,index){
-                    $("#dw_save").click(function (e) { 
-                        var name=[];
-                        saveDate(zTreeObj,name);
-                        layer.close(dwPop);         
-                    });
-                }
-            });
-        })
-    	var index = 
-        form.verify({
-            onlyUname: function (value) {
-                if (value == '') {
-                    return '请输入用户账号';
-                } else {
-                    var message = '';
-                    $.ajax({
-                        url: '${ctx}/xtgl/zzgl/yhgl/getUserByName?username=' + value,
-                        type: 'post',
-                        async: false,
-                        success: function (data) {
-                            if (data > 0) {
-                                message = '该用户名已存在';
-                            }
-                        },
-                    })
-                    return message;
-                }
-            },
-            sedPwd: function (value) {
-                if (value != $("#password").val()) {
-                    $("#passwordCheck").val("");
-                    return '确认密码与密码不一致';
-                }
-            }
-        });
-	       
-        //下拉框
-        $.ajax({
-            url: '${ctx}/xtgl/zzgl/yhgl/getRoleSelect?status=1',
-            dataType: 'json',
-            type: 'get',
-            success: function (data) {
-                $.each(data.data, function (index, item) {
-                    $('#role').append(new Option(item.rolename, item.r_id));// 下拉菜单里添加元素
-                });
-                if ('${(echouser.r_id)!''}' != ''){
-                    $("#role").val('${(echor_id)!''}');
-                }
-                layui.form.render("select");
-            }
-        })
+var expandFlag =true;
+var expandFlag2 =true;
 
-        form.on('submit(save)', function (data) {
-            var url = "${ctx}/xtgl/zzgl/yhgl/addUser";
-            data.field.flag = '${map.flag}';
-            data.field.u_id = '${(echouser.u_id)!''}';
-            var index;
-            $.ajax({
-                type: "POST",
-                data: data.field,
-                url: url,
-                beforeSend: function () {
-                    index = layer.load(1);
-                },
-                success: function (data) {
-                    layer.close(index);
-                    if (data > 0) {
-                        var msg = "保存成功";
-                        layer.msg(msg, {offset: ['50%'], time: 1000}, function () {
-                            index = parent.layer.getFrameIndex(window.name);
-                            parent.layer.close(index);
-                        });
-                    } else {
-                        layer.msg("操作失败")
-                    }
-                },
-                error: function (data) {
-                    layer.msg("服务端异常");
-                }
-            });
-            return false;
-        });
+var setting = {
+		check: {
+			enable: true,
+			autoCheckTrigger: true
+		},
+		callback:{
+			onClick:function(event, treeId, treeNode){
+				zTreeObj.expandNode(treeNode, !treeNode.open, true, false);
+			}
+		}
+};
+var setting2 = {
+		check: {
+			enable: true,
+			autoCheckTrigger: true
+		}
+};
 
-        //取消
-        $("#cancel").click(function () {
-            var index = parent.layer.getFrameIndex(window.name);
-            parent.layer.close(index);
-        })
-    })
-</script>
-<script>
-        var zTreeObj;
-        var  expandFlag = false;
-        // zTree 的参数配置，深入使用请参考 API 文档（setting 配置详解）
-        var setting = {
-                check:{
-                   autoCheckTrigger : true,
-                   chkboxType:{"Y":"ps","N":"ps"} ,
-                   chkStyle : "checkbox",
-                   enable : true,
-                   nocheckInherit : false,
-                   chkDisabledInherit : false,
-                   radioType : "level"
-                }
-        };
-        // zTree 的数据属性，深入使用请参考 API 文档（zTreeNode 节点数据详解）
-        var zNodes = [
-        {name:"test1", open:true,checked:true, children:[
-            {name:"test1_1",dwid:"123",checked:true,}, {name:"test1_2",dwid:"123",checked:true}]},
-        {name:"test2", open:true,dwid:"123",checked:true, children:[
-            {name:"test2_1",dwid:"123",checked:true}, {name:"test2_2",dwid:"123",checked:true}]}
-        ];
-
-        $(document).ready(function(){
-	            zTreeObj = $.fn.zTree.init($("#left_tree"), setting, zNodes);
-	            fuzzySearch ("left_tree","#dw_input",false,true);
- 	             $("#dw_fn").click(function (e) { 
-	            	zTreeObj.expandAll(expandFlag);
-	            	expandFlag = !expandFlag;
-	            });
-        });
-//获取选中子节点数据
-function filter(node) {
-    return ((node.check_Child_State<0)===true);
-}
-//保存数据
-function saveDate(tree,arr){
-    var obj={}
-    var nodes = tree.getCheckedNodes(true);
-    var node =  tree.getNodesByFilter(filter);
-    $.each(node, function (i, v) { 
-         obj.name=v.name;
-         obj.dwid=v.dwid;
-         arr.push(obj)
+var zTreeObj,zTreeObj2;
+var table=null,form=null,layer=null,tbID=null,index = null,laytpl= null;
+$(document).ready(function(){
+	//init 组织关系树
+	$.ajax({
+	       type: "get",
+	       url: "${ctx}/xtgl/zzgl/zzjg/ztree/list",
+	       success: function (data) {
+	           zTreeObj = $.fn.zTree.init($("#left_tree"), setting, data);
+	    	   fuzzySearch ("left_tree","#dw_input",false,true);
+	       }
+	});
+	//init 职位关系树
+	$.ajax({
+	       type: "get",
+	       url: "${ctx}/xtgl/zzgl/zwgl/ztree/list",
+	       success: function (data) {
+	           zTreeObj2 = $.fn.zTree.init($("#left_tree_zw"), setting2, data);
+	    	   fuzzySearch ("left_tree_zw","#zw_input",false,true);
+	       }
+	});
+	
+	
+    $("#dw_fn").click(function (e) { 
+    	zTreeObj.expandAll(expandFlag);
+    	if(expandFlag){
+        	$("#dw_fn .fa").attr("class","fa fa-angle-double-down");
+        }else{
+        	$("#dw_fn .fa").attr("class","fa fa-angle-double-up");
+        }
+    	expandFlag = !expandFlag;
     });
-    return arr;
+    
+    $("#zw_fn").click(function (e) { 
+    	zTreeObj2.expandAll(expandFlag2);
+    	if(expandFlag2){
+        	$("#zw_fn .fa").attr("class","fa fa-angle-double-down");
+        }else{
+        	$("#zw_fn .fa").attr("class","fa fa-angle-double-up");
+        }
+    	expandFlag2 = !expandFlag2;
+    });
+      
+     layui.use(['form', 'layer','jquery','laytpl'], function () {
+          form = layui.form,
+          layer = layui.layer,
+          laytpl = layui.laytpl;
+    	  var $ = layui.jquery;
+          
+          $.ajax({
+              url: '${ctx}/xtgl/zzgl/yhgl/getRoleSelect?status=1',
+              dataType: 'json',
+              type: 'get',
+              success: function (data) {
+                  $.each(data.data, function (index, item) {
+                      $('#role').append(new Option(item.rolename, item.r_id));// 下拉菜单里添加元素
+                  });
+                  if ('${(echouser.r_id)!''}' != ''){
+                      $("#role").val('${(echor_id)!''}');
+                  }
+                  form.render("select");
+              }
+         })
+         
+         $.ajax({
+              url: '${ctx}/xtgl/zzgl/zwgl/getJobSelect?status=1',
+              dataType: 'json',
+              type: 'get',
+              success: function (data) {
+                  $.each(data.data, function (index, item) {
+                      $('#job').append(new Option(item.name, item.id));// 下拉菜单里添加元素
+                  });
+                  form.render("select");
+              }
+         })
+          
+         $("#dw").click(function(){
+            index =layer.open({
+                 title: '单位（科室）',
+                 type: 1,
+                 area: ['314px', '400px'],
+                 maxmin: true,
+                 content:$("#dw_box"),
+                 success:function(layero,index){
+                 }
+             });
+         })
+         
+         $("#zw").click(function(){
+            index =layer.open({
+                 title: '职务',
+                 type: 1,
+                 area: ['314px', '400px'],
+                 maxmin: true,
+                 content:$("#zw_box"),
+                 success:function(layero,index){
+                 }
+             });
+         })
+         
+         $("#dw").on('click','.fa',function(e){
+			e.stopPropagation(); 
+			var id = $(this).parent().attr("data-id")
+			var node = zTreeObj.getNodeByParam("id", id, null);
+			zTreeObj.checkNode(node,false,false,false)
+			$(this).parent().remove();
+		 });
+          
+         $("#zw").on('click','.fa',function(e){
+			e.stopPropagation(); 
+			var id = $(this).parent().attr("data-id")
+			var node = zTreeObj2.getNodeByParam("id", id, null);
+			zTreeObj2.checkNode(node,false,false,false)
+			$(this).parent().remove();
+		 });
+         
+         $("#dw_save").click(function(){
+        	 var nodes = zTreeObj.getCheckedNodes(true);
+        	 saveDate(nodes,'dw',true);
+        	 layer.close(index)
+         })
+         
+         $("#zw_save").click(function(){
+        	 var nodes = zTreeObj2.getCheckedNodes(true);
+        	 saveDate(nodes,'zw',false);
+        	 layer.close(index)
+         })
+         
+         form.verify({
+             onlyUname: function (value) {
+                 if (value == '') {
+                     return '请输入用户账号';
+                 } else {
+                     var message = '';
+                     $.ajax({
+                         url: '${ctx}/xtgl/zzgl/yhgl/getUserByName?username=' + value,
+                         type: 'post',
+                         async: false,
+                         success: function (data) {
+                             if (data > 0) {
+                                 message = '该用户名已存在';
+                             }
+                         },
+                     })
+                     return message;
+                 }
+             },
+             sedPwd: function (value) {
+                 if (value != $("#password").val()) {
+                     $("#passwordCheck").val("");
+                     return '确认密码与密码不一致';
+                 }
+             }
+         });
+ 	       
+         form.on('submit(save)', function (data) {
+             var url = "${ctx}/xtgl/zzgl/yhgl/addUser";
+             data.field.flag = '${map.flag}';
+             data.field.u_id = '${(echouser.u_id)!''}';
+             var index;
+             $.ajax({
+                 type: "POST",
+                 data: data.field,
+                 url: url,
+                 beforeSend: function () {
+                     index = layer.load(1);
+                 },
+                 success: function (data) {
+                     layer.close(index);
+                     if (data > 0) {
+                         var msg = "保存成功";
+                         layer.msg(msg, {offset: ['50%'], time: 1000}, function () {
+                             index = parent.layer.getFrameIndex(window.name);
+                             parent.layer.close(index);
+                         });
+                     } else {
+                         layer.msg("操作失败")
+                     }
+                 },
+                 error: function (data) {
+                     layer.msg("服务端异常");
+                 }
+             });
+             return false;
+         });
+     })
+});
+
+//保存数据
+function saveDate(node,id,flag){
+	var data = [];
+	$.each(node, function (i, v) { 
+		var obj = {};
+		if(v.isParent && flag){
+			if(v.children.length == 0){
+				obj.id = v.id;
+				obj.name = v.name;
+				data.push(obj);
+			}
+		}else{
+			obj.id = v.id;
+			obj.name = v.name;
+			data.push(obj);
+		}
+    })
+    console.log(data)
+    dwCallback(data,id)
+}
+
+function dwCallback(data,id) { 
+	var getTpl=dw_demo.innerHTML,view=document.getElementById(id);
+	$.each(data, function (i, v) {
+		laytpl(getTpl).render(data, function (html) {
+			view.innerHTML = html;
+		})
+	})
 }
 </script>
 </body>
