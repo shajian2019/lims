@@ -21,7 +21,7 @@ public interface UserMapper {
 	@Update("UPDATE sys_t_user SET recentlogin = now() WHERE u_id = #{u_id}")
 	public Integer updateRecentlogin(User user);
 
-	public List<Map<String, String>> getAllUsers(Map<String, String> params);
+	public List<Map<String, String>> getAllUsers(Map<String, Object> params);
 
 	@Delete("DELETE FROM sys_t_user where u_id = #{0}")
 	public Integer delUser(String u_id);

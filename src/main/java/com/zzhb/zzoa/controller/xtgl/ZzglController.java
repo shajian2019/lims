@@ -52,7 +52,7 @@ public class ZzglController {
 
 	@GetMapping("/yhgl/getAllUsers")
 	@ResponseBody
-	public JSONObject getAllUsers(Integer page, Integer limit, @RequestParam Map<String, String> params) {
+	public JSONObject getAllUsers(Integer page, Integer limit, @RequestParam Map<String, Object> params) {
 		return userService.getAllUsers(page, limit, params);
 	}
 

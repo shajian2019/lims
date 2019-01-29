@@ -18,6 +18,12 @@
           <if test="o_id != null and o_id != ''">
               AND org.o_id = #{o_id}
           </if>
+          <if test="o_ids !=null and o_ids.size() != 0">
+				and org.o_id in 
+				<foreach collection="o_ids" item="o_id" open="(" separator="," close=")">
+           			#{o_id}
+        		</foreach>
+		  </if>
           <if test="username != null and username != ''">
               <bind name="_username" value="'%'+username+'%'"/>
               AND u.username like #{_username}

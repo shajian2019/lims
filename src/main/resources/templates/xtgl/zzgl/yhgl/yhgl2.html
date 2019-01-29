@@ -34,10 +34,6 @@
 #pop{margin: 12px auto 0;}
 #pop .layui-form-item{display: flex;align-items: center;}
 #pop .layui-form-item>.layui-inline{width: 320px;}
-.lcdyImg{
-	display:block;
-	width:100%;
-}
 #lc_upload_btn{margin: 0 auto;display: block;}
 .inner{
    		text-align: center;
@@ -52,7 +48,7 @@
             <div id="dw_box">
                 <div class="dw-search-box">
                     <div class="dw-input">
-                            <input type="text" id="dw_input"/><i class="fa fa-search"></i>
+                          <input type="text" id="dw_input" placeholder="关键字"/><i class="fa fa-search"></i>
                     </div>
                     <div class="dw-fn" id="dw_fn"><i class="fa fa-unsorted"></i></div>
                 </div>
@@ -101,11 +97,19 @@
 <script src="${ctx}/plugins/ztree/js/jquery.ztree.exhide.js"></script>
 <script src="${ctx}/plugins/ztree/js/fuzzysearch.js"></script>
 <script type="text/javascript">
+var table=null,form=null,layer=null,tbID=null,index = null;
 var zTreeObj;
 var expandFlag =true;
-var setting = {};
-var table=null,form=null,dtree=null,layer=null,dtreeID=null,tbID=null,index = null,dtreeObj = null;
+var setting = {
+		callback:{
+			onClick:function(event, treeId, treeNode){
+				zTreeObj.expandNode(treeNode, !treeNode.open, true, false);
+				initRightTable(treeNode);
+			}
+		}
+};
 $(document).ready(function(){
+	
 	$.ajax({
        type: "get",
        url: "${ctx}/xtgl/zzgl/zzjg/ztree/list",
@@ -201,6 +205,23 @@ $(document).ready(function(){
         });
     })
 });
+
+function initRightTable(treeNode){
+	console.log(treeNode)
+	var o_idArray = [];
+	if(treeNode.isParent){
+		$.each(treeNode.children,function(i,v){
+			o_idArray.push(v.id)
+		})
+	}
+	o_idArray.push(treeNode.id)
+	var o_ids = o_idArray.join(",")
+	console.log(o_ids)
+	table.reload(tbID,{
+		where:{o_ids:o_ids}
+	})
+	
+}
 function add() {
    	var url = "${ctx}/xtgl/zzgl/yhgl/editPage?flag=add&o_id=";
        var index = layer.open({

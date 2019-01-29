@@ -1,5 +1,6 @@
 package com.zzhb.zzoa.service;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +42,11 @@ public class UserService {
 		return userMapper.getUser(username);
 	}
 
-	public JSONObject getAllUsers(Integer page, Integer limit, Map<String, String> params) {
+	public JSONObject getAllUsers(Integer page, Integer limit, Map<String, Object> params) {
+		Object object = params.get("o_ids");
+		if (object != null && !"".equals(object)) {
+			params.put("o_ids", Arrays.asList(object.toString().split(",")));
+		}
 		PageHelper.startPage(page, limit);
 		List<Map<String, String>> userList = userMapper.getAllUsers(params);
 		PageInfo<Map<String, String>> pageInfo = new PageInfo<Map<String, String>>(userList);
