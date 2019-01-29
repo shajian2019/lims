@@ -45,11 +45,6 @@ public class ZzglController {
 		return "xtgl/zzgl/yhgl/yhgl";
 	}
 
-	@GetMapping("/yhgl2")
-	public String yhgl2() {
-		return "xtgl/zzgl/yhgl/yhgl2";
-	}
-
 	@GetMapping("/yhgl/getAllUsers")
 	@ResponseBody
 	public JSONObject getAllUsers(Integer page, Integer limit, @RequestParam Map<String, Object> params) {
