@@ -38,7 +38,7 @@
             <!--<input class="layui-input" type="text" placeholder="提交人" name="car_model" id="car_model">-->
         <!--</div>-->
         <div class="layui-inline">
-            <input class="layui-input" type="text" placeholder="提交人" name="username" id="username">
+            <input class="layui-input" type="text" placeholder="提交时间" name="submit_time" id="submit_time">
         </div>
 
         <div class="layui-inline">
@@ -55,20 +55,20 @@
 </body>
 <script type="text/html" id="rightBar">
     <div class="layui-btn-group">
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">
-            <i class="fa fa-pencil"></i>
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">
+            <i class="fa fa-file-text-o"></i>
         </a>
-        {{# if(d.username != 'superadmin' ) { }}
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del">
-            <i class="fa fa-trash-o"></i>
-        </a>
-        {{# } }}
     </div>
 </script>
 
 <script>
     var editObj = null, ptable = null, treeGrid = null, tableId = 'dataTable', layer = null, form = null,$=null;
-    layui.use('table', function () {
+    layui.use(['table','laydate'], function () {
+        var laydate = layui.laydate;
+        laydate.render({
+            elem: '#submit_time'
+        });
+
         var table = layui.table;
         $=layui.jquery;
         form = layui.form;
@@ -82,13 +82,15 @@
             , cols: [[
                 {field: '序号',width:50,fixed:'left',type:'numbers',title:'序号'}
                 ,{field: 'today_work_content', title: '当日工作内容'}
+                ,{field: 'unfinished_work', title: '未完成工作'}
+                ,{field: 'coordinated_work', width: 140, title: '需协调工作'}
                 , {field: 'submit_time', width: 150, title: '提交时间'}
-                , {field: 'attachment_id', width: 140, title: '附件'}
-                ,{field: 'receiverName', width: 140, title: '接收人'}
-                // ,{
-                //     title: '操作', align: 'center',width: 170,
-                //     toolbar: '#rightBar'
-                // }
+                // , {field: 'attachment_id', width: 140, title: '附件'}
+
+                ,{
+                    title: '操作', align: 'center',width: 170,
+                    toolbar: '#rightBar'
+                }
             ]]
         });
 
@@ -98,12 +100,11 @@
             console.log(data);
             var action = obj.event;
             if (action == 'del') {
-                layer.confirm('确定删除该日志信息吗?', function (index) {
                     var index;
                     $.ajax({
                         type: "post",
-                        data: {c_id: data.c_id},
-                        url: "${ctx}/swgl/clgl/delCar",
+                        data: {j_id: data.j_id},
+                        url: "${ctx}/",
                         beforeSend: function () {
                             index = layer.load(1);
                         },
@@ -121,9 +122,14 @@
                             layer.msg("服务端异常");
                         }
                     });
-                })
-            } else if(action == 'edit'){
-                var url = "${ctx}/swgl/clgl/editCarPage?flag=edit&c_id=" + data.c_id;
+
+            } else if(action == 'detail'){
+                var url = "${ctx}/swgl/gzrz/journalDetail?flag=${flag}&j_id="+data.j_id
+                    +"&submit_time="+data.submit_time
+                    +"&today_work_content="+data.today_work_content
+                    +"&unfinished_work="+data.unfinished_work
+                    +"&coordinated_work="+data.coordinated_work
+                    +"&uniqueid="+data.uniqueid;
                 var index = layer.open({
                     title:action,
                     type: 2,

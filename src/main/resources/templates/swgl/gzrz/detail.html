@@ -7,33 +7,185 @@
     <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet"/>
     <style type="text/css">
         /* layui重置 */
-        .layui-form { width: 600px; margin: 10px auto 0; }
-        .layui-form-item { display: flex; align-items: flex-start;flex-wrap:wrap;}
-        .layui-form-label { width: 100px; }
-        .layui-form-item .layui-inline, .layui-form-item .layui-input-block { width: 450px; }
-        .layui-form-item > a { display: inline-block; height: 36px; line-height: 36px; }
-        .layui-form-item .radio-box { border: 1px solid #e6e6e6; }
-        .layui-btn-container { width: 600px; margin: 0 auto; text-align: center; }
-        .layui-textarea{min-height:48px;}
+        .layui-form {
+            width: 600px;
+            margin: 10px auto 0;
+        }
+
+        .layui-form-item {
+            display: flex;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .layui-form-label {
+            width: 100px;
+        }
+
+        .layui-form-item .layui-inline, .layui-form-item .layui-input-block {
+            width: 450px;
+        }
+
+        .layui-form-item > a {
+            display: inline-block;
+            height: 36px;
+            line-height: 36px;
+        }
+
+        .layui-form-item .radio-box {
+            border: 1px solid #e6e6e6;
+        }
+
+        .layui-btn-container {
+            width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .layui-textarea {
+            min-height: 48px;
+        }
+
         /* 自定义 */
-        div.icon-box { height: 36px; border: 1px solid #e6e6e6; border-left: none; background-color: #fff; border-radius: 2px; }
-        .icon-box .icon { width: 36px; height: 36px; text-align: center; line-height: 36px; border-right: 1px solid #e6e6e6; display: inline-block; }
-        .icon-box .layui-inline-block { display: flex; align-items: center; justify-content: space-between; }
-        .icon-box .icon-input { display: inline-block; border: none; flex-grow: 1; padding: 0 10px; }
-        .layui-form-item { margin-bottom: 10px; }
-        .main { width: 800px; margin: 1% auto 0; }
-        .img-up-box, #spr, #spr1 { max-width: 500px; height: auto; display: flex; align-items: flex-end; flex-wrap: wrap; }
-        .img-up-box .img-box { position: relative; display: inline-block; width: 80px; height: 80px; border: 1px solid #e6e6e6; margin-right: 8px; margin-top: 8px; }
-        .img-up-box .img-box .img-close { position: absolute; top: -7px; right: -7px; font-size: 12px; color: #fff; border-radius: 20px; width: 16px; height: 16px; background-color: #000; text-align: center; line-height: 16px; }
-        .img-up-box .img-box > img { width: 100%; height: 100%; }
-        #spr_add{ display: flex;;align-items: center;}
-        .spr-select {text-align: center;margin-right: 15px;display: flex;align-items: center;}
-        .spr-box { color: #fff; text-align: center; background-color: cornflowerblue; border-radius: 1000px; font-size: 12px; width: 70px; height: 70px; display: flex; flex-direction: column; justify-content: center; }
-        .spr-close { cursor: pointer;font-size: 14px; color: #999;width: 16px;}
-        #layer-photos { display: flex; align-items: center; max-width: 500px; flex-wrap: wrap; }
-        #layer-photos img { width: 70px; height: 70px; display: block; margin-right: 5px; margin-bottom: 5px; }
-        .layui-btn-container{position: fixed;bottom:0;left: 0;width:100%;height:auto;background-color:#fff;border-top:1px solid #e6e6e6;padding-top:10px;}
-        .layui-upload-list {margin:0;width:450px;margin-left:130px;}
+        div.icon-box {
+            height: 36px;
+            border: 1px solid #e6e6e6;
+            border-left: none;
+            background-color: #fff;
+            border-radius: 2px;
+        }
+
+        .icon-box .icon {
+            width: 36px;
+            height: 36px;
+            text-align: center;
+            line-height: 36px;
+            border-right: 1px solid #e6e6e6;
+            display: inline-block;
+        }
+
+        .icon-box .layui-inline-block {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .icon-box .icon-input {
+            display: inline-block;
+            border: none;
+            flex-grow: 1;
+            padding: 0 10px;
+        }
+
+        .layui-form-item {
+            margin-bottom: 10px;
+        }
+
+        .main {
+            width: 800px;
+            margin: 1% auto 0;
+        }
+
+        .img-up-box, #spr, #spr1 {
+            max-width: 500px;
+            height: auto;
+            display: flex;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .img-up-box .img-box {
+            position: relative;
+            display: inline-block;
+            width: 80px;
+            height: 80px;
+            border: 1px solid #e6e6e6;
+            margin-right: 8px;
+            margin-top: 8px;
+        }
+
+        .img-up-box .img-box .img-close {
+            position: absolute;
+            top: -7px;
+            right: -7px;
+            font-size: 12px;
+            color: #fff;
+            border-radius: 20px;
+            width: 16px;
+            height: 16px;
+            background-color: #000;
+            text-align: center;
+            line-height: 16px;
+        }
+
+        .img-up-box .img-box > img {
+            width: 100%;
+            height: 100%;
+        }
+
+        #spr_add {
+            display: flex;;
+            align-items: center;
+        }
+
+        .spr-select {
+            text-align: center;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .spr-box {
+            color: #fff;
+            text-align: center;
+            background-color: cornflowerblue;
+            border-radius: 1000px;
+            font-size: 12px;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .spr-close {
+            cursor: pointer;
+            font-size: 14px;
+            color: #999;
+            width: 16px;
+        }
+
+        #layer-photos {
+            display: flex;
+            align-items: center;
+            max-width: 500px;
+            flex-wrap: wrap;
+        }
+
+        #layer-photos img {
+            width: 70px;
+            height: 70px;
+            display: block;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+
+        .layui-btn-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: auto;
+            background-color: #fff;
+            border-top: 1px solid #e6e6e6;
+            padding-top: 10px;
+        }
+
+        .layui-upload-list {
+            margin: 0;
+            width: 450px;
+            margin-left: 130px;
+        }
     </style>
 </head>
 <body>
@@ -43,32 +195,52 @@
         <label class="layui-form-label">今日工作内容：</label>
         <div class="layui-inline">
             <textarea name="today_work_content" placeholder="请输入内容" class="layui-textarea"
-                      lay-verify="required"></textarea>
+                      readonly="true" value="">${(params.today_work_content)!''}</textarea>
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">未完成工作：</label>
         <div class="layui-inline">
-            <textarea name="unfinished_work" placeholder="请输入内容" class="layui-textarea"></textarea>
+            <textarea readonly="true" name="unfinished_work" placeholder="请输入内容" class="layui-textarea" value="">${(params.unfinished_work)!''}</textarea>
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">需协调工作：</label>
         <div class="layui-inline">
-            <textarea name="coordinated_work" placeholder="请输入内容" class="layui-textarea"></textarea>
+            <textarea readonly="true" name="coordinated_work" placeholder="请输入内容" class="layui-textarea" value="">${(params.coordinated_work)!''}</textarea>
         </div>
     </div>
-    <!--<div class="layui-form-item">-->
-        <!--<label class="layui-form-label">接收人：</label>-->
-        <!--<div class="layui-inline" id="spr">-->
-            <!--<div id="spr_add" name="spr_add" class="layui-input"></div>-->
-        <!--</div>-->
-    <!--</div>-->
+    <#if params.flag == 'wdrz'>
+    <div class="layui-form-item">
+        <label class="layui-form-label">接收人：</label>
+        <div class="layui-inline">
+            <input name="receiver" readonly="true" id="receiver" placeholder="接收人" class="layui-input"
+                   type="text" value="${(params.receiver)!''}"/>
+        </div>
+    </div>
+    </#if>
+    <#if params.flag == 'qjrz'>
+    <div class="layui-form-item">
+        <label class="layui-form-label">提交人：</label>
+        <div class="layui-inline">
+            <input name="submitter" readonly="true" id="submitter" placeholder="提交人" class="layui-input"
+                   type="text" value="${(params.submitter)!''}"/>
+        </div>
+    </div>
+    </#if>
+    <div class="layui-form-item">
+    <label class="layui-form-label">提交时间：</label>
+    <div class="layui-inline">
+        <input name="submit_time" readonly="true" id="submit_time" placeholder="提交时间" class="layui-input"
+               type="text" value="${(params.submit_time)!''}"/>
+    </div>
+</div>
     <div class="layui-form-item">
         <label class="layui-form-label">附件：</label>
         <div class="layui-inline">
-             <button type="button" class="layui-btn layui-btn-primary" id="testList">选择</button>
-             <button type="button" class="layui-btn layui-btn-normal" id="testListAction" style="margin-left:12px;">上传</button>
+            <!--<button type="button" class="layui-btn layui-btn-primary" id="testList">选择</button>-->
+            <!--<button type="button" class="layui-btn layui-btn-normal" id="testListAction" style="margin-left:12px;">上传-->
+            </button>
         </div>
         <div class="layui-upload-list">
             <table class="layui-table">
@@ -77,16 +249,16 @@
         </div>
 
     </div>
-        <div class="layui-btn-container">
-            <a class="layui-btn  layui-btn-primary" lay-submit lay-filter="sq" id="">保存</a>
-        </div>
+    <div class="layui-btn-container">
+        <a class="layui-btn  layui-btn-primary" lay-submit lay-filter="" id="cancel">关闭</a>
+    </div>
 </form>
 
 <script src="${ctx}/plugins/layui/layui.js"></script>
 <script type="text/javascript">
     var $ = layui.jquery, treeSelect = layui.treeSelect, form = layui.form, layer = layui.layer, upload = layui.upload;
     var sprs = [];
-    var attachs =[];
+    var attachs = [];
     layui.config({
         base: '${ctx}/plugins/layui/extend/dtree/'
     }).extend({
@@ -98,38 +270,38 @@
         var $ = layui.jquery
         var dtree = layui.dtree;
         var form = layui.form
-        getSprs("spr_add","spr","receiver");
+        getSprs("spr_add", "spr", "receiver");
 
         //上传附件
         var demoListView = $('#demoList')
-            ,uploadListIns = upload.render({
+            , uploadListIns = upload.render({
             elem: '#testList'
-            ,url: '${ctx}/file/ajax/upload_file'
-            ,accept: 'file'
-            ,multiple: true
-            ,auto: false
-            ,bindAction: '#testListAction'
-            ,choose: function(obj){
+            , url: '${ctx}/file/ajax/upload_file'
+            , accept: 'file'
+            , multiple: true
+            , auto: false
+            , bindAction: '#testListAction'
+            , choose: function (obj) {
                 var files = this.files = obj.pushFile(); //将每次选择的文件追加到文件队列
                 //读取本地文件
-                obj.preview(function(index, file, result){
-                    var tr = $(['<tr id="upload-'+ index +'">'
-                        ,'<td>'+ file.name +'</td>'
-                        ,'<td>'+ (file.size/1014).toFixed(1) +'kb</td>'
-                        ,'<td>等待上传</td>'
-                        ,'<td>'
-                        ,'<button class="layui-btn layui-btn-xs demo-reload layui-hide">重传</button>'
-                        ,'<button class="layui-btn layui-btn-xs layui-btn-danger demo-delete">删除</button>'
-                        ,'</td>'
-                        ,'</tr>'].join(''));
+                obj.preview(function (index, file, result) {
+                    var tr = $(['<tr id="upload-' + index + '">'
+                        , '<td>' + file.name + '</td>'
+                        , '<td>' + (file.size / 1014).toFixed(1) + 'kb</td>'
+                        , '<td>等待上传</td>'
+                        , '<td>'
+                        , '<button class="layui-btn layui-btn-xs demo-reload layui-hide">重传</button>'
+                        , '<button class="layui-btn layui-btn-xs layui-btn-danger demo-delete">删除</button>'
+                        , '</td>'
+                        , '</tr>'].join(''));
 
                     //单个重传
-                    tr.find('.demo-reload').on('click', function(){
+                    tr.find('.demo-reload').on('click', function () {
                         obj.upload(index, file);
                     });
 
                     //删除
-                    tr.find('.demo-delete').on('click', function(){
+                    tr.find('.demo-delete').on('click', function () {
                         delete files[index]; //删除对应的文件
                         tr.remove();
                         uploadListIns.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
@@ -138,20 +310,20 @@
                     demoListView.append(tr);
                 });
             }
-            ,done: function(res, index, upload){
-                if(res.result == 1){ //上传成功
-                    attachs.push(res.uuid+",");
-                    var tr = demoListView.find('tr#upload-'+ index)
-                        ,tds = tr.children();
+            , done: function (res, index, upload) {
+                if (res.result == 1) { //上传成功
+                    attachs.push(res.uuid + ",");
+                    var tr = demoListView.find('tr#upload-' + index)
+                        , tds = tr.children();
                     tds.eq(2).html('<span style="color: #5FB878;">上传成功</span>');
                     tds.eq(3).html(''); //清空操作
                     return delete this.files[index]; //删除文件队列已经上传成功的文件
                 }
                 this.error(index, upload);
             }
-            ,error: function(index, upload){
-                var tr = demoListView.find('tr#upload-'+ index)
-                    ,tds = tr.children();
+            , error: function (index, upload) {
+                var tr = demoListView.find('tr#upload-' + index)
+                    , tds = tr.children();
                 tds.eq(2).html('<span style="color: #FF5722;">上传失败</span>');
                 // tds.eq(3).find('.demo-reload').removeClass('layui-hide'); //显示重传
             }
@@ -159,8 +331,8 @@
 
         form.on('submit(sq)', function (data) {
             sprs.push(1);
-            if(attachs.length <= 0){
-                layer.confirm("确定不上传附件吗？",function () {
+            if (attachs.length <= 0) {
+                layer.confirm("确定不上传附件吗？", function () {
                     //保存表单
                     if (sprs.length > 0) {
                         data.field.receiver = sprs.join(",");
@@ -196,11 +368,11 @@
                         layer.msg("请选择人员", {offset: ['50%'], time: 2000});
                     }
                 })
-            }else{
+            } else {
                 if (sprs.length > 0) {
                     data.field.receiver = sprs.join(",")
                     data.field.submitter = "${user.u_id}";
-                    data.field.attachment_id=attachs.join(",");
+                    data.field.attachment_id = attachs.join(",");
                     console.log(data.field)
                     $.ajax({
                         type: "post",
@@ -301,6 +473,8 @@
                 this.splice(index, 1);
             }
         };
+
+
 
     })
 </script>

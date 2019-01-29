@@ -49,4 +49,7 @@ public interface UserMapper {
 	public void delUserProcdef(@Param("p_id") String p_id, @Param("u_id") String u_id);
 
 	public Integer addUserProcdef(Map<String, Object> params);
+
+//	@Select("select username from sys_t_user where u_id in #{u_ids}")
+	public List<String> getUsernames(Map<String,List<String>> u_ids);
 }

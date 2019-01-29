@@ -160,4 +160,14 @@
 			</if>
 		</where>
 	</delete>
+    <select id="getUsernames" parameterType="java.util.Map" resultType="java.lang.String">
+    	SELECT username FROM sys_t_user
+		<where>
+            and u_id in
+            <foreach collection="u_ids" item="u_id" open="(" separator="," close=")">
+                #{u_id}
+            </foreach>
+        </where>
+    </select>
+
 </mapper>
