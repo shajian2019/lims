@@ -31,7 +31,7 @@
 .dw-input .fa-search{color: #999;margin-right: 8px;}
 .dw-btn{display: inline-block;height: 32px;line-height: 32px;width: 36px;text-align: center;border: 1px solid #e6e6e6;border-radius: 4px;margin: 0 auto;}
 
-.right-box{float: right;width:calc(100% - 249px); ;height:100%;padding: 0 4px 0 0;}
+.right-box{float:left;width:calc(100% - 245px); ;height:100%;padding: 0 0 0 4px;}
 .bm_name_tit{height:42px;line-height: 42px;background-color: #f3f5f7;text-align: center;font-size:16px;}
 #pop{margin: 12px auto 0;}
 #pop .layui-form-item{display: flex;align-items: center;}
@@ -239,17 +239,12 @@ function add() {
 		o_id = nodes[0].id
 	}
    	var url = "${ctx}/xtgl/zzgl/yhgl/edit?flag=add&o_id="+o_id;
-       var index = layer.open({
+       layer.open({
            title: '新增用户',
            type: 2,
-           area: ['620px', '400px'],
-           fixed: false, //不固定
-           maxmin: true,
-           content: url,
-           end: function () {
-               //table.reload(tableId)
-           }
+           offset: '50px',
+           area: ['1038px', '544px'],
+           content: url
        });
-       layer.full(index);
 }
 </script>
