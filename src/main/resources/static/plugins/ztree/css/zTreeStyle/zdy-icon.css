@@ -1,0 +1,10 @@
+@charset "UTF-8";
+/**
+ *
+ * @authors Marte (iqianduan@126.com)
+ * @date    2019-01-29 13:06:28
+ * @version $Id$
+ */
+/* 自定义图标 */
+.ztree li span.button.zdy_ico_open{background-image: url(./img/diy/dw-o.svg)}
+.ztree li span.button.zdy_ico_docu{background-image: url(./img/diy/dw-o.svg);background-size:16px;}
