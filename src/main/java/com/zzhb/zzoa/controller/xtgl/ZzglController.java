@@ -115,10 +115,10 @@ public class ZzglController {
 	@Autowired
 	ZzjgService zzjgService;
 
-	@GetMapping("/zzjg/dtree/list")
+	@GetMapping("/zzjg/ztree/list")
 	@ResponseBody
-	public JSONObject zzjgDtreeList() {
-		return zzjgService.zzjgDtreeList();
+	public JSONArray zzjgZtreeList() {
+		return zzjgService.zzjgZtreeList();
 	}
 
 	// 组织架构查询

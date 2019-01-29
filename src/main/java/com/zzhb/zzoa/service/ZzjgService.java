@@ -49,42 +49,34 @@ public class ZzjgService {
 		return result;
 	}
 
-	public JSONObject zzjgDtreeList() {
+	public JSONArray zzjgZtreeList() {
+		JSONArray result = new JSONArray();
 		Map<String, String> params = new HashMap<>();
 		params.put("parentid", "0");
 		List<Org> list = orgMapper.getOrgs(params);
-		JSONObject result = new JSONObject();
-		JSONArray data = new JSONArray();
-		JSONArray checkArr = new JSONArray();
-		JSONObject checked = new JSONObject();
-		checked.put("type", "0");
-		checked.put("isChecked", "0");
-		checkArr.add(checked);
 		for (Org org : list) {
-			JSONObject groupJ = new JSONObject();
-			groupJ.put("id", org.getId());
-			groupJ.put("title", org.getName());
-			groupJ.put("parentId", org.getParentid());
-			groupJ.put("checkArr", checkArr);
+			JSONObject orgJ = new JSONObject();
+			orgJ.put("id", org.getId());
+			orgJ.put("name", org.getName());
+			orgJ.put("checked", false);
+			orgJ.put("level", org.getLevel());
+			orgJ.put("parentid", "0");
+
 			params.put("parentid", org.getId());
-			JSONArray children = new JSONArray();
+			JSONArray childrenOrj = new JSONArray();
 			list = orgMapper.getOrgs(params);
 			for (Org orgC : list) {
-				JSONObject orgJC = new JSONObject();
-				orgJC.put("id", orgC.getId());
-				orgJC.put("title", orgC.getName());
-				orgJC.put("parentId", orgC.getParentid());
-				orgJC.put("checkArr", checkArr);
-				children.add(orgJC);
+				JSONObject orgCJ = new JSONObject();
+				orgCJ.put("id", orgC.getId());
+				orgCJ.put("name", orgC.getName());
+				orgCJ.put("checked", false);
+				orgCJ.put("level", orgC.getLevel());
+				orgCJ.put("parentid", org.getId());
+				childrenOrj.add(orgCJ);
 			}
-			groupJ.put("children", children);
-			data.add(groupJ);
+			orgJ.put("children", childrenOrj);
+			result.add(orgJ);
 		}
-		result.put("data", data);
-		JSONObject status = new JSONObject();
-		status.put("code", 200);
-		status.put("message", "操作成功");
-		result.put("status", status);
 		return result;
 	}
 
