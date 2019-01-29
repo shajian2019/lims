@@ -6,7 +6,7 @@
     <title>流程定义</title>
     <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
     <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" />
-    <link rel="stylesheet" href="${ctx}/plugins/layui/extend/dtree/dtree.css">
+    <link rel="stylesheet" href="${ctx}/plugins/ztree/css/zTreeStyle/zTreeStyle.css">
     <link rel="stylesheet" href="${ctx}/plugins/layui/extend/dtree/font/dtreefont.css">
     <style>
         html,body{margin: 0;height: 100%;}
@@ -43,7 +43,15 @@
     <div class="left-box">
         <h4 class="bm_name_tit">单位（科室）</h4>
         <div style="overflow: auto;" id="toolbarDiv">
-            <ul id="left_tree" class="dtree" data-id="0"></ul>
+            <div class="dw-search-box">
+		        <div class="dw-input">
+		              <input type="text" id="dw_input"/><i class="fa fa-search"></i>
+		        </div>
+		        <div class="dw-fn" id="dw_fn">展开/收缩</div>
+		    </div>
+		    <div class="tree-box">
+		         <ul id="left_tree" class="ztree"></ul>
+		    </div>
         </div>
     </div>
     <div class="right-box">
@@ -82,44 +90,36 @@
     </div>
 </script>
 <script src="${ctx}/plugins/layui/layui.js"></script>
-<script src="${ctx}/js/common/download.js"></script>
-<script>
-    layui.config({
-        base: '${ctx}/plugins/layui/extend/dtree/'
-    }).extend({
-        dtree: 'dtree'
-    })
-    var $ = null,table=null,form=null,dtree=null,layer=null,dtreeID=null,tbID=null,index = null,dtreeObj = null;
+<script src="${ctx}/plugins/ztree/js/jquery-1.4.4.min.js"></script>
+<script src="${ctx}/plugins/ztree/js/jquery.ztree.all.js"></script>
+<script src="${ctx}/plugins/ztree/js/jquery.ztree.exhide.js"></script>
+<script src="${ctx}/plugins/ztree/js/fuzzysearch.js"></script>
+<script type="text/javascript">
+var zTreeObj;
+var expandFlag = false;
+var setting = {};
+var table=null,form=null,dtree=null,layer=null,dtreeID=null,tbID=null,index = null,dtreeObj = null;
+$(document).ready(function(){
+	$.ajax({
+       type: "get",
+       url: "${ctx}/xtgl/zzgl/zzjg/ztree/list",
+       success: function (data) {
+           zTreeObj = $.fn.zTree.init($("#left_tree"), setting, data);
+    	   fuzzySearch ("left_tree","#dw_input",false,true);
+       }
+    });
+	
+    $("#dw_fn").click(function (e) { 
+        zTreeObj.expandAll(expandFlag);
+        expandFlag = !expandFlag;
+ 	});
     
-    layui.use(['table', 'layer', 'form', 'dtree','upload'], function () {
-            $ = layui.jquery,
+    layui.use(['table', 'layer', 'form','upload'], function () {
             table = layui.table,
             form = layui.form,
-            dtree = layui.dtree,
             layer = layui.layer,
-            dtreeID = 'left_tree',
             tbID = 'right_tb';
-        
-            dtreeObj = dtree.render({
-                elem: "#" + dtreeID, //绑定元素
-                method:'GET',
-            	url: "${ctx}/xtgl/zzgl/zzjg/dtree/list",  //异步接口
-                ficon: "0", // 隐藏一级图标
-                icon: "2",
-                dot: false,
-                skin: "layui",
-                menubar: true,
-                menubarTips: {
-                    group: ['searchNode','refresh']
-                }
-            });
-        
-        dtree.on("node('" + dtreeID + "')", function (obj) {
-            rightTB.reload({
-                where: {o_id:obj.param.nodeId}
-            });
-        });
-        
+            
         var rightTB = table.render({
         	 elem: '#' + tbID
             , url: '${ctx}/xtgl/zzgl/yhgl/getAllUsers'//后台接受路径
@@ -194,21 +194,20 @@
             return false;
         });
     })
-    
-    function add() {
-    	var param = dtree.getNowParam(dtreeObj);
-    	var url = "${ctx}/xtgl/zzgl/yhgl/editPage?flag=add&o_id="+param.nodeId;
-        var index = layer.open({
-            title: '新增用户',
-            type: 2,
-            area: ['620px', '400px'],
-            fixed: false, //不固定
-            maxmin: true,
-            content: url,
-            end: function () {
-                //table.reload(tableId)
-            }
-        });
-        layer.full(index);
-    }
+});
+function add() {
+   	var url = "${ctx}/xtgl/zzgl/yhgl/editPage?flag=add&o_id=";
+       var index = layer.open({
+           title: '新增用户',
+           type: 2,
+           area: ['620px', '400px'],
+           fixed: false, //不固定
+           maxmin: true,
+           content: url,
+           end: function () {
+               //table.reload(tableId)
+           }
+       });
+       layer.full(index);
+}
 </script>
