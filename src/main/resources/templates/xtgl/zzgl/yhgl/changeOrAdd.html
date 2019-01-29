@@ -73,16 +73,13 @@
 
 <form class="layui-form layui-form-pane" lay-filter="edit" style="margin: 4% auto 0;">
     <div class="layui-form-item">
-        <#if map.flag == 'add'>
-	        <label class="layui-form-label">用户账号:</label>
-	        <div class="layui-inline">
-	            <input class="layui-input" type="text" name="username" placeholder="用户账号" lay-verify="onlyUname">
-	        </div>
-    	</#if>
+    <label class="layui-form-label">用户账号:</label>
+    <div class="layui-inline">
+         <input class="layui-input" type="text" name="username" placeholder="用户账号" lay-verify="onlyUname" readonly="readonly">
+    </div>
     <label class="layui-form-label">用户昵称:</label>
     <div class="layui-inline">
-        <input class="layui-input" type="text" name="nickname" value="${(echouser.nickname)!''}" placeholder="用户昵称"
-               lay-verify="required">
+        <input class="layui-input" type="text" name="nickname" value="${(echouser.nickname)!''}" placeholder="用户昵称" lay-verify="required">
     </div>
     <#if map.flag == 'add'>
 	    <label class="layui-form-label">密码:</label>
@@ -91,13 +88,12 @@
 	    </div>
 	    <label class="layui-form-label">密码确认:</label>
 	    <div class="layui-inline">
-	        <input class="layui-input" type="password" name="sedPassword" id="passwordCheck" placeholder="密码确认"
-	               lay-verify="sedPwd">
+	        <input class="layui-input" type="password" name="sedPassword" id="passwordCheck" placeholder="密码确认" lay-verify="sedPwd">
 	    </div>
 	</#if>
 	<label class="layui-form-label">电子邮箱:</label>
 	<div class="layui-inline">
-	    <input class="layui-input" type="text" name="email" value="${(echouser.email)!''}" placeholder="邮箱"
+	    <input class="layui-input" type="text" name="email" value="${(echouser.email)!''}" placeholder="电子邮箱"
 	           lay-verify="email">
 	</div>
 	<label class="layui-form-label">办公电话:</label>

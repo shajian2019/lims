@@ -57,11 +57,11 @@ public class ZzglController {
 		return userService.delUserById(u_id);
 	}
 
-	@GetMapping("/yhgl/editPage")
+	@GetMapping("/yhgl/edit")
 	public ModelAndView goEditPage(@RequestParam Map<String, String> map) {
 		ModelAndView model = new ModelAndView();
 		String flag = map.get("flag");
-		String url = "xtgl/zzgl/yhgl/add";
+		String url = "xtgl/zzgl/yhgl/changeOrAdd";
 		if ("edit".equals(flag)) {
 			String username = map.get("username");
 			User user = userMapper.getUser(username);

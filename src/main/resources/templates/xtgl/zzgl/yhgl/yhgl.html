@@ -174,7 +174,6 @@ $(document).ready(function(){
            var param = dtree.getNowParam(dtreeObj);
            var data = obj.data;
            var action = obj.event;
-           console.log(param)
            if (obj.event === 'del') {
                var requestParam = {deployment_id: data.deployment_id,p_id: data.id,key: data.key}
         	   layer.confirm('确定删除该用户吗?', function (index) {
@@ -234,7 +233,12 @@ function initRightTable(treeNode){
 }
 
 function add() {
-   	var url = "${ctx}/xtgl/zzgl/yhgl/editPage?flag=add&o_id=";
+	var nodes = zTreeObj.getSelectedNodes();
+	var o_id = "";
+	if(nodes[0]){
+		o_id = nodes[0].id
+	}
+   	var url = "${ctx}/xtgl/zzgl/yhgl/edit?flag=add&o_id="+o_id;
        var index = layer.open({
            title: '新增用户',
            type: 2,
