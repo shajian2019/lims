@@ -6,7 +6,7 @@
     <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet"/>
     <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet"/>
     <link rel="stylesheet" href="${ctx}/plugins/ztree/css/zTreeStyle/zTreeStyle.css">
-    <link rel="stylesheet" href="${ctx}/plugins/layui/extend/dtree/font/dtreefont.css">
+    <link rel="stylesheet" href="${ctx}/plugins/ztree/css/zTreeStyle/zdy-icon.css">
     <style>
         /* layui重置 */
         .layui-form {
@@ -60,13 +60,15 @@
         input:-webkit-autofill {-webkit-box-shadow: 0 0 0px 1000px white inset !important; }  
         #dw_box{display: flex;flex-direction: column;align-items: center;}
         .dw-search-box{display: flex;align-items: center;}
-        .dw-fn{margin-left: 10px;color: cornflowerblue;}
+        .dw-fn{margin-left: 9px;color: #0a8cbf;font-size: 20px;}
         .tree-box{height:260px;overflow-y: auto;}
         .ztree{width:276px;margin: 0 auto;}
         .dw-input{line-height: 32px;border: 1px solid #e6e6e6;border-radius: 4px;display: inline-block;margin: 5px auto;}
         #dw_input{line-height: 32px;border:none;padding: 0 5px;}
         .dw-input .fa-search{color: #999;margin-right: 8px;}
         .dw-btn{display: inline-block;height: 32px;line-height: 32px;width: 36px;text-align: center;border: 1px solid #e6e6e6;border-radius: 4px;margin: 0 auto;}
+ 
+
     </style>
 </head>
 <body>
@@ -139,7 +141,7 @@
         <div class="dw-input">
                 <input type="text" id="dw_input"/><i class="fa fa-search"></i>
         </div>
-        <div class="dw-fn" id="dw_fn">展开/收缩</div>
+        <div class="dw-fn" id="dw_fn"><i class="fa fa-unsorted"></i></div>
     </div>
     <div class="tree-box">
             <ul id="left_tree" class="ztree"></ul>
@@ -161,12 +163,19 @@
          dtree = layui.dtree,
          layer = layui.layer,
         $("#dw").click(function(){
-            layer.open({
+           var dwPop=layer.open({
                 title: '单位（科室）',
                 type: 1,
                 area: ['314px', '400px'],
                 maxmin: true,
-                content:$("#dw_box")
+                content:$("#dw_box"),
+                success:function(layero,index){
+                    $("#dw_save").click(function (e) { 
+                        var name=[];
+                        saveDate(zTreeObj,name);
+                        layer.close(dwPop);         
+                    });
+                }
             });
         })
     	var index = 
@@ -269,9 +278,9 @@
         // zTree 的数据属性，深入使用请参考 API 文档（zTreeNode 节点数据详解）
         var zNodes = [
         {name:"test1", open:true,checked:true, children:[
-            {name:"test1_1",checked:true}, {name:"test1_2",checked:true}]},
-        {name:"test2", open:true,checked:true, children:[
-            {name:"test2_1",checked:true}, {name:"test2_2",checked:true}]}
+            {name:"test1_1",dwid:"123",checked:true,}, {name:"test1_2",dwid:"123",checked:true}]},
+        {name:"test2", open:true,dwid:"123",checked:true, children:[
+            {name:"test2_1",dwid:"123",checked:true}, {name:"test2_2",dwid:"123",checked:true}]}
         ];
 
         $(document).ready(function(){
@@ -281,11 +290,23 @@
 	            	zTreeObj.expandAll(expandFlag);
 	            	expandFlag = !expandFlag;
 	            });
-            $("#dw_save").click(function (e) { 
-                
-                
-            });
         });
+//获取选中子节点数据
+function filter(node) {
+    return ((node.check_Child_State<0)===true);
+}
+//保存数据
+function saveDate(tree,arr){
+    var obj={}
+    var nodes = tree.getCheckedNodes(true);
+    var node =  tree.getNodesByFilter(filter);
+    $.each(node, function (i, v) { 
+         obj.name=v.name;
+         obj.dwid=v.dwid;
+         arr.push(obj)
+    });
+    return arr;
+}
 </script>
 </body>
 </html>
