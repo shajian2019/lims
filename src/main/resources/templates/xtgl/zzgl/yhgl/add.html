@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet"/>
     <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet"/>
-    <link rel="stylesheet" href="${ctx}/plugins/layui/extend/dtree/dtree.css">
+    <link rel="stylesheet" href="${ctx}/plugins/ztree/css/zTreeStyle/zTreeStyle.css">
     <link rel="stylesheet" href="${ctx}/plugins/layui/extend/dtree/font/dtreefont.css">
     <style>
         /* layui重置 */
@@ -57,13 +57,21 @@
             flex-grow: 1;
             padding: 0 10px;
         }
-        .dw-search{display: flex;align-items: center;padding: 5px 15px;}
-        .dw-search>.layui-input{height: 32px;line-height: 32px;margin-right: 12px;}
+        input:-webkit-autofill {-webkit-box-shadow: 0 0 0px 1000px white inset !important; }  
+        #dw_box{display: flex;flex-direction: column;align-items: center;}
+        .dw-search-box{display: flex;align-items: center;}
+        .dw-fn{margin-left: 10px;color: cornflowerblue;}
+        .tree-box{height:260px;overflow-y: auto;}
+        .ztree{width:276px;margin: 0 auto;}
+        .dw-input{line-height: 32px;border: 1px solid #e6e6e6;border-radius: 4px;display: inline-block;margin: 5px auto;}
+        #dw_input{line-height: 32px;border:none;padding: 0 5px;}
+        .dw-input .fa-search{color: #999;margin-right: 8px;}
+        .dw-btn{display: inline-block;height: 32px;line-height: 32px;width: 36px;text-align: center;border: 1px solid #e6e6e6;border-radius: 4px;margin: 0 auto;}
     </style>
 </head>
 <body>
 
-<form class="layui-form layui-form-pane" lay-filter="edit" style="position: absolute;top: 50%;left:50%;margin:-210px 0 0 -265px ;">
+<form class="layui-form layui-form-pane" lay-filter="edit" style="margin: 4% auto 0;">
     <div class="layui-form-item">
         <#if map.flag == 'add'>
 	        <label class="layui-form-label">用户账号:</label>
@@ -127,44 +135,36 @@
 </div>
 </form>
 <div id="dw_box" style="display:none;">
-    <ul id="left_tree" class="dtree" data-id="0" ></ul>
+    <div class="dw-search-box">
+        <div class="dw-input">
+                <input type="text" id="dw_input"/><i class="fa fa-search"></i>
+        </div>
+        <div class="dw-fn" id="dw_fn">展开/收缩</div>
+    </div>
+    <div class="tree-box">
+            <ul id="left_tree" class="ztree"></ul>
+    </div>
+    
+    <a href="javascript:;" class="dw-btn" id="dw_save">保存</a>   
 </div>
-
+<script src="${ctx}/plugins/ztree/js/jquery-1.4.4.min.js"></script>
+<script src="${ctx}/plugins/ztree/js/jquery.ztree.all.js"></script>
+<script src="${ctx}/plugins/ztree/js/jquery.ztree.exhide.js"></script>
+<script src="${ctx}/plugins/ztree/js/fuzzysearch.js"></script>
+<script></script>
 <script src="${ctx}/plugins/layui/layui.js"></script>
+
 <script type="text/javascript">
-	layui.config({
-	    base: '${ctx}/plugins/layui/extend/dtree/'
-	}).extend({
-	    dtree: 'dtree'
-	})
-	var $ = null,table=null,upload=null,form=null,dtree=null,layer=null,dtreeID=null,tbID=null,index = null,dtreeObj;
-    layui.use(['form', 'layer','dtree'], function () {
-    	 $ = layui.jquery,
+   var table=null,upload=null,form=null,dtree=null,layer=null,dtreeID=null,tbID=null,index = null,dtreeObj;
+    layui.use(['form', 'layer'], function () {
          form = layui.form,
          dtree = layui.dtree,
          layer = layui.layer,
-         dtreeID = 'left_tree',
-         
-         dtreeObj = dtree.render({
-             elem: "#" + dtreeID, //绑定元素
-             method:'GET',
-         	 url: "${ctx}/xtgl/zzgl/zzjg/dtree/list",  //异步接口
-             ficon: "0", // 隐藏一级图标
-             icon: "2",
-             dot: false,
-             skin: "layui",
-             checkbar:true,
-             menubar:true,
-	         done: function(data, obj){
-	              console.log(data,obj)
-	         }
-         });
-    	 
         $("#dw").click(function(){
             layer.open({
                 title: '单位（科室）',
                 type: 1,
-                area: ['400px', '390px'],
+                area: ['314px', '400px'],
                 maxmin: true,
                 content:$("#dw_box")
             });
@@ -250,6 +250,42 @@
             parent.layer.close(index);
         })
     })
+</script>
+<script>
+        var zTreeObj;
+        var  expandFlag = false;
+        // zTree 的参数配置，深入使用请参考 API 文档（setting 配置详解）
+        var setting = {
+                check:{
+                   autoCheckTrigger : true,
+                   chkboxType:{"Y":"ps","N":"ps"} ,
+                   chkStyle : "checkbox",
+                   enable : true,
+                   nocheckInherit : false,
+                   chkDisabledInherit : false,
+                   radioType : "level"
+                }
+        };
+        // zTree 的数据属性，深入使用请参考 API 文档（zTreeNode 节点数据详解）
+        var zNodes = [
+        {name:"test1", open:true,checked:true, children:[
+            {name:"test1_1",checked:true}, {name:"test1_2",checked:true}]},
+        {name:"test2", open:true,checked:true, children:[
+            {name:"test2_1",checked:true}, {name:"test2_2",checked:true}]}
+        ];
+
+        $(document).ready(function(){
+	            zTreeObj = $.fn.zTree.init($("#left_tree"), setting, zNodes);
+	            fuzzySearch ("left_tree","#dw_input",false,true);
+ 	             $("#dw_fn").click(function (e) { 
+	            	zTreeObj.expandAll(expandFlag);
+	            	expandFlag = !expandFlag;
+	            });
+            $("#dw_save").click(function (e) { 
+                
+                
+            });
+        });
 </script>
 </body>
 </html>

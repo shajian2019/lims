@@ -12,6 +12,11 @@
 		    margin: 0px;
 		}
 		#cdgl_form{margin-bottom: 5px;}
+		#pop{padding-top: 8px;}
+		#pop .layui-form-item{display: flex;align-items: center;}
+		#pop .layui-form-label{width: 144px;text-align: right;}
+		#pop .layui-inline{width: 400px;}
+		.layui-btn-container{text-align: center;}
 	</style>
 </head>
 <body class="layui-layout-body" style="padding: 5px">
@@ -45,7 +50,7 @@
 			   </div>
 		      <div class="layui-form-item">
 		         <label class="layui-form-label">备注</label>
-		            <div class="layui-input-block">
+		            <div class="layui-inline">
 		             	<textarea class="layui-textarea" name="remark" placeholder="备注"></textarea>
 		         	</div>
 			   </div>
@@ -177,7 +182,7 @@
         		index = layer.open({
      	            title: '新增',
      	            type: 1,
-     	            area: ['600px', '400px'],
+     	            area: ['600px', '380px'],
      	            fixed: false,
      	            content: $("#pop"),
      	            end: function () {
@@ -230,7 +235,7 @@
         		index = layer.open({
      	            title: '修改',
      	            type: 1,
-     	            area: ['600px', '400px'],
+     	            area: ['600px', '380px'],
      	            fixed: false,
      	            content: $("#pop"),
      	            end: function () {

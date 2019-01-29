@@ -10,6 +10,11 @@
     <style>
 		.layui-table, .layui-table-view { margin: 0px; }
 		#query{margin-bottom: 5px;}
+		#pop{padding-top: 8px;}
+		#pop .layui-form-item{display: flex;align-items: center;}
+		#pop .layui-form-label{width: 100px;text-align: right;}
+		#pop .layui-inline{width: 400px;}
+		.layui-btn-container{text-align: center;}
 	</style>
 </head>
 <body class="layui-layout-body" style="padding: 5px">
@@ -41,13 +46,13 @@
 			   </div>
 		      <div class="layui-form-item">
 		         <label class="layui-form-label">备注</label>
-		            <div class="layui-input-block">
+		            <div class="layui-inline">
 		             	<textarea class="layui-textarea" name="remark" placeholder="备注"></textarea>
 		         	</div>
 			   </div>
 			   <div class="layui-form-item">
 			        <label class="layui-form-label">状态:</label>
-			        <div class="layui-input-block radio-box">
+			        <div class="layui-inline radio-box">
 				          <input type="radio" name="status" value="1" title="正常" checked>
 				          <input type="radio" name="status" value="0" title="禁用">
 			        </div>
@@ -177,7 +182,7 @@
             	index = layer.open({
     	            title: '修改',
     	            type: 1,
-    	            area: ['600px', '400px'],
+    	            area: ['542px', '400px'],
     	            fixed: false,
     	            content: $("#pop"),
     	            end: function () {
