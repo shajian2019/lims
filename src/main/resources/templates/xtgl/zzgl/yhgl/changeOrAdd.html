@@ -9,54 +9,22 @@
     <link rel="stylesheet" href="${ctx}/plugins/ztree/css/zTreeStyle/zdy-icon.css">
     <style>
         /* layui重置 */
-        .layui-form {
-            width: 530px;
-            margin: 10px auto 0;
-        }
+        .layui-form {margin: 10px auto 0;min-width: 550px;max-width: 1140px;}
 
-        .layui-form-item .layui-inline, .layui-form-item .layui-input-block {
-            width: 400px;
-        }
-
-        .layui-form-item .radio-box {
-            border: 1px solid #e6e6e6;
-        }
-
-        .layui-btn-container {
-            width: 512px;
-            text-align: center;
-        }
-
+        .layui-form-item{display: flex;align-items: center;justify-content: space-between;}
+        .layui-form-item .layui-inline{margin: 0;flex-grow: 1;max-width: 246px;}
+        .layui-form-label{width: 120px;}
+        .layui-btn-container {text-align: center;margin-top: 25px;}
         /* 自定义 */
-        div.icon-box {
-            height: 36px;
-            border: 1px solid #e6e6e6;
-            border-left: none;
-            background-color: #fff;
-            border-radius: 2px;
+        div.icon-box {height: 36px;border: 1px solid #e6e6e6;border-left: none;background-color: #fff;border-radius: 2px;}
+        .icon-box .icon {width: 36px;height: 36px;text-align: center;line-height: 36px;border-right: 1px solid #e6e6e6;display: inline-block;}
+        .icon-box .layui-inline-block {display: flex;align-items: center;justify-content: space-between;}
+        .icon-box .icon-input {display: inline-block;border: none;flex-grow: 1;padding: 0 10px;
         }
-
-        .icon-box .icon {
-            width: 36px;
-            height: 36px;
-            text-align: center;
-            line-height: 36px;
-            border-right: 1px solid #e6e6e6;
-            display: inline-block;
-        }
-
-        .icon-box .layui-inline-block {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .icon-box .icon-input {
-            display: inline-block;
-            border: none;
-            flex-grow: 1;
-            padding: 0 10px;
-        }
+        .tree-input{display: flex;align-items: center;justify-content: center;min-height: 38px;height:auto;flex-wrap: wrap;padding-top: 2px;padding-bottom: 2px;}
+        .tree-input .fa-search{margin-right: 5px;}
+        .tree-input span{border: 1px solid #e5e5e5;padding: 4px 6px;margin-right: 12px;}
+        .tree-input .fa{color: #888;margin-left: 4px;}
         input:-webkit-autofill {-webkit-box-shadow: 0 0 0px 1000px white inset !important; }  
         .dw_box{display: flex;flex-direction: column;align-items: center;}
         .dw-search-box{display: flex;align-items: center;}
@@ -66,75 +34,88 @@
         .dw-input{line-height: 32px;border: 1px solid #e6e6e6;border-radius: 4px;display: inline-block;margin: 5px auto;}
         .dw_input{line-height: 32px;border:none;padding: 0 5px;}
         .dw-input .fa-search{color: #999;margin-right: 8px;}
-        .dw-btn{display: inline-block;height: 32px;line-height: 32px;width: 36px;text-align: center;border: 1px solid #e6e6e6;border-radius: 4px;margin: 0 auto;}
+        .dw-btn{display: inline-block;height: 32px;line-height: 32px;width: 40px;text-align: center;border: 1px solid #e6e6e6;border-radius: 4px;margin: 0 auto;}
     </style>
 </head>
 <body>
 
-<form class="layui-form layui-form-pane" lay-filter="edit" style="margin: 4% auto 0;">
+<form class="layui-form" lay-filter="edit" style="margin: 4% auto 0;">
     <div class="layui-form-item">
-    <label class="layui-form-label">用户账号:</label>
-    <div class="layui-inline">
-         <input class="layui-input" type="text" name="username" placeholder="用户账号" lay-verify="onlyUname" readonly="readonly">
-    </div>
-    <label class="layui-form-label">用户昵称:</label>
-    <div class="layui-inline">
-        <input class="layui-input" type="text" name="nickname" value="${(echouser.nickname)!''}" placeholder="用户昵称" lay-verify="required">
-    </div>
-    <#if map.flag == 'add'>
-	    <label class="layui-form-label">密码:</label>
-	    <div class="layui-inline">
-	        <input class="layui-input" type="password" name="password" id="password" placeholder="密码">
-	    </div>
-	    <label class="layui-form-label">密码确认:</label>
-	    <div class="layui-inline">
-	        <input class="layui-input" type="password" name="sedPassword" id="passwordCheck" placeholder="密码确认" lay-verify="sedPwd">
-	    </div>
-	</#if>
-	<label class="layui-form-label">电子邮箱:</label>
-	<div class="layui-inline">
-	    <input class="layui-input" type="text" name="email" value="${(echouser.email)!''}" placeholder="电子邮箱"
-	           lay-verify="email">
-	</div>
-	<label class="layui-form-label">办公电话:</label>
-	<div class="layui-inline">
-	    <input class="layui-input" type="text" name="bgdh" value="${(echouser.bgdh)!''}" placeholder="办公电话">
-	</div>
-	<label class="layui-form-label">办电小号:</label>
-	<div class="layui-inline">
-	    <input class="layui-input" type="text" name="bgxh" value="${(echouser.bgxh)!''}" placeholder="办电小号">
-	</div>
-	<label class="layui-form-label">手机号码:</label>
-	<div class="layui-inline">
-	    <input class="layui-input" type="text" name="phone" value="${(echouser.phone)!''}" placeholder="手机号码" lay-verify="phone">
-	</div>
-	<label class="layui-form-label">手机小号:</label>
-	<div class="layui-inline">
-	    <input class="layui-input" type="text" name="phonexh" value="${(echouser.phonexh)!''}" placeholder="手机小号">
-	</div>
-	<label class="layui-form-label">用户角色:</label>
-	<div class="layui-inline">
-	    <select name="role" id="role" lay-search>
-	        	<option value=""></option>
-	    </select>
-	</div>
-	<label class="layui-form-label">职务名称:</label>
-	<div class="layui-inline">
-	    <div class="layui-input" id="zw">
-        	
+        <label class="layui-form-label">用户账号:</label>
+        <div class="layui-inline">
+            <input class="layui-input" type="text" name="username" placeholder="用户账号" lay-verify="onlyUname" readonly="readonly">
         </div>
-	</div>
-	<label class="layui-form-label">单位（科室）:</label>
-	<div class="layui-inline">   
-        <div class="layui-input" id="dw">
-        	
+        <label class="layui-form-label">用户昵称:</label>
+        <div class="layui-inline">
+            <input class="layui-input" type="text" name="nickname" value="${(echouser.nickname)!''}" placeholder="用户昵称"
+                lay-verify="required">
         </div>
-	</div>
-</div>
+    </div>
 
-<div class="layui-btn-container">
-    <a class="layui-btn layui-btn-sm layui-btn-primary" lay-submit lay-filter="save">保存</a>
-</div>
+    <#if map.flag=='add'>
+        <div class="layui-form-item">
+            <label class="layui-form-label">密码:</label>
+            <div class="layui-inline">
+                <input class="layui-input" type="password" name="password" id="password" placeholder="密码">
+            </div>
+            <label class="layui-form-label">密码确认:</label>
+            <div class="layui-inline">
+                <input class="layui-input" type="password" name="sedPassword" id="passwordCheck" placeholder="密码确认"
+                    lay-verify="sedPwd">
+            </div>
+        </div>
+    </#if>
+    <div class="layui-form-item">
+        <label class="layui-form-label">办公电话:</label>
+        <div class="layui-inline">
+            <input class="layui-input" type="text" name="bgdh" value="${(echouser.bgdh)!''}" placeholder="办公电话">
+        </div>
+        <label class="layui-form-label">办电小号:</label>
+        <div class="layui-inline">
+            <input class="layui-input" type="text" name="bgxh" value="${(echouser.bgxh)!''}" placeholder="办电小号">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">手机号码:</label>
+        <div class="layui-inline">
+            <input class="layui-input" type="text" name="phone" value="${(echouser.phone)!''}" placeholder="手机号码"
+                lay-verify="phone">
+        </div>
+        <label class="layui-form-label">手机小号:</label>
+        <div class="layui-inline">
+            <input class="layui-input" type="text" name="phonexh" value="${(echouser.phonexh)!''}" placeholder="手机小号">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">用户角色:</label>
+        <div class="layui-inline">
+            <select class="layui-input" name="role" id="role" lay-search>
+                <option value=""></option>
+            </select>
+        </div>
+        <label class="layui-form-label">职务名称:</label>
+        <div class="layui-inline">
+            <div class="layui-input tree-input" id="zw"><i class="fa fa-search"></i></div>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">单位（科室）:</label>
+        <div class="layui-inline">
+            <div class="layui-input tree-input" id="dw"><i class="fa fa-search"></i></div>
+        </div>
+        <label class="layui-form-label">电子邮箱:</label>
+        <div class="layui-inline">
+            <input class="layui-input" type="text" name="email" value="${(echouser.email)!''}" placeholder="电子邮箱"
+                lay-verify="email">
+        </div>
+    </div>
+
+    <div class="layui-btn-container">
+        <a class="layui-btn layui-btn-primary" lay-submit lay-filter="save">保存</a>
+    </div>
 
 </form>
 
@@ -165,6 +146,7 @@
 </div>
 
 <script type="text/html" id="dw_demo">
+    <i class="fa fa-search"></i>
 	{{# layui.each(d, function(index, item){ }}
 		<span data-id="{{item.id}}">{{item.name}}<i class="fa fa-times"></i></span>
 	{{# }); }} 
@@ -278,7 +260,6 @@ $(document).ready(function(){
                  title: '单位（科室）',
                  type: 1,
                  area: ['314px', '400px'],
-                 maxmin: true,
                  content:$("#dw_box"),
                  success:function(layero,index){
                  }
@@ -290,7 +271,6 @@ $(document).ready(function(){
                  title: '职务',
                  type: 1,
                  area: ['314px', '400px'],
-                 maxmin: true,
                  content:$("#zw_box"),
                  success:function(layero,index){
                  }
@@ -408,11 +388,16 @@ function saveDate(node,id,flag){
 
 function dwCallback(data,id) { 
 	var getTpl=dw_demo.innerHTML,view=document.getElementById(id);
-	$.each(data, function (i, v) {
-		laytpl(getTpl).render(data, function (html) {
-			view.innerHTML = html;
+	if(data.length > 0){
+		$.each(data, function (i, v) {
+			laytpl(getTpl).render(data, function (html) {
+				console.log(html)
+				view.innerHTML = html;
+			})
 		})
-	})
+	} else {
+		view.innerHTML = "";
+	}
 }
 </script>
 </body>
