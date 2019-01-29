@@ -74,14 +74,15 @@ public class ZzglController {
 
 	@PostMapping("/yhgl/addUser")
 	@ResponseBody
-	public Integer addUser(User user, String role, String flag) {
-		return userService.addUser(user, role, flag);
+	public Integer addUser(User user, @RequestParam Map<String, String> map) {
+		return userService.addUser(user, map);
 	}
 
 	@PostMapping("/yhgl/updateUser")
 	@ResponseBody
 	public Integer updateUser(@RequestParam Map<String, String> map) {
-		return userService.updateUser(map);
+		//TODO
+		return null;
 	}
 
 	@GetMapping("/yhgl/getRoleSelect")

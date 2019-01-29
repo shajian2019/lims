@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zzhb.zzoa.mapper.OrgUserMapper">
+
+	<insert id="addUserOrgs" parameterType="java.util.Map">
+		INSERT INTO sys_t_user_org (u_id,o_id)
+		VALUES
+		<foreach collection="o_ids" item="o_id" index="index" separator=",">
+            (#{u_id,jdbcType=INTEGER}, #{o_id,jdbcType=INTEGER})
+        </foreach>
+	</insert>
 	
 </mapper>

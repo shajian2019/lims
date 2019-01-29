@@ -39,6 +39,7 @@ public class GrzxController {
 	@PostMapping("/pass/update")
 	@ResponseBody
 	public Integer updatePass(@RequestParam Map<String, String> map) {
-		return userService.updateUser(map);
+		//TODO
+		return null;
 	}
 }

@@ -15,7 +15,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zzhb.zzoa.domain.User;
+import com.zzhb.zzoa.mapper.JobUserMapper;
 import com.zzhb.zzoa.mapper.OrgMapper;
+import com.zzhb.zzoa.mapper.OrgUserMapper;
 import com.zzhb.zzoa.mapper.RoleMapper;
 import com.zzhb.zzoa.mapper.UserMapper;
 import com.zzhb.zzoa.utils.LayUiUtil;
@@ -37,6 +39,12 @@ public class UserService {
 
 	@Autowired
 	IdentityService identityService;
+
+	@Autowired
+	OrgUserMapper orgUserMapper;
+
+	@Autowired
+	JobUserMapper jobUserMapper;
 
 	public User getUser(String username) {
 		return userMapper.getUser(username);
@@ -60,41 +68,28 @@ public class UserService {
 	}
 
 	@Transactional
-	public Integer addUser(User user, String role, String flag) {
+	public Integer addUser(User user, Map<String, String> map) {
+		Map<String, Object> params = new HashMap<>();
 		Integer addUser = 0;
-		Map<String, Integer> map = new HashMap<String, Integer>();
-		if ("add".equals(flag)) {
+		if (user.getU_id() == null) {
 			Object result = new SimpleHash("MD5", user.getPassword(), user.getUsername(), 1);
 			user.setPassword(result.toString());
 			user.setStatus("0");
-			if (role == null || "".equals(role)) {
-				addUser = userMapper.addUser(user);
-			} else {
-				addUser = userMapper.addUser(user);
-				Integer u_id = user.getU_id();
-				map.put("u_id", u_id);
-				map.put("r_id", Integer.parseInt(role));
-				userMapper.addUrole(map);
+			Integer u_id = userMapper.addUser(user);
+			params.put("u_id", u_id);
+			String o_ids = map.get("o_ids");
+			if (o_ids.indexOf(",") != -1) {
+				params.put("o_ids", Arrays.asList(o_ids.split(",")));
+				orgUserMapper.addUserOrgs(params);
+			}
+			String j_ids = map.get("j_ids");
+			if (j_ids.indexOf(",") != -1) {
+				params.put("j_ids", Arrays.asList(j_ids.split(",")));
+				jobUserMapper.addUserJobs(params);
 			}
 		} else {
-			map.put("r_id", Integer.parseInt(role));
-			map.put("u_id", user.getU_id());
-			userMapper.addUrole(map);
-			addUser = userMapper.updateUserByUser(user);
 		}
 		return addUser;
-	}
-
-	@Transactional
-	public Integer updateUser(Map<String, String> map) {
-		Integer updateUser = 0;
-		if (map.containsKey("password")) {
-			String password = (String) map.get("password");
-			Object result = new SimpleHash("MD5", password, map.get("username"), 1);
-			map.put("password", String.valueOf(result));
-		}
-		updateUser = userMapper.updateUser(map);
-		return updateUser;
 	}
 
 	@Transactional
