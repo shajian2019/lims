@@ -60,9 +60,9 @@ public class ZzglController {
 	@GetMapping("/yhgl/edit")
 	public ModelAndView goEditPage(@RequestParam Map<String, String> map) {
 		ModelAndView model = new ModelAndView();
-		String flag = map.get("flag");
+		String u_id = map.get("u_id");
 		String url = "xtgl/zzgl/yhgl/changeOrAdd";
-		if ("edit".equals(flag)) {
+		if (u_id != null) {
 			String username = map.get("username");
 			User user = userMapper.getUser(username);
 			model.addObject("echouser", user);
@@ -81,7 +81,7 @@ public class ZzglController {
 	@PostMapping("/yhgl/updateUser")
 	@ResponseBody
 	public Integer updateUser(@RequestParam Map<String, String> map) {
-		//TODO
+		// TODO
 		return null;
 	}
 

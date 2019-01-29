@@ -238,12 +238,11 @@ function add() {
 	if(nodes[0]){
 		o_id = nodes[0].id
 	}
-   	var url = "${ctx}/xtgl/zzgl/yhgl/edit?flag=add&o_id="+o_id;
+   	var url = "${ctx}/xtgl/zzgl/yhgl/edit"
        layer.open({
            title: '新增用户',
            type: 2,
-           offset: '50px',
-           area: ['1038px', '544px'],
+           area: ['1038px', '500px'],
            content: url
        });
 }
