@@ -165,6 +165,9 @@ var setting = {
 		callback:{
 			onClick:function(event, treeId, treeNode){
 				zTreeObj.expandNode(treeNode, !treeNode.open, true, false);
+				if((treeNode.isParent && treeNode.children.length ==0) || !treeNode.isParent){
+					zTreeObj.checkNode(treeNode,!treeNode.checked,true)
+				}
 			}
 		},
 		view:{
@@ -175,6 +178,13 @@ var setting2 = {
 		check: {
 			enable: true,
 			autoCheckTrigger: true
+		},
+		callback:{
+			onClick:function(event, treeId, treeNode){
+				if((treeNode.isParent && treeNode.children.length ==0) || !treeNode.isParent){
+					zTreeObj2.checkNode(treeNode,!treeNode.checked,true)
+				}
+			}
 		},
 		view:{
 			selectedMulti: false
