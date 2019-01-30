@@ -36,10 +36,11 @@
         .dw-input .fa-search{color: #999;margin-right: 8px;}
         .dw-btn{display: inline-block;height: 32px;line-height: 32px;width: 40px;text-align: center;border: 1px solid #e6e6e6;border-radius: 4px;margin: 0 auto;}
         .span_red{color:red}
+        .del-dw{position:relative;right: -260px;top: -26px;}
     </style>
 </head>
 <body>
-<form class="layui-form" lay-filter="edit" style="margin: 4% auto 0;">
+<form class="layui-form" lay-filter="edit" style="margin: 1% auto 0;">
     <div class="layui-form-item">
     	<input type="hidden" name="u_id" value="${(map.u_id)!''}">
         <label class="layui-form-label"><span class="span_red">*</span> 用户账号:</label>
@@ -103,18 +104,19 @@
     <div class="layui-form-item">
         <label class="layui-form-label">单位（科室）:</label>
         <div class="layui-inline">
-            <div class="layui-input tree-input" id="dw">
+            <div class="layui-input tree-input dw">
             </div>
         </div>
         <label class="layui-form-label">职务名称:</label>
         <div class="layui-inline">
-            <div class="layui-input tree-input" id="zw">
+            <div class="layui-input tree-input zw">
             </div>
         </div>
     </div>
 
-    <div class="layui-btn-container">
+    <div class="layui-btn-container" id="btn_box">
         <a class="layui-btn layui-btn-primary" lay-submit lay-filter="save">保存</a>
+        <a href="javascript:;" class="layui-btn layui-btn-primary" id="dw_add_btn">添加职务</a>  
     </div>
 
 </form>
@@ -131,94 +133,34 @@
     </div>
     <a href="javascript:;" class="dw-btn" id="dw_save">保存</a>   
 </div>
-
-<div id="zw_box" class="dw_box" style="display:none;">
-    <div class="dw-search-box">
-        <div class="dw-input">
-               <input type="text" id="zw_input" class="dw_input" placeholder="关键字"/><i class="fa fa-search"></i>
-        </div>
-        <div class="dw-fn" id="zw_fn"><i class="fa fa-angle-double-up"></i></div>
-    </div>
-    <div class="tree-box">
-            <ul id="left_tree_zw" class="ztree"></ul>
-    </div>
-    <a href="javascript:;" class="dw-btn" id="zw_save">保存</a>   
-</div>
-
-<script type="text/html" id="dw_demo">
-	{{# layui.each(d, function(index, item){ }}
-		<span data-id="{{item.id}}">{{item.name}}<i class="fa fa-times"></i></span>
-	{{# }); }} 
-</script>
 <script src="${ctx}/plugins/ztree/js/jquery-1.4.4.min.js"></script>
 <script src="${ctx}/plugins/ztree/js/jquery.ztree.all.js"></script>
 <script src="${ctx}/plugins/ztree/js/jquery.ztree.exhide.js"></script>
 <script src="${ctx}/plugins/ztree/js/fuzzysearch.js"></script>
-<script src="${ctx}/plugins/layui/layui.js"></script>
+<script src="${ctx}/plugins/layui/layui.all.js"></script>
 
 <script type="text/javascript">
-var expandFlag =true;
-var expandFlag2 =true;
+
+var expandFlag =true;var expandFlag2 =true;var tree;
+var table=null,form=null,layer=null,tbID=null,index = null,laytpl= null;
+form = layui.form,layer = layui.layer,laytpl = layui.laytpl;var lay$=layui.jquery;
 
 var setting = {
-		check: {
-			enable: true,
-			autoCheckTrigger: true
-		},
+    async: {
+            enable: true,
+            url:"${ctx}/xtgl/zzgl/zzjg/ztree/list",
+            type: "get"
+			},
 		callback:{
-			onClick:function(event, treeId, treeNode){
-				zTreeObj.expandNode(treeNode, !treeNode.open, true, false);
-				if((treeNode.isParent && treeNode.children.length ==0) || !treeNode.isParent){
-					zTreeObj.checkNode(treeNode,!treeNode.checked,true)
-				}
-			}
-		},
-		view:{
-			selectedMulti: false
-		}
-};
-var setting2 = {
-		check: {
-			enable: true,
-			autoCheckTrigger: true
-		},
-		callback:{
-			onClick:function(event, treeId, treeNode){
-				if((treeNode.isParent && treeNode.children.length ==0) || !treeNode.isParent){
-					zTreeObj2.checkNode(treeNode,!treeNode.checked,true)
-				}
-			}
+
 		},
 		view:{
 			selectedMulti: false
 		}
 };
 
-var zTreeObj,zTreeObj2;
-var table=null,form=null,layer=null,tbID=null,index = null,laytpl= null;
-$(document).ready(function(){
-	//init 组织关系树
-	$.ajax({
-	       type: "get",
-	       url: "${ctx}/xtgl/zzgl/zzjg/ztree/list",
-	       success: function (data) {
-	           zTreeObj = $.fn.zTree.init($("#left_tree"), setting, data);
-	    	   fuzzySearch ("left_tree","#dw_input",false,true);
-	       }
-	});
-	
-	//init 职位关系树
-	$.ajax({
-	       type: "get",
-	       url: "${ctx}/xtgl/zzgl/zwgl/ztree/list",
-	       success: function (data) {
-	           zTreeObj2 = $.fn.zTree.init($("#left_tree_zw"), setting2, data);
-	    	   fuzzySearch ("left_tree_zw","#zw_input",false,true);
-	       }
-	});
-	 
-    $("#dw_fn").click(function (e) { 
-    	zTreeObj.expandAll(expandFlag);
+    lay$("#dw_fn").click(function (e) { 
+    	tree.expandAll(expandFlag);
     	if(expandFlag){
         	$("#dw_fn .fa").attr("class","fa fa-angle-double-down");
         }else{
@@ -227,114 +169,55 @@ $(document).ready(function(){
     	expandFlag = !expandFlag;
     });
     
-    $("#zw_fn").click(function (e) { 
-    	zTreeObj2.expandAll(expandFlag2);
-    	if(expandFlag2){
-        	$("#zw_fn .fa").attr("class","fa fa-angle-double-down");
-        }else{
-        	$("#zw_fn .fa").attr("class","fa fa-angle-double-up");
-        }
-    	expandFlag2 = !expandFlag2;
-    });
-    
-    
-      
-     layui.use(['form', 'layer','jquery','laytpl'], function () {
-          form = layui.form,
-          layer = layui.layer,
-          laytpl = layui.laytpl;
-    	  var $ = layui.jquery;
-    	  
-		   <#if userOrgs??>
-			   var orgs = [];
-		  		<#list userOrgs as userOrg>
-		  			var org = {};
-		  			org.id = "${userOrg.o_id}"
-		  			var node = zTreeObj.getNodeByParam("id", org.id, null);
-		  			zTreeObj.checkNode(node,true,true)
-		  			org.name = "${userOrg.o_name}"
-		  			orgs.push(org)
-		  	 	</#list>
-		  		dwCallback(orgs,'dw')
-		   </#if>
-		  		
-	  		<#if userJobs??>
-		  		var jobs = [];
-		  		<#list userJobs as userJob>
-		  			var job = {};
-		  			job.id = "${userJob.j_id}"
-		  			var node = zTreeObj2.getNodeByParam("id", job.id, null);
-		  			zTreeObj2.checkNode(node,true,true)
-		  			job.name = "${userJob.j_name}"
-		  			jobs.push(job)
-		  	 	</#list>
-		  		dwCallback(jobs,'zw')
-  		   </#if>
-          
-          $.ajax({
-              url: '${ctx}/xtgl/zzgl/yhgl/getRoleSelect?status=1',
-              dataType: 'json',
-              type: 'get',
-              success: function (data) {
-                  $.each(data.data, function (index, item) {
-                      $('#role').append(new Option(item.rolename, item.r_id));// 下拉菜单里添加元素
-                  });
-                  if ('${(echouser.r_id)!''}' != ''){
-                      $("#role").val('${(echouser.r_id)!''}');
-                  }
-                  form.render("select");
-              }
-         })
-         
-         $("#dw").click(function(){
-            index =layer.open({
+            
+         lay$(".layui-form").on('click','.dw', function () {
+            var demo=lay$(this);
+            console.log(demo)
+            var index =layer.open({
                  title: '单位（科室）',
                  type: 1,
                  area: ['314px', '400px'],
-                 content:$("#dw_box"),
+                 content:lay$("#dw_box"),
                  success:function(layero,index){
+                    setting.async.url="${ctx}/xtgl/zzgl/zzjg/ztree/list";
+                    tree = $.fn.zTree.init($("#left_tree"), setting);
+                    lay$(".dw-btn").click(function (e) { 
+                        e.preventDefault();
+                        var node= tree.getSelectedNodes();
+                        dwCallback(node,demo);
+                        layer.close(index);
+                    });
+
+                 },
+                 end:function(){
+                    lay$(".dw-btn").unbind();
                  }
              });
-         })
-         
-         $("#zw").click(function(){
+         });
+         lay$(".layui-form").on('click','.zw', function () {
+            var demo=lay$(this);
+            console.log(demo)
+            setting.async.url="${ctx}/xtgl/zzgl/zwgl/ztree/list";
             index =layer.open({
                  title: '职务',
                  type: 1,
                  area: ['314px', '400px'],
-                 content:$("#zw_box"),
+                 content:lay$("#dw_box"),
                  success:function(layero,index){
+                    tree =$.fn.zTree.init($("#left_tree"), setting);  
+                    lay$(".dw-btn").click(function (e) { 
+                        e.preventDefault();
+                        var node= tree.getSelectedNodes();
+                        dwCallback(node,demo);
+                        layer.close(index);
+                    });                  
+                 },
+                 end:function(){
+                    lay$(".dw-btn").unbind();
                  }
              });
-         })
-         
-         $("#dw").on('click','.fa',function(e){
-			e.stopPropagation(); 
-			var id = $(this).parent().attr("data-id")
-			var node = zTreeObj.getNodeByParam("id", id, null);
-			zTreeObj.checkNode(node,false,false,false)
-			$(this).parent().remove();
-		 });
-          
-         $("#zw").on('click','.fa',function(e){
-			e.stopPropagation(); 
-			var id = $(this).parent().attr("data-id")
-			var node = zTreeObj2.getNodeByParam("id", id, null);
-			zTreeObj2.checkNode(node,false,false,false)
-			$(this).parent().remove();
-		 });
-         
-         $("#dw_save").click(function(){
-        	 var nodes = zTreeObj.getCheckedNodes(true);
-        	 saveDate(nodes,'dw',true);
-        	 layer.close(index)
-         })
-         
-         $("#zw_save").click(function(){
-        	 var nodes = zTreeObj2.getCheckedNodes(true);
-        	 saveDate(nodes,'zw',false);
-        	 layer.close(index)
-         })
+         });        
+
          
          form.verify({
              onlyUname: function (value) {
@@ -404,9 +287,43 @@ $(document).ready(function(){
              });
              return false;
          });
-     })
-});
-
+         lay$("#dw_add_btn").click(function(){
+            dwNum++;
+            var html='<div class="layui-form-item">'+
+                     '<label class="layui-form-label">单位（科室）:</label>'+
+                     '<div class="layui-inline">'+
+                     '<div class="layui-input tree-input dw">'+
+                     '</div>'+
+                     '</div>'+
+                     '<label class="layui-form-label">职务名称:</label>'+
+                     '<div class="layui-inline">'+
+                     '<div class="layui-input tree-input zw"></div>'+
+                     '<i class="fa fa-times del-dw"></i>'+
+                     '</div>'+
+                     '</div>';
+            lay$("#btn_box").before(html);
+            return dwNum;
+         })
+         lay$(".layui-form").on('click','.del-dw',function () {
+                lay$(this).parent().parent().remove();
+         });
+/***************方法*****************/
+    function roleData() {
+        $.ajax({
+            url: '${ctx}/xtgl/zzgl/yhgl/getRoleSelect?status=1',
+            dataType: 'json',
+            type: 'get',
+            success: function (data) {
+            $.each(data.data, function (index, item) {
+            $('#role').append(new Option(item.rolename, item.r_id));// 下拉菜单里添加元素
+            });
+            if ('${(echouser.r_id)!''}' != ''){
+            $("#role").val('${(echouser.r_id)!''}');
+            }
+            form.render("select");
+            }
+        })
+}roleData();
 //保存数据
 function saveDate(node,id,flag){
 	var data = [];
@@ -427,17 +344,14 @@ function saveDate(node,id,flag){
     dwCallback(data,id)
 }
 
-function dwCallback(data,id) { 
-	var getTpl=dw_demo.innerHTML,view=document.getElementById(id);
-	if(data.length > 0){
-		$.each(data, function (i, v) {
-			laytpl(getTpl).render(data, function (html) {
-				view.innerHTML = html;
-			})
-		})
-	} else {
-		view.innerHTML = "";
-	}
+function dwCallback(data,demo) { 
+    demo.html("");
+    var name=data[0].name;
+    var id=data[0].id;
+    var html='<span data-id="'+id+'">'+name+'</span>';
+    demo.append(html);
+    console.log(demo)
+    return false
 }
 </script>
 </body>
