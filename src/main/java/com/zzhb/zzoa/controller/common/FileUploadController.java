@@ -2,26 +2,23 @@ package com.zzhb.zzoa.controller.common;
 
 import com.alibaba.fastjson.JSONObject;
 import com.zzhb.zzoa.config.Props;
+import com.zzhb.zzoa.mapper.JournalMapper;
 import com.zzhb.zzoa.service.AttachmentService;
 import com.zzhb.zzoa.utils.UUIDUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import javax.jws.Oneway;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -34,6 +31,9 @@ public class FileUploadController{
 
     @Autowired
     AttachmentService attachmentService;
+
+    @Autowired
+    JournalMapper journalMapper;
 
     private static List<String> uploadSuffix = new ArrayList<>();
     /**
@@ -180,41 +180,32 @@ public class FileUploadController{
 
     /**
      * 文件下载接口
-     * @param filePath  文件上传时，返回的相对路径
-     * @param response
-     * @param isOnLine  传入true，表示打开，但是打开的是浏览器能识别的文件，比如图片、pdf，word等无法打开
-     *                  传入false,只是下载，如果不传入这个参数默认为false
-     * @throws Exception
      */
-    @RequestMapping(value = "/downloadFile",method = RequestMethod.GET)
-    public void downLoad(String filePath, HttpServletResponse response, boolean isOnLine) throws Exception {
-        isOnLine = false;//只是下载
-        String dir = props.getTempPath();
-        File f = new File(dir+filePath);
-        if (!f.exists()) {
-            response.sendError(404, "File not found!");
-            return;
+    @GetMapping("/downloadFile")
+    public void downLoad(@RequestParam Map<String, String> params,HttpServletRequest request,HttpServletResponse response) throws Exception {
+        String fileId = "";
+        String fileName = "";
+        //1.获取要下载的文件的绝对路径
+        List<Map<String,String>> attlist = journalMapper.getAtt(params);
+        if(attlist.size() > 0){
+            Map<String,String> attmap = attlist.get(0);
+            fileId = attmap.get("url");
+            fileName = attmap.get("attach_name");
         }
-        String fileName = f.getName();
-        fileName = new String(fileName.getBytes("UTF-8"), "ISO-8859-1");
-
-        BufferedInputStream br = new BufferedInputStream(new FileInputStream(f));
-        byte[] buf = new byte[1024];
+        String realPath = props.getTempPath()+fileId;
+        response.reset();
+        response.setContentType("text/html;charset=UTF-8");
+        request.setCharacterEncoding("UTF-8");
+        response.setContentType("application/octet-stream;charset=utf-8");
+        //3.设置content-disposition响应头控制浏览器以下载的形式打开文件
+        response.setHeader("content-disposition", "attachment;filename=\""+ new String(fileName.getBytes("gb2312"),"ISO-8859-1"));
+        InputStream in = new FileInputStream(realPath);//获取文件输入流
         int len = 0;
-        response.reset(); // 非常重要
-        if (isOnLine) { // 在线打开方式
-            URL u = new URL("file:///" + dir+filePath);
-            response.setContentType(u.openConnection().getContentType());
-            response.setHeader("Content-Disposition", "inline; filename=" + fileName);
-            // 文件名应该编码成UTF-8
-        } else { // 纯下载方式
-            response.setContentType("application/x-msdownload");
-            response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
-        }
+        byte[] buffer = new byte[1024];
         OutputStream out = response.getOutputStream();
-        while ((len = br.read(buf)) > 0)
-            out.write(buf, 0, len);
-        br.close();
-        out.close();
+        while ((len = in.read(buffer)) > 0) {
+            out.write(buffer,0,len);//将缓冲区的数据输出到客户端浏览器
+        }
+        in.close();
     }
 }

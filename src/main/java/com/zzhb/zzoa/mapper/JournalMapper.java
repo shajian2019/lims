@@ -21,4 +21,8 @@ public interface JournalMapper {
     public String getRecname(Map<String,String> map);
 
     public List<String> getSubmit(Map<String,String> map);
+
+    public List<String> getAttIds(Map<String,String> map);
+
+    public List<Map<String,String>> getAtt(Map<String,String> map);
 }

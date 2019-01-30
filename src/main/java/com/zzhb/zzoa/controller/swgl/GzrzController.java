@@ -127,4 +127,10 @@ public class GzrzController {
         mv.setViewName("swgl/gzrz/detail");
         return mv;
     }
+
+    @PostMapping("/getAttachments")
+    @ResponseBody
+    public JSONObject getAttachments(Integer page, Integer limit,@RequestParam Map<String, String> params){
+        return journalService.getAttachments(1, Integer.MAX_VALUE,params);
+    }
 }

@@ -78,6 +78,31 @@
             </if>
         </where>
     </select>
+
+    <select id="getAttIds" resultType="java.lang.String" parameterType="java.util.Map">
+        SELECT
+        attachment_id
+        FROM aff_t_journal
+        <where>
+            <if test="uniqueid != null and uniqueid != ''">
+                AND uniqueid = #{uniqueid}
+            </if>
+        </where>
+    </select><select id="getAtt" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        attach_id,
+        attach_name,
+        attach_type,
+        createtime,
+        url
+        FROM aff_t_attachment
+        <where>
+            <if test="attach_id != null and attach_id != ''">
+                AND attach_id = #{attach_id}
+            </if>
+        </where>
+    </select>
+
     <!--<delete id="delCarById" parameterType="java.util.Map">-->
         <!--DELETE FROM aff_car_info-->
         <!--<where>-->

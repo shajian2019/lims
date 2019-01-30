@@ -7,18 +7,13 @@
 
     </insert>
 
-    <select id="getCarType" resultType="com.zzhb.zzoa.domain.CarTypeInfo" parameterType="java.util.Map">
-        SELECT
-        t_id,
-        type_info
-        FROM aff_car_info_type
-    </select>
-    <select id="getCarStatus" resultType="com.zzhb.zzoa.domain.CarStatusInfo" parameterType="java.util.Map">
-        SELECT
-        s_id,
-        status_info
-        FROM aff_car_info_status
-    </select>
+
+    <!--<select id="getCarStatus" resultType="com.zzhb.zzoa.domain.CarStatusInfo" parameterType="java.util.Map">-->
+        <!--SELECT-->
+        <!--s_id,-->
+        <!--status_info-->
+        <!--FROM aff_car_info_status-->
+    <!--</select>-->
 
     <delete id="delCarById" parameterType="java.util.Map">
         DELETE FROM aff_car_info

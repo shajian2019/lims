@@ -189,7 +189,6 @@
     </style>
 </head>
 <body>
-
 <form class="layui-form" lay-filter="edit" style="margin: 5% auto 0;padding-bottom: 60px;">
     <div class="layui-form-item">
         <label class="layui-form-label">今日工作内容：</label>
@@ -238,13 +237,12 @@
     <div class="layui-form-item">
         <label class="layui-form-label">附件：</label>
         <div class="layui-inline">
-            <!--<button type="button" class="layui-btn layui-btn-primary" id="testList">选择</button>-->
-            <!--<button type="button" class="layui-btn layui-btn-normal" id="testListAction" style="margin-left:12px;">上传-->
-            </button>
         </div>
         <div class="layui-upload-list">
             <table class="layui-table">
-                <tbody id="demoList"></tbody>
+                <tbody id="demoList">
+
+                </tbody>
             </table>
         </div>
 
@@ -256,7 +254,7 @@
 
 <script src="${ctx}/plugins/layui/layui.js"></script>
 <script type="text/javascript">
-    var $ = layui.jquery, treeSelect = layui.treeSelect, form = layui.form, layer = layui.layer, upload = layui.upload;
+    var layer = layui.layer;
     var sprs = [];
     var attachs = [];
     layui.config({
@@ -271,6 +269,28 @@
         var dtree = layui.dtree;
         var form = layui.form
         getSprs("spr_add", "spr", "receiver");
+
+        //加载附件
+        $.ajax({
+            type: "POST",
+            dataType: 'json',
+            url: "${ctx}/swgl/gzrz/getAttachments?uniqueid=${params.uniqueid}",
+            beforeSend: function () {
+                index = layer.load(1);
+            },
+            success: function (data) {
+                if(data != null){
+                    $.each(data.data, function(index, item) {
+                        var html = '<tr><td><a href="${ctx}/file/downloadFile?attach_id='+item.attach_id+'">'+item.attach_name+'</a></td></tr>';
+                        $("#demoList").append(html);
+                    })
+                }
+            },
+            // error: function (data) {
+            //     layer.msg("服务端异常");
+            // }
+        });
+
 
         //上传附件
         var demoListView = $('#demoList')
@@ -475,8 +495,8 @@
         };
 
 
-
     })
+
 </script>
 </body>
 </html>

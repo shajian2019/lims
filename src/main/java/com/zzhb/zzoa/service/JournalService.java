@@ -95,4 +95,31 @@ public class JournalService {
         }
         return result;
     }
+
+    public JSONObject getAttachments(Integer page, Integer limit,Map<String, String> params){
+        PageHelper.startPage(page, limit);
+        List<String> attIDs = journalMapper.getAttIds(params);
+        attIDs.removeAll(Collections.singleton(null));
+        List<Map<String,String>> attList = new ArrayList<>();
+        if(attIDs.size() > 0 && attIDs != null){
+            String attID = attIDs.get(0);
+            String[] attIdArr = attID.split(",");
+            if(attIdArr.length>0){
+                for(String s:attIdArr){
+                    if(s != null && !"".equals(s)){
+                        Map<String,String> m = new HashMap<>();
+                        m.put("attach_id",s);
+                        List<Map<String,String>> attachment = journalMapper.getAtt(m);
+                        attList.addAll(attachment);
+                    }
+
+                }
+                PageInfo<Map<String,String>> pageInfo = new PageInfo<Map<String,String>>(attList);
+                return LayUiUtil.pagination(pageInfo);
+            }
+        }else{
+            return null;
+        }
+        return null;
+    }
 }
