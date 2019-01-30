@@ -1,6 +1,5 @@
 package com.zzhb.zzoa.controller.xtgl;
 
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.zzhb.zzoa.domain.Job;
 import com.zzhb.zzoa.domain.Org;
 import com.zzhb.zzoa.domain.User;
-import com.zzhb.zzoa.mapper.JobUserMapper;
 import com.zzhb.zzoa.mapper.OrgUserMapper;
 import com.zzhb.zzoa.mapper.RoleMapper;
 import com.zzhb.zzoa.mapper.UserMapper;
@@ -46,9 +44,6 @@ public class ZzglController {
 	@Autowired
 	OrgUserMapper orgUserMapper;
 
-	@Autowired
-	JobUserMapper jobUserMapper;
-
 	@GetMapping("/yhgl")
 	public String yhgl() {
 		return "xtgl/zzgl/yhgl/yhgl";
@@ -74,20 +69,18 @@ public class ZzglController {
 		if (u_id != null && !"".equals(u_id)) {
 			User user = userMapper.getUserById(u_id);
 			model.addObject("echouser", user);
-			List<Map<String, String>> userOrgs = orgUserMapper.getUserOrg(u_id);
-			List<Map<String, String>> userJobs = jobUserMapper.getUserJob(u_id);
-			model.addObject("userOrgs", userOrgs);
-			model.addObject("userJobs", userJobs);
+			model.addObject("userOrgs", null);
+			model.addObject("userJobs", null);
 		}
 		model.addObject("map", map);
 		model.setViewName(url);
 		return model;
 	}
 
-	@PostMapping("/yhgl/changOrAdd")
+	@PostMapping("/yhgl/changeOrAdd")
 	@ResponseBody
 	public Integer addUser(User user, @RequestParam Map<String, String> map) {
-		return userService.changOrAdd(user, map);
+		return userService.changeOrAdd(user, map);
 	}
 
 	@PostMapping("/yhgl/updateUser")

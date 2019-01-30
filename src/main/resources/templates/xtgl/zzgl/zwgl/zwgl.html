@@ -20,7 +20,7 @@
 <body class="layui-layout-body" style="padding: 5px">
 <form class="layui-form" id="query"lay-filter="query">
         <div class="layui-inline">
-            <input class="layui-input" type="text" placeholder="职位名称" name="likename">
+            <input class="layui-input" type="text" placeholder="职务名称" name="likename">
         </div>
         <div class="layui-inline">
             <a class="layui-btn layui-btn-primary" lay-submit="" lay-filter="query" datatype="reload">查询</a>
@@ -168,7 +168,7 @@
           			    			layer.closeAll();
           	                    });
           			    	}else if(data == -1){
-          			    		layer.msg("此职位名称已存在")
+          			    		layer.msg("此职务名称已存在")
           			    	}else{
           			    		layer.msg("修改失败")
           			    	}
@@ -264,7 +264,7 @@
   			    			layer.closeAll();
   	                    });
   			    	}else if(data == -1){
-  			    		layer.msg("此职位名称已存在")
+  			    		layer.msg("此职务名称已存在")
   			    	}else{
   			    		layer.msg("新增失败")
   			    	}

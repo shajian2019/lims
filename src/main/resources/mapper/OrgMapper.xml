@@ -97,12 +97,6 @@
         </foreach>
 	</insert>
 	
-	<select id="getOrgByUid" resultType="com.zzhb.zzoa.domain.Org" parameterType="java.lang.String">
-		SELECT o.o_id id,o.o_name name,createtime,updatetime FROM sys_t_org o LEFT JOIN sys_t_user_org org
-		on o.o_id = org.o_id
-		WHERE org.u_id = #{u_id}
-	</select>
-	
 	<select id="getAddUsers" resultType="java.util.Map">
 		SELECT
 			* 

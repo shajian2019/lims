@@ -1,7 +1,6 @@
 package com.zzhb.zzoa.service;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,11 +14,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zzhb.zzoa.domain.User;
-import com.zzhb.zzoa.mapper.JobUserMapper;
 import com.zzhb.zzoa.mapper.OrgMapper;
 import com.zzhb.zzoa.mapper.OrgUserMapper;
 import com.zzhb.zzoa.mapper.RoleMapper;
 import com.zzhb.zzoa.mapper.UserMapper;
+import com.zzhb.zzoa.mapper.UserOrgJobMapper;
 import com.zzhb.zzoa.utils.LayUiUtil;
 
 @Service
@@ -44,7 +43,7 @@ public class UserService {
 	OrgUserMapper orgUserMapper;
 
 	@Autowired
-	JobUserMapper jobUserMapper;
+	UserOrgJobMapper userOrgJobMapper;
 
 	public User getUser(String username) {
 		return userMapper.getUser(username);
@@ -63,14 +62,12 @@ public class UserService {
 
 	@Transactional
 	public Integer delUserById(String u_id) {
-		orgUserMapper.delUserOrgByUid(u_id);
-		jobUserMapper.delUserJobByUid(u_id);
+		userOrgJobMapper.delByUId(u_id);
 		return userMapper.delUser(u_id);
 	}
 
 	@Transactional
-	public Integer changOrAdd(User user, Map<String, String> map) {
-		Map<String, Object> params = new HashMap<>();
+	public Integer changeOrAdd(User user, Map<String, String> map) {
 		Integer addUser = 0;
 		if (user.getU_id() == null) {
 			Object result = new SimpleHash("MD5", user.getPassword(), user.getUsername(), 1);
@@ -78,21 +75,8 @@ public class UserService {
 			user.setStatus("0");
 			addUser = userMapper.addUser(user);
 		} else {
-			orgUserMapper.delUserOrgByUid(user.getU_id() + "");
-			jobUserMapper.delUserJobByUid(user.getU_id() + "");
+			userOrgJobMapper.delByUId(user.getU_id() + "");
 			addUser = userMapper.updateUser(user);
-		}
-
-		params.put("u_id", user.getU_id());
-		String o_ids = map.get("o_ids");
-		if (o_ids != null) {
-			params.put("o_ids", Arrays.asList(o_ids.split(",")));
-			orgUserMapper.addUserOrgs(params);
-		}
-		String j_ids = map.get("j_ids");
-		if (j_ids != null) {
-			params.put("j_ids", Arrays.asList(j_ids.split(",")));
-			jobUserMapper.addUserJobs(params);
 		}
 		return addUser;
 	}

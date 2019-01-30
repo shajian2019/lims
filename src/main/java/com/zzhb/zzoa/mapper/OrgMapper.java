@@ -3,7 +3,6 @@ package com.zzhb.zzoa.mapper;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
@@ -28,8 +27,6 @@ public interface OrgMapper {
 	public Integer delUserOrgByOid(@Param("orgs") List<Org> orgs);
 
 	public List<Map<String, String>> getUsers(Map<String, String> params);
-
-	public List<Org> getOrgByUid(String u_id);
 
 	public List<Map<String, String>> getAddUsers(Map<String, String> params);
 

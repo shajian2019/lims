@@ -101,11 +101,6 @@ public class ZzjgService {
 	}
 
 	@Transactional
-	public Integer zzjgUserDel(String u_id) {
-		return orgUserMapper.delUserOrgByUid(u_id);
-	}
-
-	@Transactional
 	public Integer zzjgAdd(Org org) {
 		Map<String, String> params = new HashMap<>();
 		Integer addOrg = 0;

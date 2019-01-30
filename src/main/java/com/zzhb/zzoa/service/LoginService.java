@@ -37,8 +37,6 @@ public class LoginService {
 		logger.debug("=======user======" + user.getUsername() + "=======role====" + role);
 		session.setAttribute(Constant.ROLE, role);
 		session.setAttribute(Constant.USER, user);
-		List<Org> orgs = orgMapper.getOrgByUid(user.getU_id() + "");
-		session.setAttribute(Constant.ORG, orgs);
 		userMapper.updateRecentlogin(user);
 		logger.debug("=====更新用户登录时间==user======" + user.getUsername());
 	}
