@@ -13,7 +13,8 @@
 	body{display: flex;align-items: stretch;}
 	section{flex-grow: 1;}
 	a{display: block;height: 100%;line-height: 100%;}
-	.column{border: 1px solid #e5e5e5;margin-bottom: 8px;}
+	.column{border: 1px solid #e5e5e5;margin-bottom: 8px;min-height:325px;}
+    .column-main{height:auto;}
 	.column .tit{display: flex;align-items: center;justify-content: space-between;padding: 4px 10px;background-color: #f2f5f7;height: 32px;}
 	.column .tit h3 .fa{color: #1196d9;margin-right: 6px;}
 	.column .tit-r{color: #1196d9;height: auto;}
@@ -61,7 +62,7 @@
 	.rwtj-right .rwtj-nav{text-align: center;}
 	.rwtj-right .rwtj-nav>p{margin-top: 5px;}
 	/*统计图表*/
-	#chat_main{width: 380px;height: 240px;}
+	#chat_main{width: 380px;height:280px;}
 	/*日程计划*/
 	.laydate-theme-zdy{width: 100%;border: none !important;box-shadow: none !important;}
 	.laydate-theme-zdy .layui-laydate-main{width: 380px;}
@@ -73,7 +74,7 @@
 	/*系统消息*/
 	#xtxx_main ul{padding: 5px 10px;}
 	#xtxx_main ul li>a{display: flex;align-content: center;justify-content: space-between;line-height: 30px;border-bottom: 1px dashed #e5e5e5;}
-	#xtxx_main ul li>a .fa{color: #6189bb;margin-right: 5px;}	
+	#xtxx_main ul li>a .fa{color: #6189bb;margin-right: 5px;}
 </style>
 </head>
 <body style="padding:5px;">
@@ -94,7 +95,7 @@
 					<li><span>本年已超时:</span><span><span class="num" style="background-color:#e93883;">5</span>条</span></li>
 				</ul>
 			</div>
-			
+
 		</div>
 		<!-- 快捷菜单 -->
 		<div id="rwyj" class="column">
@@ -118,7 +119,7 @@
 						<li><a href="#"><img src="${ctx}/image/home/gzzd.png" alt=""><p>规章制度</p></a></li>
 					</ul>
 				</div>
-				
+
 			</div>
 	</section>
 	<section class="center-box">
@@ -167,12 +168,24 @@
 											<td><span>审批中</span></td>
 											<td>2018-11-27</td>
 										</tr>
+                                        <tr class="dbsx-list-main">
+                                            <td>AH2018110001</td>
+                                            <td>程飞-工作日志</td>
+                                            <td><span>审批中</span></td>
+                                            <td>2018-11-27</td>
+                                        </tr>
+                                        <tr class="dbsx-list-main">
+                                            <td>AH2018110001</td>
+                                            <td>程飞-工作日志</td>
+                                            <td><span>审批中</span></td>
+                                            <td>2018-11-27</td>
+                                        </tr>
 									</table>
 								</div>
 								<div class="layui-tab-item">内容2</div>
 							</div>
 						</div>
-				</div>			
+				</div>
 		</div>
 		<div class="flex-box">
 		<!-- 通知通告 -->
@@ -188,7 +201,10 @@
 						<li><a href="#"><p><i class="fa fa-caret-right"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
 						<li><a href="#"><p><i class="fa fa-caret-right"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
 						<li><a href="#"><p><i class="fa fa-caret-right"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
-						<li><a href="#"><p><i class="fa fa-caret-right"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
+                        <li><a href="#"><p><i class="fa fa-caret-right"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
+                        <li><a href="#"><p><i class="fa fa-caret-right"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
+                        <li><a href="#"><p><i class="fa fa-caret-right"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
+                        <li><a href="#"><p><i class="fa fa-caret-right"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
 					</ul>
 				</div>
 			</div>
@@ -205,6 +221,9 @@
 						<li><a href="#"><p><i class="fa fa-envelope-o"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
 						<li><a href="#"><p><i class="fa fa-envelope-o"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
 						<li><a href="#"><p><i class="fa fa-envelope-open-o"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
+                        <li><a href="#"><p><i class="fa fa-envelope-open-o"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
+                        <li><a href="#"><p><i class="fa fa-envelope-open-o"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
+                        <li><a href="#"><p><i class="fa fa-envelope-open-o"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
 						<li><a href="#"><p><i class="fa fa-envelope-open-o"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
 					</ul>
 				</div>
@@ -215,7 +234,7 @@
 			<div class="tit">
 				<h3><i class="fa fa-th-large"></i>任务统计</h3>
 				<a href="#" class="tit-r"><i class="fa fa-angle-right"></i>更多</a>
-			</div>		
+			</div>
 			<div class="column-main" id="rwtj_main">
 				<div class="rwtj-left">
 					<ul>
@@ -224,7 +243,7 @@
 						<li><a href="#"><div class="rwtj-nav"><img src="${ctx}/image/home/rwtj03.png" alt=""><div class="rwtj-nav-r"><span>0</span><p>已办事项</p></div></div></a></li>
 						<li><a href="#"><div class="rwtj-nav"><img src="${ctx}/image/home/rwtj04.png" alt=""><div class="rwtj-nav-r"><span>0</span><p>待阅事项</p></div></div></a></li>
 						<li><a href="#"><div class="rwtj-nav"><img src="${ctx}/image/home/rwtj05.png" alt=""><div class="rwtj-nav-r"><span>0</span><p>已阅事项</p></div></div></a></li>
-						<li><a href="#"><div class="rwtj-nav"><img src="${ctx}/image/home/rwtj06.png" alt=""><div class="rwtj-nav-r"><span>0</span><p>草稿箱&nbsp;&nbsp;</p></div></div></a></li>
+                        <li><a href="#"><div class="rwtj-nav"><img src="${ctx}/image/home/rwtj06.png" alt=""><div class="rwtj-nav-r"><span>0</span><p>草稿箱&nbsp;&nbsp;</p></div></div></a></li>
 					</ul>
 				</div>
 				<div class="rwtj-right">
@@ -235,7 +254,7 @@
 						<li><a href="#"><div class="rwtj-nav"><img src="${ctx}/image/home/rwtj10.png" alt=""><p>累计作废</p></div><p>3</p></a></li>
 					</ul>
 				</div>
-			</div>	
+			</div>
 		</div>
 	</section>
 	<section class="right-box">
@@ -249,7 +268,7 @@
 
 			</div>
 		</div>
-		<!-- 日程计划 -->	
+		<!-- 日程计划 -->
 		<div class="column" id="rcjh">
 			<div class="tit">
 				<h3><i class="fa fa-calendar"></i>日程计划</h3>
@@ -262,7 +281,7 @@
 				<p class="rcjh-plan"><span>日程计划:</span>暂无日程计划</p>
 			</div>
 		</div>
-		<!-- 系统消息 -->	
+		<!-- 系统消息 -->
 		<div class="column" id="xtxx">
 				<div class="tit">
 					<h3><i class="fa fa-bell"></i>系统消息</h3>
@@ -275,6 +294,9 @@
 						<li><a href="#"><p><i class="fa fa-caret-right"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
 						<li><a href="#"><p><i class="fa fa-caret-right"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
 						<li><a href="#"><p><i class="fa fa-caret-right"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
+                        <li><a href="#"><p><i class="fa fa-caret-right"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
+                        <li><a href="#"><p><i class="fa fa-caret-right"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
+                        <li><a href="#"><p><i class="fa fa-caret-right"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
 						<li><a href="#"><p><i class="fa fa-caret-right"></i>建设项目固体废物环境保护治理工程</p> <span></span>2018-11-12</a></li>
 					</ul>
 				</div>
