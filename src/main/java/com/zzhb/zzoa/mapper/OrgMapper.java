@@ -20,8 +20,6 @@ public interface OrgMapper {
 
 	public Integer updateOrg(Org org);
 
-	@Delete("DELETE FROM sys_t_user_org WHERE u_id = #{0}")
-	public Integer delUserOrgByUid(String u_id);
 
 	public Integer addUserOrg(Map<String, Object> params);
 

@@ -65,7 +65,7 @@
     <div class="right-box">
     	 <form class="layui-form" style="padding: 6px 0; ">
 	    	 	<div class="layui-input-inline">
-	                 <select name="status">
+	                 <select name="status" id="status">
 	                     <option value="">全部</option>
 	                     <option value="0">正常</option>
 	                     <option value="1">锁定</option>
@@ -73,10 +73,10 @@
 	                 </select>
 	            </div>
 	            <div class="layui-inline">
-	                <input type="text" class="layui-input" name="username" placeholder="用户账号">
+	                <input type="text" class="layui-input" name="username" id="username" placeholder="用户账号">
 	            </div>
 	            <div class="layui-inline">
-	                <input type="text" class="layui-input" name="nickname" placeholder="用户姓名">
+	                <input type="text" class="layui-input" name="nickname" id="nickname" placeholder="用户姓名">
 	            </div>
 	            <div class="layui-inline">
 	                <a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-primary" lay-submit lay-filter="search">查询</a>
@@ -188,7 +188,20 @@ $(document).ready(function(){
         });
         
         table.on('tool(' + tbID + ')', function (obj) {
-           var param = dtree.getNowParam(dtreeObj);
+        	var nodes = zTreeObj.getSelectedNodes()[0];
+       		var oIds = [];
+        	if(nodes != null){
+        		var o_ids = "";
+        		if(nodes.isParent && nodes.children.length == 0){
+        			oIds.push(nodes.id);
+        		} else if(nodes.isParent && nodes.children.length > 0) {
+        			$.each(nodes.children,function(i,v){
+        				oIds.push(v.id);
+        			})
+        		} else {
+        			oIds.push(nodes.id);
+        		}
+        	}
            var data = obj.data;
            var action = obj.event;
            if (obj.event === 'del') {
@@ -205,7 +218,14 @@ $(document).ready(function(){
                            layer.close(index);
                            if (data > 0) {
                                layer.msg("删除成功", {offset: ['50%'], time: 1000}, function () {
-                                   table.reload(tableId,{o_id:param.nodeId})
+                                   table.reload(tbID,{
+                                	   where: {
+                                		   o_ids: oIds.join(","),
+                                		   username:$("#username").val(),
+                                		   nickname:$("#nickname").val(),
+                                		   status:$("#status").val()
+                                	   }
+								   })
                                });
                            } else {
                                layer.msg("删除失败")
@@ -234,7 +254,6 @@ $(document).ready(function(){
         		} else {
         			oIds.push(nodes.id);
         		}
-        		debugger
         		data.field.o_ids = oIds.join(",");
         	}
         	
@@ -264,17 +283,15 @@ function initRightTable(treeNode){
 }
 
 function add() {
-	var nodes = zTreeObj.getSelectedNodes();
-	var o_id = "";
-	if(nodes[0]){
-		o_id = nodes[0].id
-	}
    	var url = "${ctx}/xtgl/zzgl/yhgl/edit"
        layer.open({
            title: '新增用户',
            type: 2,
            area: ['1038px', '500px'],
-           content: url
+           content: url,
+           end: function(){
+           		table.reload(tbID)
+    	   }
        });
 }
 </script>

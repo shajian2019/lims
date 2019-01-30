@@ -3,6 +3,7 @@ package com.zzhb.zzoa.mapper;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
@@ -15,5 +16,8 @@ public interface OrgUserMapper {
 	public Integer countProcDefByUidAndPid(@Param("u_id") String u_id, @Param("p_id") String p_id);
 
 	public Integer addUserOrgs(Map<String, Object> params);
+
+	@Delete("DELETE FROM sys_t_user_org WHERE u_id = #{0}")
+	public Integer delUserOrgByUid(String u_id);
 
 }

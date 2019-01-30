@@ -53,7 +53,7 @@ public class UserService {
 	public JSONObject getAllUsers(Integer page, Integer limit, Map<String, Object> params) {
 		Object object = params.get("o_ids");
 		if (object != null && !"".equals(object)) {
-			params.put("o_ids", Arrays.asList(object.toString().split(",")));
+			params.put("oIds", Arrays.asList(object.toString().split(",")));
 		}
 		PageHelper.startPage(page, limit);
 		List<Map<String, String>> userList = userMapper.getAllUsers(params);
@@ -63,7 +63,8 @@ public class UserService {
 
 	@Transactional
 	public Integer delUserById(String u_id) {
-		orgMapper.delUserOrgByUid(u_id);
+		orgUserMapper.delUserOrgByUid(u_id);
+		jobUserMapper.delUserJobByUid(u_id);
 		return userMapper.delUser(u_id);
 	}
 
@@ -78,12 +79,12 @@ public class UserService {
 			addUser = userMapper.addUser(user);
 			params.put("u_id", user.getU_id());
 			String o_ids = map.get("o_ids");
-			if (o_ids != null && o_ids.indexOf(",") != -1) {
+			if (o_ids != null) {
 				params.put("o_ids", Arrays.asList(o_ids.split(",")));
 				orgUserMapper.addUserOrgs(params);
 			}
 			String j_ids = map.get("j_ids");
-			if (j_ids != null && j_ids.indexOf(",") != -1) {
+			if (j_ids != null) {
 				params.put("j_ids", Arrays.asList(j_ids.split(",")));
 				jobUserMapper.addUserJobs(params);
 			}

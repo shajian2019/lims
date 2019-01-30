@@ -19,6 +19,7 @@ import com.zzhb.zzoa.domain.Org;
 import com.zzhb.zzoa.mapper.ActivitiMapper;
 import com.zzhb.zzoa.mapper.JobMapper;
 import com.zzhb.zzoa.mapper.OrgMapper;
+import com.zzhb.zzoa.mapper.OrgUserMapper;
 import com.zzhb.zzoa.mapper.UserMapper;
 import com.zzhb.zzoa.utils.LayUiUtil;
 
@@ -36,6 +37,9 @@ public class ZzjgService {
 
 	@Autowired
 	OrgMapper orgMapper;
+
+	@Autowired
+	OrgUserMapper orgUserMapper;
 
 	public JSONObject zzjgList(Map<String, String> params) {
 		JSONObject result = new JSONObject();
@@ -98,7 +102,7 @@ public class ZzjgService {
 
 	@Transactional
 	public Integer zzjgUserDel(String u_id) {
-		return orgMapper.delUserOrgByUid(u_id);
+		return orgUserMapper.delUserOrgByUid(u_id);
 	}
 
 	@Transactional

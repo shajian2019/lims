@@ -18,9 +18,9 @@
           <if test="o_id != null and o_id != ''">
               AND org.o_id = #{o_id}
           </if>
-          <if test="o_ids !=null and o_ids.size() != 0">
+          <if test="oIds !=null and oIds.size() != 0">
 				and org.o_id in 
-				<foreach collection="o_ids" item="o_id" open="(" separator="," close=")">
+				<foreach collection="oIds" item="o_id" open="(" separator="," close=")">
            			#{o_id}
         		</foreach>
 		  </if>
@@ -39,8 +39,8 @@
     </select>
     
     <insert id="addUser" keyProperty="u_id" useGeneratedKeys="true" parameterType="com.zzhb.zzoa.domain.User" >
-        INSERT INTO sys_t_user(username,password,nickname,createtime,email,phone,phonexh,r_id,status)
-        VALUES (#{username},#{password},#{nickname},now(),#{email},#{phone},#{phonexh},#{r_id},#{status})
+        INSERT INTO sys_t_user(username,password,nickname,createtime,bgdh,bgxh,email,phone,phonexh,r_id,status)
+        VALUES (#{username},#{password},#{nickname},now(),#{bgdh},#{bgxh},#{email},#{phone},#{phonexh},#{r_id},#{status})
     </insert>
 
     <update id="updateUser" parameterType="java.util.Map">

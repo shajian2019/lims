@@ -87,15 +87,15 @@
     </div>
 
     <div class="layui-form-item">
+    	<label class="layui-form-label">电子邮箱:</label>
+        <div class="layui-inline">
+            <input class="layui-input" type="text" name="email" value="${(echouser.email)!''}" placeholder="电子邮箱" >
+        </div>
         <label class="layui-form-label"><span class="span_red">*</span> 用户角色:</label>
         <div class="layui-inline">
             <select class="layui-input" name="r_id" id="role" lay-verify="required" lay-search>
                 <option value=""></option>
             </select>
-        </div>
-        <label class="layui-form-label">职务名称:</label>
-        <div class="layui-inline">
-            <div class="layui-input tree-input" id="zw"></div>
         </div>
     </div>
 
@@ -104,9 +104,9 @@
         <div class="layui-inline">
             <div class="layui-input tree-input" id="dw"></div>
         </div>
-        <label class="layui-form-label">电子邮箱:</label>
+        <label class="layui-form-label">职务名称:</label>
         <div class="layui-inline">
-            <input class="layui-input" type="text" name="email" value="${(echouser.email)!''}" placeholder="电子邮箱" >
+            <div class="layui-input tree-input" id="zw"></div>
         </div>
     </div>
 
@@ -345,6 +345,20 @@ $(document).ready(function(){
          });
  	       
          form.on('submit(save)', function (data) {
+             if($("#dw span").length > 0){
+            	 var o_ids = [];
+            	 $.each($("#dw span"),function(i,v){
+            		 o_ids.push($(v).attr("data-id"))
+            	 })
+            	 data.field.o_ids = o_ids.join(",");
+             }
+             if($("#zw span").length > 0){
+            	 var j_ids = [];
+            	 $.each($("#zw span"),function(i,v){
+            		 j_ids.push($(v).attr("data-id"))
+            	 })
+            	 data.field.j_ids = j_ids.join(",");
+             }
              console.log(data.field)
              var url = "${ctx}/xtgl/zzgl/yhgl/changOrAdd";
              $.ajax({
