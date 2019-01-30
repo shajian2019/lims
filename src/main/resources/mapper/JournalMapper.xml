@@ -103,6 +103,25 @@
         </where>
     </select>
 
+<select id="getRzyb" resultType="java.util.Map" parameterType="java.util.Map">
+    select count(*) as sumary,a.submitter,a.username,date_format(a.submit_time,'%Y-%m') as subtime from
+    (
+    select DISTINCT b.uniqueid,b.submitter,c.username,b.submit_time from aff_t_journal b,sys_t_user c
+    <where>
+        and b.submitter = c.u_id
+        <if test="submit_time != null and submit_time != ''">
+        and date_format(b.submit_time,'%Y-%m')=#{submit_time}
+        </if>
+        <if test="username != null and username != ''">
+        <bind name="_username" value="'%'+username+'%'"/>
+        AND c.username like #{_username}
+        </if>
+    </where>
+    ) a
+    GROUP BY a.submitter
+</select>
+
+
     <!--<delete id="delCarById" parameterType="java.util.Map">-->
         <!--DELETE FROM aff_car_info-->
         <!--<where>-->

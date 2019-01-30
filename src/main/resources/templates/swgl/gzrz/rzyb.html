@@ -35,11 +35,11 @@
 <form class="layui-form" id="query">
     <div class="layui-form-item">
         <div class="layui-inline">
-        <input class="layui-input" type="text" placeholder="提交人" name="car_model" id="car_model">
+        <input class="layui-input" type="text" placeholder="提交人" name="username" id="username">
         </div>
-        <!--<div class="layui-inline">-->
-            <!--<input class="layui-input" type="text" placeholder="提交时间" name="submit_time" id="submit_time">-->
-        <!--</div>-->
+        <div class="layui-inline">
+            <input class="layui-input" type="text" placeholder="提交时间" name="subtime" id="subtime">
+        </div>
         <div class="layui-inline">
             <a class="layui-btn layui-btn-primary" lay-submit="" lay-filter="query" datatype="reload">查询</a>
         </div>
@@ -64,7 +64,8 @@
     layui.use(['table','laydate'], function () {
         var laydate = layui.laydate;
         laydate.render({
-            elem: '#submit_time'
+            elem: '#subtime'
+            ,type: 'month'
         });
 
         var table = layui.table;
@@ -72,21 +73,20 @@
         form = layui.form;
         table.render({
             elem: '#' + tableId
-            , url: '${ctx}/swgl/gzrz/getMyJournalInfo'//后台接受路径
+            , url: '${ctx}/swgl/gzrz/getrzyb'//后台接受路径
             , page: true
             , id: tableId
             , height: 'full-80'
             , method: 'get'
             , cols: [[
                 {field: '序号',width:50,fixed:'left',type:'numbers',title:'序号'}
-                ,{field: 'today_work_content', title: '当日工作内容'}
-                ,{field: 'unfinished_work', title: '未完成工作'}
-                ,{field: 'coordinated_work', width: 140, title: '需协调工作'}
-                , {field: 'submit_time', width: 150, title: '提交时间'}
-                ,{
-                    title: '操作', align: 'center',width: 170,
-                    toolbar: '#rightBar'
-                }
+                ,{field: 'username', title: '提交人'}
+                ,{field: 'subtime', title: '时间'}
+                ,{field: 'sumary', width: 140, title: '提交日志数量'}
+                // ,{
+                //     title: '操作', align: 'center',width: 170,
+                //     toolbar: '#rightBar'
+                // }
             ]]
         });
 
@@ -120,7 +120,7 @@
                 });
 
             } else if(action == 'detail'){
-                var url = "${ctx}/swgl/gzrz/journalDetail?flag=${flag}&j_id="+data.j_id
+                var url = "${ctx}/swgl/gzrz/journalDetail?flag=&j_id="+data.j_id
                     +"&submit_time="+data.submit_time
                     +"&today_work_content="+data.today_work_content
                     +"&unfinished_work="+data.unfinished_work

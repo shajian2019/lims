@@ -12,6 +12,7 @@ import com.zzhb.zzoa.utils.UUIDUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -121,5 +122,24 @@ public class JournalService {
             return null;
         }
         return null;
+    }
+
+    public JSONObject getRzyb(Integer page, Integer limit, Map<String, String> params) {
+        PageHelper.startPage(page, limit);
+        String mouth = "";
+        if(!params.containsKey("subtime") || params.get("subtime").equals("") || params.get("subtime") == null){
+            mouth = getMouth();//获取到2019-01这种类型的数据
+            params.put("subtime",mouth);
+        }
+        List<Map<String,String>> ybList = journalMapper.getRzyb(params);
+        PageInfo<Map<String,String>> pageInfo = new PageInfo<Map<String,String>>(ybList);
+        return LayUiUtil.pagination(pageInfo);
+    }
+
+    public String getMouth() {
+        Date d = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String date = sdf.format(d);
+        return date.substring(0,7);
     }
 }

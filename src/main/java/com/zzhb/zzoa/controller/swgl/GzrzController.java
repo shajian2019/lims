@@ -133,4 +133,10 @@ public class GzrzController {
     public JSONObject getAttachments(Integer page, Integer limit,@RequestParam Map<String, String> params){
         return journalService.getAttachments(1, Integer.MAX_VALUE,params);
     }
+
+    @GetMapping("/getrzyb")
+    @ResponseBody
+    public JSONObject getRzyb(Integer page, Integer limit,@RequestParam Map<String, String> params){
+        return journalService.getRzyb(page,limit,params);
+    }
 }

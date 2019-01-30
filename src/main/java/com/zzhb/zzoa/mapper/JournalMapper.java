@@ -25,4 +25,6 @@ public interface JournalMapper {
     public List<String> getAttIds(Map<String,String> map);
 
     public List<Map<String,String>> getAtt(Map<String,String> map);
+
+    public List<Map<String,String>> getRzyb(Map<String,String> map);
 }
