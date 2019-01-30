@@ -120,7 +120,7 @@ public class GzrzController {
             //全局日志,处理好提交人，根据uniqueid查到提交人
             Map<String,String> map = new HashMap<>();
             map.put("u_id",params.get("uniqueid"));
-            String submit = journalService.getReceivers(params.get("uniqueid"));
+            String submit = journalService.getSubmitter(params.get("uniqueid"));
             params.put("submitter",submit);
         }
         mv.addObject("params",params);

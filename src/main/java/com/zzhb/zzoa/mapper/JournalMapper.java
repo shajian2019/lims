@@ -19,4 +19,6 @@ public interface JournalMapper {
     public List<Map<String,String>> getReceiveJour(Map<String,String> params);
 
     public String getRecname(Map<String,String> map);
+
+    public List<String> getSubmit(Map<String,String> map);
 }

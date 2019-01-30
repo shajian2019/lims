@@ -84,4 +84,15 @@ public class JournalService {
         }
         return result.substring(0,result.length()-1);
     }
+    public String getSubmitter(String uniqueid){
+        String result = "";
+        Map<String,String> umap = new HashMap<>();
+        umap.put("uniqueid",uniqueid);
+        List<String> m = journalMapper.getSubmit(umap);
+        if(m.size() > 0){
+            result = m.get(0);
+
+        }
+        return result;
+    }
 }

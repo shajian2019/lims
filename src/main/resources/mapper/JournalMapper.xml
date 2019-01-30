@@ -66,6 +66,18 @@
         </where>
     </select>
 
+
+    <select id="getSubmit" resultType="java.lang.String" parameterType="java.util.Map">
+        SELECT
+        a.username
+        FROM sys_t_user a,aff_t_journal b
+        <where>
+            and a.u_id = b.submitter
+            <if test="uniqueid != null and uniqueid != ''">
+                AND b.uniqueid = #{uniqueid}
+            </if>
+        </where>
+    </select>
     <!--<delete id="delCarById" parameterType="java.util.Map">-->
         <!--DELETE FROM aff_car_info-->
         <!--<where>-->
