@@ -49,7 +49,7 @@ public class RoleService {
 		}
 		user.setR_id(Integer.parseInt(params.get("r_id")));
 		user.setStatus(params.get("status"));
-		Integer updateUser = userMapper.updateUser(user);
+		Integer updateUser = userMapper.updateUserStatus(user);
 		cacheService.flushMenus();
 		return updateUser;
 	}

@@ -308,7 +308,7 @@ public class ActivitiService {
 				u_id = vo.getAssignee();
 			}
 			if (u_id != null) {
-				User user = userMapper.getUserById(Integer.parseInt(u_id));
+				User user = userMapper.getUserById(u_id);
 				vo.setAssignee(user.getNickname());
 			}
 			String spyj = "";
@@ -336,7 +336,7 @@ public class ActivitiService {
 			vo.setName(ruTask.getName());
 			vo.setStartTime(TimeUtil.getTimeFromDate("yyyy-MM-dd HH:mm:ss", ruTask.getCreateTime()));
 			if (ruTask.getAssignee() != null) {
-				User user = userMapper.getUserById(Integer.parseInt(ruTask.getAssignee()));
+				User user = userMapper.getUserById(ruTask.getAssignee());
 				vo.setAssignee(user.getNickname());
 			}
 			historicTaskInstanceVOs.add(vo);
@@ -507,7 +507,7 @@ public class ActivitiService {
 				hio.setSftg(JSON.parseObject(comments.get(0).getFullMessage()).getBoolean("agree"));
 			}
 			if (params.get("u_id") == null && hio.getOwerId() != null) {
-				User user = userMapper.getUserById(Integer.parseInt(hio.getOwerId()));
+				User user = userMapper.getUserById(hio.getOwerId());
 				hio.setOwerId(user.getNickname());
 			}
 		}

@@ -77,19 +77,22 @@ public class UserService {
 			user.setPassword(result.toString());
 			user.setStatus("0");
 			addUser = userMapper.addUser(user);
-			params.put("u_id", user.getU_id());
-			String o_ids = map.get("o_ids");
-			if (o_ids != null) {
-				params.put("o_ids", Arrays.asList(o_ids.split(",")));
-				orgUserMapper.addUserOrgs(params);
-			}
-			String j_ids = map.get("j_ids");
-			if (j_ids != null) {
-				params.put("j_ids", Arrays.asList(j_ids.split(",")));
-				jobUserMapper.addUserJobs(params);
-			}
 		} else {
-			
+			orgUserMapper.delUserOrgByUid(user.getU_id() + "");
+			jobUserMapper.delUserJobByUid(user.getU_id() + "");
+			addUser = userMapper.updateUser(user);
+		}
+
+		params.put("u_id", user.getU_id());
+		String o_ids = map.get("o_ids");
+		if (o_ids != null) {
+			params.put("o_ids", Arrays.asList(o_ids.split(",")));
+			orgUserMapper.addUserOrgs(params);
+		}
+		String j_ids = map.get("j_ids");
+		if (j_ids != null) {
+			params.put("j_ids", Arrays.asList(j_ids.split(",")));
+			jobUserMapper.addUserJobs(params);
 		}
 		return addUser;
 	}
@@ -106,8 +109,8 @@ public class UserService {
 		return userMapper.resetPass(map);
 	}
 
-	public Integer countUserByUserName(String username) {
-		return userMapper.countUserByUserName(username);
+	public Integer countUserByUserName(Map<String, String> params) {
+		return userMapper.countUserByUserName(params);
 	}
 
 	public Integer checkPass(User user) {

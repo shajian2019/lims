@@ -20,4 +20,6 @@ public interface OrgUserMapper {
 	@Delete("DELETE FROM sys_t_user_org WHERE u_id = #{0}")
 	public Integer delUserOrgByUid(String u_id);
 
+	@Select("SELECT l.o_id,r.o_name FROM sys_t_user_org l LEFT JOIN sys_t_org r on l.o_id = r.o_id where l.u_id = #{0}")
+	public List<Map<String, String>> getUserOrg(String u_id);
 }

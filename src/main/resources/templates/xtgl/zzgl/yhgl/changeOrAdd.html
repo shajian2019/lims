@@ -41,9 +41,10 @@
 <body>
 <form class="layui-form" lay-filter="edit" style="margin: 4% auto 0;">
     <div class="layui-form-item">
+    	<input type="hidden" name="u_id" value="${(map.u_id)!''}">
         <label class="layui-form-label"><span class="span_red">*</span> 用户账号:</label>
         <div class="layui-inline">
-            <input class="layui-input" type="text" name="username" placeholder="用户账号" lay-verify="onlyUname" <#if map.u_id??>readonly="readonly"</#if>>
+            <input class="layui-input" type="text" name="username" value="${(echouser.username)!''}"  placeholder="用户账号" lay-verify="onlyUname" <#if map.u_id??>readonly="readonly"</#if>>
         </div>
         <label class="layui-form-label"><span class="span_red">*</span> 用户名称:</label>
         <div class="layui-inline">
@@ -102,11 +103,13 @@
     <div class="layui-form-item">
         <label class="layui-form-label">单位（科室）:</label>
         <div class="layui-inline">
-            <div class="layui-input tree-input" id="dw"></div>
+            <div class="layui-input tree-input" id="dw">
+            </div>
         </div>
         <label class="layui-form-label">职务名称:</label>
         <div class="layui-inline">
-            <div class="layui-input tree-input" id="zw"></div>
+            <div class="layui-input tree-input" id="zw">
+            </div>
         </div>
     </div>
 
@@ -213,7 +216,7 @@ $(document).ready(function(){
 	    	   fuzzySearch ("left_tree_zw","#zw_input",false,true);
 	       }
 	});
-	
+	 
     $("#dw_fn").click(function (e) { 
     	zTreeObj.expandAll(expandFlag);
     	if(expandFlag){
@@ -233,12 +236,40 @@ $(document).ready(function(){
         }
     	expandFlag2 = !expandFlag2;
     });
+    
+    
       
      layui.use(['form', 'layer','jquery','laytpl'], function () {
           form = layui.form,
           layer = layui.layer,
           laytpl = layui.laytpl;
     	  var $ = layui.jquery;
+    	  
+		   <#if userOrgs??>
+			   var orgs = [];
+		  		<#list userOrgs as userOrg>
+		  			var org = {};
+		  			org.id = "${userOrg.o_id}"
+		  			var node = zTreeObj.getNodeByParam("id", org.id, null);
+		  			zTreeObj.checkNode(node,true,true)
+		  			org.name = "${userOrg.o_name}"
+		  			orgs.push(org)
+		  	 	</#list>
+		  		dwCallback(orgs,'dw')
+		   </#if>
+		  		
+	  		<#if userJobs??>
+		  		var jobs = [];
+		  		<#list userJobs as userJob>
+		  			var job = {};
+		  			job.id = "${userJob.j_id}"
+		  			var node = zTreeObj2.getNodeByParam("id", job.id, null);
+		  			zTreeObj2.checkNode(node,true,true)
+		  			job.name = "${userJob.j_name}"
+		  			jobs.push(job)
+		  	 	</#list>
+		  		dwCallback(jobs,'zw')
+  		   </#if>
           
           $.ajax({
               url: '${ctx}/xtgl/zzgl/yhgl/getRoleSelect?status=1',
@@ -249,24 +280,12 @@ $(document).ready(function(){
                       $('#role').append(new Option(item.rolename, item.r_id));// 下拉菜单里添加元素
                   });
                   if ('${(echouser.r_id)!''}' != ''){
-                      $("#role").val('${(echor_id)!''}');
+                      $("#role").val('${(echouser.r_id)!''}');
                   }
                   form.render("select");
               }
          })
          
-         $.ajax({
-              url: '${ctx}/xtgl/zzgl/zwgl/getJobSelect?status=1',
-              dataType: 'json',
-              type: 'get',
-              success: function (data) {
-                  $.each(data.data, function (index, item) {
-                      $('#job').append(new Option(item.name, item.id));// 下拉菜单里添加元素
-                  });
-                  form.render("select");
-              }
-         })
-          
          $("#dw").click(function(){
             index =layer.open({
                  title: '单位（科室）',
@@ -324,7 +343,7 @@ $(document).ready(function(){
                  } else {
                      var message = '';
                      $.ajax({
-                         url: '${ctx}/xtgl/zzgl/yhgl/checkUserName?username=' + value,
+                         url: '${ctx}/xtgl/zzgl/yhgl/checkUserName?username=' + value+"&u_id=${(map.u_id)!''}",
                          type: 'get',
                          async: false,
                          success: function (data) {
@@ -359,7 +378,6 @@ $(document).ready(function(){
             	 })
             	 data.field.j_ids = j_ids.join(",");
              }
-             console.log(data.field)
              var url = "${ctx}/xtgl/zzgl/yhgl/changOrAdd";
              $.ajax({
                  type: "POST",
@@ -406,7 +424,6 @@ function saveDate(node,id,flag){
 			data.push(obj);
 		}
     })
-    console.log(data)
     dwCallback(data,id)
 }
 
@@ -415,7 +432,6 @@ function dwCallback(data,id) {
 	if(data.length > 0){
 		$.each(data, function (i, v) {
 			laytpl(getTpl).render(data, function (html) {
-				console.log(html)
 				view.innerHTML = html;
 			})
 		})
