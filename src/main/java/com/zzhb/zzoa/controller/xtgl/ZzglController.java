@@ -72,10 +72,10 @@ public class ZzglController {
 		return model;
 	}
 
-	@PostMapping("/yhgl/addUser")
+	@PostMapping("/yhgl/changOrAdd")
 	@ResponseBody
 	public Integer addUser(User user, @RequestParam Map<String, String> map) {
-		return userService.addUser(user, map);
+		return userService.changOrAdd(user, map);
 	}
 
 	@PostMapping("/yhgl/updateUser")
@@ -97,10 +97,10 @@ public class ZzglController {
 		return userService.resetPass(map);
 	}
 
-	@PostMapping("/yhgl/getUserByName")
+	@GetMapping("/yhgl/checkUserName")
 	@ResponseBody
-	public Integer getUserByName(@RequestParam("username") String username) {
-		return userService.getAllUname(username);
+	public Integer checkUserName(@RequestParam("username") String username) {
+		return userService.countUserByUserName(username);
 	}
 
 	@GetMapping("/zzjg")

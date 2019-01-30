@@ -46,10 +46,8 @@ public class ShiroRealm extends AuthorizingRealm {
 		if (!"0".equals(user.getStatus())) {
 			if ("1".equals(user.getStatus())) {
 				throw new LockedAccountException("账号已锁定");
-			} else if ("2".equals(user.getStatus())) {
-				throw new LockedAccountException("账号已禁用");
 			} else if ("3".equals(user.getStatus())) {
-				throw new LockedAccountException("分配角色已禁用");
+				throw new LockedAccountException("角色已禁用");
 			}
 		} else {
 			Integer r_id = user.getR_id();

@@ -68,26 +68,27 @@ public class UserService {
 	}
 
 	@Transactional
-	public Integer addUser(User user, Map<String, String> map) {
+	public Integer changOrAdd(User user, Map<String, String> map) {
 		Map<String, Object> params = new HashMap<>();
 		Integer addUser = 0;
 		if (user.getU_id() == null) {
 			Object result = new SimpleHash("MD5", user.getPassword(), user.getUsername(), 1);
 			user.setPassword(result.toString());
 			user.setStatus("0");
-			Integer u_id = userMapper.addUser(user);
-			params.put("u_id", u_id);
+			addUser = userMapper.addUser(user);
+			params.put("u_id", user.getU_id());
 			String o_ids = map.get("o_ids");
-			if (o_ids.indexOf(",") != -1) {
+			if (o_ids != null && o_ids.indexOf(",") != -1) {
 				params.put("o_ids", Arrays.asList(o_ids.split(",")));
 				orgUserMapper.addUserOrgs(params);
 			}
 			String j_ids = map.get("j_ids");
-			if (j_ids.indexOf(",") != -1) {
+			if (j_ids != null && j_ids.indexOf(",") != -1) {
 				params.put("j_ids", Arrays.asList(j_ids.split(",")));
 				jobUserMapper.addUserJobs(params);
 			}
 		} else {
+			
 		}
 		return addUser;
 	}
@@ -104,8 +105,8 @@ public class UserService {
 		return userMapper.resetPass(map);
 	}
 
-	public Integer getAllUname(String username) {
-		return userMapper.getCountByName(username);
+	public Integer countUserByUserName(String username) {
+		return userMapper.countUserByUserName(username);
 	}
 
 	public Integer checkPass(User user) {

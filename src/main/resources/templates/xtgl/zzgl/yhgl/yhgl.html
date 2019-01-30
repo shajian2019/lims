@@ -64,8 +64,16 @@
     </div>
     <div class="right-box">
     	 <form class="layui-form" style="padding: 6px 0; ">
+	    	 	<div class="layui-input-inline">
+	                 <select name="status">
+	                     <option value="">全部</option>
+	                     <option value="0">正常</option>
+	                     <option value="1">锁定</option>
+	                     <option value="3">角色已禁用</option>
+	                 </select>
+	            </div>
 	            <div class="layui-inline">
-	                <input type="text" class="layui-input" name="name" placeholder="用户名称">
+	                <input type="text" class="layui-input" name="username" placeholder="用户账号">
 	            </div>
 	            <div class="layui-inline">
 	                <input type="text" class="layui-input" name="nickname" placeholder="用户姓名">
@@ -82,9 +90,15 @@
 </html>
 <script type="text/html" id="switch" >
 		{{# if(d.username == 'superadmin' ) { }}
-    		<input type="checkbox" name="switch" disabled="" lay-skin="switch" lay-filter="switchstatus" lay-text="正常|锁定" checked>
+    		<input type="checkbox" name="switch" disabled="" lay-skin="switch" lay-filter="switchstatus" lay-text="正常|禁用" checked>
 		{{# } else { }}
-    		<input type="checkbox" name="switch" lay-skin="switch" lay-filter="switchstatus" lay-text="正常|锁定" {{ d.status == '0' ? 'checked' : '' }}>
+			{{# if(d.status == '0' ) { }}
+				<span style="color: green;">正常</span>
+    		{{# } else if(d.status == '1') { }}
+				<span style="color: red;">锁定</span>
+			{{# } else { }}
+				<span style="color: orange;">角色已禁用</span>
+			{{# } }}
 		{{# } }}
 </script>
 <script type="text/html" id="rightBar">
@@ -112,6 +126,9 @@ var setting = {
 				zTreeObj.expandNode(treeNode, !treeNode.open, true, false);
 				initRightTable(treeNode);
 			}
+		},
+		view:{
+			selectedMulti: false
 		}
 };
 $(document).ready(function(){
@@ -151,7 +168,7 @@ $(document).ready(function(){
                 {field: '序号',width:50,fixed:'left',type:'numbers',title:'序号'}
                 , {field: 'u_id', hide:true}
                 , {field: 'username', width: 100, title: '用户账号',align: 'center'}
-                , {field: 'nickname', width: 100, title: '用户昵称',align: 'center'}
+                , {field: 'nickname', width: 100, title: '用户名称',align: 'center'}
                 , {field: 'rolename', width: 100, title: '角色名称',align: 'center'}
                 , {field: 'o_name', width: 160, title: '单位（科室）名称',align: 'center'}
                 , {field: 'createtime', width: 170, title: '创建时间',align: 'center'}
@@ -204,9 +221,23 @@ $(document).ready(function(){
         });
         
         form.on('submit(search)', function (data) {
-        	var param = dtree.getNowParam(dtreeObj);
-        	console.log(param)
-        	data.field.o_id = param.nodeId
+        	var nodes = zTreeObj.getSelectedNodes()[0];
+        	if(nodes != null){
+        		var o_ids = "";
+        		var oIds = [];
+        		if(nodes.isParent && nodes.children.length == 0){
+        			oIds.push(nodes.id);
+        		} else if(nodes.isParent && nodes.children.length > 0) {
+        			$.each(nodes.children,function(i,v){
+        				oIds.push(v.id);
+        			})
+        		} else {
+        			oIds.push(nodes.id);
+        		}
+        		debugger
+        		data.field.o_ids = oIds.join(",");
+        	}
+        	
            	rightTB.reload({
                 where: data.field
             });

@@ -87,6 +87,9 @@
             <if test="u_id != null and u_id !='' ">
               	AND u_id = #{u_id}
             </if>
+            <if test="r_id != null and r_id !='' ">
+              	AND r_id = #{r_id}
+            </if>
         </where>
     </update>
     

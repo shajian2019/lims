@@ -47,8 +47,7 @@
         </div>
         <label class="layui-form-label"><span class="span_red">*</span> 用户名称:</label>
         <div class="layui-inline">
-            <input class="layui-input" type="text" name="nickname" value="${(echouser.nickname)!''}" placeholder="用户昵称"
-                lay-verify="required">
+            <input class="layui-input" type="text" name="nickname" value="${(echouser.nickname)!''}" placeholder="用户昵称" lay-verify="required">
         </div>
     </div>
 
@@ -56,12 +55,11 @@
         <div class="layui-form-item">
             <label class="layui-form-label"><span class="span_red">*</span> 密码:</label>
             <div class="layui-inline">
-                <input class="layui-input" type="password" name="password" id="password" placeholder="密码">
+                <input class="layui-input" type="password" name="password" id="password" placeholder="密码" lay-verify="required">
             </div>
             <label class="layui-form-label"><span class="span_red">*</span> 密码确认:</label>
             <div class="layui-inline">
-                <input class="layui-input" type="password" name="sedPassword" id="passwordCheck" placeholder="密码确认"
-                    lay-verify="sedPwd">
+                <input class="layui-input" type="password" name="sedPassword" id="passwordCheck" placeholder="密码确认" lay-verify="sedPwd">
             </div>
         </div>
     </#if>
@@ -80,8 +78,7 @@
     <div class="layui-form-item">
         <label class="layui-form-label">手机号码:</label>
         <div class="layui-inline">
-            <input class="layui-input" type="text" name="phone" value="${(echouser.phone)!''}" placeholder="手机号码"
-                lay-verify="phone">
+            <input class="layui-input" type="text" name="phone" value="${(echouser.phone)!''}" placeholder="手机号码">
         </div>
         <label class="layui-form-label">手机小号:</label>
         <div class="layui-inline">
@@ -92,7 +89,7 @@
     <div class="layui-form-item">
         <label class="layui-form-label"><span class="span_red">*</span> 用户角色:</label>
         <div class="layui-inline">
-            <select class="layui-input" name="role" id="role" lay-search>
+            <select class="layui-input" name="r_id" id="role" lay-verify="required" lay-search>
                 <option value=""></option>
             </select>
         </div>
@@ -109,8 +106,7 @@
         </div>
         <label class="layui-form-label">电子邮箱:</label>
         <div class="layui-inline">
-            <input class="layui-input" type="text" name="email" value="${(echouser.email)!''}" placeholder="电子邮箱"
-                lay-verify="email">
+            <input class="layui-input" type="text" name="email" value="${(echouser.email)!''}" placeholder="电子邮箱" >
         </div>
     </div>
 
@@ -147,7 +143,6 @@
 </div>
 
 <script type="text/html" id="dw_demo">
-    <i class="fa fa-search"></i>
 	{{# layui.each(d, function(index, item){ }}
 		<span data-id="{{item.id}}">{{item.name}}<i class="fa fa-times"></i></span>
 	{{# }); }} 
@@ -171,12 +166,18 @@ var setting = {
 			onClick:function(event, treeId, treeNode){
 				zTreeObj.expandNode(treeNode, !treeNode.open, true, false);
 			}
+		},
+		view:{
+			selectedMulti: false
 		}
 };
 var setting2 = {
 		check: {
 			enable: true,
 			autoCheckTrigger: true
+		},
+		view:{
+			selectedMulti: false
 		}
 };
 
@@ -313,8 +314,8 @@ $(document).ready(function(){
                  } else {
                      var message = '';
                      $.ajax({
-                         url: '${ctx}/xtgl/zzgl/yhgl/getUserByName?username=' + value,
-                         type: 'post',
+                         url: '${ctx}/xtgl/zzgl/yhgl/checkUserName?username=' + value,
+                         type: 'get',
                          async: false,
                          success: function (data) {
                              if (data > 0) {
@@ -334,8 +335,8 @@ $(document).ready(function(){
          });
  	       
          form.on('submit(save)', function (data) {
-             var url = "${ctx}/xtgl/zzgl/yhgl/addUser";
-             var index;
+             console.log(data.field)
+             var url = "${ctx}/xtgl/zzgl/yhgl/changOrAdd";
              $.ajax({
                  type: "POST",
                  data: data.field,
@@ -357,7 +358,7 @@ $(document).ready(function(){
                  },
                  error: function (data) {
                      layer.msg("服务端异常");
-                 }
+                 } 
              });
              return false;
          });

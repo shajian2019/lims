@@ -42,7 +42,7 @@ public interface UserMapper {
 	public Integer resetPass(Map<String, String> map);
 
 	@Select("SELECT COUNT(1) FROM sys_t_user WHERE username = #{0}")
-	public Integer getCountByName(String username);
+	public Integer countUserByUserName(String username);
 
 	public List<User> getUsersByOid(@Param("o_id") String o_id);
 
