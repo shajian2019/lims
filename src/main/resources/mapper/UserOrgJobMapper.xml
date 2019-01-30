@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzhb.zzoa.mapper.UserOrgJobMapper">
+	
+	<insert id="addUserOrgJob" parameterType="java.util.List">
+		INSERT INTO sys_t_user_org_job (u_id,o_id,j_id)
+		VALUES
+		<foreach collection="list" item="item" index="index" separator=",">
+            (#{item.u_id}, #{item.o_id,jdbcType=INTEGER},#{item.j_id,jdbcType=INTEGER})
+        </foreach>
+	</insert>
+	
+</mapper>

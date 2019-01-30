@@ -66,11 +66,14 @@ public class ZzglController {
 		ModelAndView model = new ModelAndView();
 		String u_id = map.get("u_id");
 		String url = "xtgl/zzgl/yhgl/changeOrAdd";
+		String org_jobs = map.get("org_jobs");
 		if (u_id != null && !"".equals(u_id)) {
 			User user = userMapper.getUserById(u_id);
 			model.addObject("echouser", user);
 			model.addObject("userOrgs", null);
 			model.addObject("userJobs", null);
+		} else {
+			
 		}
 		model.addObject("map", map);
 		model.setViewName(url);

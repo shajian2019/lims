@@ -216,9 +216,6 @@ public class ZzjgService {
 			JSONObject orgJ = new JSONObject();
 			orgJ.put("id", job.getId());
 			orgJ.put("name", job.getName());
-			orgJ.put("checked", false);
-			orgJ.put("parentid", "0");
-			orgJ.put("children", new JSONArray());
 			result.add(orgJ);
 		}
 		return result;
