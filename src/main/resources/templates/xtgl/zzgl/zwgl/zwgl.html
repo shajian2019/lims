@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>用户管理</title>
+    <title>职务管理</title>
     <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
      <link href="${ctx}/css/common/reset.css" rel="stylesheet" />
     <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" />
@@ -33,9 +33,9 @@
     <div class="pop" id="pop" style="display: none;">
 		<form class="layui-form" lay-filter="pop">
 		      <div class="layui-form-item">
-		         <label class="layui-form-label">职位名称</label>
+		         <label class="layui-form-label">职务名称</label>
 		         <div class="layui-inline">
-		            <input class="layui-input" type="text" name="name" placeholder="职位名称" lay-verify="required">
+		            <input class="layui-input" type="text" name="name" placeholder="职务名称" lay-verify="required">
 		         </div>
 			   </div>
 		      <div class="layui-form-item">
@@ -102,12 +102,12 @@
             , cols: [[
                 {field: '序号',width:50,fixed:'left',type:'numbers',title:'序号'}
                 , {field: 'u_id', hide:true}
-                , {field: 'name', width: 220, title: '职位名称',align: 'center'}
+                , {field: 'name', width: 220, title: '职务名称',align: 'center'}
                 , {field: 'sort', width: 80, title: '排序',edit:'text',align: 'center'}
                 , {field: 'createtime', width: 170, title: '创建时间',align: 'center'}
                 , {field: 'remark', title: '备注'}
                 , {
-                    field: 'status', width: 100, title: '职位状态',align: 'center',
+                    field: 'status', width: 100, title: '职务状态',align: 'center',
                     templet:"#status"
                 },{
                     title: '操作', align: 'center',width: 100,
@@ -121,7 +121,7 @@
             var objdata = obj.data;
             var action = obj.event;
             if (action == 'del') {
-            	layer.confirm('确定删除该职位吗?', function (index) {
+            	layer.confirm('确定删除该职务吗?', function (index) {
                      $.ajax({
                          type: "post",
                          data: objdata,
