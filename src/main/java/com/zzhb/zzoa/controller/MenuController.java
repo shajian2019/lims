@@ -32,8 +32,8 @@ public class MenuController {
 
 	@GetMapping("/one/get")
 	@ResponseBody
-	public List<Menu> getOneMenus(@RequestParam("r_id") String r_id) {
-		List<Menu> oneMenusByRoleId = menuService.getOneMenusByRoleId(r_id);
+	public List<Map<String, Object>> getOneMenus(@RequestParam("r_id") String r_id) {
+		List<Map<String, Object>> oneMenusByRoleId = menuService.getOneMenusByRoleId(r_id);
 		return oneMenusByRoleId;
 	}
 

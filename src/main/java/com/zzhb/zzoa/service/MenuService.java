@@ -35,7 +35,7 @@ public class MenuService {
 	public List<Map<String, Object>> menus(String r_id) {
 		Map<String, String> params = new HashMap<>();
 		params.put("r_id", r_id);
-		List<Map<String, Object>> menus2 = menuMapper.getMenus2(params);
+		List<Map<String, Object>> menus2 = menuMapper.getMenus(params);
 		List<Map<String, Object>> standardJSON = MenuUtil.getStandardJSON(menus2);
 		return standardJSON;
 	}
@@ -45,8 +45,8 @@ public class MenuService {
 	}
 
 	@Cacheable(value = "ONEMENU", key = "#r_id", condition = "#r_id !='superadmin'")
-	public List<Menu> getOneMenusByRoleId(String r_id) {
-		Map<String, Object> params = new HashMap<>();
+	public List<Map<String, Object>> getOneMenusByRoleId(String r_id) {
+		Map<String, String> params = new HashMap<>();
 		params.put("r_id", r_id);
 		params.put("m_level", "1");
 		if (!Constant.SUPERADMIN.equals(r_id)) {

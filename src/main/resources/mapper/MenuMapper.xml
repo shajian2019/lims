@@ -20,7 +20,7 @@
 		</where>
 	</select>
 	
-	<select id="getMenus2" resultType="java.util.Map" parameterType="java.util.Map">
+	<select id="getMenus" resultType="java.util.Map" parameterType="java.util.Map">
 		SELECT
 			m.m_id id,
 			m.m_name title,
@@ -41,58 +41,14 @@
 			<if test="id !=null and id !='' ">
 				and m.m_parentid = #{id}
 			</if>
-		</where>
-	</select>
-	
-	<select id="getMenus" resultType="com.zzhb.zzoa.domain.common.Menu" parameterType="java.util.Map">
-		SELECT
-			m.m_id id,
-			m.m_name title,
-			m.m_icon icon,
-			m.m_status status,
-			m.m_parentid parentid,
-			m.m_url url,
-			m.m_sort sort,
-			m.m_level level
-		FROM sys_t_menu m
-		<if test="r_id != null and r_id != 'superadmin' ">
-			INNER JOIN sys_t_role_menu rm on m.m_id = rm.m_id
-		</if> 
-		<where>
-			<if test="flag == null">
-				<if test="m_ids !=null and m_ids.size() != 0">
-					and m.m_id in 
-					<foreach collection="m_ids" item="m_id" open="(" separator="," close=")">
-	           			#{m_id}
-	        		</foreach>
+			<if test="m_level !=null and m_level !='' ">
+				and m_level = #{m_level}
 				</if>
-				<if test="m_ids !=null and m_ids.size() == 0">
-					and 1 = 2
-				</if>
-				<if test="m_status !=null and m_status !='' ">
-					and m_status = #{m_status}
-				</if>
-				<if test="m_level !=null and m_level !='' ">
-					and m_level = #{m_level}
-				</if>
-				<if test="r_id != null and r_id != 'superadmin' ">
-					<if test="r_id !=null and r_id !='' ">
-						and rm.r_id = #{r_id}
-					</if>
-				</if> 
-			</if>
-			<if test="flag != null">
-				<if test="m_status !=null and m_status !='' ">
-					and m_status = #{m_status}
-				</if>
-				<if test="r_id != null and r_id != 'superadmin' ">
-					<if test="r_id !=null and r_id !='' ">
-						and rm.r_id = #{r_id}
-					</if>
-				</if>
+			<if test="m_status !=null and m_status !='' ">
+				and m_status = #{m_status}
 			</if>
 		</where>
-		ORDER BY m.m_parentid,m.m_sort		
+		ORDER BY m.m_parentid,m.m_sort
 	</select>
 	
 	<select id="getIdByParentId" resultType="java.lang.String">
@@ -110,21 +66,6 @@
                   ) t1,
                   (select @pids := #{parentid}) t2
              ) t3 where ischild != 0
-	</select>
-	
-	<select id="getIdByRoleID"  resultType="java.lang.String" parameterType="java.util.Map">
-			SELECT m_id FROM sys_t_role_menu 
-			<where>
-				<if test="r_id !=null and r_id !='' ">
-					and r_id = #{r_id}
-				</if>
-				<if test="m_ids !=null and m_ids.size() != 0">
-					and m_id in 
-					<foreach collection="m_ids" item="m_id" open="(" separator="," close=")">
-	           			#{m_id}
-	        		</foreach>
-				</if>
-			</where>
 	</select>
 	
 	<select id="getAllMenus" resultType="com.zzhb.zzoa.domain.common.Menu" parameterType="java.util.Map">
