@@ -14,6 +14,8 @@ public interface MenuMapper {
 
 	public List<Menu> getAllMenus(Map<String, String> params);
 
+	public List<Map<String, Object>> getMenus2(Map<String, String> params);
+
 	public List<Menu> getMenus(Map<String, Object> params);
 
 	public List<String> getIdByParentId(@Param("parentid") String parentid, @Param("r_id") String r_id);
@@ -24,8 +26,8 @@ public interface MenuMapper {
 	public List<String> getUrls();
 
 	public Integer updateMenu(Menu menu);
-	
+
 	public Integer insertMenu(Menu menu);
-	
+
 	public Integer delMenus(Map<String, Object> params);
 }

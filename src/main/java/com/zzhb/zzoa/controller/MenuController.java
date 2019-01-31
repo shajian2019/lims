@@ -23,16 +23,18 @@ public class MenuController {
 	@Autowired
 	MenuService menuService;
 
-	@GetMapping("/all/get")
+	@GetMapping("")
 	@ResponseBody
-	public List<Map<String, Object>> getAllMenu(@RequestParam("r_id") String r_id) {
-		return menuService.getAllMenu(r_id);
+	public List<Map<String, Object>> menus(String r_id) {
+		List<Map<String, Object>> menus = menuService.menus(r_id);
+		return menus;
 	}
 
 	@GetMapping("/one/get")
 	@ResponseBody
 	public List<Menu> getOneMenus(@RequestParam("r_id") String r_id) {
-		return menuService.getOneMenusByRoleId(r_id);
+		List<Menu> oneMenusByRoleId = menuService.getOneMenusByRoleId(r_id);
+		return oneMenusByRoleId;
 	}
 
 	@GetMapping("/second/get")
@@ -46,7 +48,8 @@ public class MenuController {
 	@ResponseBody
 	public JSONArray initMenuTree(@RequestParam(defaultValue = "0") String level, String r_id,
 			@RequestParam Map<String, String> params) {
-		return menuService.initMenuTree(level, r_id, params);
+		// TODO
+		return null;
 	}
 
 	@GetMapping("/dtree/init")
@@ -58,7 +61,6 @@ public class MenuController {
 	@PostMapping("/update")
 	@ResponseBody
 	public Integer updateMenu(Menu menu) {
-		System.out.println(menu);
 		return menuService.updateMenu(menu);
 	}
 

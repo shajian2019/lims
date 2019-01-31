@@ -116,8 +116,6 @@ layui.define(['element', 'nprogress', 'form', 'table', 'loader', 'tab', 'navbar'
                         },
                         renderAfter: function(elem) {   
                         	elem.find('li').eq(0).click();
-                            console.log("===模拟点击第一个一级菜单=======")
-                            console.log(elem)
                         }
                     }).render();
                 }

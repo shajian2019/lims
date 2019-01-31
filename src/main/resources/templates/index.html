@@ -23,7 +23,7 @@
             <ul class="layui-nav layui-layout-right kit-nav">
                 <li class="layui-nav-item">
                     <a href="javascript:;">
-                        <img src="http://m.zhengjinfan.cn/images/0.jpg" class="layui-nav-img">${user.nickname}
+                        <img src="http://m.zhengjinfan.cn/images/0.jpg" class="layui-nav-img">${USER.nickname}
                     </a>
                     <dl class="layui-nav-child">
                         <dd><a href="javascript:;" kit-target data-options="{url:'${ctx}/grzx/grzx',icon:'&#xe658;',title:'个人中心',id:'grzx'}"><span>个人中心</span></a></dd>
@@ -72,7 +72,7 @@
             //主入口
             app.set({
                 type: 'iframe',
-                r_id: "${(role.r_id)!'superadmin'}",
+                r_id: "${(USER.r_id)!'superadmin'}",
                 menu:"${(menu)!'1'}"
             }).init();
             

@@ -20,6 +20,30 @@
 		</where>
 	</select>
 	
+	<select id="getMenus2" resultType="java.util.Map" parameterType="java.util.Map">
+		SELECT
+			m.m_id id,
+			m.m_name title,
+			m.m_icon icon,
+			m.m_status status,
+			m.m_parentid parentid,
+			m.m_url url,
+			m.m_sort sort,
+			m.m_level level
+		FROM sys_t_menu m
+		<if test="r_id != null and r_id != 'superadmin' ">
+			INNER JOIN sys_t_role_menu rm on m.m_id = rm.m_id
+		</if>
+		<where>
+			<if test="r_id !=null and r_id !='' ">
+				and rm.r_id = #{r_id}
+			</if>
+			<if test="id !=null and id !='' ">
+				and m.m_parentid = #{id}
+			</if>
+		</where>
+	</select>
+	
 	<select id="getMenus" resultType="com.zzhb.zzoa.domain.common.Menu" parameterType="java.util.Map">
 		SELECT
 			m.m_id id,
