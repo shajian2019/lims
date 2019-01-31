@@ -465,7 +465,9 @@ public class ActivitiService {
 	}
 
 	public JSONObject getHistoricProcessInstances(Integer page, Integer limit, Map<String, String> params) {
-		HistoricProcessInstanceQuery hpiq = hs.createHistoricProcessInstanceQuery().startedBy(params.get("u_id"));
+		HistoricProcessInstanceQuery hpiq = hs.createHistoricProcessInstanceQuery();
+		String u_id = params.get("u_id");
+
 		String businessKey = params.get("businessKey");
 		String dateS = params.get("dateS");
 		String dateE = params.get("dateE");
@@ -477,6 +479,9 @@ public class ActivitiService {
 			} else {
 				hpiq.finished();
 			}
+		}
+		if (u_id != null && !"".equals(u_id)) {
+			hpiq.startedBy(u_id);
 		}
 		if (businessKey != null && !"".equals(businessKey)) {
 			hpiq.processInstanceBusinessKey(businessKey);

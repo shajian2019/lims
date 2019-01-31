@@ -1,5 +1,6 @@
 package com.zzhb.zzoa.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +22,13 @@ public class OrgUserController {
 
 	@GetMapping("/list")
 	@ResponseBody
-	public JSONObject list(@RequestParam("p_id") String p_id) {
-		return orgUserService.list(p_id);
+	public List<Map<String, Object>> list() {
+		return orgUserService.list();
 	}
-	
+
 	@GetMapping("/spr")
 	@ResponseBody
-	public JSONObject spr(@RequestParam Map<String,String> params) {
+	public JSONObject spr(@RequestParam Map<String, String> params) {
 		return orgUserService.sprList(params);
 	}
 }

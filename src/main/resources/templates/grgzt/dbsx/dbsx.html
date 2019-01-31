@@ -173,7 +173,7 @@
         table.render({
             elem: '#' + tableId,
             url: '${ctx}/grgzt/dbsx/list',
-            where: {u_id:"${user.u_id}"},
+            where: {u_id:"${USER.u_id}"},
             title: '参数设置',
             page: true,
             id: tableId,
@@ -243,7 +243,7 @@
 	            	layer.confirm('确定领取该任务吗?', function (index) {
 		            		$.ajax({
 		                        type: "post",
-		                        data: {u_id:"${user.u_id}", taskId:data.ID_},
+		                        data: {u_id:"${USER.u_id}", taskId:data.ID_},
 		                        url: "${ctx}/grgzt/dbsx/calimTask",
 		                        beforeSend: function () {
 		                            index = layer.load(1);

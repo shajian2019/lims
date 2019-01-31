@@ -30,6 +30,7 @@
 
    .flex-box {
        padding: 8px;
+       text-align: center;
    }
 
    .zdy-list {
@@ -66,6 +67,7 @@
         </div>
     </div>
     <div class="flex-box">
+    	
     </div>
     
     <div id="preview" class="hide" style="display: none;">
@@ -149,7 +151,7 @@
     function load(protype){
     	$.ajax({
             type: "get",
-            data:{u_id:"${user.u_id}",protype:protype,lastversion:true},
+            data:{u_id:"${USER.u_id}",protype:protype,lastversion:true},
             url: "${ctx}/grgzt/fqlc/list",
             beforeSend: function () {
                 index = layer.load(1);
@@ -173,8 +175,7 @@
              	   html +='</ul>';
              	   $(".flex-box").html(html);
                 }else{
-                	/* TODO */
-               	   $(".flex-box").html("<p>暂无</p>");
+               	   $(".flex-box").html('<img alt="" src="${ctx}/image/home/jbdj.png">');
                 }
             },
             error: function (data) {
