@@ -95,12 +95,18 @@ html,body{ margin: 0; height: 100%; }
         <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del">
             <i class="fa fa-trash-o" title="删除"></i>
         </a>
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="on">
-            <i class="fa fa-trash-o" title="开启"></i>
-        </a>
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="off">
-            <i class="fa fa-trash-o" title="锁定"></i>
-        </a>
+		{{# if(d.status != '3' ) { }}
+			{{# if(d.status == '1' ) { }}
+        		<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="on">
+            		<i class="fa fa-toggle-on" title="开启"></i>
+        		</a>
+			{{# } else { }}
+ 				<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="off">
+            		<i class="fa fa-toggle-off" title="锁定"></i>
+        		</a>
+			{{# } }}
+		{{# } }}
+       
     </div>
 </script>
 <script src="${ctx}/plugins/layui/layui.js"></script>
@@ -194,9 +200,9 @@ $(document).ready(function(){
         });
 
         table.on('tool(' + tbID + ')', function (obj) {
-        	/* var nodes = zTreeObj.getSelectedNodes()[0];
-       		var oIds = [];
-        	if(nodes != null){
+           var nodes = zTreeObj.getSelectedNodes()[0];
+       	   var oIds = [];
+           if(nodes != null){
         		var o_ids = "";
         		if(nodes.isParent && nodes.children.length == 0){
         			oIds.push(nodes.id);
@@ -207,7 +213,7 @@ $(document).ready(function(){
         		} else {
         			oIds.push(nodes.id);
         		}
-        	} */
+           }
            var data = obj.data;
            var action = obj.event;
            if (obj.event === 'del') {
@@ -241,10 +247,39 @@ $(document).ready(function(){
                            layer.msg("服务端异常");
                        }
                    });
-
           	   })
            } else if (obj.event === 'edit'){
         	   add(data.u_id);
+           } else if (obj.event === 'on' || obj.event === 'off'){
+        	   var status = obj.event == "on" ? "0": "1";
+        	   $.ajax({
+                   type: "post",
+                   data: {u_id: data.u_id,status: status},
+                   url: "${ctx}/xtgl/zzgl/yhgl/changeUserStatus",
+                   beforeSend: function () {
+                       index = layer.load(1);
+                   },
+                   success: function (data) {
+                       layer.close(index);
+                       if (data > 0) {
+                           layer.msg("修改成功", {offset: ['50%'], time: 1000}, function () {
+                               table.reload(tbID,{
+                            	   where: {
+                            		   o_ids: oIds.join(","),
+                            		   username:$("#username").val(),
+                            		   nickname:$("#nickname").val(),
+                            		   status:$("#status").val()
+                            	   }
+							   })
+                           });
+                       } else {
+                           layer.msg("删除失败")
+                       }
+                   },
+                   error: function (data) {
+                       layer.msg("服务端异常");
+                   }
+               });
            }
         });
 

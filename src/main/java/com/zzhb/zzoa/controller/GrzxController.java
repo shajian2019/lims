@@ -1,13 +1,10 @@
 package com.zzhb.zzoa.controller;
 
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.zzhb.zzoa.domain.User;
@@ -38,8 +35,7 @@ public class GrzxController {
 
 	@PostMapping("/pass/update")
 	@ResponseBody
-	public Integer updatePass(@RequestParam Map<String, String> map) {
-		//TODO
-		return null;
+	public Integer updatePass(User user) {
+		return userService.updatePass(user);
 	}
 }

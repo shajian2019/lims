@@ -1,108 +1,137 @@
+<#assign ctx=req.contextPath />
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>个人中心</title>
-<link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet"/>
-<link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet"/>
-<style>
-    .main{width:500px;margin: 10% auto 0;}
-    .red{color:red;}
-    .icon{
-        display: inline-block;
-        border: 1px solid #e6e6e6;
-        border-left:none;
-        border-radius: 0 8px 8px 0;
-        height:36px;
-        width:38px;
-        line-height:36px;
-        text-align: center;
-        background-color: #f3f5f7;
-    }
-    .layui-form-item{
-        display: flex;
-        align-items: center;
-    }
-    .layui-form-item .layui-form-label{
-        width:80px;
-        text-align: right;
-    }
-    .layui-form-item .layui-inline {
-        margin-bottom: 0;
-        margin-right: 0;
-        width:260px;
-    }
-</style>
+    <meta charset="UTF-8">
+    <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet"/>
+    <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet"/>
+    <style>
+        /* layui重置 */
+        .layui-form {margin: 10px auto 0;min-width: 550px;max-width: 1140px;}
+        .layui-form-item{display: flex;align-items: center;justify-content: space-between;}
+        .layui-form-item .layui-inline{margin: 0;flex-grow: 1;max-width: 246px;}
+        .layui-form-label{width: 120px;}
+        .layui-btn-container {text-align: center;margin-top: 25px;}
+        /* 自定义 */
+        div.icon-box {height: 36px;border: 1px solid #e6e6e6;border-left: none;background-color: #fff;border-radius: 2px;}
+        .icon-box .icon {width: 36px;height: 36px;text-align: center;line-height: 36px;border-right: 1px solid #e6e6e6;display: inline-block;}
+        .icon-box .layui-inline-block {display: flex;align-items: center;justify-content: space-between;}
+        .icon-box .icon-input {display: inline-block;border: none;flex-grow: 1;padding: 0 10px;
+        }
+        input:-webkit-autofill {-webkit-box-shadow: 0 0 0px 1000px white inset !important; }  
+        .span_red{color:red}
+    </style>
 </head>
 <body>
-    <form class="layui-form main">
-            <div class="layui-form-item">
-                <label class="layui-form-label">用户昵称:</label>
-                <div class="layui-inline">
-                    <input type="text" name="nickname" class="layui-input" value="${(user.nickname)!''}">
-                </div>
-                <div class="icon"><i class="fa fa-user"></i></div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">电子邮箱:</label>
-                <div class="layui-inline">
-                    <input type="text" name="email" lay-verify="email" class="layui-input" value="${(user.email)!''}">
-                </div>
-                <div class="icon"><i class="fa fa-envelope"></i></div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">手机号码:</label>
-                <div class="layui-inline">
-                    <input type="text" name="phone" class="layui-input" lay-verify="phone" value="${(user.phone)!''}">
-                </div>
-                <div class="icon"><i class="fa fa-mobile-phone"></i></div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">上次登录:</label>
-                <div class="layui-inline">
-                    <span>时间:${(user.recentlogin)!''}</span>
-                </div>
-            </div>
-            <div class="layui-btn-container" style="text-align:center;">
-                <a class="layui-btn layui-btn-sm " lay-submit lay-filter="save">保存</a>
-            </div>
-    </form>
+<form class="layui-form" lay-filter="edit" style="margin: 1% auto 0;">
+    <div class="layui-form-item">
+    	<input type="hidden" name="u_id" value="${(user.u_id)!''}">
+        <label class="layui-form-label"><span class="span_red">*</span> 用户账号:</label>
+        <div class="layui-inline">
+            <input class="layui-input" type="text" name="username" value="${(user.username)!''}"  placeholder="用户账号" readonly="readonly">
+        </div>
+        <label class="layui-form-label"><span class="span_red">*</span> 用户名称:</label>
+        <div class="layui-inline">
+            <input class="layui-input" type="text" name="nickname" value="${(user.nickname)!''}" placeholder="用户昵称" lay-verify="required">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">办公电话:</label>
+        <div class="layui-inline">
+            <input class="layui-input" type="text" name="bgdh" value="${(user.bgdh)!''}" placeholder="办公电话">
+        </div>
+        <label class="layui-form-label">办电小号:</label>
+        <div class="layui-inline">
+            <input class="layui-input" type="text" name="bgxh" value="${(user.bgxh)!''}" placeholder="办电小号">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">手机号码:</label>
+        <div class="layui-inline">
+            <input class="layui-input" type="text" name="phone" value="${(user.phone)!''}" placeholder="手机号码">
+        </div>
+        <label class="layui-form-label">手机小号:</label>
+        <div class="layui-inline">
+            <input class="layui-input" type="text" name="phonexh" value="${(user.phonexh)!''}" placeholder="手机小号">
+        </div>
+    </div>
+    
+    <#if USERORGJOBS??>
+		<#list USERORGJOBS as userOrgJob>
+			<div class="layui-form-item">
+		        <label class="layui-form-label">单位（科室）:</label>
+		        <div class="layui-inline">
+            		<input class="layui-input" type="text" readonly="readonly" value="${(userOrgJob.o_name)!''}" placeholder="无">
+		        </div>
+		        <label class="layui-form-label">职务名称:</label>
+		        <div class="layui-inline">
+            		<input class="layui-input" type="text" readonly="readonly" value="${(userOrgJob.j_name)!''}" placeholder="无">
+		        </div>
+		    </div>
+		</#list>
+		<#if USERORGJOBS?size == 0>
+			<div class="layui-form-item">
+		        <label class="layui-form-label">单位（科室）:</label>
+		        <div class="layui-inline">
+            		<input class="layui-input" type="text" readonly="readonly" placeholder="无">
+		        </div>
+		        <label class="layui-form-label">职务名称:</label>
+		        <div class="layui-inline">
+            		<input class="layui-input" type="text" readonly="readonly" placeholder="无">
+		        </div>
+		    </div>
+		</#if>
+	</#if>
+
+    <div class="layui-form-item">
+    	<label class="layui-form-label">电子邮箱:</label>
+        <div class="layui-inline">
+            <input class="layui-input" type="text" name="email" value="${(user.email)!''}" placeholder="电子邮箱" >
+        </div>
+        <label class="layui-form-label">上次登录:</label>
+        <div class="layui-inline">
+            <input type="text" class="layui-input" readonly="readonly" value="${(user.recentlogin)!''}">
+        </div>
+    </div>
+    
+    <div class="layui-btn-container" id="btn_box">
+        <a class="layui-btn layui-btn-primary" lay-submit lay-filter="save">保存</a>
+    </div>
+</form>
+<script src="${ctx}/plugins/layui/layui.all.js"></script>
+<script type="text/javascript">
+	var form = layui.form;
+	var $ = layui.jquery;
+	var layer = layui.layer;
+	var index;
+	form.on('submit(save)', function (data) {
+		console.log(data.field)
+		$.ajax({
+            type: "POST",
+            data: data.field,
+            url: "${ctx}/xtgl/zzgl/yhgl/updateUser",
+            beforeSend: function () {
+                index = layer.load(1);
+            },
+            success: function (data) {
+                layer.close(index);
+                if (data > 0) {
+                    var msg = "保存成功";
+                    layer.msg(msg, {offset: ['50%'], time: 1000}, function () {
+                    	 parent.window.closeTab("grzx");
+                    });
+                } else {
+                    layer.msg("保存失败")
+                }
+            },
+            error: function (data) {
+                layer.msg("服务端异常");
+            } 
+        });
+        return false;
+	})
+</script>
 </body>
 </html>
-<script src="${ctx}/plugins/layui/layui.all.js"></script>
-<script>
-    layui.use(['form', 'layer', 'upload'], function () {
-        var $ = layui.jquery,
-            table = layui.table,
-            form = layui.form;
-
-        form.on('submit(save)', function (data) {
-        	data.field.username = "${user.username}";
-            var url = "${ctx}/xtgl/zzgl/yhgl/updateUser";
-            var index;
-            $.ajax({
-                type: "POST",
-                data: data.field,
-                url: url,
-                beforeSend: function () {
-                    index = layer.load(1);
-                },
-                success: function (data) {
-                    layer.close(index);
-                    if (data > 0) {
-                        var msg = "修改成功";
-                        layer.msg(msg, {offset: ['50%'], time: 1000}, function () {
-                        	 parent.location.reload();
-                        });
-                    } else {
-                        layer.msg("操作失败")
-                    }
-                },
-                error: function (data) {
-                    layer.msg("服务端异常");
-                }
-            });
-            return false;
-        });
-    })
-</script>

@@ -1,6 +1,7 @@
 package com.zzhb.zzoa.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.shiro.session.Session;
 import org.slf4j.Logger;
@@ -15,6 +16,7 @@ import com.zzhb.zzoa.domain.User;
 import com.zzhb.zzoa.mapper.OrgMapper;
 import com.zzhb.zzoa.mapper.RoleMapper;
 import com.zzhb.zzoa.mapper.UserMapper;
+import com.zzhb.zzoa.mapper.UserOrgJobMapper;
 import com.zzhb.zzoa.utils.Constant;
 
 @Service
@@ -31,12 +33,16 @@ public class LoginService {
 	@Autowired
 	UserMapper userMapper;
 
+	@Autowired
+	UserOrgJobMapper userOrgJobMapper;
+
 	@Transactional
 	public void initLoginUser(User user, Session session) {
 		Role role = roleMapper.getRol(user.getR_id());
-		logger.debug("=======user======" + user.getUsername() + "=======role====" + role);
 		session.setAttribute(Constant.ROLE, role);
 		session.setAttribute(Constant.USER, user);
+		List<Map<String, String>> userOrgJobs = userOrgJobMapper.getUserOrgJobs(user.getU_id() + "");
+		session.setAttribute(Constant.USERORGJOBS, userOrgJobs);
 		userMapper.updateRecentlogin(user);
 		logger.debug("=====更新用户登录时间==user======" + user.getUsername());
 	}

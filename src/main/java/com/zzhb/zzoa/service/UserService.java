@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.IdentityService;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import com.zzhb.zzoa.mapper.OrgUserMapper;
 import com.zzhb.zzoa.mapper.RoleMapper;
 import com.zzhb.zzoa.mapper.UserMapper;
 import com.zzhb.zzoa.mapper.UserOrgJobMapper;
+import com.zzhb.zzoa.utils.Constant;
 import com.zzhb.zzoa.utils.LayUiUtil;
 
 @Service
@@ -51,6 +53,14 @@ public class UserService {
 		return userMapper.getUser(username);
 	}
 
+	@Transactional
+	public Integer updateUser(User user) {
+		Integer updateUser = userMapper.updateUser(user);
+		user = userMapper.getUser(user.getUsername());
+		SecurityUtils.getSubject().getSession().setAttribute(Constant.USER, user);
+		return updateUser;
+	}
+
 	public JSONObject getAllUsers(Integer page, Integer limit, Map<String, Object> params) {
 		Object object = params.get("o_ids");
 		if (object != null && !"".equals(object)) {
@@ -66,6 +76,11 @@ public class UserService {
 	public Integer delUserById(String u_id) {
 		userOrgJobMapper.delByUId(u_id);
 		return userMapper.delUser(u_id);
+	}
+
+	@Transactional
+	public Integer changeUserStatus(User user) {
+		return userMapper.updateUser(user);
 	}
 
 	@Transactional
@@ -132,8 +147,10 @@ public class UserService {
 		return result;
 	}
 
-	public static void main(String[] args) {
-		String d = "2=";
-		System.out.println(Arrays.asList(d.split("=")));
+	@Transactional
+	public Integer updatePass(User user) {
+		Object password = new SimpleHash("MD5", user.getPassword(), user.getUsername(), 1);
+		user.setPassword(password.toString());
+		return userMapper.updateUser(user);
 	}
 }

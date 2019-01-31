@@ -65,6 +65,12 @@ public class ZzglController {
 	public Integer delUserById(String u_id) {
 		return userService.delUserById(u_id);
 	}
+	
+	@PostMapping("/yhgl/changeUserStatus")
+	@ResponseBody
+	public Integer changeUserStatus(User user) {
+		return userService.changeUserStatus(user);
+	}
 
 	@GetMapping("/yhgl/edit")
 	public ModelAndView goEditPage(@RequestParam Map<String, String> map) {
@@ -90,9 +96,8 @@ public class ZzglController {
 
 	@PostMapping("/yhgl/updateUser")
 	@ResponseBody
-	public Integer updateUser(@RequestParam Map<String, String> map) {
-		// TODO
-		return null;
+	public Integer updateUser(User user) {
+		return userService.updateUser(user);
 	}
 
 	@GetMapping("/yhgl/getRoleSelect")
