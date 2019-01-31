@@ -87,7 +87,8 @@ public class FqlcController {
 	private Leave initLeave(User user, String bk) {
 		Leave leave = new Leave();
 		leave.setSqr(user.getNickname());
-		Org org = SessionUtils.getOrg();
+		//TODO
+		Org org = new Org();
 		leave.setBk(bk);
 		leave.setBmmc(org.getName());
 		leave.setSqrq(TimeUtil.getTimeByCustom("yyyy-MM-dd HH:mm:ss"));

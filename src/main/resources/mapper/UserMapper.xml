@@ -2,16 +2,38 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zzhb.zzoa.mapper.UserMapper">
     <select id="getAllUsers" resultType="java.util.Map" parameterType="java.util.Map">
-      SELECT
-		u.*,
-		r.rolename
+       SELECT
+			u.*,
+			r.rolename,
+			tmp.o_id,
+			tmp.o_name,
+			tmp.j_name
 		FROM
-	sys_t_user u
-		LEFT JOIN ( SELECT ur.u_id, r.* FROM sys_t_user_role ur LEFT JOIN sys_t_role r ON ur.r_id = r.r_id ) r ON u.u_id = r.u_id
+			sys_t_user u
+			LEFT JOIN sys_t_role r ON u.r_id = r.r_id
+			LEFT JOIN (
+				SELECT
+					l.u_id,
+					l.o_id,
+					r.o_name,
+					m.j_name
+				FROM
+					sys_t_user_org_job l
+					LEFT JOIN sys_t_org r ON l.o_id = r.o_id LEFT join sys_t_job m on m.j_id = l.j_id 
+			) tmp ON u.u_id = tmp.u_id
       <where>
           <if test="true">
               AND u.username != 'superadmin'
           </if>
+          <if test="o_id != null and o_id != ''">
+              AND tmp.o_id = #{o_id}
+          </if>
+          <if test="oIds !=null and oIds.size() != 0">
+				and tmp.o_id in 
+				<foreach collection="oIds" item="o_id" open="(" separator="," close=")">
+           			#{o_id}
+        		</foreach>
+		  </if>
           <if test="username != null and username != ''">
               <bind name="_username" value="'%'+username+'%'"/>
               AND u.username like #{_username}
@@ -27,8 +49,8 @@
     </select>
     
     <insert id="addUser" keyProperty="u_id" useGeneratedKeys="true" parameterType="com.zzhb.zzoa.domain.User" >
-        INSERT INTO sys_t_user(username,password,nickname,createtime,remark,email,phone,status)
-        VALUES (#{username},#{password},#{nickname},now(),#{remark,jdbcType=VARCHAR},#{email},#{phone},#{status})
+        INSERT INTO sys_t_user(username,password,nickname,createtime,bgdh,bgxh,email,phone,phonexh,r_id,status)
+        VALUES (#{username},#{password},#{nickname},now(),#{bgdh},#{bgxh},#{email},#{phone},#{phonexh},#{r_id},#{status})
     </insert>
 
     <update id="updateUser" parameterType="java.util.Map">
@@ -46,14 +68,26 @@
             <if test="remark != null">
                 remark = #{remark},
             </if>
-            <if test="email != null and email !='' ">
+            <if test="bgdh != null">
+                bgdh = #{bgdh},
+            </if>
+            <if test="bgxh != null">
+                bgxh = #{bgxh},
+            </if>
+            <if test="email != null">
                 email = #{email},
             </if>
-            <if test="phone != null and phone !='' ">
+            <if test="phonexh != null ">
+                phonexh = #{phonexh},
+            </if>
+            <if test="phone != null">
                 phone = #{phone},
             </if>
             <if test="status != null and status !='' ">
                 status = #{status},
+            </if>
+            <if test="r_id != null">
+                r_id = #{r_id}
             </if>
         </set>
         <where>
@@ -63,11 +97,19 @@
             <if test="u_id != null and u_id !='' ">
               	AND u_id = #{u_id}
             </if>
-            <if test="u_ids != null and u_ids.size() > 0 ">
-              	AND u_id in
-	            <foreach collection="u_ids" item="u_id" index="index" open="(" close=")" separator=",">
-				  #{u_id}
-				</foreach>
+        </where>
+    </update>
+    
+    <update id="updateUserStatus" parameterType="java.util.Map">
+        UPDATE sys_t_user
+        <set>
+            <if test="status != null and status !='' ">
+                status = #{status}
+            </if>
+        </set>
+        <where>
+            <if test="r_id != null and r_id !='' ">
+              	AND r_id = #{r_id}
             </if>
         </where>
     </update>
@@ -160,6 +202,7 @@
 			</if>
 		</where>
 	</delete>
+	
     <select id="getUsernames" parameterType="java.util.Map" resultType="java.lang.String">
     	SELECT username FROM sys_t_user
 		<where>
@@ -170,4 +213,15 @@
         </where>
     </select>
 
+	<select id="countUserByUserName" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM sys_t_user 
+		<where>
+			<if test="username !=null and username !='' ">
+				and username = #{username}
+			</if>
+			<if test="u_id !=null and u_id !='' ">
+				and u_id != #{u_id}
+			</if>
+		</where>
+	</select>
 </mapper>

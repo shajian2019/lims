@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="${ctx}/plugins/font-awesome/css/font-awesome.min.css" media="all" />
     <link rel="stylesheet" href="${ctx}/css/app.css" media="all" />
     <link rel="stylesheet" href="${ctx}/css/themes/skin.css" media="all" id="skin" kit-skin />
+    <script src="${ctx}/plugins/layui/layui.js"></script>
 </head>
-
 <body class="kit-theme">
     <div class="layui-layout layui-layout-admin kit-layout-admin">
         <div class="layui-tit">
@@ -23,11 +23,11 @@
             <ul class="layui-nav layui-layout-right kit-nav">
                 <li class="layui-nav-item">
                     <a href="javascript:;">
-                        <img src="http://m.zhengjinfan.cn/images/0.jpg" class="layui-nav-img">${user.nickname}
+                        <img src="http://m.zhengjinfan.cn/images/0.jpg" class="layui-nav-img">${USER.nickname}
                     </a>
                     <dl class="layui-nav-child">
-                        <dd><a href="javascript:;" kit-target data-options="{url:'${ctx}/grzx/grzx',icon:'&#xe658;',title:'个人中心',id:'966'}"><span>个人中心</span></a></dd>
-                        <dd><a href="javascript:;" kit-target data-options="{url:'${ctx}/grzx/xgmm',icon:'&#xe658;',title:'修改密码',id:'967'}"><span>修改密码</span></a></dd>
+                        <dd><a href="javascript:;" kit-target data-options="{url:'${ctx}/grzx/grzx',icon:'&#xe658;',title:'个人中心',id:'grzx'}"><span>个人中心</span></a></dd>
+                        <dd><a href="javascript:;" kit-target data-options="{url:'${ctx}/grzx/xgmm',icon:'&#xe658;',title:'修改密码',id:'xgmm'}"><span>修改密码</span></a></dd>
                     </dl>
                 </li>
                 <li class="layui-nav-item"><a href="logout"><i class="fa fa-sign-out" aria-hidden="true"></i> 注销</a></li>
@@ -56,7 +56,6 @@
     </div>
 </body>
 </html>
-<script src="${ctx}/plugins/layui/layui.js"></script>
 <script>
         var message;
         layui.config({
@@ -73,7 +72,7 @@
             //主入口
             app.set({
                 type: 'iframe',
-                r_id: "${(role.r_id)!'superadmin'}",
+                r_id: "${(USER.r_id)!'superadmin'}",
                 menu:"${(menu)!'1'}"
             }).init();
             

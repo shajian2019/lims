@@ -1,0 +1,383 @@
+<#assign ctx=req.contextPath />
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet"/>
+    <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="${ctx}/plugins/ztree/css/zTreeStyle/zTreeStyle.css">
+    <link rel="stylesheet" href="${ctx}/plugins/ztree/css/zTreeStyle/zdy-icon.css">
+    <style>
+        /* layui重置 */
+        .layui-form {margin: 10px auto 0;min-width: 550px;max-width: 1140px;}
+
+        .layui-form-item{display: flex;align-items: center;justify-content: space-between;}
+        .layui-form-item .layui-inline{margin: 0;flex-grow: 1;max-width: 246px;}
+        .layui-form-label{width: 120px;}
+        .layui-btn-container {text-align: center;margin-top: 25px;}
+        /* 自定义 */
+        div.icon-box {height: 36px;border: 1px solid #e6e6e6;border-left: none;background-color: #fff;border-radius: 2px;}
+        .icon-box .icon {width: 36px;height: 36px;text-align: center;line-height: 36px;border-right: 1px solid #e6e6e6;display: inline-block;}
+        .icon-box .layui-inline-block {display: flex;align-items: center;justify-content: space-between;}
+        .icon-box .icon-input {display: inline-block;border: none;flex-grow: 1;padding: 0 10px;
+        }
+        .tree-input{display: flex;align-items: center;min-height: 38px;height:auto;flex-wrap: wrap;padding-top: 2px;padding-bottom: 2px;}
+        .tree-input .fa-search{margin-right: 5px;}
+        .tree-input span{border: 1px solid #e5e5e5;padding: 4px 6px;margin-right: 12px;}
+        .tree-input .fa{color: #888;margin-left: 4px;}
+        input:-webkit-autofill {-webkit-box-shadow: 0 0 0px 1000px white inset !important; }  
+        .dw_box{display: flex;flex-direction: column;align-items: center;}
+        .dw-search-box{display: flex;align-items: center;}
+        .dw-fn{margin-left: 9px;color: #0a8cbf;font-size: 20px;}
+        .tree-box{height:260px;overflow-y: auto;}
+        .ztree{width:276px;margin: 0 auto;}
+        .dw-input{line-height: 32px;border: 1px solid #e6e6e6;border-radius: 4px;display: inline-block;margin: 5px auto;}
+        .dw_input{line-height: 32px;border:none;padding: 0 5px;}
+        .dw-input .fa-search{color: #999;margin-right: 8px;}
+        .dw-btn{display: inline-block;height: 32px;line-height: 32px;width: 40px;text-align: center;border: 1px solid #e6e6e6;border-radius: 4px;margin: 0 auto;}
+        .span_red{color:red}
+        .del-dw{position:relative;right: -260px;top: -26px;}
+    </style>
+</head>
+<body>
+<form class="layui-form" lay-filter="edit" style="margin: 1% auto 0;">
+    <div class="layui-form-item">
+    	<input type="hidden" name="u_id" value="${(map.u_id)!''}">
+        <label class="layui-form-label"><span class="span_red">*</span> 用户账号:</label>
+        <div class="layui-inline">
+            <input class="layui-input" type="text" name="username" value="${(echouser.username)!''}"  placeholder="用户账号" lay-verify="onlyUname" <#if map.u_id??>readonly="readonly"</#if>>
+        </div>
+        <label class="layui-form-label"><span class="span_red">*</span> 用户名称:</label>
+        <div class="layui-inline">
+            <input class="layui-input" type="text" name="nickname" value="${(echouser.nickname)!''}" placeholder="用户昵称" lay-verify="required">
+        </div>
+    </div>
+
+    <#if !map.u_id?? >
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span class="span_red">*</span> 密码:</label>
+            <div class="layui-inline">
+                <input class="layui-input" type="password" name="password" id="password" placeholder="密码" lay-verify="required">
+            </div>
+            <label class="layui-form-label"><span class="span_red">*</span> 密码确认:</label>
+            <div class="layui-inline">
+                <input class="layui-input" type="password" name="sedPassword" id="passwordCheck" placeholder="密码确认" lay-verify="sedPwd">
+            </div>
+        </div>
+    </#if>
+    
+    <div class="layui-form-item">
+        <label class="layui-form-label">办公电话:</label>
+        <div class="layui-inline">
+            <input class="layui-input" type="text" name="bgdh" value="${(echouser.bgdh)!''}" placeholder="办公电话">
+        </div>
+        <label class="layui-form-label">办电小号:</label>
+        <div class="layui-inline">
+            <input class="layui-input" type="text" name="bgxh" value="${(echouser.bgxh)!''}" placeholder="办电小号">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">手机号码:</label>
+        <div class="layui-inline">
+            <input class="layui-input" type="text" name="phone" value="${(echouser.phone)!''}" placeholder="手机号码">
+        </div>
+        <label class="layui-form-label">手机小号:</label>
+        <div class="layui-inline">
+            <input class="layui-input" type="text" name="phonexh" value="${(echouser.phonexh)!''}" placeholder="手机小号">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+    	<label class="layui-form-label">电子邮箱:</label>
+        <div class="layui-inline">
+            <input class="layui-input" type="text" name="email" value="${(echouser.email)!''}" placeholder="电子邮箱" >
+        </div>
+        <label class="layui-form-label"><span class="span_red">*</span> 用户角色:</label>
+        <div class="layui-inline">
+            <select class="layui-input" name="r_id" id="role" lay-verify="required" lay-search>
+                <option value=""></option>
+            </select>
+        </div>
+    </div>
+    
+	<#if userOrgJobs??>
+		<#list userOrgJobs as userOrgJob>
+			<div class="layui-form-item dwzw">
+		        <label class="layui-form-label">单位（科室）:</label>
+		        <div class="layui-inline">
+		            	<div class="layui-input tree-input dw">
+		            		<#if userOrgJob.o_id??>
+		            			<span data-id="${(userOrgJob.o_id)!''}">${(userOrgJob.o_name)!''}<i class="fa fa-times dwzwdel"></i></span>
+		            		</#if>
+		            	</div>
+		        </div>
+		        <label class="layui-form-label">职务名称:</label>
+		        <div class="layui-inline">
+		            <div class="layui-input tree-input zw">
+		            		<#if userOrgJob.j_id??>
+		            			<span data-id="${(userOrgJob.j_id)!''}">${(userOrgJob.j_name)!''}<i class="fa fa-times dwzwdel"></i></span>
+		            		</#if>
+		            </div>
+		            <#if userOrgJob_index != 0>
+	            		<i class="fa fa-times del-dw"></i>
+		            </#if>
+		        </div>
+		    </div>
+		</#list>
+		<#if userOrgJobs?size == 0>
+			<div class="layui-form-item dwzw">
+		        <label class="layui-form-label">单位（科室）:</label>
+		        <div class="layui-inline">
+		            <div class="layui-input tree-input dw">
+		            </div>
+		        </div>
+		        <label class="layui-form-label">职务名称:</label>
+		        <div class="layui-inline">
+		            <div class="layui-input tree-input zw">
+		            </div>
+		        </div>
+	    	</div>
+		</#if>
+	</#if>
+	
+	<#if !map.u_id?? >
+	    <div class="layui-form-item dwzw">
+	        <label class="layui-form-label">单位（科室）:</label>
+	        <div class="layui-inline">
+	            <div class="layui-input tree-input dw">
+	            </div>
+	        </div>
+	        <label class="layui-form-label">职务名称:</label>
+	        <div class="layui-inline">
+	            <div class="layui-input tree-input zw">
+	            </div>
+	        </div>
+	    </div>
+	</#if>
+	
+    <div class="layui-btn-container" id="btn_box">
+        <a class="layui-btn layui-btn-primary" lay-submit lay-filter="save">保存</a>
+        <a href="javascript:;" class="layui-btn layui-btn-primary" id="dw_add_btn">添加单位/职务</a>  
+    </div>
+
+</form>
+
+<div id="dw_box" class="dw_box" style="display:none;">
+    <div class="dw-search-box">
+        <div class="dw-input">
+                <input type="text" id="dw_input" class="dw_input" placeholder="关键字"/><i class="fa fa-search"></i>
+        </div>
+        <div class="dw-fn" id="dw_fn"><i class="fa fa-angle-double-up"></i></div>
+    </div>
+    <div class="tree-box">
+            <ul id="left_tree" class="ztree"></ul>
+    </div>
+    <a href="javascript:;" class="dw-btn" id="dw_save">保存</a>   
+</div>
+<script src="${ctx}/plugins/ztree/js/jquery-1.4.4.min.js"></script>
+<script src="${ctx}/plugins/ztree/js/jquery.ztree.all.js"></script>
+<script src="${ctx}/plugins/ztree/js/jquery.ztree.exhide.js"></script>
+<script src="${ctx}/plugins/ztree/js/fuzzysearch.js"></script>
+<script src="${ctx}/plugins/layui/layui.all.js"></script>
+<script type="text/javascript">
+var expandFlag =true,tree;
+var table=null,form=null,layer=null,tbID=null,index = null,laytpl= null;
+form = layui.form,layer = layui.layer,laytpl = layui.laytpl;var lay$=layui.jquery;
+var setting = {
+    	async: {
+            enable: true,
+            url:"${ctx}/xtgl/zzgl/zzjg/ztree/list",
+            type: "get"
+		},
+		view:{
+			selectedMulti: false
+		}
+	};
+	//加载roleselect
+	roleSelect();
+
+    lay$("#dw_fn").click(function (e) { 
+    	tree.expandAll(expandFlag);
+    	if(expandFlag){
+        	$("#dw_fn .fa").attr("class","fa fa-angle-double-down");
+        }else{
+        	$("#dw_fn .fa").attr("class","fa fa-angle-double-up");
+        }
+    	expandFlag = !expandFlag;
+    });
+            
+    lay$(".layui-form").on('click','.dw', function () {
+            var demo=lay$(this);
+            var index =layer.open({
+                 title: '单位（科室）',
+                 type: 1,
+                 area: ['314px', '400px'],
+                 content:lay$("#dw_box"),
+                 success:function(layero,index){
+                    setting.async.url="${ctx}/xtgl/zzgl/zzjg/ztree/list";
+                    tree = $.fn.zTree.init($("#left_tree"), setting);
+                    fuzzySearch ("left_tree","#dw_input",false,true);
+                    lay$(".dw-btn").click(function (e) { 
+                        e.preventDefault();
+                        var node= tree.getSelectedNodes()[0];
+                        if(!node.isParent || node.children.length == 0){
+	                        dwCallback(node,demo);
+	                        layer.close(index);
+                        }
+                    });
+
+                 },
+                 end:function(){
+                	lay$("#dw_input").val('');
+                    lay$(".dw-btn").unbind();
+                 }
+             });
+     });
+     lay$(".layui-form").on('click','.zw', function () {
+            var demo=lay$(this);
+            setting.async.url="${ctx}/xtgl/zzgl/zwgl/ztree/list";
+            index =layer.open({
+                 title: '职务',
+                 type: 1,
+                 area: ['314px', '400px'],
+                 content:lay$("#dw_box"),
+                 success:function(layero,index){
+                	setting.async.url="${ctx}/xtgl/zzgl/zwgl/ztree/list";
+                    tree =$.fn.zTree.init($("#left_tree"), setting);
+                    fuzzySearch ("left_tree","#dw_input",false,true);
+                    lay$(".dw-btn").click(function (e) { 
+                        e.preventDefault();
+                        var node= tree.getSelectedNodes()[0];
+                        if(!node.isParent || node.children.length == 0){
+	                        dwCallback(node,demo);
+	                        layer.close(index);
+                        }
+                    }); 
+                 },
+                 end:function(){
+                	lay$("#dw_input").val('');
+                    lay$(".dw-btn").unbind();
+                 }
+            });
+      });        
+
+         
+      lay$("#dw_add_btn").click(function(){
+            var html='<div class="layui-form-item dwzw">'+
+                     '<label class="layui-form-label">单位（科室）:</label>'+
+                     '<div class="layui-inline">'+
+                     '<div class="layui-input tree-input dw">'+
+                     '</div>'+
+                     '</div>'+
+                     '<label class="layui-form-label">职务名称:</label>'+
+                     '<div class="layui-inline">'+
+                     '<div class="layui-input tree-input zw"></div>'+
+                     '<i class="fa fa-times del-dw"></i>'+
+                     '</div>'+
+                     '</div>';
+            lay$("#btn_box").before(html);
+       })
+         
+       lay$(".layui-form").on('click','.del-dw',function () {
+             lay$(this).parent().parent().remove();
+       });
+      
+       lay$(".layui-form").on('click','.dwzwdel',function(e){
+			e.stopPropagation(); 
+			$(this).parent().remove();
+	   });
+       
+       form.verify({
+           onlyUname: function (value) {
+               if (value == '') {
+                   return '请输入用户账号';
+               } else {
+                   var message = '';
+                   $.ajax({
+                       url: '${ctx}/xtgl/zzgl/yhgl/checkUserName?username=' + value+"&u_id=${(map.u_id)!''}",
+                       type: 'get',
+                       async: false,
+                       success: function (data) {
+                           if (data > 0) {
+                               message = '该用户名已存在';
+                           }
+                       },
+                   })
+                   return message;
+               }
+           },
+           sedPwd: function (value) {
+               if (value != $("#password").val()) {
+                   $("#passwordCheck").val("");
+                   return '确认密码与密码不一致';
+               }
+           }
+       });
+	       
+     form.on('submit(save)', function (data) {
+    	  var dwzw = lay$(".dwzw");
+    	  var org_job = [];
+    	  lay$.each(dwzw,function(i,v){
+    		  var dw = lay$(v).find(".dw").find("span")
+    		  var zw = lay$(v).find(".zw").find("span")
+    		  var dwId = dw.attr("data-id") == undefined ? "#" :dw.attr("data-id");
+    		  var zwId = zw.attr("data-id") == undefined ? "#" :zw.attr("data-id");
+    		  org_job.push(dwId+"="+zwId)
+    	  })
+    	  data.field.org_jobs = org_job.join(",");
+          var url = "${ctx}/xtgl/zzgl/yhgl/changeOrAdd";
+           lay$.ajax({
+               type: "POST",
+               data: data.field,
+               url: url,
+               beforeSend: function () {
+                   index = layer.load(1);
+               },
+               success: function (data) {
+                   layer.close(index);
+                   if (data > 0) {
+                       var msg = "保存成功";
+                       layer.msg(msg, {offset: ['50%'], time: 1000}, function () {
+                           index = parent.layer.getFrameIndex(window.name);
+                           parent.layer.close(index);
+                       });
+                   } else {
+                       layer.msg("操作失败")
+                   }
+               },
+               error: function (data) {
+                   layer.msg("服务端异常");
+               } 
+           });
+           return false;
+     });
+         
+         
+function roleSelect() {
+    $.ajax({
+        url: '${ctx}/xtgl/zzgl/yhgl/getRoleSelect?status=1',
+        dataType: 'json',
+        type: 'get',
+        success: function (data) {
+        $.each(data.data, function (index, item) {
+        $('#role').append(new Option(item.rolename, item.r_id));// 下拉菜单里添加元素
+        });
+        if ('${(echouser.r_id)!''}' != ''){
+        $("#role").val('${(echouser.r_id)!''}');
+        }
+        form.render("select");
+        }
+    })
+ }
+
+function dwCallback(data,demo) { 
+    demo.html("");
+    var name=data.name;
+    var id=data.id;
+    var html='<span data-id="'+id+'">'+name+'<i class="fa fa-times dwzwdel"></span>';
+    demo.append(html);
+}
+</script>
+</body>
+</html>

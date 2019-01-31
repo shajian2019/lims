@@ -6,16 +6,45 @@
 		SELECT
 			o_id id,
 			o_name name,
+			o_level level,
+			o_status status,
+			o_remark remark,
 			createtime,
-			updatetime
-		FROM sys_t_org
+			updatetime,
+			o_sort sort,
+			p_oid parentid
+		FROM
+			sys_t_org
+		<where>
+			<if test="parentid !=null and parentid !=''">
+				and p_oid = #{parentid}
+			</if>
+			<if test="name !=null and name !=''">
+				and o_name = #{name}
+			</if>
+			<if test="likename !=null and likename !=''">
+				<bind name="_likename" value="'%'+likename+'%'"></bind>
+				and o_name like #{_likename}
+			</if>
+		</where>
+		order by o_sort
+	</select>
+	
+	<select id="getOrgForTree" resultType="java.util.Map">
+		SELECT
+			o_id id,
+			o_name name,
+			p_oid parentid
+		FROM
+			sys_t_org
+			order by o_sort
 	</select>
 	
 	<insert id="addOrg" parameterType="com.zzhb.zzoa.domain.Org">
 		INSERT INTO sys_t_org 
-			(o_name,createtime)
+			(o_name,o_level,o_status,o_remark,createtime,o_sort,p_oid)
 		VALUES
-			(#{name},now())
+			(#{name},#{level},#{status},#{remark},now(),#{sort},#{parentid})
 	</insert>
 	
 	<update id="updateOrg" parameterType="com.zzhb.zzoa.domain.Org">
@@ -23,6 +52,15 @@
 		<set>
 			<if test="name !=null and name !=''">
 				o_name = #{name},
+			</if>
+			<if test="remark !=null and remark !=''">
+				o_remark = #{remark},
+			</if>
+			<if test="status !=null and status !=''">
+				o_status = #{status},
+			</if>
+			<if test="sort !=null and sort !=''">
+				o_sort = #{sort},
 			</if>
 			<if test="true">
 				updatetime = now(),
@@ -69,12 +107,6 @@
         </foreach>
 	</insert>
 	
-	<select id="getOrgByUid" resultType="com.zzhb.zzoa.domain.Org" parameterType="java.lang.String">
-		SELECT o.o_id id,o.o_name name,createtime,updatetime FROM sys_t_org o LEFT JOIN sys_t_user_org org
-		on o.o_id = org.o_id
-		WHERE org.u_id = #{u_id}
-	</select>
-	
 	<select id="getAddUsers" resultType="java.util.Map">
 		SELECT
 			* 
@@ -86,4 +118,16 @@
 			o.u_id IS NULL 
 			AND u.username != 'superadmin'
 	</select>
+	
+	<delete id="delOrg" parameterType="java.util.List">
+		DELETE FROM sys_t_org
+		<where>
+			<if test="orgs !=null and orgs.size() != 0">
+				and o_id in 
+				<foreach collection="orgs" item="org" open="(" separator="," close=")">
+           			#{org.id}
+        		</foreach>
+			</if>
+		</where>
+	</delete>
 </mapper>

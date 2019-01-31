@@ -5,13 +5,14 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import com.zzhb.zzoa.domain.Role;
 
 public interface RoleMapper {
 
-	@Select("SELECT r.* from  sys_t_role r LEFT JOIN sys_t_user_role ur on r.r_id = ur.r_id WHERE ur.u_id = #{0}")
-	public Role getRol(Integer u_id);
+	@Select("SELECT * from  sys_t_role WHERE r_id = #{0}")
+	public Role getRol(Integer r_id);
 
 	@Select("SELECT * from sys_t_role WHERE r_id = #{0}")
 	public Role getRolByRid(String r_id);
@@ -22,8 +23,8 @@ public interface RoleMapper {
 	@Delete("DELETE FROM sys_t_user_role WHERE u_id = #{0}")
 	public Integer delUserRoleByUId(String u_id);
 
-	@Delete("DELETE FROM sys_t_user_role WHERE r_id = #{0}")
-	public Integer delUserRoleByRId(String r_id);
+	@Update("UPDATE sys_t_user SET r_id = null WHERE r_id = #{0} ")
+	public Integer updateUserRIdByRid(String r_id);
 
 	@Delete("DELETE FROM sys_t_user_role WHERE r_id = #{r_id}")
 	public Integer delUserRole(Map<String, Object> params);

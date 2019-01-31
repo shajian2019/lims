@@ -2,10 +2,10 @@ package com.zzhb.zzoa.domain;
 
 import java.io.Serializable;
 
-public class User implements Serializable{
+public class User implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private Integer u_id;
 	private String username;
 	private String password;
@@ -17,6 +17,34 @@ public class User implements Serializable{
 	private String phone;
 	private String status;
 	private String recentlogin;
+	private String bgdh;
+	private String bgxh;
+	private String phonexh;
+	private Integer r_id;
+
+	public String getBgdh() {
+		return bgdh;
+	}
+
+	public void setBgdh(String bgdh) {
+		this.bgdh = bgdh;
+	}
+
+	public String getBgxh() {
+		return bgxh;
+	}
+
+	public void setBgxh(String bgxh) {
+		this.bgxh = bgxh;
+	}
+
+	public String getPhonexh() {
+		return phonexh;
+	}
+
+	public void setPhonexh(String phonexh) {
+		this.phonexh = phonexh;
+	}
 
 	public Integer getU_id() {
 		return u_id;
@@ -106,11 +134,20 @@ public class User implements Serializable{
 		this.recentlogin = recentlogin;
 	}
 
+	public Integer getR_id() {
+		return r_id;
+	}
+
+	public void setR_id(Integer r_id) {
+		this.r_id = r_id;
+	}
+
 	@Override
 	public String toString() {
 		return "User [u_id=" + u_id + ", username=" + username + ", password=" + password + ", nickname=" + nickname
 				+ ", createtime=" + createtime + ", updatetime=" + updatetime + ", remark=" + remark + ", email="
-				+ email + ", phone=" + phone + ", status=" + status + ", recentlogin=" + recentlogin + "]";
+				+ email + ", phone=" + phone + ", status=" + status + ", recentlogin=" + recentlogin + ", bgdh=" + bgdh
+				+ ", bgxh=" + bgxh + ", phonexh=" + phonexh + ", r_id=" + r_id + "]";
 	}
 
 }

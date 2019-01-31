@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.zip.ZipInputStream;
 
@@ -307,15 +308,22 @@ public class ActivitiService {
 				u_id = vo.getAssignee();
 			}
 			if (u_id != null) {
-				User user = userMapper.getUserById(Integer.parseInt(u_id));
+				User user = userMapper.getUserById(u_id);
 				vo.setAssignee(user.getNickname());
 			}
 			String spyj = "";
 			boolean sftg = true;
 			List<Comment> taskComments = taskService.getTaskComments(vo.getId(), "comment");
 			for (Comment comment : taskComments) {
-				spyj = JSON.parseObject(comment.getFullMessage()).getString("spyj");
-				sftg = JSON.parseObject(comment.getFullMessage()).getBoolean("agree");
+				JSONObject commentJ = JSON.parseObject(comment.getFullMessage());
+				sftg = commentJ.getBoolean("agree");
+				Set<String> keySet = commentJ.keySet();
+				for (String string : keySet) {
+					if (string.endsWith("spyj")) {
+						spyj = commentJ.getString(string);
+						break;
+					}
+				}
 			}
 			vo.setSftg(sftg);
 			vo.setSpyj(spyj);
@@ -328,7 +336,7 @@ public class ActivitiService {
 			vo.setName(ruTask.getName());
 			vo.setStartTime(TimeUtil.getTimeFromDate("yyyy-MM-dd HH:mm:ss", ruTask.getCreateTime()));
 			if (ruTask.getAssignee() != null) {
-				User user = userMapper.getUserById(Integer.parseInt(ruTask.getAssignee()));
+				User user = userMapper.getUserById(ruTask.getAssignee());
 				vo.setAssignee(user.getNickname());
 			}
 			historicTaskInstanceVOs.add(vo);
@@ -426,10 +434,7 @@ public class ActivitiService {
 		Task ruTask = taskService.createTaskQuery().taskId(taskId).singleResult();
 		String processInstanceId = ruTask.getProcessInstanceId();
 		is.setAuthenticatedUserId(user.getU_id() + "");
-		JSONObject json = new JSONObject();
-		json.put("spyj", params.get("spyj"));
-		json.put("agree", params.get("agree"));
-		taskService.addComment(taskId, processInstanceId, JSON.toJSONString(json));
+		taskService.addComment(taskId, processInstanceId, JSON.toJSONString(params));
 
 		// 完成当前任务
 		formService.submitTaskFormData(taskId, params);
@@ -443,10 +448,10 @@ public class ActivitiService {
 		if (task != null) {
 			result.put("code", 1);
 			result.put("msg", task.getName());
-			result.put("taskId", taskId);
 		} else {
 			result.put("code", 0);
 		}
+		result.put("taskId", taskId);
 		return result;
 	}
 
@@ -502,7 +507,7 @@ public class ActivitiService {
 				hio.setSftg(JSON.parseObject(comments.get(0).getFullMessage()).getBoolean("agree"));
 			}
 			if (params.get("u_id") == null && hio.getOwerId() != null) {
-				User user = userMapper.getUserById(Integer.parseInt(hio.getOwerId()));
+				User user = userMapper.getUserById(hio.getOwerId());
 				hio.setOwerId(user.getNickname());
 			}
 		}

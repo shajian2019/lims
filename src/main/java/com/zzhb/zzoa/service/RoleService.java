@@ -13,6 +13,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zzhb.zzoa.domain.Role;
+import com.zzhb.zzoa.domain.User;
 import com.zzhb.zzoa.mapper.RoleMapper;
 import com.zzhb.zzoa.mapper.UserMapper;
 import com.zzhb.zzoa.utils.LayUiUtil;
@@ -38,16 +39,17 @@ public class RoleService {
 
 	@Transactional
 	public Integer updateRole(Map<String, String> params) {
-		roleMapper.updateRole(params);
-		List<String> userIds = roleMapper.getUserIds(params);
-		System.out.println(userIds);
-		Map<String, Object> params2 = new HashMap<>();
-		params2.put("status", "0");
+		User user = new User();
+		Integer updateRole = roleMapper.updateRole(params);
+		System.out.println(updateRole);
 		if ("0".equals(params.get("status"))) {
-			params2.put("status", "2");
+			params.put("status", "3");
+		} else {
+			params.put("status", "0");
 		}
-		params2.put("u_ids", userIds);
-		Integer updateUser = userMapper.updateUser(params2);
+		user.setR_id(Integer.parseInt(params.get("r_id")));
+		user.setStatus(params.get("status"));
+		Integer updateUser = userMapper.updateUserStatus(user);
 		cacheService.flushMenus();
 		return updateUser;
 	}
@@ -81,8 +83,8 @@ public class RoleService {
 	@Transactional
 	public Integer delRole(Map<String, Object> params) {
 		roleMapper.delRoleMenu(params);
-		roleMapper.delUserRoleByRId(params.get("r_id").toString());
 		Integer delUserRole = roleMapper.delRole(params);
+		delUserRole = roleMapper.updateUserRIdByRid(params.get("r_id").toString());
 		cacheService.flushMenus();
 		return delUserRole;
 	}

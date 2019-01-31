@@ -20,7 +20,6 @@ public class CacheService {
 		logger.info("========清楚菜单缓存========");
 		menuService.flushOnemenu();
 		menuService.flushSecondmenu();
-		menuService.flushMenuTree();
 		menuService.flushAllMenu();
 	}
 
