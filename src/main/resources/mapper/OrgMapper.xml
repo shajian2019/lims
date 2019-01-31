@@ -30,6 +30,16 @@
 		order by o_sort
 	</select>
 	
+	<select id="getOrgForTree" resultType="java.util.Map">
+		SELECT
+			o_id id,
+			o_name name,
+			p_oid parentid
+		FROM
+			sys_t_org
+			order by o_sort
+	</select>
+	
 	<insert id="addOrg" parameterType="com.zzhb.zzoa.domain.Org">
 		INSERT INTO sys_t_org 
 			(o_name,o_level,o_status,o_remark,createtime,o_sort,p_oid)
@@ -108,18 +118,6 @@
 			o.u_id IS NULL 
 			AND u.username != 'superadmin'
 	</select>
-	
-	<delete id="delUserOrgByOid" parameterType="java.util.List">
-		DELETE FROM sys_t_user_org
-		<where>
-			<if test="orgs !=null and orgs.size() != 0">
-				and o_id in 
-				<foreach collection="orgs" item="org" open="(" separator="," close=")">
-           			#{org.id}
-        		</foreach>
-			</if>
-		</where>
-	</delete>
 	
 	<delete id="delOrg" parameterType="java.util.List">
 		DELETE FROM sys_t_org

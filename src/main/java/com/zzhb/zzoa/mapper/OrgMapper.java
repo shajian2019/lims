@@ -12,6 +12,8 @@ public interface OrgMapper {
 
 	public List<Org> getOrgs(Map<String, String> params);
 
+	public List<Map<String, Object>> getOrgForTree();
+
 	@Select("SELECT count(1) FROM sys_t_org WHERE o_name = #{name} and o_id != #{id} and p_oid = #{parentid}")
 	public Integer checkOrgName(Org org);
 
@@ -19,12 +21,9 @@ public interface OrgMapper {
 
 	public Integer updateOrg(Org org);
 
-
 	public Integer addUserOrg(Map<String, Object> params);
 
 	public Integer delOrg(@Param("orgs") List<Org> orgs);
-
-	public Integer delUserOrgByOid(@Param("orgs") List<Org> orgs);
 
 	public List<Map<String, String>> getUsers(Map<String, String> params);
 

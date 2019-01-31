@@ -1,5 +1,6 @@
 package com.zzhb.zzoa.controller.xtgl;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import com.zzhb.zzoa.domain.User;
 import com.zzhb.zzoa.mapper.OrgUserMapper;
 import com.zzhb.zzoa.mapper.RoleMapper;
 import com.zzhb.zzoa.mapper.UserMapper;
+import com.zzhb.zzoa.mapper.UserOrgJobMapper;
 import com.zzhb.zzoa.service.RoleService;
 import com.zzhb.zzoa.service.UserService;
 import com.zzhb.zzoa.service.ZzjgService;
@@ -44,6 +46,9 @@ public class ZzglController {
 	@Autowired
 	OrgUserMapper orgUserMapper;
 
+	@Autowired
+	UserOrgJobMapper userOrgJobMapper;
+
 	@GetMapping("/yhgl")
 	public String yhgl() {
 		return "xtgl/zzgl/yhgl/yhgl";
@@ -66,14 +71,11 @@ public class ZzglController {
 		ModelAndView model = new ModelAndView();
 		String u_id = map.get("u_id");
 		String url = "xtgl/zzgl/yhgl/changeOrAdd";
-		String org_jobs = map.get("org_jobs");
 		if (u_id != null && !"".equals(u_id)) {
 			User user = userMapper.getUserById(u_id);
 			model.addObject("echouser", user);
-			model.addObject("userOrgs", null);
-			model.addObject("userJobs", null);
-		} else {
-			
+			List<Map<String, String>> userOrgJobs = userOrgJobMapper.getUserOrgJobs(u_id);
+			model.addObject("userOrgJobs", userOrgJobs);
 		}
 		model.addObject("map", map);
 		model.setViewName(url);
@@ -121,7 +123,7 @@ public class ZzglController {
 
 	@GetMapping("/zzjg/ztree/list")
 	@ResponseBody
-	public JSONArray zzjgZtreeList() {
+	public List<Map<String, Object>> zzjgZtreeList() {
 		return zzjgService.zzjgZtreeList();
 	}
 

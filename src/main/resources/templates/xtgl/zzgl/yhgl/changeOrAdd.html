@@ -100,20 +100,62 @@
             </select>
         </div>
     </div>
-
-    <div class="layui-form-item dwzw">
-        <label class="layui-form-label">单位（科室）:</label>
-        <div class="layui-inline">
-            <div class="layui-input tree-input dw">
-            </div>
-        </div>
-        <label class="layui-form-label">职务名称:</label>
-        <div class="layui-inline">
-            <div class="layui-input tree-input zw">
-            </div>
-        </div>
-    </div>
-
+    
+	<#if userOrgJobs??>
+		<#list userOrgJobs as userOrgJob>
+			<div class="layui-form-item dwzw">
+		        <label class="layui-form-label">单位（科室）:</label>
+		        <div class="layui-inline">
+		            	<div class="layui-input tree-input dw">
+		            		<#if userOrgJob.o_id??>
+		            			<span data-id="${(userOrgJob.o_id)!''}">${(userOrgJob.o_name)!''}<i class="fa fa-times dwzwdel"></i></span>
+		            		</#if>
+		            	</div>
+		        </div>
+		        <label class="layui-form-label">职务名称:</label>
+		        <div class="layui-inline">
+		            <div class="layui-input tree-input zw">
+		            		<#if userOrgJob.j_id??>
+		            			<span data-id="${(userOrgJob.j_id)!''}">${(userOrgJob.j_name)!''}<i class="fa fa-times dwzwdel"></i></span>
+		            		</#if>
+		            </div>
+		            <#if userOrgJob_index != 0>
+	            		<i class="fa fa-times del-dw"></i>
+		            </#if>
+		        </div>
+		    </div>
+		</#list>
+		<#if userOrgJobs?size == 0>
+			<div class="layui-form-item dwzw">
+		        <label class="layui-form-label">单位（科室）:</label>
+		        <div class="layui-inline">
+		            <div class="layui-input tree-input dw">
+		            </div>
+		        </div>
+		        <label class="layui-form-label">职务名称:</label>
+		        <div class="layui-inline">
+		            <div class="layui-input tree-input zw">
+		            </div>
+		        </div>
+	    	</div>
+		</#if>
+	</#if>
+	
+	<#if !map.u_id?? >
+	    <div class="layui-form-item dwzw">
+	        <label class="layui-form-label">单位（科室）:</label>
+	        <div class="layui-inline">
+	            <div class="layui-input tree-input dw">
+	            </div>
+	        </div>
+	        <label class="layui-form-label">职务名称:</label>
+	        <div class="layui-inline">
+	            <div class="layui-input tree-input zw">
+	            </div>
+	        </div>
+	    </div>
+	</#if>
+	
     <div class="layui-btn-container" id="btn_box">
         <a class="layui-btn layui-btn-primary" lay-submit lay-filter="save">保存</a>
         <a href="javascript:;" class="layui-btn layui-btn-primary" id="dw_add_btn">添加单位/职务</a>  

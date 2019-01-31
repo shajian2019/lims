@@ -21,7 +21,9 @@ import com.zzhb.zzoa.mapper.JobMapper;
 import com.zzhb.zzoa.mapper.OrgMapper;
 import com.zzhb.zzoa.mapper.OrgUserMapper;
 import com.zzhb.zzoa.mapper.UserMapper;
+import com.zzhb.zzoa.mapper.UserOrgJobMapper;
 import com.zzhb.zzoa.utils.LayUiUtil;
+import com.zzhb.zzoa.utils.ZtreeUtil;
 
 @Service
 public class ZzjgService {
@@ -41,6 +43,9 @@ public class ZzjgService {
 	@Autowired
 	OrgUserMapper orgUserMapper;
 
+	@Autowired
+	UserOrgJobMapper userOrgJobMapper;
+
 	public JSONObject zzjgList(Map<String, String> params) {
 		JSONObject result = new JSONObject();
 		List<Org> list = orgMapper.getOrgs(params);
@@ -53,37 +58,10 @@ public class ZzjgService {
 		return result;
 	}
 
-	public JSONArray zzjgZtreeList() {
-		JSONArray result = new JSONArray();
-		Map<String, String> params = new HashMap<>();
-		params.put("parentid", "0");
-		List<Org> list = orgMapper.getOrgs(params);
-		for (Org org : list) {
-			JSONObject orgJ = new JSONObject();
-			orgJ.put("id", org.getId());
-			orgJ.put("tId", org.getId());
-			orgJ.put("name", org.getName());
-			orgJ.put("checked", false);
-			orgJ.put("level", org.getLevel());
-			orgJ.put("parentid", "0");
-
-			params.put("parentid", org.getId());
-			JSONArray childrenOrj = new JSONArray();
-			list = orgMapper.getOrgs(params);
-			for (Org orgC : list) {
-				JSONObject orgCJ = new JSONObject();
-				orgCJ.put("id", orgC.getId());
-				orgCJ.put("tId", orgC.getId());
-				orgCJ.put("name", orgC.getName());
-				orgCJ.put("checked", false);
-				orgCJ.put("level", orgC.getLevel());
-				orgCJ.put("parentid", org.getId());
-				childrenOrj.add(orgCJ);
-			}
-			orgJ.put("children", childrenOrj);
-			result.add(orgJ);
-		}
-		return result;
+	public List<Map<String, Object>> zzjgZtreeList() {
+		List<Map<String, Object>> orgForTree = orgMapper.getOrgForTree();
+		orgForTree = ZtreeUtil.getStandardJSON(orgForTree);
+		return orgForTree;
 	}
 
 	public JSONObject zzjgUserList(Integer page, Integer limit, Map<String, String> params) {
@@ -144,13 +122,15 @@ public class ZzjgService {
 		return updateOrg;
 	}
 
+	
 	@Transactional
 	public Integer zzjgDel(Org org) {
 		Map<String, String> params = new HashMap<>();
 		params.put("parentid", org.getId());
 		List<Org> orgs = orgMapper.getOrgs(params);
 		orgs.add(org);
-		orgMapper.delUserOrgByOid(orgs);
+		userOrgJobMapper.updateByOId(orgs);
+		userOrgJobMapper.delEmptyByOId();
 		return orgMapper.delOrg(orgs);
 	}
 

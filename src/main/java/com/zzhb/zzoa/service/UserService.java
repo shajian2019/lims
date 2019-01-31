@@ -76,30 +76,30 @@ public class UserService {
 			user.setPassword(result.toString());
 			user.setStatus("0");
 			addUser = userMapper.addUser(user);
-			String org_jobs = map.get("org_jobs");
-
-			List<String> asList = Arrays.asList(org_jobs.split(","));
-			if (asList.size() > 0) {
-				List<Map<String, String>> list = new ArrayList<>();
-				for (String string : asList) {
-					List<String> asList2 = Arrays.asList(string.split("="));
-					String dw = asList2.get(0).equals("#") ? null: asList2.get(0);
-					String zw = asList2.get(1).equals("#") ? null : asList2.get(1);
-					if (!(dw == null && zw == null)) {
-						Map<String, String> param = new HashMap<>();
-						param.put("u_id", user.getU_id() + "");
-						param.put("o_id", dw);
-						param.put("j_id", zw);
-						list.add(param);
-					}
-				}
-				if (list.size() > 0) {
-					userOrgJobMapper.addUserOrgJob(list);
-				}
-			}
 		} else {
 			userOrgJobMapper.delByUId(user.getU_id() + "");
 			addUser = userMapper.updateUser(user);
+		}
+
+		String org_jobs = map.get("org_jobs");
+		List<String> asList = Arrays.asList(org_jobs.split(","));
+		if (asList.size() > 0) {
+			List<Map<String, String>> list = new ArrayList<>();
+			for (String string : asList) {
+				List<String> asList2 = Arrays.asList(string.split("="));
+				String dw = asList2.get(0).equals("#") ? null : asList2.get(0);
+				String zw = asList2.get(1).equals("#") ? null : asList2.get(1);
+				if (!(dw == null && zw == null)) {
+					Map<String, String> param = new HashMap<>();
+					param.put("u_id", user.getU_id() + "");
+					param.put("o_id", dw);
+					param.put("j_id", zw);
+					list.add(param);
+				}
+			}
+			if (list.size() > 0) {
+				userOrgJobMapper.addUserOrgJob(list);
+			}
 		}
 		return addUser;
 	}

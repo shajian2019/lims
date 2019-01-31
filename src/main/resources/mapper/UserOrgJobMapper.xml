@@ -10,4 +10,15 @@
         </foreach>
 	</insert>
 	
+	<delete id="updateByOId" parameterType="java.util.List">
+		UPDATE sys_t_user_org_job set o_id = null
+		<where>
+			<if test="orgs !=null and orgs.size() != 0">
+				and o_id in 
+				<foreach collection="orgs" item="org" open="(" separator="," close=")">
+           			#{org.id}
+        		</foreach>
+			</if>
+		</where>
+	</delete>
 </mapper>
