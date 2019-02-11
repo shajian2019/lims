@@ -622,15 +622,27 @@ public class ActivitiService {
 	@Transactional
 	public Integer claimTask(String taskId, String u_id) {
 		if (u_id != null) {
-			taskService.claim(taskId, u_id);
+			Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+			if (task.getAssignee() == null) {
+				taskService.claim(taskId, u_id);
+				return 1;
+			} else {
+				return 2;
+			}
 		} else {
 			List<IdentityLink> identityLinksForTask = taskService.getIdentityLinksForTask(taskId);
 			if (identityLinksForTask.size() > 1) {
 				taskService.setAssignee(taskId, null);
+				return 3;
 			} else {
 				return 0;
 			}
 		}
+	}
+
+	@Transactional
+	public Integer delegateTask(String taskId, String u_id) {
 		return 1;
 	}
+
 }

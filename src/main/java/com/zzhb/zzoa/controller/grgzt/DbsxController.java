@@ -29,7 +29,7 @@ public class DbsxController {
 
 	@Autowired
 	ActivitiService activitiService;
-	
+
 	@Autowired
 	TaskService taskService;
 
@@ -55,6 +55,13 @@ public class DbsxController {
 		return activitiService.claimTask(taskId, u_id);
 	}
 
+	// 委托任务
+	@PostMapping("/delegateTask")
+	@ResponseBody
+	public Integer delegateTask(String taskId, String u_id) {
+		return activitiService.delegateTask(taskId, u_id);
+	}
+
 	@Autowired
 	DbsxService dbsxService;
 
@@ -69,7 +76,7 @@ public class DbsxController {
 		modelMap.put("bk", bk);
 		return "grgzt/fqlc/" + key;
 	}
-	
+
 	@RequestMapping("/complete/{taskId}")
 	@ResponseBody
 	public JSONObject complete(@PathVariable("taskId") String taskId, @RequestParam Map<String, String> params) {
@@ -77,6 +84,5 @@ public class DbsxController {
 		JSONObject submitTaskFormData = activitiService.submitTaskFormData(taskId, params);
 		return submitTaskFormData;
 	}
-
 
 }
