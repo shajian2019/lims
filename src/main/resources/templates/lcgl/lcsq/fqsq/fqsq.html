@@ -134,7 +134,8 @@
 	            	}
            	   })
            }
-        });     
+        });
+        
         form.on('submit(search)', function (data) {
         	var param = dtree.getNowParam(dtreeObj);
         	data.field.protype = param.nodeId;
@@ -144,6 +145,5 @@
             });
             return false;
         });
-        
     })
 </script>

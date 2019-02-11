@@ -22,8 +22,8 @@ public class OrgUserController {
 
 	@GetMapping("/list")
 	@ResponseBody
-	public List<Map<String, Object>> list() {
-		return orgUserService.list();
+	public List<Map<String, Object>> list(String p_id) {
+		return orgUserService.list(p_id);
 	}
 
 	@GetMapping("/spr")

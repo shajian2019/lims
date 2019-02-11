@@ -214,4 +214,9 @@
 			</if>
 		</where>
 	</select>
+	
+	<select id="getUsersIdByPId" parameterType="java.lang.String" resultType="java.lang.String">
+		SELECT u_id FROM sys_t_user_procdef WHERE p_id = #{p_id}
+	</select>
+	
 </mapper>

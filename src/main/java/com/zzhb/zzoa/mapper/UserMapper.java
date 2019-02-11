@@ -29,7 +29,7 @@ public interface UserMapper {
 	public Integer addUser(User user);
 
 	public Integer updateUserStatus(User user);
-	
+
 	public Integer updateUser(User user);
 
 	public Integer updateUserByUser(User user);
@@ -50,4 +50,7 @@ public interface UserMapper {
 	public void delUserProcdef(@Param("p_id") String p_id, @Param("u_id") String u_id);
 
 	public Integer addUserProcdef(Map<String, Object> params);
+
+	public List<String> getUsersIdByPId(@Param("p_id") String p_id);
+
 }
