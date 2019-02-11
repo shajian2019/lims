@@ -442,9 +442,6 @@ public class ActivitiService {
 		JSONObject result = new JSONObject();
 		String bk = params.get("bk");
 
-		// 更新审批人缓存表
-		userSprMapper.updateSprs(params);
-
 		// 保存审批备注表
 		Task ruTask = taskService.createTaskQuery().taskId(taskId).singleResult();
 		String processInstanceId = ruTask.getProcessInstanceId();
@@ -461,6 +458,8 @@ public class ActivitiService {
 
 		Task task = taskService.createTaskQuery().processInstanceBusinessKey(bk).singleResult();
 		if (task != null) {
+			// 更新审批人缓存表
+			userSprMapper.updateSprs(params);
 			result.put("code", 1);
 			result.put("msg", task.getName());
 		} else {

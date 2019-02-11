@@ -24,10 +24,13 @@ public class ZtreeUtil {
 			List<Map<String, Object>> children = (List<Map<String, Object>>) map.get("children");
 			if (children != null) {
 				for (Map<String, Object> map2 : children) {
-					Object object = map2.get("checked");
-					if (object != null) {
+					Object checked = map2.get("checked");
+					Object open = map2.get("open");
+					if (checked != null) {
 						map.put("checked", true);
-						break;
+					}
+					if (open != null) {
+						map.put("open", true);
 					}
 				}
 			}

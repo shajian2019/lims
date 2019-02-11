@@ -18,12 +18,12 @@
 	</update>
 	
 	<update id="updateSprs" parameterType="java.util.Map">
-		UPDATE oa_t_user_spr SET sprs = #{sprs} WHERE id = #{id}
+		UPDATE oa_t_user_spr SET sprs = #{usersprs} WHERE id = #{id}
 	</update>
 	
 	<select id="getSprs" resultType="java.util.Map" parameterType="java.util.Map">
 		SELECT
-			cast(u.u_id as char) u_id,
+			concat(o.o_id,'#',u.u_id) oiduid,
 			u.nickname,
 			j.j_name,
 			o.o_name

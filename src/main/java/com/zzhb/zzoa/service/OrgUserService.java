@@ -15,6 +15,7 @@ import com.zzhb.zzoa.domain.activiti.UserSpr;
 import com.zzhb.zzoa.mapper.OrgMapper;
 import com.zzhb.zzoa.mapper.OrgUserMapper;
 import com.zzhb.zzoa.mapper.UserMapper;
+import com.zzhb.zzoa.mapper.UserOrgJobMapper;
 import com.zzhb.zzoa.mapper.UserSprMapper;
 import com.zzhb.zzoa.utils.ZtreeUtil;
 
@@ -34,6 +35,9 @@ public class OrgUserService {
 
 	@Autowired
 	UserSprMapper userSprMapper;
+
+	@Autowired
+	UserOrgJobMapper userOrgJobMapper;
 
 	public List<Map<String, Object>> list(String p_id) {
 		List<Map<String, Object>> listOrgUser = new ArrayList<>();
@@ -84,6 +88,7 @@ public class OrgUserService {
 		if (userSprs != null) {
 			usersIdByPId = Arrays.asList(userSprs.getSprs().split(","));
 		}
+		List<String> userOrgs = userOrgJobMapper.getUserOrgs(userSpr.getUid());
 		for (int i = 0; i < listOrgUser2.size(); i++) {
 			Map<String, Object> map = listOrgUser2.get(i);
 			if (i > 1) {
@@ -107,6 +112,12 @@ public class OrgUserService {
 					String oIdUid = map.get("id") + "#" + map.get("u_id");
 					if (usersIdByPId.contains(oIdUid)) {
 						map2.put("checked", true);
+					}
+				}
+				if (!userOrgs.isEmpty()) {
+					String id = map.get("id").toString();
+					if (userOrgs.contains(id)) {
+						map.put("open", true);
 					}
 				}
 				map.remove("u_id");

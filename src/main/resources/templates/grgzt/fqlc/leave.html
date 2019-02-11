@@ -34,6 +34,7 @@
 	var $ = layui.jquery,laydate = layui.laydate,form=layui.form,upload = layui.upload,laytpl=layui.laytpl,index=null,formFilter="leave";
 	var formkey = "${formkey!''}";
 	var sprs = [];
+	var usersprs = [];
 	if(formkey == 'leave_startevent1.html'){
 		
 		form.val(formFilter, {
@@ -155,9 +156,11 @@
 	     }
     });
   	
+  	//申请
 	form.on('submit(sq)', function(data){
 		if(sprs.length > 0){
 			 data.field.sprs = sprs.join(",")
+			 data.field.usersprs = usersprs.join(",")
 			 data.field.id = "${USER.u_id}leave${formkey!''}";
 			 data.field.bk = "${(leave.bk)!''}";
 			 console.log(data.field)
@@ -189,17 +192,18 @@
 		 } else {
 			 layer.msg("请选择审批人", {offset: ['50%'], time: 2000});
 		 }
-		  return false;
+		 return false;
 	 });
 	
 	} else if (formkey == 'leave_usertask1.html'){
 		getSprs();
 		//图片预览
 		previewImage()
-		
+		//审批
 		form.on('submit(sp)', function(data){
 			if(sprs.length > 0){
 				data.field.sprs = sprs.join(",")
+				data.field.usersprs = usersprs.join(",")
 				data.field.id = "${USER.u_id}leave${formkey!''}";
 				data.field.bk = "${bk!''}";
 				
@@ -248,6 +252,7 @@
 		form.on('submit(sp)', function(data){
 			if(sprs.length > 0){
 				data.field.sprs = sprs.join(",")
+				data.field.usersprs = usersprs.join(",")
 				data.field.id = "${USER.u_id}leave${formkey!''}";
 				data.field.bk = "${bk!''}";
 				
@@ -292,12 +297,10 @@
 		});
 		
 	} else if (formkey == 'leave_usertask3.html'){
-		console.log("===="+formkey)
 		
 		previewImage();
 		
 		form.on('submit(sp)', function(data){
-			data.field.sprs = sprs.join(",")
 			data.field.id = "${USER.u_id}leave${formkey!''}";
 			data.field.bk = "${bk!''}";
 			
@@ -340,14 +343,12 @@
 		
 	}
 	
-	
 	function previewImage(){
-		
 		$.getJSON('${ctx}/file/taskAttachments/${taskId!''}', function(json){
 			var imgHtml = "";
 			$.each(json,function(i,v){
-				var detail = v.split("@");
-				imgHtml += "<img layer-src='/"+v+"' src='/"+v+"' alt='"+detail[1]+"''>"
+				var detail = v.split("&");
+				imgHtml += "<img layer-src='/"+v+"' src='/"+v+"' alt='"+detail[2]+"''>"
 			})
 			$("#layer-photos").html(imgHtml)
 			layer.photos({
@@ -391,10 +392,12 @@
             	layer.close(index);
             	var html = ""
         		sprs = [];
+            	usersprs = [];
             	$.each(data,function(i,v){
-            		sprs.push(v.u_id);
+            		sprs.push(v.oiduid.split("#")[1]);
+            		usersprs.push(v.oiduid);
             		html +='<div class="spr-select">';
-            			html +='<i class="fa fa-close spr-close" data-id="'+v.u_id+'"></i>';
+            			html +='<i class="fa fa-close spr-close" data-id="'+v.oiduid+'"></i>';
 						html +='<div class="spr-box">'
 							html +='<p>'+v.o_name+'</p>';
 							html +='<p>'+v.j_name+'</p>';
@@ -406,7 +409,9 @@
             	$("#spr_add").prevAll().remove();
             	$("#spr_add").before(html);
             	$("#spr .spr-select").on('click','.spr-close',function () { 
-            		sprs.remove($(this).attr("data-id"))
+            		var oiduid = $(this).attr("data-id");
+            		usersprs.remove(oiduid)
+            		sprs.remove(oiduid.split("#")[1])
             		$(this).parent().remove();
             	})
             },
