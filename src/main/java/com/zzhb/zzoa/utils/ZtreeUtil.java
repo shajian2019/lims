@@ -22,11 +22,13 @@ public class ZtreeUtil {
 		recursionChildren(parentList, childList);
 		for (Map<String, Object> map : parentList) {
 			List<Map<String, Object>> children = (List<Map<String, Object>>) map.get("children");
-			for (Map<String, Object> map2 : children) {
-				Object object = map2.get("checked");
-				if (object != null) {
-					map.put("checked", true);
-					break;
+			if (children != null) {
+				for (Map<String, Object> map2 : children) {
+					Object object = map2.get("checked");
+					if (object != null) {
+						map.put("checked", true);
+						break;
+					}
 				}
 			}
 		}

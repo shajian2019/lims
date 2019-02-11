@@ -50,6 +50,9 @@ public interface UserMapper {
 	public void delUserProcdef(@Param("p_id") String p_id, @Param("u_id") String u_id);
 
 	public Integer addUserProcdef(Map<String, Object> params);
+	
+	@Update("UPDATE sys_t_user_procdef set p_id = #{newpid} WHERE p_id = #{oldpid}")
+	public Integer updateUserProcdef(Map<String, String> params);
 
 	public List<String> getUsersIdByPId(@Param("p_id") String p_id);
 

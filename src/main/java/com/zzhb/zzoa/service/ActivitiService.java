@@ -98,10 +98,10 @@ public class ActivitiService {
 		String resourceName = file.getOriginalFilename();
 		Deployment deploy = repositoryService.createDeployment()
 				.addZipInputStream(new ZipInputStream(file.getInputStream())).name(resourceName).deploy();
-
 		List<ProcessDefinition> pdfs = repositoryService.createProcessDefinitionQuery().deploymentId(deploy.getId())
 				.list();
 		List<ProcessDefinitionExt> pdes = new ArrayList<ProcessDefinitionExt>();
+		Map<String, String> params2 = new HashMap<>();
 		for (ProcessDefinition pdf : pdfs) {
 			ProcessDefinitionExt pde = new ProcessDefinitionExt();
 			pde.setId(pdf.getId());
@@ -115,8 +115,16 @@ public class ActivitiService {
 			pde.setVersion(pdf.getVersion());
 			pde.setProtype(params.get("protype"));
 			pdes.add(pde);
+			params2.put("key", pdf.getKey());
+			params2.put("version", (pdf.getVersion() - 1) + "");
+			ProcessDefinitionExt preVersionProcessDefinitionExt = activitiMapper
+					.getPreVersionProcessDefinitionExt(params2);
+			if (preVersionProcessDefinitionExt != null) {
+				params2.put("oldpid", preVersionProcessDefinitionExt.getId());
+				params2.put("newpid", pdf.getId());
+				userMapper.updateUserProcdef(params2);
+			}
 		}
-
 		Integer addProcessDefinitionExt = activitiMapper.addProcessDefinitionExt(pdes);
 		return addProcessDefinitionExt;
 	}
@@ -207,8 +215,15 @@ public class ActivitiService {
 			}
 		}
 		repositoryService.deleteDeployment(params.get("deployment_id"), sfjl);
-		userMapper.delUserProcdef(params.get("p_id"), null);
-		userSprMapper.delSprs(params);
+		Map<String, String> params2 = new HashMap<>();
+		params2.put("key", params.get("key"));
+		params2.put("version", (Integer.parseInt(params.get("version")) - 1) + "");
+		ProcessDefinitionExt preVersionProcessDefinitionExt = activitiMapper.getPreVersionProcessDefinitionExt(params2);
+		if (preVersionProcessDefinitionExt != null) {
+			params2.put("newpid", preVersionProcessDefinitionExt.getId());
+			params2.put("oldpid", params.get("p_id"));
+			userMapper.updateUserProcdef(params2);
+		}
 		return activitiMapper.delProcessDefinitionExt(params);
 	}
 

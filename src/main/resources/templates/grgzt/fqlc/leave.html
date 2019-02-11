@@ -39,8 +39,22 @@
 		form.val(formFilter, {
 			  "sqr": "${(leave.sqr)!''}",
 			  "sqrq": "${(leave.sqrq)!''}", 
-			  "bmmc": "${(leave.bmmc)!''}", 
 		})
+		
+		$.ajax({
+            type: "get",
+            data: {"u_id":"${USER.u_id}"},
+            url: "${ctx}/grgzt/fqlc/getOrgs",
+            success: function (data) {
+				$.each(data, function (index, item) {
+                    $('#bmmc').append(new Option(item.name, item.name));// 下拉菜单里添加元素
+                });
+				form.render("select");
+            },
+            error: function (data) {
+                layer.msg("服务端异常");
+            }
+        });
 		
 		$.ajax({
             type: "get",
@@ -144,7 +158,7 @@
 	form.on('submit(sq)', function(data){
 		if(sprs.length > 0){
 			 data.field.sprs = sprs.join(",")
-			 data.field.id = "${user.u_id}leave${formkey!''}";
+			 data.field.id = "${USER.u_id}leave${formkey!''}";
 			 data.field.bk = "${(leave.bk)!''}";
 			 console.log(data.field)
 			 $.ajax({
@@ -186,7 +200,7 @@
 		form.on('submit(sp)', function(data){
 			if(sprs.length > 0){
 				data.field.sprs = sprs.join(",")
-				data.field.id = "${user.u_id}leave${formkey!''}";
+				data.field.id = "${USER.u_id}leave${formkey!''}";
 				data.field.bk = "${bk!''}";
 				
 				data.field.ks_spyj = "同意  "+data.field.ks_spyj
@@ -234,7 +248,7 @@
 		form.on('submit(sp)', function(data){
 			if(sprs.length > 0){
 				data.field.sprs = sprs.join(",")
-				data.field.id = "${user.u_id}leave${formkey!''}";
+				data.field.id = "${USER.u_id}leave${formkey!''}";
 				data.field.bk = "${bk!''}";
 				
 				data.field.fg_spyj = "同意  "+data.field.fg_spyj
@@ -284,7 +298,7 @@
 		
 		form.on('submit(sp)', function(data){
 			data.field.sprs = sprs.join(",")
-			data.field.id = "${user.u_id}leave${formkey!''}";
+			data.field.id = "${USER.u_id}leave${formkey!''}";
 			data.field.bk = "${bk!''}";
 			
 			data.field.zg_spyj = "同意  "+data.field.zg_spyj
@@ -368,7 +382,7 @@
 	function getSprs(){
 		$.ajax({
             type: "post",
-            data: {id:"${user.u_id}leave${formkey!''}"},
+            data: {id:"${USER.u_id}leave${formkey!''}"},
             url: "${ctx}/grgzt/fqlc/getSprs",
             beforeSend: function () {
                 index = layer.load(1);
@@ -401,6 +415,6 @@
                 layer.msg("服务端异常");
             }
       });
- }
+}
 </script>
 </html>

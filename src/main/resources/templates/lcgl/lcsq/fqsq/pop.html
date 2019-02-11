@@ -156,7 +156,7 @@ $(document).ready(function(){
     	} else {
     		var u_Id = [];
         	$.each(params, function (i, v) {
-        		u_Id.push(v.id.split("#")[1])
+        		u_Id.push(v.id)
             });
         	var u_ids = u_Id.join(",");
         	var p_id = "${p_id}";

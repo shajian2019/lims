@@ -28,7 +28,7 @@
 	
 	<select id="getProcessDefinitionExtsByUid" resultType="com.zzhb.zzoa.domain.activiti.ProcessDefinitionExt">
 		SELECT
-			ext.*,
+			DISTINCT ext.*,
 			pro.`name` proname 
 		FROM
 			sys_t_user_procdef p
@@ -36,7 +36,8 @@
 			LEFT JOIN ext_act_proctype pro ON ext.protype = pro.type
 		<where>
 			<if test="u_id !=null and u_id !='' ">
-				and p.u_id = #{u_id}
+				<bind name="_u_id" value="'%#'+u_id"/>
+				and p.u_id like #{_u_id}
 			</if>
 			<if test="name !=null and name !='' ">
 				<bind name="_name" value="'%'+name+'%'"/>

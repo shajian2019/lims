@@ -18,6 +18,9 @@ public interface ActivitiMapper {
 
 	public Integer addProcessDefinitionExt(@Param("pdes") List<ProcessDefinitionExt> pdes);
 
+	@Select("SELECT * FROM ext_act_re_procdef WHERE `key` = #{key} AND version = #{version}")
+	public ProcessDefinitionExt getPreVersionProcessDefinitionExt(Map<String, String> params);
+
 	public List<ProcessDefinitionExt> getProcessDefinitionExts(Map<String, String> params);
 
 	public List<ProcessDefinitionExt> getProcessDefinitionExtsByUid(Map<String, String> params);

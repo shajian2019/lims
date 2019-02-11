@@ -23,6 +23,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.zzhb.zzoa.domain.Org;
 import com.zzhb.zzoa.domain.User;
 import com.zzhb.zzoa.domain.activiti.Leave;
+import com.zzhb.zzoa.domain.activiti.UserSpr;
 import com.zzhb.zzoa.service.ActivitiService;
 import com.zzhb.zzoa.service.FqlcService;
 import com.zzhb.zzoa.utils.SessionUtils;
@@ -87,10 +88,7 @@ public class FqlcController {
 	private Leave initLeave(User user, String bk) {
 		Leave leave = new Leave();
 		leave.setSqr(user.getNickname());
-		//TODO
-		Org org = new Org();
 		leave.setBk(bk);
-		leave.setBmmc(org.getName());
 		leave.setSqrq(TimeUtil.getTimeByCustom("yyyy-MM-dd HH:mm:ss"));
 		return leave;
 	}
@@ -104,13 +102,19 @@ public class FqlcController {
 
 	@PostMapping("/saveSpr")
 	@ResponseBody
-	public Integer saveSpr(@RequestParam Map<String, String> params) {
-		return fqlcService.saveSpr(params);
+	public Integer saveSpr(UserSpr userSpr) {
+		return fqlcService.saveSpr(userSpr);
 	}
 
 	@PostMapping("/getSprs")
 	@ResponseBody
-	public List<Map<String, String>> getSprs(@RequestParam Map<String, String> params) {
-		return fqlcService.getSprs(params);
+	public List<Map<String, String>> getSprs(UserSpr userSpr) {
+		return fqlcService.getSprs(userSpr);
+	}
+
+	@GetMapping("/getOrgs")
+	@ResponseBody
+	public List<Org> getOrgs(String u_id) {
+		return fqlcService.getOrgs(u_id);
 	}
 }
