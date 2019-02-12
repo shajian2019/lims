@@ -58,13 +58,12 @@
             <!--<textarea name="coordinated_work" placeholder="请输入内容" class="layui-textarea"></textarea>-->
         <!--</div>-->
     <!--</div>-->
-    <!--人员树目前有问题，先注释-->
-    <!--<div class="layui-form-item">-->
-        <!--<label class="layui-form-label">接收人：</label>-->
-        <!--<div class="layui-inline" id="spr">-->
-            <!--<div id="spr_add" name="spr_add" class="layui-input"></div>-->
-        <!--</div>-->
-    <!--</div>-->
+    <div class="layui-form-item">
+        <label class="layui-form-label">接收人：</label>
+        <div class="layui-inline" id="spr">
+            <div id="spr_add" name="spr_add" class="layui-input"></div>
+        </div>
+    </div>
     <div class="layui-form-item">
         <label class="layui-form-label">附件：</label>
         <div class="layui-inline">
@@ -99,7 +98,7 @@
         var $ = layui.jquery
         var dtree = layui.dtree;
         var form = layui.form
-        // getSprs("spr_add","spr","receiver");
+        getSprs("spr_add","spr","receiver");
 
         //上传附件
         var demoListView = $('#demoList')
@@ -167,7 +166,7 @@
                     //保存表单
                     if (sprs.length > 0) {
                         data.field.receiver = sprs.join(",");
-                        data.field.submitter = "${user.u_id}";
+                        data.field.submitter = "${USER.u_id}";
                         $.ajax({
                             type: "post",
                             data: data.field,
@@ -201,7 +200,7 @@
             }else{
                 if (sprs.length > 0) {
                     data.field.receiver = sprs.join(",")
-                    data.field.submitter = "${user.u_id}";
+                    data.field.submitter = "${USER.u_id}";
                     data.field.attach_id=attachs.join(",");
                     console.log(121);
                     console.log(data.field)
@@ -252,9 +251,9 @@
                 title: false,
                 offset: '15px',
                 // content: '${ctx}/swgl/gzrz/empTree?key=journal&formkey=receiver',
-                content: '${ctx}/grgzt/fqlc/spr?key=journal&formkey=receiver',
+                content: '${ctx}/grgzt/fqlc/spr?key=zdgz&formkey=receiver',
                 end: function () {
-                    // getSprs("spr_add", "spr", "receiver");
+                    getSprs("spr_add", "spr", "receiver");
                 }
             })
         })
@@ -262,7 +261,7 @@
         function getSprs(ele, ele1, ele2) {
             $.ajax({
                 type: "post",
-                data: {id: "${user.u_id}journal" + ele2},
+                data: {id: "${USER.u_id}zdgz" + ele2},
                 url: "${ctx}/grgzt/fqlc/getSprs",
                 beforeSend: function () {
                     index = layer.load(1);

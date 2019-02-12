@@ -45,7 +45,7 @@ public class GzrzController {
     public JSONObject getMyJournalInfo(Integer page, Integer limit, @RequestParam Map<String, String> params){
         Subject currentUser = SecurityUtils.getSubject();
         Session session = currentUser.getSession();
-        JSONObject j  = (JSONObject) JSON.toJSON(session.getAttribute("user"));
+        JSONObject j  = (JSONObject) JSON.toJSON(session.getAttribute("USER"));
         String u_id = String.valueOf(j.getString("u_id"));
         params.put("submitter",u_id);
         return journalService.getMyJournalInfo(page,limit,params);

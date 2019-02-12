@@ -164,7 +164,7 @@
                     //保存表单
                     if (sprs.length > 0) {
                         data.field.receiver = sprs.join(",");
-                        data.field.submitter = "${user.u_id}";
+                        data.field.submitter = "${USER.u_id}";
                         $.ajax({
                             type: "post",
                             data: data.field,
@@ -199,7 +199,7 @@
             }else{
                 if (sprs.length > 0) {
                     data.field.receiver = sprs.join(",");
-                    data.field.submitter = "${user.u_id}";
+                    data.field.submitter = "${USER.u_id}";
                     data.field.attachment_id=attachs.join(",");
                     console.log(data.field)
                     $.ajax({
@@ -259,7 +259,7 @@
         function getSprs(ele, ele1, ele2) {
             $.ajax({
                 type: "post",
-                data: {id: "${user.u_id}journal" + ele2},
+                data: {id: "${USER.u_id}journal" + ele2},
                 url: "${ctx}/grgzt/fqlc/getSprs",
                 beforeSend: function () {
                     index = layer.load(1);
