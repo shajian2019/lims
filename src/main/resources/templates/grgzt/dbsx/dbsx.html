@@ -98,6 +98,13 @@
 </body>
 
 </html>
+<script type="text/html" id="rwlx">
+	{{#  if(d.DELEGATION_ == 'PENDING'){ }}
+		<span style="color: blue">委托【{{ d.DESCRIPTION_ }}】</span>
+	{{#  } else { }}
+		<span style="color: green">普通</span>
+    {{#  } }}
+</script>
 <script type="text/html" id="rightBar">
     <div class="layui-btn-group">
 		{{#  if(d.ASSIGNEE_){ }}
@@ -112,12 +119,14 @@
 				<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="cxlq">
 					<i class="fa fa-undo" title="放弃处理"></i>
         		</a>
-				<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="wt">
-					<i class="fa fa-hand-stop-o" title="委托"></i>
-        		</a>
-				<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="zp">
-					<i class="fa fa-hand-o-right" title="指派"></i>
-        		</a>
+				{{#  if(!d.DELEGATION_){ }}
+					<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="wt">
+						<i class="fa fa-hand-stop-o" title="委托"></i>
+        			</a>
+					<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="zp">
+						<i class="fa fa-hand-o-right" title="指派"></i>
+        			</a>
+				{{#  } }}
    			{{#  } }}
 		{{#  } else { }}
 			{{#  if(d.SUSPENSION_STATE_ == 2){ }}
@@ -208,10 +217,15 @@
                     width: 200,
                     align: 'center'
                 }, {
-                    field: 'SUSPENSION_STATE_',
                     title: '流程状态',
                     align: 'center',
+                    width: 100,
                     templet: '#lczt'
+                }, {
+                    title: '任务类型',
+                    align: 'center',
+                    width: 130,
+                    templet: '#rwlx'
                 },{
                     title: '操作', align: 'center',
                     width: 140,
@@ -339,9 +353,12 @@
         	var param = dtree.getNowParam(dtreeObj);
         	if(param.nodeId){
 	        	var keys = param.nodeId;
-	        	$.each(param.childParams,function(index,data){
-					keys += ","+data.nodeId;
-				})
+	        	if(param.level == '1'){
+	        		var childParams = dtree.getChildParam(dtreeObj, keys);
+		        	$.each(childParams,function(index,data){
+						keys += ","+data.nodeId;
+					})
+	        	}
 	        	data.field.keys = keys;
         	}
         	data.field.u_id = "${USER.u_id}";

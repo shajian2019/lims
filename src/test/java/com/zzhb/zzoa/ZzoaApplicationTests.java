@@ -34,6 +34,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.CollectionUtils;
 
 import com.zzhb.zzoa.controller.FileController;
+import com.zzhb.zzoa.controller.grgzt.DbsxController;
 import com.zzhb.zzoa.controller.xtgl.ZzglController;
 import com.zzhb.zzoa.service.OrgUserService;
 import com.zzhb.zzoa.utils.CustomProcessDiagramGenerator;
@@ -54,10 +55,15 @@ public class ZzoaApplicationTests {
 
 	@Autowired
 	OrgUserService orgUserService;
+	
+	@Autowired
+	DbsxController dbsxController;
 
 	@Test
 	public void contextLoads() {
-
+		String taskId = "580045";
+		String userId = "10232";
+		dbsxController.delegateTask(taskId, userId);
 	}
 
 	@Autowired

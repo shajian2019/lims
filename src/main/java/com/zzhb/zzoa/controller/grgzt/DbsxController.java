@@ -58,8 +58,8 @@ public class DbsxController {
 	// 委托任务
 	@PostMapping("/delegateTask")
 	@ResponseBody
-	public Integer delegateTask(String taskId, String u_id) {
-		return activitiService.delegateTask(taskId, u_id);
+	public Integer delegateTask(String taskId, String userId) {
+		return activitiService.delegateTask(taskId, userId);
 	}
 
 	@Autowired
@@ -84,5 +84,4 @@ public class DbsxController {
 		JSONObject submitTaskFormData = activitiService.submitTaskFormData(taskId, params);
 		return submitTaskFormData;
 	}
-
 }

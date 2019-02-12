@@ -33,6 +33,7 @@ import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Comment;
+import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
 import org.activiti.image.ProcessDiagramGenerator;
@@ -468,6 +469,17 @@ public class ActivitiService {
 		Task ruTask = taskService.createTaskQuery().taskId(taskId).singleResult();
 		// 判断流程是否被挂起
 		if (!ruTask.isSuspended()) {
+
+			// 判断该任务是否为委托任务
+			DelegationState delegationState = ruTask.getDelegationState();
+			if (delegationState != null && delegationState.toString().equals("PENDING")) {
+				taskService.resolveTask(taskId);
+				System.out.println(ruTask.getOwner());
+				// 委派的任务 代理人 依旧是委托人
+				params.put("assignee", ruTask.getOwner());
+			} else {
+				params.put("assignee", ruTask.getAssignee());
+			}
 			String processInstanceId = ruTask.getProcessInstanceId();
 			is.setAuthenticatedUserId(user.getU_id() + "");
 			taskService.addComment(taskId, processInstanceId, JSON.toJSONString(params));
@@ -476,7 +488,6 @@ public class ActivitiService {
 			formService.submitTaskFormData(taskId, params);
 
 			// 更新历史UserTask表
-			params.put("assignee", ruTask.getAssignee());
 			params.put("taskId", taskId);
 			activitiMapper.updateHiTaskInst(params);
 
@@ -650,8 +661,8 @@ public class ActivitiService {
 
 	@Transactional
 	public Integer claimTask(String taskId, String u_id) {
+		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
 		if (u_id != null) {
-			Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
 			if (task.getAssignee() == null) {
 				taskService.claim(taskId, u_id);
 				return 1;
@@ -660,7 +671,18 @@ public class ActivitiService {
 			}
 		} else {
 			List<IdentityLink> identityLinksForTask = taskService.getIdentityLinksForTask(taskId);
-			if (identityLinksForTask.size() > 1) {
+			Integer count = 0;
+			for (IdentityLink identityLink : identityLinksForTask) {
+				System.out.println(identityLink.getType() + "==" + identityLink.getUserId());
+				if (!identityLink.getType().equals("owner")) {
+					count++;
+				}
+			}
+			if (count > 1) {
+				task.setDescription(null);
+				task.setOwner(null);
+				task.setDelegationState(null);
+				taskService.saveTask(task);
 				taskService.setAssignee(taskId, null);
 				return 3;
 			} else {
@@ -670,7 +692,14 @@ public class ActivitiService {
 	}
 
 	@Transactional
-	public Integer delegateTask(String taskId, String u_id) {
+	public Integer delegateTask(String taskId, String userId) {
+		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+		String u_id = task.getAssignee();
+		User user = userMapper.getUserById(u_id);
+		// 添加委托人名称
+		task.setDescription(user.getNickname());
+		taskService.saveTask(task);
+		taskService.delegateTask(taskId, userId);
 		return 1;
 	}
 
