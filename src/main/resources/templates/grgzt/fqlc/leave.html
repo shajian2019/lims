@@ -30,6 +30,7 @@
 		${(form!'开发中')}
 </body>
 <script src="${ctx}/plugins/layui/layui.all.js"></script>
+<script src="${ctx}/js/common/download.js"></script>
 <script type="text/javascript">
 	var $ = layui.jquery,laydate = layui.laydate,form=layui.form,upload = layui.upload,laytpl=layui.laytpl,index=null,formFilter="leave";
 	var formkey = "${formkey!''}";
@@ -345,9 +346,13 @@
 	
 	function previewImage(){
 		$.getJSON('${ctx}/file/taskAttachments/${taskId!''}', function(json){
+			var bk = "";
 			var imgHtml = "";
 			$.each(json,function(i,v){
 				var detail = v.split("&");
+				if(bk == ""){
+					bk = v.split("&")[1];
+				}
 				imgHtml += "<img layer-src='/"+v+"' src='/"+v+"' alt='"+detail[2]+"''>"
 			})
 			$("#layer-photos").html(imgHtml)
@@ -356,6 +361,32 @@
 			   ,shade:[0.1, '#ffffff']
 			   ,anim: 5
 			});
+			
+			if(json.length == 0){
+				$("#download").hide();
+			}else{
+				//绑定下载附件事件
+				$("#download").click(function(){
+					$.ajax({
+		                 type: "post",
+		                 data: {bk:bk},
+		                 url: "${ctx}/file/downloadAttachment",
+		                 beforeSend: function () {
+		                     index = layer.load(1);
+		                 },
+		                 success: function (data) {
+		                     layer.close(index);
+		                     var url = "${ctx}/file/downloadZip"
+		               		 var field = {};
+		                     field.fileName = data;
+		               		 formPost(url, field);
+		                 },
+		                 error: function (data) {
+		                     layer.msg("服务端异常");
+		                 }
+		             });
+				})
+			}
 		});
 		
 	}

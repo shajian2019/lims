@@ -71,6 +71,7 @@ public class FqlcController {
 		User user = SessionUtils.getUser();
 		Object renderedStartForm = formService.getRenderedStartForm(processDefinitionId);
 		String startFormKey = formService.getStartFormKey(processDefinitionId);
+		//生成业务ID
 		String businessKey = TimeUtil.getTimeByCustom("yyyyMMddHHmmss") + user.getU_id();
 		modelMap.put(key, initLeave(user, businessKey));
 		modelMap.put("form", renderedStartForm);

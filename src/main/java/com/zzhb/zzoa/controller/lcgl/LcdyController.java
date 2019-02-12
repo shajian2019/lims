@@ -111,42 +111,4 @@ public class LcdyController {
 	public String preview(@RequestParam Map<String, String> params) {
 		return activitiService.preview(params);
 	}
-
-	@PostMapping("/downloadZip")
-	public void downloadZip(String fileName, HttpServletRequest request, HttpServletResponse response) {
-		InputStream is = null;
-		OutputStream os = null;
-		String filePath = props.getTempPath() + "/" + fileName;
-		try {
-			is = new BufferedInputStream(new FileInputStream(filePath));
-			byte[] buffer = new byte[is.available()];
-			is.read(buffer);
-			response.reset();
-			String agent = request.getHeader("USER-AGENT");
-			if (agent != null && agent.toLowerCase().indexOf("firefox") > 0) {
-				fileName = "=?UTF-8?B?" + (new String(Base64.encode(fileName.getBytes("UTF-8")))) + "?=";
-			} else {
-				fileName = java.net.URLEncoder.encode(fileName, "UTF-8");
-			}
-			String contentDisposition = "attachment;filename=" + fileName;
-			response.addHeader("Content-Disposition", contentDisposition);
-			os = new BufferedOutputStream(response.getOutputStream());
-			response.setContentType("application/octet-stream");
-			os.write(buffer);
-			os.flush();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (is != null) {
-					is.close();
-				}
-				if (os != null) {
-					os.close();
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
 }

@@ -388,21 +388,31 @@ public class ActivitiService {
 		return 1;
 	}
 
+	/**
+	 * 
+	 * @param key
+	 *            流程KEY
+	 * @param params
+	 *            业务数据
+	 * @return
+	 */
 	@Transactional
 	public JSONObject startProcessInstance(String key, Map<String, String> params) {
-		User user = SessionUtils.getUser();
 		JSONObject result = new JSONObject();
+		
+		User user = SessionUtils.getUser();
 		ProcessDefinition pd = repositoryService.createProcessDefinitionQuery().processDefinitionKey(key)
 				.latestVersion().singleResult();
 		is.setAuthenticatedUserId(user.getU_id() + "");
 
 		ProcessInstance pi = formService.submitStartFormData(pd.getId(), params.get("bk"), params);
 
+		// 更新审批人缓存表
 		userSprMapper.updateSprs(params);
 
 		Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
 
-		// 添加附件
+		// 为下一个任务节点添加附件
 		List<String> readFilePath = FileUtil.readFilePath(props.getTempPath(), "&" + params.get("bk") + "&");
 		for (String fileName : readFilePath) {
 			String filePath = props.getTempPath() + File.separator + fileName;
@@ -415,6 +425,7 @@ public class ActivitiService {
 						fileName.split("&")[1], fileInputStream);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
+				logger.error("===附件文件未找到==" + e.getMessage());
 			} finally {
 				if (fileInputStream != null) {
 					try {
@@ -427,6 +438,7 @@ public class ActivitiService {
 			}
 		}
 
+		// 保存业务数据
 		params.put("proid", pi.getId());
 		Integer saveBusiness = saveBusiness(key, params);
 
