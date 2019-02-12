@@ -25,18 +25,4 @@ public class SessionUtils {
 		return user;
 	}
 
-	public static Org getOrg() {
-		Subject currentUser = SecurityUtils.getSubject();
-		Session session = currentUser.getSession();
-		Org org = new Org();
-		Object obj = session.getAttribute(Constant.ORG);
-		if (obj != null) {
-			if (obj instanceof Org) {
-				org = (Org) obj;
-			} else {
-				org = JSON.parseObject(JSON.toJSON(obj).toString(), Org.class);
-			}
-		}
-		return org;
-	}
 }

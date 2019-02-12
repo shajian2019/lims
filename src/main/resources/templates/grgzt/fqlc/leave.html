@@ -38,8 +38,8 @@
 		
 		form.val(formFilter, {
 			  "sqr": "${(leave.sqr)!''}",
-			  "sqrq": "${(leave.sqrq)!''}",
-			  "bmmc": "${(leave.bmmc)!''}",
+			  "sqrq": "${(leave.sqrq)!''}", 
+			  "bmmc": "${(leave.bmmc)!''}", 
 		})
 		
 		$.ajax({
@@ -111,7 +111,7 @@
 		        //删除
 		        img.find('.img-close').on('click', function(){
 		           delete files[index]; //删除对应的文件
-		           var filename = "${(leave.bk)!''}&"+file.name;
+		           var filename = "image&${(leave.bk)!''}&"+file.name;
 		           $.ajax({
 			            type: "get",
 			            data: {filename:filename},
@@ -121,6 +121,7 @@
 			            },
 			            success: function (data) {
 			            	fileNameArray.remove(file.name)
+			            	console.log(fileNameArray)
 			            	layer.close(index);
 			            },
 			            error: function (data) {
@@ -176,28 +177,23 @@
 		 }
 		  return false;
 	 });
+
 	} else if (formkey == 'leave_usertask1.html'){
 		getSprs();
 		//图片预览
-		$.getJSON('${ctx}/file/taskAttachments/${taskId!''}', function(json){
-			var imgHtml = "";
-			$.each(json,function(i,v){
-				var detail = v.split("@");
-				imgHtml += "<img layer-src='/"+v+"' src='/"+v+"' alt='"+detail[1]+"''>"
-			})
-			$("#layer-photos").html(imgHtml)
-			layer.photos({
-			   photos: "#layer-photos"
-			   ,shade:[0.1, '#ffffff']
-			   ,anim: 5
-			});
-		});
+		previewImage()
 		
 		form.on('submit(sp)', function(data){
 			if(sprs.length > 0){
 				data.field.sprs = sprs.join(",")
 				data.field.id = "${user.u_id}leave${formkey!''}";
 				data.field.bk = "${bk!''}";
+
+				data.field.ks_spyj = "同意  "+data.field.ks_spyj
+				if(data.field.agree != "true"){
+					data.field.ks_spyj = "不"+data.field.ks_spyj;
+				}
+
 				$.ajax({
 		            type: "post",
 		            data: data.field,
@@ -233,25 +229,19 @@
 	} else if (formkey == 'leave_usertask2.html'){
 		getSprs();
 		//图片预览
-		$.getJSON('${ctx}/file/taskAttachments/${taskId!''}', function(json){
-			var imgHtml = "";
-			$.each(json,function(i,v){
-				var detail = v.split("@");
-				imgHtml += "<img layer-src='/"+v+"' src='/"+v+"' alt='"+detail[1]+"''>"
-			})
-			$("#layer-photos").html(imgHtml)
-			layer.photos({
-			   photos: "#layer-photos"
-			   ,shade:[0.1, '#ffffff']
-			   ,anim: 5
-			});
-		});
+		previewImage()
 		
 		form.on('submit(sp)', function(data){
 			if(sprs.length > 0){
 				data.field.sprs = sprs.join(",")
 				data.field.id = "${user.u_id}leave${formkey!''}";
 				data.field.bk = "${bk!''}";
+
+				data.field.fg_spyj = "同意  "+data.field.fg_spyj
+				if(data.field.agree != "true"){
+					data.field.fg_spyj = "不"+data.field.fg_spyj;
+				}
+
 				$.ajax({
 		            type: "post",
 		            data: data.field,
@@ -266,10 +256,12 @@
 		            			  closeBtn:0,
 		            			  btn: ['确定'] //按钮
 		            			}, function(){
-		            			layer.close(index);           			 
+		            			parent.window.closeTab(data.taskId);
 	            			});
 		            	}else if(data.code == "0") {
-		            		layer.msg("审批成功", {offset: ['50%'], time: 2000});
+		            		layer.msg("审批成功", {offset: ['50%'], time: 2000},function(){
+		            			parent.window.closeTab(data.taskId);
+		            		});
 		            	}else {
 		            		layer.msg("审批失败", {offset: ['50%'], time: 2000});
 		            	}
@@ -284,10 +276,74 @@
 			}
 			 return false;
 		});
+
 	} else if (formkey == 'leave_usertask3.html'){
 		console.log("===="+formkey)
+
+		previewImage();
+
+		form.on('submit(sp)', function(data){
+			data.field.sprs = sprs.join(",")
+			data.field.id = "${user.u_id}leave${formkey!''}";
+			data.field.bk = "${bk!''}";
+
+			data.field.zg_spyj = "同意  "+data.field.zg_spyj
+			if(data.field.agree != "true"){
+				data.field.zg_spyj = "不"+data.field.zg_spyj;
+			}
+
+			$.ajax({
+	            type: "post",
+	            data: data.field,
+	            url: "${ctx}/grgzt/dbsx/complete/${taskId!''}",
+	            beforeSend: function () {
+	                index = layer.load(1);
+	            },
+	            success: function (data) {
+	            	layer.close(index);
+	            	if(data.code >0){
+	            		index = layer.confirm("审批成功,下一流程节点："+data.msg, {
+	            			  closeBtn:0,
+	            			  btn: ['确定'] //按钮
+	            			}, function(){
+	            			parent.window.closeTab(data.taskId);
+            			});
+	            	}else if(data.code == "0") {
+	            		layer.msg("审批成功", {offset: ['50%'], time: 2000},function(){
+	            			parent.window.closeTab(data.taskId);
+	            		});
+	            	}else {
+	            		layer.msg("审批失败", {offset: ['50%'], time: 2000});
+	            	}
+	            },
+	            error: function (data) {
+	            	layer.close(index);
+	                layer.msg("服务端异常");
+	            }
+	        });
+			return false;
+		});
+
 	}
 	
+
+	function previewImage(){
+
+		$.getJSON('${ctx}/file/taskAttachments/${taskId!''}', function(json){
+			var imgHtml = "";
+			$.each(json,function(i,v){
+				var detail = v.split("@");
+				imgHtml += "<img layer-src='/"+v+"' src='/"+v+"' alt='"+detail[1]+"''>"
+			})
+			$("#layer-photos").html(imgHtml)
+			layer.photos({
+			   photos: "#layer-photos"
+			   ,shade:[0.1, '#ffffff']
+			   ,anim: 5
+			});
+		});
+
+	}
 	  //数组对象对应删除
     Array.prototype.remove = function (val) {
         var index = this.indexOf(val);
@@ -318,7 +374,6 @@
                 index = layer.load(1);
             },
             success: function (data) {
-            	console.log(data);
             	layer.close(index);
             	var html = ""
         		sprs = [];

@@ -17,7 +17,6 @@ public class CustomExecutionListener implements ExecutionListener {
 		} else {
 			System.out.println("========="+eventName);
 		}
-
 	}
 
 }

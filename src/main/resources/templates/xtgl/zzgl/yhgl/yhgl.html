@@ -1,220 +1,356 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>用户管理</title>
-    <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
-     <link href="${ctx}/css/common/reset.css" rel="stylesheet" />
-    <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" />
-    <style>
-		.layui-table, .layui-table-view { margin: 0px; }
-		#query{margin-bottom: 5px;}
-	</style>
-</head>
-<body class="layui-layout-body" style="padding: 5px">
-<form class="layui-form" id="query">
-        <div class="layui-inline">
-            <input class="layui-input" type="text" placeholder="用户账号" name="username" id="username">
-        </div>
-        <div class="layui-inline">
-            <input class="layui-input" type="text" placeholder="用户昵称" name="nickname" id="nickname">
-        </div>
-        <div class="layui-inline">
-            <a class="layui-btn layui-btn-primary" lay-submit="" lay-filter="query" datatype="reload">查询</a>
-            <a class="layui-btn layui-btn-primary" onclick="add();">新增</a>
-        </div>
-</form>
-<div style="height:100%">
-    <table class="layui-hidden layui-table" id="dataTable" lay-filter="dataTable"></table>
-</div>
-</body>
-</html>
 
+<head>
+    <meta charset="UTF-8">
+    <title>流程定义</title>
+    <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
+    <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <link rel="stylesheet" href="${ctx}/plugins/ztree/css/zTreeStyle/zTreeStyle.css">
+    <link rel="stylesheet" href="${ctx}/plugins/layui/extend/dtree/font/dtreefont.css">
+  <style>
+*{ box-sizing: border-box; }
+html,body{ margin: 0; height: 100%; }
+.layui-table, .layui-table-view { margin:0; }
+.layui-table-tool { position: relative; z-index: 890; width: 100%; min-height: 50px; line-height: 49px; padding: 0px 5px; border-width: 0 0 1px; }
+.layui-input{ height:32px; line-height: 32px; }
+ .left-box{ float: left; width:240px; height:100%; padding:3px 0 0 0; box-sizing: border-box; overflow-y: auto; border-right:1px solid #e6e6e6; }
+#toolbarDiv{ box-sizing: border-box; overflow-y: auto; }
+.dw-search-box{ display: flex; align-items: center; margin-top: 8px; padding: 0 5px; }
+.dw-fn{ margin-left: 9px; color: #0a8cbf; font-size: 20px; }
+.dw-input{ line-height: 32px; border: 1px solid #e6e6e6; border-radius: 4px; display: flex; align-items: center; margin-left: 5px; flex-grow: 1; max-width: 180px; }
+#dw_input{ line-height: 32px; border:none; padding: 0 5px; width: 160px; }
+.dw-input .fa-search{ color: #999; margin-right: 8px; }
+.dw-btn{ display: inline-block; height: 32px; line-height: 32px; width: 36px; text-align: center; border: 1px solid #e6e6e6;border-radius: 4px; margin: 0 auto; }
+.right-box{ float:left; width:calc(100% - 245px); ; height:100%; padding: 0 0 0 4px; }
+.bm_name_tit{height:42px; line-height: 42px; background-color: #f3f5f7; text-align: center; font-size:16px;}
+.bm_name_tit .fa{margin-left:12px; color:#0a8cbf;}
+#pop{ margin: 12px auto 0; }
+#pop .layui-form-item{ display: flex; align-items: center; }
+#pop .layui-form-item>.layui-inline{ width: 320px; }
+.lcdyImg{ display:block; width:100%; }
+#lc_upload_btn{ margin: 0 auto; display: block; }
+.inner{ text-align: center; margin:0 auto; }
+ </style>
+</head>
+<body>
+    <div class="left-box">
+        <h4 class="bm_name_tit">单位(科室)<i class="fa fa-refresh" id="tree_refresh"></i></h4>
+        <div style="overflow: auto;" id="toolbarDiv">
+            <div id="dw_box">
+                <div class="dw-search-box">
+                    <div class="dw-input">
+                          <input type="text" id="dw_input" placeholder="关键字"/><i class="fa fa-search" ></i>
+                    </div>
+                    <div class="dw-fn" id="dw_fn"><i class="fa fa-angle-double-up"></i></div>
+                </div>
+                <ul id="left_tree" class="ztree"></ul>
+            </div>
+        </div>
+    </div>
+    <div class="right-box">
+    	 <form class="layui-form" style="padding: 6px 0; ">
+	    	 	<div class="layui-input-inline">
+	                 <select name="status" id="status">
+	                     <option value="">全部</option>
+	                     <option value="0">正常</option>
+	                     <option value="1">锁定</option>
+	                     <option value="3">角色已禁用</option>
+	                 </select>
+	            </div>
+	            <div class="layui-inline">
+	                <input type="text" class="layui-input" name="username" id="username" placeholder="用户账号">
+	            </div>
+	            <div class="layui-inline">
+	                <input type="text" class="layui-input" name="nickname" id="nickname" placeholder="用户姓名">
+	            </div>
+	            <div class="layui-inline">
+	                <a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-primary" lay-submit lay-filter="search">查询</a>
+	                <a class="layui-btn layui-btn-sm layui-btn-primary" onclick="add();">新增</a>
+	            </div>
+    	</form>
+        <table class="layui-hide" id="right_tb" lay-filter="right_tb"></table>
+    </div>
+</body>
+
+</html>
+<script type="text/html" id="switch" >
+		{{# if(d.username == 'superadmin' ) { }}
+    		<input type="checkbox" name="switch" disabled="" lay-skin="switch" lay-filter="switchstatus" lay-text="正常|禁用" checked>
+		{{# } else { }}
+			{{# if(d.status == '0' ) { }}
+				<span style="color: green;">正常</span>
+    		{{# } else if(d.status == '1') { }}
+				<span style="color: red;">锁定</span>
+			{{# } else { }}
+				<span style="color: orange;">角色已禁用</span>
+			{{# } }}
+		{{# } }}
+</script>
 <script type="text/html" id="rightBar">
     <div class="layui-btn-group">
         <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">
             <i class="fa fa-pencil" title="修改"></i>
         </a>
-		{{# if(d.username != 'superadmin' ) { }}
-        	<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del">
-            	<i class="fa fa-trash-o" title="删除"></i>
-        	</a>
-			<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="reset">
-            	<i class="fa fa-rotate-left" title="重置密码"></i>
-        	</a>
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del">
+            <i class="fa fa-trash-o" title="删除"></i>
+        </a>
+		{{# if(d.status != '3' ) { }}
+			{{# if(d.status == '1' ) { }}
+        		<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="on">
+            		<i class="fa fa-toggle-on" title="开启"></i>
+        		</a>
+			{{# } else { }}
+ 				<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="off">
+            		<i class="fa fa-toggle-off" title="锁定"></i>
+        		</a>
+			{{# } }}
 		{{# } }}
+       
     </div>
 </script>
-
-<script type="text/html" id="switch" >
-		{{# if(d.username == 'superadmin' ) { }}
-    		<input type="checkbox" name="switch" disabled="" lay-skin="switch" lay-filter="switchstatus" lay-text="正常|锁定" checked>
-		{{# } else { }}
-    		<input type="checkbox" name="switch" lay-skin="switch" lay-filter="switchstatus" lay-text="正常|锁定" {{ d.status == '0' ? 'checked' : '' }}>
-		{{# } }}
-</script>
 <script src="${ctx}/plugins/layui/layui.js"></script>
-<script>
-    var editObj = null, ptable = null, treeGrid = null, tableId = 'dataTable', layer = null, form = null,$=null;
-    layui.use('table', function () {
-        var table = layui.table;
-        $=layui.jquery;
-        form = layui.form;
-        table.render({
-            elem: '#' + tableId
+<script src="${ctx}/plugins/ztree/js/jquery-1.4.4.min.js"></script>
+<script src="${ctx}/plugins/ztree/js/jquery.ztree.all.js"></script>
+<script src="${ctx}/plugins/ztree/js/jquery.ztree.exhide.js"></script>
+<script src="${ctx}/plugins/ztree/js/fuzzysearch.js"></script>
+<script type="text/javascript">
+var table=null,form=null,layer=null,tbID=null,index = null;
+var zTreeObj;
+var expandFlag =true;
+var setting = {
+		callback:{
+			onClick:function(event, treeId, treeNode){
+				zTreeObj.expandNode(treeNode, !treeNode.open, true, false);
+				initRightTable(treeNode);
+			}
+		},
+		view:{
+			selectedMulti: false
+		}
+};
+$(document).ready(function(){
+
+	$.ajax({
+       type: "get",
+       url: "${ctx}/xtgl/zzgl/zzjg/ztree/list",
+       success: function (data) {
+           zTreeObj = $.fn.zTree.init($("#left_tree"), setting, data);
+    	   fuzzySearch ("left_tree","#dw_input",false,true);
+       }
+    });
+	
+    $("#tree_refresh").click(function(event) {
+        zTreeObj.refresh();
+        table.reload(tbID,{
+        	where:{
+        		o_ids:'',
+        		username:$("#username").val(),
+     		    nickname:$("#nickname").val(),
+     		    status:$("#status").val()
+       		 }
+        });
+    });
+    
+    $("#dw_fn").click(function (e) {
+        zTreeObj.expandAll(expandFlag);
+        if(expandFlag){
+        	$("#dw_fn .fa").attr("class","fa fa-angle-double-down");
+        }else{
+        	$("#dw_fn .fa").attr("class","fa fa-angle-double-up");
+        }
+        expandFlag = !expandFlag;
+ 	});
+
+    layui.use(['table', 'layer', 'form','upload'], function () {
+            table = layui.table,
+            form = layui.form,
+            layer = layui.layer,
+            tbID = 'right_tb';
+
+        var rightTB = table.render({
+        	 elem: '#' + tbID
             , url: '${ctx}/xtgl/zzgl/yhgl/getAllUsers'//后台接受路径
             , page: true
-            , id: tableId
-            , height: 'full-48'
+            , id: tbID
+            , height: 'full-45'
             , method: 'get'
             , cols: [[
                 {field: '序号',width:50,fixed:'left',type:'numbers',title:'序号'}
                 , {field: 'u_id', hide:true}
-                , {field: 'username', width: 120, title: '用户账号',align: 'center'}
-                , {field: 'nickname', width: 120, title: '用户昵称',align: 'center'}
-                , {field: 'rolename', width: 120, title: '角色名称',align: 'center'}
+                , {field: 'username', width: 100, title: '用户账号',align: 'center'}
+                , {field: 'nickname', width: 100, title: '用户名称',align: 'center'}
+                , {field: 'o_name', width: 160, title: '单位（科室）名称',align: 'center'}
+                , {field: 'j_name', width: 100, title: '职务名称',align: 'center'}
+                , {field: 'rolename', width: 100, title: '角色名称',align: 'center'}
                 , {field: 'createtime', width: 170, title: '创建时间',align: 'center'}
                 , {field: 'email', width: 180, title: '邮件地址',align: 'center'}
-                , {field: 'phone', width: 140, title: '手机号码',align: 'center'}
-                , {field: 'remark', title: '备注'}
+                , {field: 'phone', width: 120, title: '手机号码',align: 'center'}
+                , {field: 'phonexh', width: 100, title: '手机小号',align: 'center'}
+                , {field: 'bgdh', width: 100, title: '办电',align: 'center'}
+                , {field: 'bgxh', width: 100, title: '办电小号',align: 'center'}
                 , {
                     field: 'status', width: 100, title: '用户状态',align: 'center',
                     templet:"#switch"
                 },{
-                    title: '操作', align: 'center',width: 100,
+                    title: '操作', align: 'center',width: 120,
                     toolbar: '#rightBar'
                 }
             ]]
         });
-        
-        //点击行事件
-        table.on('tool(' + tableId + ')', function (obj) {
-            var data = obj.data;
-            console.log(data)
-            var action = obj.event;
-            if (action == 'del') {
-            	layer.confirm('确定删除该用户吗?', function (index) {
-            		 var index;
-                     $.ajax({
-                         type: "post",
-                         data: {u_id: data.u_id},
-                         url: "${ctx}/xtgl/zzgl/yhgl/delUserByid",
-                         beforeSend: function () {
-                             index = layer.load(1);
-                         },
-                         success: function (data) {
-                             layer.close(index);
-                             if (data > 0) {
-                                 layer.msg("删除成功", {offset: ['50%'], time: 1000}, function () {
-                                     table.reload(tableId)
-                                 });
-                             } else {
-                                 layer.msg("操作失败")
-                             }
-                         },
-                         error: function (data) {
-                             layer.msg("服务端异常");
-                         }
-                     });
-            	})
-            } else if(action == 'edit'){
-                var url = "${ctx}/xtgl/zzgl/yhgl/editPage?flag=edit&username=" + data.username;
-                var index = layer.open({
-                    title:action,
-                    type: 2,
-                    fixed: false, //不固定
-                    maxmin: true,
-                    content: url,
-                    end: function(){
-                        table.reload(tableId)
-                    }
-                });
-                layer.full(index);
-            }else{
-                //重置密码
-                layer.confirm('确定重置密码为123456吗?', function (index) {
-                    var index;
-                    $.ajax({
-                        type: "post",
-                        data: {u_id: data.u_id,username:data.username},
-                        url: "${ctx}/xtgl/zzgl/yhgl/resetPassword",
-                        beforeSend: function () {
-                            index = layer.load(1);
-                        },
-                        success: function (data) {
-                            layer.close(index);
-                            if (data > 0) {
-                                layer.msg("重置成功", {offset: ['50%'], time: 1000}, function () {
-                                    table.reload(tableId)
-                                });
-                            } else {
-                                layer.msg("操作失败")
-                            }
-                        },
-                        error: function (data) {
-                            layer.msg("服务端异常");
-                        }
-                    });
-                })
-            }
+
+        table.on('tool(' + tbID + ')', function (obj) {
+           var nodes = zTreeObj.getSelectedNodes()[0];
+       	   var oIds = [];
+           if(nodes != null){
+        		var o_ids = "";
+        		if(nodes.isParent && nodes.children.length == 0){
+        			oIds.push(nodes.id);
+        		} else if(nodes.isParent && nodes.children.length > 0) {
+        			$.each(nodes.children,function(i,v){
+        				oIds.push(v.id);
+        			})
+        		} else {
+        			oIds.push(nodes.id);
+        		}
+           }
+           var data = obj.data;
+           var action = obj.event;
+           if (obj.event === 'del') {
+               var requestParam = {deployment_id: data.deployment_id,p_id: data.id,key: data.key}
+        	   layer.confirm('确定删除该用户吗?', function (index) {
+        		   $.ajax({
+                       type: "post",
+                       data: {u_id: data.u_id},
+                       url: "${ctx}/xtgl/zzgl/yhgl/delUserByid",
+                       beforeSend: function () {
+                           index = layer.load(1);
+                       },
+                       success: function (data) {
+                           layer.close(index);
+                           if (data > 0) {
+                               layer.msg("删除成功", {offset: ['50%'], time: 1000}, function () {
+                                   table.reload(tbID,{
+                                	   where: {
+                                		   o_ids: oIds.join(","),
+                                		   username:$("#username").val(),
+                                		   nickname:$("#nickname").val(),
+                                		   status:$("#status").val()
+                                	   }
+								   })
+                               });
+                           } else {
+                               layer.msg("删除失败")
+                           }
+                       },
+                       error: function (data) {
+                           layer.msg("服务端异常");
+                       }
+                   });
+          	   })
+           } else if (obj.event === 'edit'){
+        	   add(data.u_id);
+           } else if (obj.event === 'on' || obj.event === 'off'){
+        	   var status = obj.event == "on" ? "0": "1";
+        	   $.ajax({
+                   type: "post",
+                   data: {u_id: data.u_id,status: status},
+                   url: "${ctx}/xtgl/zzgl/yhgl/changeUserStatus",
+                   beforeSend: function () {
+                       index = layer.load(1);
+                   },
+                   success: function (data) {
+                       layer.close(index);
+                       if (data > 0) {
+                           layer.msg("修改成功", {offset: ['50%'], time: 1000}, function () {
+                               table.reload(tbID,{
+                            	   where: {
+                            		   o_ids: oIds.join(","),
+                            		   username:$("#username").val(),
+                            		   nickname:$("#nickname").val(),
+                            		   status:$("#status").val()
+                            	   }
+							   })
+                           });
+                       } else {
+                           layer.msg("删除失败")
+                       }
+                   },
+                   error: function (data) {
+                       layer.msg("服务端异常");
+                   }
+               });
+           }
         });
 
-        form.on('submit(query)', function (data) {
-            table.reload(tableId, {
+        form.on('submit(search)', function (data) {
+        	var nodes = zTreeObj.getSelectedNodes()[0];
+        	if(nodes != null){
+        		var o_ids = "";
+        		var oIds = [];
+        		if(nodes.isParent && nodes.children.length == 0){
+        			oIds.push(nodes.id);
+        		} else if(nodes.isParent && nodes.children.length > 0) {
+        			$.each(nodes.children,function(i,v){
+        				oIds.push(v.id);
+        			})
+        		} else {
+        			oIds.push(nodes.id);
+        		}
+        		data.field.o_ids = oIds.join(",");
+        	}
+
+           	rightTB.reload({
                 where: data.field
             });
             return false;
         });
+    })
+});
 
-        form.on('switch(switchstatus)', function(obj){
-            var selectIfKey=obj.othis;
-            var parentTr = selectIfKey.parents("tr");
-            var dataField = $(parentTr).find("td:eq(1)").find(".layui-table-cell").text();//username
-            var status = obj.elem.checked == true? '0':'1';
-            var index;
-            $.ajax({
-                type: "post",
-                data: {u_id:dataField,status:status},
-                url: '${ctx}/xtgl/zzgl/yhgl/updateUser',
-                beforeSend: function () {
-                    index = layer.load(1);
-                },
-                success: function (data) {
-                    layer.close(index)
-                    var msg = "";
-                    if(data > 0){
-                        msg = "修改成功";
-                    }else{
-                        msg = "修改失败";
-                    }
-                    layer.msg(msg,{offset:['50%'],time: 1000},function(){
-                        table.reload(tableId)
-                    });
-                },
-                error: function (data) {
-                    layer.close(index)
-                    layer.msg("服务器异常",{icon:2});
-                }
-            });
-        })
+function initRightTable(treeNode){
+	console.log(treeNode)
+	var o_idArray = [];
+	if(treeNode.isParent){
+		$.each(treeNode.children,function(i,v){
+			o_idArray.push(v.id)
+		})
+	}
+	o_idArray.push(treeNode.id)
+	var o_ids = o_idArray.join(",")
+	console.log(o_ids)
+	table.reload(tbID,{
+		where:{o_ids:o_ids}
+	})
 
+}
+
+function add(u_id) {
+	var title = "";
+   	var url = "";
+	if(u_id){
+   		url = "${ctx}/xtgl/zzgl/yhgl/edit?u_id="+u_id
+		title = "修改用户";
+	}else{
+   		url = "${ctx}/xtgl/zzgl/yhgl/edit"
+		title = "新增用户";
+	}
+    layer.open({
+          title: title,
+          type: 2,
+          area: ['1038px', '500px'],
+          content: url,
+          end: function(){
+        	  zTreeObj.refresh();
+        	  table.reload(tbID,{
+               		where:{
+	               		o_ids:'',
+	               		username:$("#username").val(),
+            		    nickname:$("#nickname").val(),
+            		    status:$("#status").val()
+              		 }
+              });
+    	  }
     });
-
-    function add() {
-        var url = "${ctx}/xtgl/zzgl/yhgl/editPage?flag=add";
-        var table = layui.table;
-        var index = layer.open({
-            title: '新增用户',
-            type: 2,
-            area: ['620px', '400px'],
-            fixed: false, //不固定
-            maxmin: true,
-            content: url,
-            end: function () {
-                table.reload(tableId)
-            }
-        });
-        layer.full(index);
-    }
+}
 </script>

@@ -64,11 +64,10 @@
             ,cols: [[
                  {field:'id', width:80,title: '菜单ID',align:'center'}
                 ,{field:'title', width:400, title: '菜单名称'}
-                ,{field:'url', width:200, title: '菜单链接'}
-                ,{field:'sort', width:200, title: '排序',edit:'text'}
-                ,{field:'status', width:200, title: '状态',templet:'#switch'}
-                ,{title: '操作', align:'center'/*toolbar: '#barDemo'*/
-                    ,templet: function(d){
+                ,{field:'url', title: '菜单链接'}
+                ,{field:'sort', width:200, title: '排序',align:'center',edit:'text'}
+                ,{field:'status', width:100, title: '状态',align:'center',templet:'#switch'}
+                ,{title: '操作', align:'center',templet: function(d){
                         var html='';
                         	html +='<button class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit"><i class="fa fa-pencil" title="修改"></i></button>';
                         	html +='<button class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del"><i class="fa fa-trash-o" title="删除"></i></button>';
