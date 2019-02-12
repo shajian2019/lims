@@ -34,11 +34,11 @@
 
 <form class="layui-form" id="query">
     <div class="layui-form-item">
-        <!--<div class="layui-inline">-->
-        <!--<input class="layui-input" type="text" placeholder="提交人" name="car_model" id="car_model">-->
-        <!--</div>-->
         <div class="layui-inline">
-            <input class="layui-input" type="text" placeholder="提交时间" name="submit_time" id="submit_time">
+        <input class="layui-input" type="text" placeholder="标题" name="title" id="title">
+        </div>
+        <div class="layui-inline">
+            <input class="layui-input" type="text" placeholder="提交时间" name="createtime" id="createtime">
         </div>
 
         <div class="layui-inline">
@@ -75,17 +75,17 @@
         form = layui.form;
         table.render({
             elem: '#' + tableId
-            , url: '${ctx}/swgl/'//后台接受路径
+            , url: '${ctx}/swgl/zdgz/zdgzgl'//后台接受路径
             , page: true
             , id: tableId
             , height: 'full-80'
             , method: 'get'
             , cols: [[
                 {field: '序号',width:50,fixed:'left',type:'numbers',title:'序号'}
-                ,{field: 'today_work_content', title: '当日工作内容'}
-                ,{field: 'unfinished_work', title: '未完成工作'}
-                ,{field: 'coordinated_work', width: 140, title: '需协调工作'}
-                , {field: 'submit_time', width: 150, title: '提交时间'}
+                ,{field: 'title', title: '标题'}
+                ,{field: 'content', title: '工作内容'}
+                ,{field: 'submitterName', width: 140, title: '提交人'}
+                , {field: 'createtime', width: 150, title: '提交时间'}
                 // , {field: 'attachment_id', width: 140, title: '附件'}
 
                 ,{
@@ -150,10 +150,10 @@
     });
 
     function add() {
-        var url = "${ctx}/swgl/gzrz/addMyJournal";
+        var url = "${ctx}/swgl/zdgz/addZdgz";
         var table = layui.table;
         layer.open({
-            title: '新增日志',
+            title: '重点工作登记',
             type: 2,
             offset: '50px',
             area: ['1135px', '630px'],
