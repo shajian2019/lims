@@ -34,14 +34,29 @@
 	var $ = layui.jquery,laydate = layui.laydate,form=layui.form,upload = layui.upload,laytpl=layui.laytpl,index=null,formFilter="leave";
 	var formkey = "${formkey!''}";
 	var sprs = [];
+	var usersprs = [];
 	if(formkey == 'leave_startevent1.html'){
 		
 		form.val(formFilter, {
 			  "sqr": "${(leave.sqr)!''}",
-			  "sqrq": "${(leave.sqrq)!''}", 
-			  "bmmc": "${(leave.bmmc)!''}", 
+			  "sqrq": "${(leave.sqrq)!''}",
 		})
-		
+
+		$.ajax({
+            type: "get",
+            data: {"u_id":"${USER.u_id}"},
+            url: "${ctx}/grgzt/fqlc/getOrgs",
+            success: function (data) {
+				$.each(data, function (index, item) {
+                    $('#bmmc').append(new Option(item.name, item.name));// 下拉菜单里添加元素
+                });
+				form.render("select");
+            },
+            error: function (data) {
+                layer.msg("服务端异常");
+            }
+        });
+
 		$.ajax({
             type: "get",
             data: {gtype:'qjlx_type'},
@@ -141,10 +156,12 @@
 	     }
     });
   	
+  	//申请
 	form.on('submit(sq)', function(data){
 		if(sprs.length > 0){
 			 data.field.sprs = sprs.join(",")
-			 data.field.id = "${user.u_id}leave${formkey!''}";
+			 data.field.usersprs = usersprs.join(",")
+			 data.field.id = "${USER.u_id}leave${formkey!''}";
 			 data.field.bk = "${(leave.bk)!''}";
 			 console.log(data.field)
 			 $.ajax({
@@ -175,25 +192,26 @@
 		 } else {
 			 layer.msg("请选择审批人", {offset: ['50%'], time: 2000});
 		 }
-		  return false;
+		 return false;
 	 });
-
+	
 	} else if (formkey == 'leave_usertask1.html'){
 		getSprs();
 		//图片预览
 		previewImage()
-		
+		//审批
 		form.on('submit(sp)', function(data){
 			if(sprs.length > 0){
 				data.field.sprs = sprs.join(",")
-				data.field.id = "${user.u_id}leave${formkey!''}";
+				data.field.usersprs = usersprs.join(",")
+				data.field.id = "${USER.u_id}leave${formkey!''}";
 				data.field.bk = "${bk!''}";
-
+				
 				data.field.ks_spyj = "同意  "+data.field.ks_spyj
 				if(data.field.agree != "true"){
 					data.field.ks_spyj = "不"+data.field.ks_spyj;
 				}
-
+				
 				$.ajax({
 		            type: "post",
 		            data: data.field,
@@ -234,14 +252,15 @@
 		form.on('submit(sp)', function(data){
 			if(sprs.length > 0){
 				data.field.sprs = sprs.join(",")
-				data.field.id = "${user.u_id}leave${formkey!''}";
+				data.field.usersprs = usersprs.join(",")
+				data.field.id = "${USER.u_id}leave${formkey!''}";
 				data.field.bk = "${bk!''}";
-
+				
 				data.field.fg_spyj = "同意  "+data.field.fg_spyj
 				if(data.field.agree != "true"){
 					data.field.fg_spyj = "不"+data.field.fg_spyj;
 				}
-
+				
 				$.ajax({
 		            type: "post",
 		            data: data.field,
@@ -276,22 +295,20 @@
 			}
 			 return false;
 		});
-
+		
 	} else if (formkey == 'leave_usertask3.html'){
-		console.log("===="+formkey)
 
 		previewImage();
-
+		
 		form.on('submit(sp)', function(data){
-			data.field.sprs = sprs.join(",")
-			data.field.id = "${user.u_id}leave${formkey!''}";
+			data.field.id = "${USER.u_id}leave${formkey!''}";
 			data.field.bk = "${bk!''}";
-
+			
 			data.field.zg_spyj = "同意  "+data.field.zg_spyj
 			if(data.field.agree != "true"){
 				data.field.zg_spyj = "不"+data.field.zg_spyj;
 			}
-
+			
 			$.ajax({
 	            type: "post",
 	            data: data.field,
@@ -323,17 +340,15 @@
 	        });
 			return false;
 		});
-
+		
 	}
-	
 
 	function previewImage(){
-
 		$.getJSON('${ctx}/file/taskAttachments/${taskId!''}', function(json){
 			var imgHtml = "";
 			$.each(json,function(i,v){
-				var detail = v.split("@");
-				imgHtml += "<img layer-src='/"+v+"' src='/"+v+"' alt='"+detail[1]+"''>"
+				var detail = v.split("&");
+				imgHtml += "<img layer-src='/"+v+"' src='/"+v+"' alt='"+detail[2]+"''>"
 			})
 			$("#layer-photos").html(imgHtml)
 			layer.photos({
@@ -342,7 +357,7 @@
 			   ,anim: 5
 			});
 		});
-
+		
 	}
 	  //数组对象对应删除
     Array.prototype.remove = function (val) {
@@ -377,10 +392,12 @@
             	layer.close(index);
             	var html = ""
         		sprs = [];
+            	usersprs = [];
             	$.each(data,function(i,v){
-            		sprs.push(v.u_id);
+            		sprs.push(v.oiduid.split("#")[1]);
+            		usersprs.push(v.oiduid);
             		html +='<div class="spr-select">';
-            			html +='<i class="fa fa-close spr-close" data-id="'+v.u_id+'"></i>';
+            			html +='<i class="fa fa-close spr-close" data-id="'+v.oiduid+'"></i>';
 						html +='<div class="spr-box">'
 							html +='<p>'+v.o_name+'</p>';
 							html +='<p>'+v.j_name+'</p>';
@@ -392,7 +409,9 @@
             	$("#spr_add").prevAll().remove();
             	$("#spr_add").before(html);
             	$("#spr .spr-select").on('click','.spr-close',function () { 
-            		sprs.remove($(this).attr("data-id"))
+            		var oiduid = $(this).attr("data-id");
+            		usersprs.remove(oiduid)
+            		sprs.remove(oiduid.split("#")[1])
             		$(this).parent().remove();
             	})
             },
@@ -401,6 +420,6 @@
                 layer.msg("服务端异常");
             }
       });
- }
+}
 </script>
 </html>

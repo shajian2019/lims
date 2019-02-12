@@ -173,7 +173,7 @@
         table.render({
             elem: '#' + tableId,
             url: '${ctx}/grgzt/dbsx/list',
-            where: {u_id:"${user.u_id}"},
+            where: {u_id:"${USER.u_id}"},
             title: '参数设置',
             page: true,
             id: tableId,
@@ -243,7 +243,7 @@
 	            	layer.confirm('确定领取该任务吗?', function (index) {
 		            		$.ajax({
 		                        type: "post",
-		                        data: {u_id:"${user.u_id}", taskId:data.ID_},
+		                        data: {u_id:"${USER.u_id}", taskId:data.ID_},
 		                        url: "${ctx}/grgzt/dbsx/calimTask",
 		                        beforeSend: function () {
 		                            index = layer.load(1);
@@ -251,7 +251,13 @@
 		                        success: function (data) {
 		                            layer.close(index);
 		                            if (data > 0) {
-		                                layer.msg("领取成功", {offset: ['50%'], time: 1000}, function () {
+		                            	var msg = "";
+		                            	if(data == 1){
+		                            		msg = "领取成功";
+		                            	} else {
+		                            		msg = "任务已被领取";
+		                            	}
+		                                layer.msg(msg, {offset: ['50%'], time: 1000}, function () {
 		                                	table.reload(tableId, {
 		                                        where: data.field
 		                                    });
@@ -301,7 +307,30 @@
 	            	})
             	}
             } else if ("wt" == obj.event){
-            	layer.msg("开发中...", {offset: ['50%'], time: 2000});
+            	$.ajax({
+                    type: "post",
+                    data: {taskId:data.ID_,u_id:"1111"},
+                    url: "${ctx}/grgzt/dbsx/delegateTask",
+                    beforeSend: function () {
+                        index = layer.load(1);
+                    },
+                    success: function (data) {
+                        layer.close(index);
+                        if (data > 0) {
+                            layer.msg("委托成功", {offset: ['50%'], time: 1000}, function () {
+                            	table.reload(tableId, {
+                                    where: data.field
+                                });
+                            });
+                        } else {
+                            layer.msg("操作失败")
+                        }
+                    },
+                    error: function (data) {
+                    	layer.close(index);
+                        layer.msg("服务端异常");
+                    }
+                 });
             } else if ("zp" == obj.event){
             	layer.msg("开发中...", {offset: ['50%'], time: 2000});
             }

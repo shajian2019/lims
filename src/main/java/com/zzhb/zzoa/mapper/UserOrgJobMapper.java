@@ -23,4 +23,8 @@ public interface UserOrgJobMapper {
 
 	@Select("SELECT uoj.o_id,o.o_name,uoj.j_id,j.j_name FROM sys_t_user_org_job uoj LEFT JOIN sys_t_org o on uoj.o_id = o.o_id LEFT JOIN sys_t_job j on uoj.j_id = j.j_id where u_id = #{0}")
 	public List<Map<String, String>> getUserOrgJobs(String u_id);
+
+	@Select("SELECT o_id FROM sys_t_user_org_job WHERE u_id = #{0}")
+	public List<String> getUserOrgs(String u_id);
+	
 }

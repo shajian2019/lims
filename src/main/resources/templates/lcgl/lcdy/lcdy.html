@@ -292,7 +292,7 @@
            var action = obj.event;
        	   var index;
            if (obj.event === 'del') {
-               var requestParam = {deployment_id: data.deployment_id,p_id: data.id,key: data.key}
+               var requestParam = {deployment_id: data.deployment_id,p_id: data.id,key: data.key,version:data.version}
         	   layer.confirm('确定删除该流程定义吗?', function (index) {
         		   layer.confirm("是否级联删除？", {
                        btn: ["是","否"]

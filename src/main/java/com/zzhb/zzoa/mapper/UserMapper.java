@@ -29,7 +29,7 @@ public interface UserMapper {
 	public Integer addUser(User user);
 
 	public Integer updateUserStatus(User user);
-	
+
 	public Integer updateUser(User user);
 
 	public Integer updateUserByUser(User user);
@@ -53,4 +53,10 @@ public interface UserMapper {
 
 //	@Select("select username from sys_t_user where u_id in #{u_ids}")
 	public List<String> getUsernames(Map<String,List<String>> u_ids);
+
+	@Update("UPDATE sys_t_user_procdef set p_id = #{newpid} WHERE p_id = #{oldpid}")
+	public Integer updateUserProcdef(Map<String, String> params);
+
+	public List<String> getUsersIdByPId(@Param("p_id") String p_id);
+
 }

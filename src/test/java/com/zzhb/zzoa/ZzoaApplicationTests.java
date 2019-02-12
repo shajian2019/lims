@@ -35,6 +35,7 @@ import org.springframework.util.CollectionUtils;
 
 import com.zzhb.zzoa.controller.FileController;
 import com.zzhb.zzoa.controller.xtgl.ZzglController;
+import com.zzhb.zzoa.service.OrgUserService;
 import com.zzhb.zzoa.utils.CustomProcessDiagramGenerator;
 import com.zzhb.zzoa.utils.FileUtil;
 
@@ -51,8 +52,12 @@ public class ZzoaApplicationTests {
 	@Autowired
 	FormService formService;
 
+	@Autowired
+	OrgUserService orgUserService;
+
 	@Test
 	public void contextLoads() {
+
 	}
 
 	@Autowired
@@ -77,7 +82,7 @@ public class ZzoaApplicationTests {
 
 		InputStream generateDiagram = processDiagramGenerator.generateDiagram(model, "png", list, list, fontName,
 				fontName, fontName, null, 1.0);
-		
+
 		FileUtil.saveFileFromInputStream(generateDiagram, "D:/", "2.png");
 	}
 
@@ -113,7 +118,8 @@ public class ZzoaApplicationTests {
 	@Test // 删除运行中的流程
 	public void deleteProcessInstance() {
 		System.out.println(rs.createProcessInstanceQuery().count());
-		rs.deleteProcessInstance("65006", "test");
+		rs.deleteProcessInstance("455001", "test");
+		rs.deleteProcessInstance("457501", "test");
 		System.out.println(rs.createProcessInstanceQuery().count());
 	}
 
@@ -183,9 +189,14 @@ public class ZzoaApplicationTests {
 		 * System.out.println(hp.getProcessDefinitionName());
 		 * System.out.println(hp.getStartTime()); System.out.println(hp.getEndTime()); }
 		 */
-		String processInstanceId = "247507";
+		System.out.println(hs.createHistoricProcessInstanceQuery().count());
+
+		String processInstanceId = "455001";
+		hs.deleteHistoricProcessInstance(processInstanceId);
+		processInstanceId = "457501";
 		hs.deleteHistoricProcessInstance(processInstanceId);
 
+		System.out.println(hs.createHistoricProcessInstanceQuery().count());
 	}
 
 	@Test

@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <title>新增</title>
     <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
- 	<link rel="stylesheet" href="${ctx}/plugins/layui/extend/dtree/dtree.css">
-    <link rel="stylesheet" href="${ctx}/plugins/layui/extend/dtree/font/dtreefont.css">
     <link rel="stylesheet" href="${ctx}/plugins/font-awesome/css/font-awesome.min.css" media="all" />
+    <link rel="stylesheet" href="${ctx}/plugins/ztree/css/zTreeStyle/zTreeStyle.css">
+    <link rel="stylesheet" href="${ctx}/plugins/ztree/css/zTreeStyle/zdy-icon.css">
     <style>
         #search_input{width:220px;display:inline-block;height:31px;line-height:31px;}
         .form-box{display: flex;align-items: center;width: 675px;margin: 10px auto 0;flex-wrap: nowrap;}
@@ -38,10 +38,10 @@
             <div class="form-l">
                 <p class="tit">所有部门</p>
                 <div class="layui-input-block" style="width:280px;margin: 10px auto 0;">
-                    <input class="layui-input" id="search_input" value="">
+                    <input class="layui-input" id="search_input" placeholder="关键字">
                     <a class="layui-btn layui-btn-sm layui-btn-normal" id="search_btn" style="display:inline-block;">搜索</a>
                 </div>
-                <ul id="popTree" class="dtree" data-id="0"></ul>
+                <ul id="left_tree" class="ztree"></ul>
             </div>
             <i class="layui-icon layui-icon-next" style="padding:0 5px;"></i>
             <div class="form-r">
@@ -56,167 +56,135 @@
             <a href="javascript:;" class="layui-btn layui-btn-sm" lay-submit lay-filter="save">保存</a>
         </div>
     </form>
+<script src="${ctx}/plugins/ztree/js/jquery-1.4.4.min.js"></script>
+<script src="${ctx}/plugins/ztree/js/jquery.ztree.all.js"></script>
+<script src="${ctx}/plugins/ztree/js/jquery.ztree.exhide.js"></script>
+<script src="${ctx}/plugins/ztree/js/fuzzysearch.js"></script>
+<script src="${ctx}/plugins/layui/layui.all.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	var index;
+	var form = layui.form
+	var $$ = layui.jquery
+	//数组对象对应删除
+    Array.prototype.remove = function (val) {
+        var index = this.indexOf(val);
+        if (index > -1) {
+            this.splice(index, 1);
+        }
+    };
+	
+	var checkUser = [];
+	var ztree;
+	var rList = $$("#r_list");
+	var selectedNum = $$("#selected_num");
+	var allClear = $$("#all_clear");
+	var setting = {
+	    	async: {
+	            enable: true,
+	            url:"${ctx}/orgUser/list?p_id=${p_id}",
+	            type: "get"
+			},
+			check: {
+				enable: true
+			},
+			view:{
+				selectedMulti: false
+			},
+			callback: {
+				onClick: function(event, treeId, treeNode){
+					ztree.expandNode(treeNode, !treeNode.open, true, false);
+				},
+				onCheck: function(event, treeId, treeNode){
+					zTreeOnCheck(event, treeId, treeNode)
+				},
+				onAsyncSuccess: zTreeOnCheck
+			}
+	};
+	ztree =$.fn.zTree.init($("#left_tree"), setting);
+	fuzzySearch ("left_tree","#search_input",false,true);
+	
+	rList.on("click", ".layui-icon-close-fill", function (obj) {
+        var element = $$(this)
+        delPersonnel(element);
+    });
+	
+	allClear.click(function (e) {
+        allClearPersonnel();
+    });
+	
+	function allClearPersonnel() {
+		ztree.checkAllNodes(false);
+        addPersonnel([]);
+    }
+	
+	function delPersonnel(e) {
+        var id = e.attr("data-id");
+		var removeNode = ztree.getNodeByParam("id", id, null);
+        checkUser.remove(removeNode);
+        ztree.checkNode(removeNode, false, true,false);
+        addPersonnel(checkUser);
+    }
+	
+	function zTreeOnCheck(event, treeId, treeNode){
+		var nodes = ztree.getCheckedNodes(true);
+		checkUser = [];
+		$.each(nodes,function(index,node){
+			var id = node.id + "";
+			if(id.indexOf("#") != -1){
+				checkUser.push(node);
+			}
+		})
+		addPersonnel(checkUser);
+	}
+	
+	function addPersonnel(obj) {
+        var html = '';
+        $.each(obj, function (i, val) {
+               html += "<li><p>" + val.name +"</p><i class='layui-icon layui-icon-close-fill del-p' data-id='" + val.id + "'></i></li>";
+        });
+        rList.html(html);
+        var staff = obj.length;
+        selectedNum.text(staff);
+    }
+	
+	form.on('submit(save)', function (data) {
+    	var params = checkUser;
+    	if(params.length == 0){
+    		layer.msg("请选择用户", {offset: ['50%'], time: 2000});
+    	} else {
+    		var u_Id = [];
+        	$.each(params, function (i, v) {
+        		u_Id.push(v.id)
+            });
+        	var u_ids = u_Id.join(",");
+        	var p_id = "${p_id}";
+        	$.ajax({
+                type: "POST",
+                data:{u_ids:u_ids,p_id:p_id},
+                url: "${ctx}/lcgl/lcsq/fqsq/bindUser",
+                beforeSend: function () {
+                    index = layer.load(1);
+                },
+                success: function (data) {
+                    layer.close(index);
+                    layer.msg("授权成功", {offset: ['50%'], time: 1000}, function () {
+                        index = parent.layer.getFrameIndex(window.name);
+				    	parent.layer.close(index);
+                    });
+                },
+                error: function (data) {
+                	layer.close(index);
+                    layer.msg("服务端异常");
+                }
+         	});
+    	}
+        return false;
+    });
+	
+})
+</script>
 </body>
 </html>
 
-<script src="${ctx}/plugins/layui/layui.js"></script>
-<script type="text/javascript">
-    layui.config({
-        base: '${ctx}/plugins/layui/extend/dtree/'
-    }).extend({
-        dtree: 'dtree'
-    })
-    layui.use(['element', 'layer', 'dtree', 'form'], function () {
-        var $ = layui.jquery,
-            form = layui.form,
-            layer = layui.layer,
-            dtree = layui.dtree;
-        
-        //treedemo变量配置
-        var dtreeID = "popTree";
-        var dtreeSkin = "zzfc";
-        var treeUrl = "${ctx}/lcgl/lcdy/lcfl/list";
-        var searchBtn = $("#search_btn");
-        var searchInput = $("#search_input");
-        var rList = $("#r_list");
-        var selectedNum = $("#selected_num");
-        var allClear = $("#all_clear");
-        
-        //弹出框树
-        var popTree = dtree.render({
-            elem: "#" + dtreeID,
-            nodeIconArray: { "2": { "open": "fa fa-address-book", "close": "fa fa-address-book" } },
-            skin: 'zzfc',
-            method: 'GET',
-            url:"${ctx}/orgUser/list?p_id=${p_id}",
-            type:'all',
-            icon: ["2", "1"],
-            dot: false,
-            checkbar: true,
-            checkbarFun:{
-                chooseDone: function(checkbarNodesParam) { //复选框点击事件完毕后，返回该树关于复选框操作的全部信息。
-                    addPersonnel(checkbarNodesParam);
-                    return false;
-                }
-            },
-            done:function(data, obj){
-            	var params = dtree.getCheckbarNodesParam("popTree");
-            	addPersonnel(params);
-            }
-        })
-
-        form.on('submit(save)', function (data) {
-        	var params = dtree.getCheckbarNodesParam(popTree);
-        	if(params.length == 0){
-        		layer.msg("请选择用户", {offset: ['50%'], time: 2000});
-        	} else {
-        		var arr = [];
-            	$.each(params, function (i, v) {
-            		if(v.level == '2'){
-            			arr.push(v.nodeId)
-            		}
-                });
-            	var u_ids = arr.join(",");
-            	var p_id = "${p_id}";
-            	var index;
-            	$.ajax({
-                    type: "POST",
-                    data:{u_ids:u_ids,p_id:p_id},
-                    url: "${ctx}/lcgl/lcsq/fqsq/bindUser",
-                    beforeSend: function () {
-                        index = layer.load(1);
-                    },
-                    success: function (data) {
-                        layer.close(index);
-                        layer.msg("授权成功", {offset: ['50%'], time: 1000}, function () {
-	                        index = parent.layer.getFrameIndex(window.name);
-					    	parent.layer.close(index);
-                        });
-                    },
-                    error: function (data) {
-                        layer.msg("服务端异常");
-                    }
-             	});
-        	}
-            return false;
-        });
-        
-        //数组对象对应删除
-        Array.prototype.remove = function (val) {
-            var index = this.indexOf(val);
-            if (index > -1) {
-                this.splice(index, 1);
-            }
-        };
-        
-        //右侧人员删除
-        rList.on("click", ".layui-icon-close-fill", function (obj) {
-            var element = $(this)
-            delPersonnel(element);
-        });
-        
-        //右侧清楚全部
-        allClear.click(function (e) {
-            allClearPersonnel();
-        });
-        
-        searchBtn.click(function () {
-            search();
-        })
-
-        function addPersonnel(obj) {
-            var html = '';
-            $.each(obj, function (i, val) {
-                if (val.isLeaf === true) {
-                    html += "<li><p>" + val.context +
-                        "</p><i class='layui-icon layui-icon-close-fill del-p' data-id='" + val.nodeId +
-                        "'></i></li>";
-                }
-            });
-            rList.html(html);
-            var staff = rList.find('li').length;
-            selectedNum.text(staff);
-        }
-
-        function delPersonnel(e) {
-            var del = e.attr("data-id");
-            var w_id = "";
-            rList.find("li").each(function () {
-                w_id += $(this).find("i").attr("data-id") + ",";
-                if (w_id.substr(w_id.length - 1) == ',') {
-                    nodeId = w_id.substr(0, w_id.length - 1);
-                }
-            });
-            var arr = nodeId.split(",");
-            arr.remove(del);
-            e.parent().remove();
-            selectedNum.text(rList.find("li").length);
-            dtree.unChooseData(popTree,del);
-        }
-
-        function allClearPersonnel() {
-            dtree.unChooseData(popTree,'all');
-            rList.empty();
-            selectedNum.text("0");
-        }
-        
-        function search() {
-            var value = searchInput.val();
-            var node = $("cite.t-click");
-            if (value != "") {
-                $("#popTree").children().addClass("layui-hide")
-                $.each(node, function (i, v) {
-                    var nodeTxt = $(this).text();
-                    var data_leaf = $(this).attr("data-leaf");
-                    var data_id = $(this).attr("data-id");
-                    if (nodeTxt.indexOf(value) != -1) {
-                        $(this).parents('').removeClass("layui-hide")
-                    }
-                });
-            } else {
-                $("#popTree").children().removeClass("layui-hide")
-            }
-        }
-});
-
-</script>

@@ -135,7 +135,7 @@
 				</a>
    			 {{#  } }}
 			 	<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del">
-            		<i class="fa fa-reply" title="撤銷"></i>
+            		<i class="fa fa-reply" title="撤销"></i>
         		</a>
         {{#  } }}
     </div>
@@ -188,7 +188,7 @@
         table.render({
             elem: '#' + tableId,
             url: '${ctx}/grgzt/wfqd/list',
-            where: {u_id:"${user.u_id}",dateS:dateS,dateE:dateE},
+            where: {u_id:"${USER.u_id}",dateS:dateS,dateE:dateE},
             title: '参数设置',
             page: true,
             id: tableId,

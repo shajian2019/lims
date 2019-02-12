@@ -2,49 +2,42 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zzhb.zzoa.mapper.UserSprMapper">
 	
-	<select id="getUserSprs" resultType="com.zzhb.zzoa.domain.activiti.UserSpr" parameterType="java.util.Map">
-		SELECT * FROM oa_t_user_spr us LEFT JOIN sys_t_user_org uo on us.uid = uo.u_id
+	<select id="getUserSprs" resultType="com.zzhb.zzoa.domain.activiti.UserSpr" parameterType="com.zzhb.zzoa.domain.activiti.UserSpr">
+		SELECT * FROM oa_t_user_spr
 		<where>
-			<if test="uid !=null and uid !='' ">
-				and us.uid = #{uid}
-			</if>
-			<if test="key !=null and key !='' ">
-				and us.key = #{key}
-			</if>
 			<if test="id !=null and id !='' ">
-				and us.id = #{id}
+				and id = #{id}
 			</if>
 		</where>
 	</select>
 	
-	<update id="replaceSprsById" parameterType="java.util.Map">
+	<update id="replaceSprsById" parameterType="com.zzhb.zzoa.domain.activiti.UserSpr">
 		REPLACE INTO oa_t_user_spr (id,uid,`key`,formkey,sprs)
 			VALUES
 		(#{id},#{uid},#{key},#{formkey},#{sprs})
 	</update>
 	
 	<update id="updateSprs" parameterType="java.util.Map">
-		UPDATE oa_t_user_spr SET sprs = #{sprs} WHERE id = #{id}
+		UPDATE oa_t_user_spr SET sprs = #{usersprs} WHERE id = #{id}
 	</update>
 	
-	<select id="getSprs" resultType="java.util.Map">
+	<select id="getSprs" resultType="java.util.Map" parameterType="java.util.Map">
 		SELECT
-			cast(u.u_id as char) u_id,
+			concat(o.o_id,'#',u.u_id) oiduid,
 			u.nickname,
 			j.j_name,
-			o.o_name 
+			o.o_name
 		FROM
-			sys_t_user u
-			LEFT JOIN sys_t_user_job uj ON u.u_id = uj.u_id
-			LEFT JOIN sys_t_job j ON j.j_id = uj.j_id
-			LEFT JOIN sys_t_user_org uo ON uo.u_id = u.u_id
-			LEFT JOIN sys_t_org o ON o.o_id = uo.o_id
+		sys_t_user u
+			LEFT JOIN sys_t_user_org_job uoj on u.u_id = uoj.u_id
+			LEFT JOIN sys_t_job j on uoj.j_id = j.j_id
+			LEFT JOIN sys_t_org o on uoj.o_id = o.o_id
 		<where>
-			<if test="u_ids !=null and u_ids.size() != 0">
-				u.u_id in
-				<foreach collection="u_ids" item="id" index="index" open="(" close=")" separator=",">
-			       #{id}
-			    </foreach>
+			<if test="u_id !=null and u_id != ''">
+				AND u.u_id = #{u_id}
+			</if>
+			<if test="o_id !=null and o_id != ''">
+				AND o.o_id = #{o_id}
 			</if>
 		</where>
 	</select>

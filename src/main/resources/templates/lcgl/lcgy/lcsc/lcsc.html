@@ -108,7 +108,11 @@
    {{#  if(d.endTime == ''){ }}
 			<span style="color: #FFC125;">未完成</span>
    {{#  } else { }}
+ 		{{#  if(d.deleteReason == null){ }}
 			<span style="color: green">已完成</span>
+   		{{#  } else { }}
+			<span style="color: red">已撤销</span>
+   		{{#  } }}
    {{#  } }}
 </script>
 <script type="text/html" id="rightBar">
