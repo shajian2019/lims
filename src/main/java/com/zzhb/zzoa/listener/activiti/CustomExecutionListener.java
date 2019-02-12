@@ -11,11 +11,12 @@ public class CustomExecutionListener implements ExecutionListener {
 	public void notify(DelegateExecution execution) {
 		String eventName = execution.getEventName();
 		if ("start".equals(eventName)) {
-			System.out.println("========="+eventName);
+			System.out.println("==eventName==" + eventName + "==bk==" + execution.getProcessInstanceBusinessKey());
 		} else if ("end".equals(eventName)) {
-			System.out.println("========="+eventName);
+			// TODO 删除流程中的产生的附件文件
+			System.out.println("==eventName==" + eventName + "==bk==" + execution.getProcessInstanceBusinessKey());
 		} else {
-			System.out.println("========="+eventName);
+			System.out.println("=========" + eventName);
 		}
 	}
 

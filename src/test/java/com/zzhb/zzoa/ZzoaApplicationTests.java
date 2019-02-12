@@ -347,7 +347,7 @@ public class ZzoaApplicationTests {
 		return highLightedFlowIds;
 	}
 
-	@Test // 中止与激活流程
+	@Test // 挂起与激活流程
 	public void testSupend() {
 		String processInstanceId = "160011";
 		// rs.suspendProcessInstanceById(processInstanceId);

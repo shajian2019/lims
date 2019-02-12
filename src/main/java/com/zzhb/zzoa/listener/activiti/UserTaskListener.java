@@ -13,9 +13,7 @@ public class UserTaskListener implements TaskListener {
 	@Override
 	public void notify(DelegateTask delegateTask) {
 		String eventName = delegateTask.getEventName();
-
-		System.out.println("===========name======" + delegateTask.getName());
-		System.out.println("=========create====sprs=====" + delegateTask.getVariable("sprs").toString());
+		System.out.println("==name======" + delegateTask.getName()+"====eventName===="+eventName+"===sprs=====" + delegateTask.getVariable("sprs").toString());
 		String sprs = delegateTask.getVariable("sprs").toString();
 		if ("create".endsWith(eventName)) {
 			if (sprs.indexOf(",") == -1) {

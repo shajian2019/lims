@@ -76,7 +76,7 @@
     <div class="right-box">
     	<form class="layui-form" id="query">
 		    <div class="layui-inline">
-		        <input class="layui-input" type="text" placeholder="流水号" name="businessKey">
+		        <input class="layui-input" type="text" placeholder="流程单号" name="businessKey">
 		    </div>
 		    <div class="layui-inline">
 		        <input class="layui-input" type="text" placeholder="申请人" name="sqr">
@@ -134,7 +134,7 @@
 </script>
 <script type="text/html" id="lczt">
    {{#  if(d.SUSPENSION_STATE_ == 2){ }}
-		<span style="color: red">中止</span>
+		<span style="color: red">挂起</span>
    {{#  } else { }}
 		<span style="color: green">正常</span>
    {{#  } }}
@@ -146,7 +146,7 @@
     }).extend({
         dtree: 'dtree'
     })
-    var $ = null,table=null,upload=null,dtree=null,layer=null,dtreeID=null,index=null,tableId = 'tableBox',form=null,tableIdImg = 'tableBoxHis';
+    var $ = null,table=null,upload=null,dtree=null,layer=null,dtreeID=null,index=null,tableId = 'tableBox',form=null,tableIdImg = 'tableBoxHis',tableObj=null,dtreeObj=null;
     layui.use(['table', 'layer', 'dtree','upload'], function () {
             $ = layui.jquery,
             table = layui.table,
@@ -156,7 +156,7 @@
             form = layui.form,
             dtreeID = 'left_tree';
             
-        var dtreeObj = dtree.render({
+        dtreeObj = dtree.render({
             elem: "#" + dtreeID, //绑定元素
             method:'GET',
             url: "${ctx}/lcgl/lcdy/lcfl/listByid",  //异步接口
@@ -166,11 +166,11 @@
             skin: "layui",
             menubar:true,
             menubarTips:{
-            	group:['refresh','searchNode']
+            	group:['refresh','searchNode'],
             }
         });
         
-        table.render({
+       tableObj = table.render({
             elem: '#' + tableId,
             url: '${ctx}/grgzt/dbsx/list',
             where: {u_id:"${USER.u_id}"},
@@ -187,7 +187,7 @@
                     width: 50
                 }, {
                     field: 'bk',
-                    title: '流水号',
+                    title: '流程单号',
                    	width: 200,
                     align: 'center'
                 }, {
@@ -220,7 +220,6 @@
             ],
             page: true,
             done: function(res){
-            	console.log(res)
             }
         });
         
@@ -238,7 +237,7 @@
                  layer.full(index);
             } else if("lqrw" == obj.event){
             	if(data.SUSPENSION_STATE_ != '1'){
-            		layer.msg("【"+data.sqr+"】已中止该流程,暂时无法领取", {offset: ['50%'], time: 2000});
+            		layer.msg("【"+data.sqr+"】已挂起该流程,暂时无法领取", {offset: ['50%'], time: 2000});
             	} else {
 	            	layer.confirm('确定领取该任务吗?', function (index) {
 		            		$.ajax({
@@ -275,7 +274,7 @@
             	}
             } else if ("cxlq" == obj.event){
             	if(data.SUSPENSION_STATE_ != '1'){
-            		layer.msg("【"+data.sqr+"】已中止该流程,暂时无法撤销", {offset: ['50%'], time: 2000});
+            		layer.msg("【"+data.sqr+"】已挂起该流程,暂时无法撤销", {offset: ['50%'], time: 2000});
             	} else {
 	            	layer.confirm('确定放弃处理该任务吗?', function (index) {
 		            		$.ajax({
@@ -337,7 +336,16 @@
         })
         
         form.on('submit(query)', function (data) {
-            table.reload(tableId, {
+        	var param = dtree.getNowParam(dtreeObj);
+        	if(param.nodeId){
+	        	var keys = param.nodeId;
+	        	$.each(param.childParams,function(index,data){
+					keys += ","+data.nodeId;
+				})
+	        	data.field.keys = keys;
+        	}
+        	data.field.u_id = "${USER.u_id}";
+        	tableObj.reload({
                 where: data.field
             });
             return false;
@@ -346,14 +354,14 @@
         dtree.on("node('" + dtreeID + "')", function (obj) {
         	var keys = obj.param.nodeId;
 			$.each(obj.childParams,function(index,data){
-				console.log(data.nodeId)
 				keys += ","+data.nodeId;
 			})
 			var data = {};
-			data.name = $("input[name='name']").val()
+			data.sqr = $("input[name='sqr']").val()
 			data.businessKey = $("input[name='businessKey']").val()
 			data.keys = keys;
-			table.reload(tableId, {
+			data.u_id = "${USER.u_id}";
+			tableObj.reload({
                 where: data
             });
         });

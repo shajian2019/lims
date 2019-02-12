@@ -229,8 +229,10 @@
 		            			}, function(){
 		            			parent.window.closeTab(data.taskId);
 	            			});
-		            	}else if(data.code == "0") {
-		            		layer.msg("审批成功", {offset: ['50%'], time: 2000});
+		            	}else if(data.code == "0" || data.code == "-1") {
+		            		layer.msg(data.msg, {offset: ['50%'], time: 2000},function(){
+		            			parent.window.closeTab(data.taskId);
+		            		});
 		            	}else {
 		            		layer.msg("审批失败", {offset: ['50%'], time: 2000});
 		            	}
@@ -278,8 +280,8 @@
 		            			}, function(){
 		            			parent.window.closeTab(data.taskId);
 	            			});
-		            	}else if(data.code == "0") {
-		            		layer.msg("审批成功", {offset: ['50%'], time: 2000},function(){
+		            	}else if(data.code == "0" || data.code == "-1") {
+		            		layer.msg(data.msg, {offset: ['50%'], time: 2000},function(){
 		            			parent.window.closeTab(data.taskId);
 		            		});
 		            	}else {
@@ -326,8 +328,8 @@
 	            			}, function(){
 	            			parent.window.closeTab(data.taskId);
             			});
-	            	}else if(data.code == "0") {
-	            		layer.msg("审批成功", {offset: ['50%'], time: 2000},function(){
+	            	}else if(data.code == "0" || data.code == "-1") {
+	            		layer.msg(data.msg, {offset: ['50%'], time: 2000},function(){
 	            			parent.window.closeTab(data.taskId);
 	            		});
 	            	}else {

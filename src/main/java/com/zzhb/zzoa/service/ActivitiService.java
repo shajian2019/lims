@@ -379,13 +379,23 @@ public class ActivitiService {
 	}
 
 	@Transactional
-	public Integer pauseAndPlay(String event, String processInstanceId) {
-		if ("play".equals(event)) {
-			runtimeService.activateProcessInstanceById(processInstanceId);
+	public JSONObject pauseAndPlay(String event, String processInstanceId) {
+		JSONObject result = new JSONObject();
+		ProcessInstance pi = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId)
+				.singleResult();
+		if (pi != null) {
+			if ("play".equals(event)) {
+				runtimeService.activateProcessInstanceById(processInstanceId);
+			} else {
+				runtimeService.suspendProcessInstanceById(processInstanceId);
+			}
+			result.put("code", 1);
+			result.put("msg", "操作成功");
 		} else {
-			runtimeService.suspendProcessInstanceById(processInstanceId);
+			result.put("code", 2);
+			result.put("msg", "流程已审批");
 		}
-		return 1;
+		return result;
 	}
 
 	/**
@@ -399,7 +409,7 @@ public class ActivitiService {
 	@Transactional
 	public JSONObject startProcessInstance(String key, Map<String, String> params) {
 		JSONObject result = new JSONObject();
-		
+
 		User user = SessionUtils.getUser();
 		ProcessDefinition pd = repositoryService.createProcessDefinitionQuery().processDefinitionKey(key)
 				.latestVersion().singleResult();
@@ -456,26 +466,33 @@ public class ActivitiService {
 
 		// 保存审批备注表
 		Task ruTask = taskService.createTaskQuery().taskId(taskId).singleResult();
-		String processInstanceId = ruTask.getProcessInstanceId();
-		is.setAuthenticatedUserId(user.getU_id() + "");
-		taskService.addComment(taskId, processInstanceId, JSON.toJSONString(params));
+		// 判断流程是否被挂起
+		if (!ruTask.isSuspended()) {
+			String processInstanceId = ruTask.getProcessInstanceId();
+			is.setAuthenticatedUserId(user.getU_id() + "");
+			taskService.addComment(taskId, processInstanceId, JSON.toJSONString(params));
 
-		// 完成当前任务
-		formService.submitTaskFormData(taskId, params);
+			// 完成当前任务
+			formService.submitTaskFormData(taskId, params);
 
-		// 更新历史UserTask表
-		params.put("assignee", ruTask.getAssignee());
-		params.put("taskId", taskId);
-		activitiMapper.updateHiTaskInst(params);
+			// 更新历史UserTask表
+			params.put("assignee", ruTask.getAssignee());
+			params.put("taskId", taskId);
+			activitiMapper.updateHiTaskInst(params);
 
-		Task task = taskService.createTaskQuery().processInstanceBusinessKey(bk).singleResult();
-		if (task != null) {
-			// 更新审批人缓存表
-			userSprMapper.updateSprs(params);
-			result.put("code", 1);
-			result.put("msg", task.getName());
+			Task task = taskService.createTaskQuery().processInstanceBusinessKey(bk).singleResult();
+			if (task != null) {
+				// 更新审批人缓存表
+				userSprMapper.updateSprs(params);
+				result.put("code", 1);
+				result.put("msg", task.getName());
+			} else {
+				result.put("code", 0);
+				result.put("msg", "审批成功");
+			}
 		} else {
-			result.put("code", 0);
+			result.put("code", -1);
+			result.put("msg", "流程已挂起");
 		}
 		result.put("taskId", taskId);
 		return result;
