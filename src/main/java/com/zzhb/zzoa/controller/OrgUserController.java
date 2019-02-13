@@ -19,12 +19,26 @@ public class OrgUserController {
 	@Autowired
 	OrgUserService orgUserService;
 
-	@GetMapping("/list")
-	@ResponseBody
-	public List<Map<String, Object>> list(String p_id) {
-		return orgUserService.list(p_id);
+	@GetMapping("/membership")
+	public String membership() {
+		return "grgzt/dbsx/membership";
 	}
 
+	// 委托和指派ztree
+	@GetMapping("/zpOrwt")
+	@ResponseBody
+	public List<Map<String, Object>> zpOrwt() {
+		return orgUserService.zpOrwt();
+	}
+
+	// 授权人ztree
+	@GetMapping("/sqr")
+	@ResponseBody
+	public List<Map<String, Object>> sqr(String p_id) {
+		return orgUserService.sqr(p_id);
+	}
+
+	// 审批人ztree
 	@GetMapping("/spr")
 	@ResponseBody
 	public List<Map<String, Object>> spr(UserSpr userSpr) {

@@ -328,30 +328,16 @@
 	            	})
             	}
             } else if ("wt" == obj.event){
-            	$.ajax({
-                    type: "post",
-                    data: {taskId:data.ID_,u_id:"1111"},
-                    url: "${ctx}/grgzt/dbsx/delegateTask",
-                    beforeSend: function () {
-                        index = layer.load(1);
-                    },
-                    success: function (data) {
-                        layer.close(index);
-                        if (data > 0) {
-                            layer.msg("委托成功", {offset: ['50%'], time: 1000}, function () {
-                            	table.reload(tableId, {
-                                    where: data.field
-                                });
-                            });
-                        } else {
-                            layer.msg("操作失败")
-                        }
-                    },
-                    error: function (data) {
-                    	layer.close(index);
-                        layer.msg("服务端异常");
-                    }
-                 });
+            	layer.open({
+                    type: 2,
+                    area: ['722px', '516px'],
+                 	title: false,
+                    fixed: false, //不固定
+                    content: '${ctx}/orgUser/membership',
+                    end: function(){
+                    	console.log("end===")
+               	    }
+           	   	 })
             } else if ("zp" == obj.event){
             	layer.msg("开发中...", {offset: ['50%'], time: 2000});
             }

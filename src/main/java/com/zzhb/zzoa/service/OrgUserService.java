@@ -39,7 +39,39 @@ public class OrgUserService {
 	@Autowired
 	UserOrgJobMapper userOrgJobMapper;
 
-	public List<Map<String, Object>> list(String p_id) {
+	public List<Map<String, Object>> zpOrwt() {
+		List<Map<String, Object>> listOrgUser = new ArrayList<>();
+		List<Map<String, Object>> listOrgUser2 = orgUserMapper.listOrgUser2();
+		for (int i = 0; i < listOrgUser2.size(); i++) {
+			Map<String, Object> map = listOrgUser2.get(i);
+			if (i > 1) {
+				Map<String, Object> map2 = listOrgUser2.get(i - 1);
+				if (!map2.get("id").equals(map.get("id"))) {
+					listOrgUser.add(map);
+				}
+			} else {
+				listOrgUser.add(map);
+			}
+			map.put("nocheck", true);
+			if (map.get("u_id") != null) {
+				Map<String, Object> map2 = new HashMap<>();
+				map2.put("id", map.get("id") + "#" + map.get("u_id"));
+				Object name = map.get("nickname");
+				if (map.get("j_name") != null) {
+					name += " 【" + map.get("j_name") + "】";
+				}
+				map2.put("name", name);
+				map2.put("parentid", map.get("id"));
+				map.remove("u_id");
+				map.remove("j_name");
+				map.remove("nickname");
+				listOrgUser.add(map2);
+			}
+		}
+		return ZtreeUtil.getStandardJSON(listOrgUser);
+	}
+
+	public List<Map<String, Object>> sqr(String p_id) {
 		List<Map<String, Object>> listOrgUser = new ArrayList<>();
 		List<Map<String, Object>> listOrgUser2 = orgUserMapper.listOrgUser2();
 		List<String> usersIdByPId = new ArrayList<>();
