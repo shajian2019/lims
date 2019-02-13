@@ -43,4 +43,24 @@ public class ZdgzController {
         return zdgzService.addZdgz(params);
     }
 
+    @GetMapping("/zdgzdetail")
+    public ModelAndView detailPage(@RequestParam Map<String, String> params){
+        ModelAndView mv = new ModelAndView();
+        mv.addObject("params",params);
+        mv.setViewName("swgl/zdgz/detail");
+        return mv;
+    }
+
+    @PostMapping("/getAttachments")
+    @ResponseBody
+    public JSONObject getAttach(@RequestParam Map<String, String> params){
+
+        return zdgzService.getAttachments(1,Integer.MAX_VALUE,params);
+    }
+
+    @GetMapping("/zdgzsh")
+    public void zdgzsh(){
+
+    }
+
 }

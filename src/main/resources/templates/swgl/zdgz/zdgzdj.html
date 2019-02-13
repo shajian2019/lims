@@ -55,8 +55,12 @@
 </body>
 <script type="text/html" id="rightBar">
     <div class="layui-btn-group">
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail" title="详情">
             <i class="fa fa-file-text-o"></i>
+        </a>
+
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="send" title="选择发送人">
+            <i class="fa layui-icon-friends"></i>
         </a>
     </div>
 </script>
@@ -66,8 +70,7 @@
     layui.use(['table','laydate'], function () {
         var laydate = layui.laydate;
         laydate.render({
-            elem: '#submit_time'
-            ,type:'year'
+            elem: '#createtime'
         });
 
         var table = layui.table;
@@ -86,6 +89,8 @@
                 ,{field: 'content', title: '工作内容'}
                 ,{field: 'submitterName', width: 140, title: '提交人'}
                 , {field: 'createtime', width: 150, title: '提交时间'}
+                , {field: 'audit_state_info', width: 150, title: '审核状态'}
+                , {field: 'distribution_state_info', width: 150, title: '分发状态'}
                 // , {field: 'attachment_id', width: 140, title: '附件'}
 
                 ,{
@@ -125,7 +130,13 @@
                 });
 
             } else if(action == 'detail'){
-                var url = "";
+                var url = "${ctx}/swgl/zdgz/zdgzdetail?attach_id="+data.attach_id
+                            +"&content="+data.content
+                            +"&createtime="+data.createtime
+                            +"&id="+data.id
+                            +"&submitter="+data.submitter
+                            +"&submitterName="+data.submitterName
+                            +"&title="+data.title;
                 var index = layer.open({
                     title:action,
                     type: 2,

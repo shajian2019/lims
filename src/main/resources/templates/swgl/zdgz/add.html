@@ -59,7 +59,7 @@
         <!--</div>-->
     <!--</div>-->
     <div class="layui-form-item">
-        <label class="layui-form-label">接收人：</label>
+        <label class="layui-form-label">审批人：</label>
         <div class="layui-inline" id="spr">
             <div id="spr_add" name="spr_add" class="layui-input"></div>
         </div>
@@ -212,7 +212,6 @@
                             index = layer.load(1);
                         },
                         success: function (data) {
-                            console.log("插入日志结果1");
                             console.log(data);
                             layer.close(index);
                             if (data > 0) {
@@ -243,7 +242,7 @@
             parent.layer.close(index);
         })
 
-        //接收人
+        //审批人
         $("#spr_add").click(function () {
             layer.open({
                 type: 2,
@@ -257,6 +256,7 @@
                 }
             })
         })
+
 
         function getSprs(ele, ele1, ele2) {
             $.ajax({

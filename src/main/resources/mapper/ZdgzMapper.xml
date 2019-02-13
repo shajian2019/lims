@@ -9,12 +9,15 @@
         a.attach_id,
         a.createtime,
         a.submitter,
-        b.username as submitterName
+        b.username as submitterName,
+        a.audit_state,
+        a.distribution_state,
+        a.principal
         FROM aff_t_zdgz a, sys_t_user b
         <where>
-            <!--<if test="title != null and title != ''">-->
-                <!--AND title = #{title}-->
-            <!--</if>-->
+            <if test="createtime != null and createtime != ''">
+                AND createtime = #{createtime}
+             </if>
             and a.submitter = b.u_id
             <if test="title != null and title != ''">
                 <bind name="_title" value="'%'+title+'%'"/>
