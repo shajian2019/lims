@@ -61,8 +61,9 @@ public class ZzoaApplicationTests {
 
 	@Test
 	public void contextLoads() {
-		String taskId = "580045";
+		String taskId = "617545";
 		String userId = "10232";
+		//委托
 		dbsxController.delegateTask(taskId, userId);
 	}
 

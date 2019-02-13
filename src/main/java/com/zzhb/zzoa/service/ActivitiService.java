@@ -368,7 +368,7 @@ public class ActivitiService {
 	RuntimeService runtimeService;
 
 	@Autowired
-	IdentityService is;
+	IdentityService identityService;
 
 	@Autowired
 	HistoryService hs;
@@ -414,7 +414,7 @@ public class ActivitiService {
 		User user = SessionUtils.getUser();
 		ProcessDefinition pd = repositoryService.createProcessDefinitionQuery().processDefinitionKey(key)
 				.latestVersion().singleResult();
-		is.setAuthenticatedUserId(user.getU_id() + "");
+		identityService.setAuthenticatedUserId(user.getU_id() + "");
 
 		ProcessInstance pi = formService.submitStartFormData(pd.getId(), params.get("bk"), params);
 
@@ -463,7 +463,7 @@ public class ActivitiService {
 	public JSONObject submitTaskFormData(String taskId, Map<String, String> params) {
 		User user = SessionUtils.getUser();
 		JSONObject result = new JSONObject();
-		String bk = params.get("bk");
+		String bk = params.get("bk").toString();
 
 		// 保存审批备注表
 		Task ruTask = taskService.createTaskQuery().taskId(taskId).singleResult();
@@ -474,17 +474,18 @@ public class ActivitiService {
 			DelegationState delegationState = ruTask.getDelegationState();
 			if (delegationState != null && delegationState.toString().equals("PENDING")) {
 				taskService.resolveTask(taskId);
-				System.out.println(ruTask.getOwner());
+				logger.debug("=owner=" + ruTask.getOwner() + "=Assignee=" + ruTask.getAssignee());
 				// 委派的任务 代理人 依旧是委托人
 				params.put("assignee", ruTask.getOwner());
 			} else {
 				params.put("assignee", ruTask.getAssignee());
 			}
 			String processInstanceId = ruTask.getProcessInstanceId();
-			is.setAuthenticatedUserId(user.getU_id() + "");
+			identityService.setAuthenticatedUserId(user.getU_id() + "");
 			taskService.addComment(taskId, processInstanceId, JSON.toJSONString(params));
 
 			// 完成当前任务
+			identityService.setAuthenticatedUserId(user.getU_id() + "");
 			formService.submitTaskFormData(taskId, params);
 
 			// 更新历史UserTask表
@@ -663,7 +664,7 @@ public class ActivitiService {
 	public Integer claimTask(String taskId, String u_id) {
 		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
 		if (u_id != null) {
-			if (task.getAssignee() == null) {
+			if (task.getAssignee() == null && task.getClaimTime() == null) {
 				taskService.claim(taskId, u_id);
 				return 1;
 			} else {
@@ -673,16 +674,17 @@ public class ActivitiService {
 			List<IdentityLink> identityLinksForTask = taskService.getIdentityLinksForTask(taskId);
 			Integer count = 0;
 			for (IdentityLink identityLink : identityLinksForTask) {
-				System.out.println(identityLink.getType() + "==" + identityLink.getUserId());
+				logger.debug(identityLink.getType() + "==" + identityLink.getUserId());
 				if (!identityLink.getType().equals("owner")) {
 					count++;
 				}
 			}
 			if (count > 1) {
-				task.setDescription(null);
-				task.setOwner(null);
-				task.setDelegationState(null);
-				taskService.saveTask(task);
+				Map<String, String> params = new HashMap<>();
+				params.put("taskId", task.getId());
+				// 放弃任务时 将领办时间设置为null
+				activitiMapper.updateHiRuTaskWhenUnclaim(params);
+				activitiMapper.updateRuTaskWhenUnclaim(params);
 				taskService.setAssignee(taskId, null);
 				return 3;
 			} else {
@@ -692,15 +694,24 @@ public class ActivitiService {
 	}
 
 	@Transactional
-	public Integer delegateTask(String taskId, String userId) {
+	public JSONObject delegateTask(String taskId, String userId) {
+		JSONObject result = new JSONObject();
 		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
-		String u_id = task.getAssignee();
-		User user = userMapper.getUserById(u_id);
-		// 添加委托人名称
-		task.setDescription(user.getNickname());
-		taskService.saveTask(task);
-		taskService.delegateTask(taskId, userId);
-		return 1;
+		DelegationState delegationState = task.getDelegationState();
+		if (delegationState != null && delegationState.toString().equals("PENDING")) {
+			result.put("code", -1);
+			result.put("msg", "任务已委托");
+		} else {
+			String u_id = task.getAssignee();
+			User user = userMapper.getUserById(u_id);
+			// 添加委托人名称
+			task.setDescription(user.getNickname());
+			taskService.saveTask(task);
+			taskService.delegateTask(taskId, userId);
+			result.put("code", 1);
+			result.put("msg", "任务委托成功");
+		}
+		return result;
 	}
 
 }

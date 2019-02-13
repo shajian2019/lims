@@ -102,7 +102,13 @@
 	{{#  if(d.DELEGATION_ == 'PENDING'){ }}
 		<span style="color: blue">委托【{{ d.DESCRIPTION_ }}】</span>
 	{{#  } else { }}
-		<span style="color: green">普通</span>
+		{{#  if(d.CLAIM_TIME_ && d.ASSIGNEE_){ }}
+			<span style="color: green">领办</span>
+		{{#  } else if(!d.CLAIM_TIME_ && d.ASSIGNEE_) { }}
+			<span style="color: green">指定</span>
+		{{#  } else if(!d.CLAIM_TIME_ && !d.ASSIGNEE_) { }}
+			<span style="color: green">待领</span>
+		{{#  } }}
     {{#  } }}
 </script>
 <script type="text/html" id="rightBar">
@@ -116,9 +122,11 @@
 				<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="sprw">
 					<i class="fa fa-pencil" title="审批任务"></i>
         		</a>
-				<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="cxlq">
-					<i class="fa fa-undo" title="放弃处理"></i>
-        		</a>
+				{{#  if(d.CLAIM_TIME_ && d.ASSIGNEE_){ }}
+					<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="cxlq">
+						<i class="fa fa-undo" title="放弃处理"></i>
+        			</a>
+				{{#  } }}
 				{{#  if(!d.DELEGATION_){ }}
 					<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="wt">
 						<i class="fa fa-hand-stop-o" title="委托"></i>

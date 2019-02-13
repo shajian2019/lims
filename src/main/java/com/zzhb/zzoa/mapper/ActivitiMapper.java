@@ -41,6 +41,12 @@ public interface ActivitiMapper {
 
 	public Map<String, String> getBusinessByBk(Map<String, String> params);
 
-	@Update("UPDATE ACT_HI_TASKINST SET ASSIGNEE_ = #{assignee} WHERE ID_ = #{taskId}")
+	@Update("UPDATE ACT_RU_TASK SET CLAIM_TIME_ = null WHERE ID_ = #{taskId}")
+	public void updateRuTaskWhenUnclaim(Map<String, String> params);
+
+	@Update("UPDATE ACT_HI_TASKINST SET CLAIM_TIME_ = null WHERE ID_ = #{taskId}")
+	public void updateHiRuTaskWhenUnclaim(Map<String, String> params);
+
+	@Update("UPDATE ACT_HI_TASKINST SET ASSIGNEE_ = #{assignee}, DESCRIPTION_ = null WHERE ID_ = #{taskId}")
 	public Integer updateHiTaskInst(Map<String, String> params);
 }

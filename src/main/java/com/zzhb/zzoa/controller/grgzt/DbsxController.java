@@ -58,7 +58,7 @@ public class DbsxController {
 	// 委托任务
 	@PostMapping("/delegateTask")
 	@ResponseBody
-	public Integer delegateTask(String taskId, String userId) {
+	public JSONObject delegateTask(String taskId, String userId) {
 		return activitiService.delegateTask(taskId, userId);
 	}
 
