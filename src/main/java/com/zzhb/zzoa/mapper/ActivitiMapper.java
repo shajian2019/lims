@@ -47,6 +47,6 @@ public interface ActivitiMapper {
 	@Update("UPDATE ACT_HI_TASKINST SET CLAIM_TIME_ = null WHERE ID_ = #{taskId}")
 	public void updateHiRuTaskWhenUnclaim(Map<String, String> params);
 
-	@Update("UPDATE ACT_HI_TASKINST SET ASSIGNEE_ = #{assignee}, DESCRIPTION_ = null WHERE ID_ = #{taskId}")
+	@Update("UPDATE ACT_HI_TASKINST SET OWNER_ = #{owner}, DESCRIPTION_ = #{description}, ASSIGNEE_ = #{assignee} WHERE ID_ = #{taskId}")
 	public Integer updateHiTaskInst(Map<String, String> params);
 }

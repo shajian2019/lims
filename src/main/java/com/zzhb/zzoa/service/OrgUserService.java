@@ -39,7 +39,12 @@ public class OrgUserService {
 	@Autowired
 	UserOrgJobMapper userOrgJobMapper;
 
-	public List<Map<String, Object>> zpOrwt() {
+	/**
+	 * 
+	 * @param chkDisabled radio 不能选择的用户ID
+	 * @return
+	 */
+	public List<Map<String, Object>> zpOrwt(String chkDisabled) {
 		List<Map<String, Object>> listOrgUser = new ArrayList<>();
 		List<Map<String, Object>> listOrgUser2 = orgUserMapper.listOrgUser2();
 		for (int i = 0; i < listOrgUser2.size(); i++) {
@@ -62,6 +67,13 @@ public class OrgUserService {
 				}
 				map2.put("name", name);
 				map2.put("parentid", map.get("id"));
+				if (chkDisabled != null) {
+					String userId = map.get("u_id").toString();
+					List<String> lists = Arrays.asList(chkDisabled.split(","));
+					if (lists.contains(userId)) {
+						map2.put("chkDisabled", true);
+					}
+				}
 				map.remove("u_id");
 				map.remove("j_name");
 				map.remove("nickname");

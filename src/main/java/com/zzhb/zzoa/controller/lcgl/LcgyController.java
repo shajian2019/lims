@@ -23,8 +23,8 @@ public class LcgyController {
 
 	@PostMapping("/remove")
 	@ResponseBody
-	public Integer remove(String processInstanceId) {
-		return lcgyService.removeProcessInstance(processInstanceId);
+	public Integer remove(String processInstanceIds) {
+		return lcgyService.removeProcessInstance(processInstanceIds);
 	}
 
 }

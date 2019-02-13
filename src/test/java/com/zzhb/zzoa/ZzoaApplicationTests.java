@@ -58,13 +58,23 @@ public class ZzoaApplicationTests {
 	
 	@Autowired
 	DbsxController dbsxController;
+	
+	
+	@Autowired
+	TaskService taskService;
 
 	@Test
 	public void contextLoads() {
+		String taskId = "627546";
+		String userId = "10232";
+		taskService.setAssignee(taskId, userId);
+	}
+	@Test
+	public void contextLoads0() {
 		String taskId = "617545";
 		String userId = "10232";
 		//委托
-		dbsxController.delegateTask(taskId, userId);
+		dbsxController.delegateTask(taskId,"", userId);
 	}
 
 	@Autowired
