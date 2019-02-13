@@ -48,8 +48,7 @@ public class MenuController {
 	@ResponseBody
 	public JSONArray initMenuTree(@RequestParam(defaultValue = "0") String level, String r_id,
 			@RequestParam Map<String, String> params) {
-		// TODO
-		return null;
+		return menuService.initMenuTree(level, r_id, params);
 	}
 
 	@GetMapping("/dtree/init")

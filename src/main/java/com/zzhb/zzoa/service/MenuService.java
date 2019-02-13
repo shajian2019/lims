@@ -77,6 +77,62 @@ public class MenuService {
 	public void flushSecondmenu() {
 	}
 
+	@Cacheable(value = "TREEMENUS", key = "#level", condition = "#r_id !='superadmin'")
+	public JSONArray initMenuTree(String level, String r_id, Map<String, String> params) {
+		JSONArray result = new JSONArray();
+		params.put("m_level", "1");
+		List<Menu> allMenus = menuMapper.getAllMenus(params);
+		params.clear();
+		for (int i = 0; i < allMenus.size(); i++) {
+			JSONObject json = new JSONObject();
+			Menu menu = allMenus.get(i);
+			String m_id = menu.getId();
+			json.put("id", m_id);
+			json.put("name", menu.getTitle());
+			json.put("open", true);
+			params.put("m_parentid", m_id);
+			JSONArray childrenS = new JSONArray();
+			List<Menu> secondMenus = menuMapper.getAllMenus(params);
+			params.clear();
+			if (!"2".equals(level)) {
+				for (int j = 0; j < secondMenus.size(); j++) {
+					JSONObject secondJson = new JSONObject();
+					Menu secondmenu = secondMenus.get(j);
+					String sm_id = secondmenu.getId();
+					secondJson.put("id", sm_id);
+					secondJson.put("name", secondmenu.getTitle());
+					secondJson.put("open", false);
+					params.put("m_parentid", sm_id);
+					JSONArray childrenT = new JSONArray();
+					List<Menu> thirdMenus = menuMapper.getAllMenus(params);
+					params.clear();
+					if (!"3".equals(level)) {
+						for (int k = 0; k < thirdMenus.size(); k++) {
+							JSONObject thirdJson = new JSONObject();
+							Menu thirdmenu = thirdMenus.get(k);
+							String tm_id = thirdmenu.getId();
+							thirdJson.put("id", tm_id);
+							thirdJson.put("name", thirdmenu.getTitle());
+							thirdJson.put("open", false);
+							childrenT.add(thirdJson);
+						}
+					}
+					secondJson.put("children", childrenT);
+					childrenS.add(secondJson);
+				}
+			} else {
+				json.put("open", false);
+			}
+			json.put("children", childrenS);
+			result.add(json);
+		}
+		return result;
+	}
+
+	@CacheEvict(value = "TREEMENUS", allEntries = true)
+	public void flushTreemenus() {
+	}
+
 	public JSONObject initDTree(Map<String, String> params) {
 		JSONObject result = new JSONObject();
 		JSONObject status = new JSONObject();
@@ -202,4 +258,5 @@ public class MenuService {
 		cacheService.flushMenus();
 		return menuMapper.delMenus(params);
 	}
+
 }
