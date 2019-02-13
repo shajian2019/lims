@@ -1,5 +1,7 @@
 package com.zzhb.zzoa.service;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -29,6 +31,7 @@ import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.history.HistoricTaskInstanceQuery;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -540,6 +543,7 @@ public class ActivitiService {
 		return add;
 	}
 
+	// 我发起的流程查询
 	public JSONObject getHistoricProcessInstances(Integer page, Integer limit, Map<String, String> params) {
 		HistoricProcessInstanceQuery hpiq = hs.createHistoricProcessInstanceQuery();
 		String u_id = params.get("u_id");
@@ -593,6 +597,19 @@ public class ActivitiService {
 			}
 		}
 		return LayUiUtil.pagination(count, historicProcessInstanceVOs);
+	}
+
+	// 已办事项 查询
+	public JSONObject getHistoricTaskInstance(Integer page, Integer limit, Map<String, String> params) {
+		String ownerid = params.get("ownerid");
+		ownerid = "2";
+		HistoricTaskInstanceQuery hit = hs.createHistoricTaskInstanceQuery();
+		hit.taskOwner(ownerid);
+		List<HistoricTaskInstance> list = hit.list();
+		for (HistoricTaskInstance ht : list) {
+			System.out.println(ht.getAssignee() + "" + ht.getName() + "" + ht.getDescription());
+		}
+		return null;
 	}
 
 	private List<String> getHighLightedFlows(BpmnModel bpmnModel,

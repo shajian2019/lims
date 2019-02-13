@@ -36,6 +36,7 @@ import org.springframework.util.CollectionUtils;
 import com.zzhb.zzoa.controller.FileController;
 import com.zzhb.zzoa.controller.grgzt.DbsxController;
 import com.zzhb.zzoa.controller.xtgl.ZzglController;
+import com.zzhb.zzoa.service.ActivitiService;
 import com.zzhb.zzoa.service.OrgUserService;
 import com.zzhb.zzoa.utils.CustomProcessDiagramGenerator;
 import com.zzhb.zzoa.utils.FileUtil;
@@ -63,8 +64,15 @@ public class ZzoaApplicationTests {
 	@Autowired
 	TaskService taskService;
 
+	@Autowired
+	ActivitiService activitiService;
+
 	@Test
 	public void contextLoads() {
+		activitiService.getHistoricTaskInstance(null, null, new HashMap<>());
+	}
+	@Test
+	public void contextLoads11() {
 		String taskId = "627546";
 		String userId = "10232";
 		taskService.setAssignee(taskId, userId);
