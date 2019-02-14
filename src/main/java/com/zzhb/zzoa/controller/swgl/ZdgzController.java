@@ -28,12 +28,15 @@ public class ZdgzController {
     @GetMapping("/zdgzgl")
     @ResponseBody
     public JSONObject getWork(Integer page, Integer limit, @RequestParam Map<String, String> params){
+        System.out.println(zdgzService.getAllZdgz(page,limit,params).toString());
         return zdgzService.getAllZdgz(page,limit,params);
     }
 
     @GetMapping("/addZdgz")
     public ModelAndView goAddPage(){
         ModelAndView mv = new ModelAndView();
+        mv.addObject("key","zdgzsp");
+        mv.addObject("formkey","zdgzsp");
         mv.setViewName("swgl/zdgz/add");
         return mv;
     }
@@ -46,6 +49,8 @@ public class ZdgzController {
     @GetMapping("/zdgzdetail")
     public ModelAndView detailPage(@RequestParam Map<String, String> params){
         ModelAndView mv = new ModelAndView();
+        String nameResult = zdgzService.getAuditterNames(params);
+        params.put("auditterNames",nameResult);
         mv.addObject("params",params);
         mv.setViewName("swgl/zdgz/detail");
         return mv;
@@ -54,13 +59,18 @@ public class ZdgzController {
     @PostMapping("/getAttachments")
     @ResponseBody
     public JSONObject getAttach(@RequestParam Map<String, String> params){
-
         return zdgzService.getAttachments(1,Integer.MAX_VALUE,params);
     }
 
-    @GetMapping("/zdgzsh")
-    public void zdgzsh(){
+    @GetMapping("/ndzdgzsh")
+    public String zdgzsh(){
+        return "swgl/zdgz/approval";
+    }
 
+    @GetMapping("/zdgzsh")
+    @ResponseBody
+    public JSONObject getZdgzsh(Integer page, Integer limit, @RequestParam Map<String, String> params){
+        return zdgzService.getZdgzsh(page,limit,params);
     }
 
 }

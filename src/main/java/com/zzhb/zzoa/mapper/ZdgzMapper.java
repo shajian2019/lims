@@ -8,4 +8,6 @@ public interface ZdgzMapper {
     public List<Map<String,String>> getAllZdgz(Map<String, String> params);
 
     public Integer addZdgz(Map<String, String> params);
+
+    public List<Map<String,String>> getzdgzsh(Map<String, String> params);
 }

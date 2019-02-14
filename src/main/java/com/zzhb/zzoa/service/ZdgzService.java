@@ -4,8 +4,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zzhb.zzoa.mapper.JournalMapper;
+import com.zzhb.zzoa.mapper.UserMapper;
+import com.zzhb.zzoa.mapper.UserOrgJobMapper;
 import com.zzhb.zzoa.mapper.ZdgzMapper;
 import com.zzhb.zzoa.utils.LayUiUtil;
+import com.zzhb.zzoa.domain.User;
+import com.zzhb.zzoa.utils.SessionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +25,12 @@ public class ZdgzService {
     ZdgzMapper zdgzMapper;
     @Autowired
     JournalMapper journalMapper;
+
+    @Autowired
+    UserMapper userMapper;
+
+    @Autowired
+    UserOrgJobMapper userOrgJobMapper;
 
     public JSONObject getAllZdgz(Integer page, Integer limit, Map<String, String> params) {
         PageHelper.startPage(page, limit);
@@ -70,5 +80,39 @@ public class ZdgzService {
             return LayUiUtil.pagination(pageInfo);
         }
         return null;
+    }
+
+    public String getAuditterNames(Map<String, String> params){
+        String nameResult = "";
+        if(params.containsKey("auditter")){
+            String auditterIds = params.get("auditter");
+            if(auditterIds != null && !"".equals(auditterIds)){
+                String[] audids = auditterIds.split(",");
+                if(audids.length > 0 ){
+                    for(String s: audids){
+                        User u = userMapper.getUserById(s);
+                        nameResult += u.getUsername() + ",";
+                    }
+                }
+            }
+        }
+        return nameResult.substring(0,nameResult.length()-1);
+    }
+
+    public JSONObject getZdgzsh(Integer page, Integer limit, Map<String, String> params){
+        PageHelper.startPage(page, limit);
+        SessionUtils s = new SessionUtils();
+        User user = s.getUser();
+        Integer u_id = user.getU_id();
+        List<String> o_idlist = userOrgJobMapper.getUserOrgs(String.valueOf(u_id));
+        String o_id = "";
+        if(o_idlist.size() > 0 ){
+            o_id = o_idlist.get(0);
+        }
+        String auditter = o_id+"#"+u_id;
+        params.put("auditterid",auditter);
+        List<Map<String,String>> zdgzlist = zdgzMapper.getzdgzsh(params);
+        PageInfo<Map<String,String>> pageInfo = new PageInfo<Map<String,String>>(zdgzlist);
+        return LayUiUtil.pagination(pageInfo);
     }
 }

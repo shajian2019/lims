@@ -98,7 +98,7 @@
         var $ = layui.jquery
         var dtree = layui.dtree;
         var form = layui.form
-        getSprs("spr_add","spr","receiver");
+        getSprs("spr_add","spr","zdgzsp");
 
         //上传附件
         var demoListView = $('#demoList')
@@ -158,15 +158,13 @@
         });
 
         form.on('submit(sq)', function (data) {
-            console.log(2121);
-            console.log(data.field);
-            sprs.push(1);
             if(attachs.length <= 0){
                 layer.confirm("确定不上传附件吗？",function () {
                     //保存表单
                     if (sprs.length > 0) {
                         data.field.receiver = sprs.join(",");
                         data.field.submitter = "${USER.u_id}";
+                        console.log(data.field);
                         $.ajax({
                             type: "post",
                             data: data.field,
@@ -175,8 +173,6 @@
                                 index = layer.load(1);
                             },
                             success: function (data) {
-                                console.log("插入日志结果");
-                                console.log(data);
                                 layer.close(index);
                                 if (data > 0) {
                                     var msg = "保存成功";
@@ -199,11 +195,11 @@
                 })
             }else{
                 if (sprs.length > 0) {
-                    data.field.receiver = sprs.join(",")
+                    data.field.auditter = sprs.join(",")
                     data.field.submitter = "${USER.u_id}";
                     data.field.attach_id=attachs.join(",");
-                    console.log(121);
-                    console.log(data.field)
+                    console.log("添加提交");
+                    console.log(data.field);
                     $.ajax({
                         type: "post",
                         data: data.field,
@@ -242,7 +238,7 @@
             parent.layer.close(index);
         })
 
-        //审批人
+        //审批人,重点工作审批
         $("#spr_add").click(function () {
             layer.open({
                 type: 2,
@@ -250,9 +246,9 @@
                 title: false,
                 offset: '15px',
                 // content: '${ctx}/swgl/gzrz/empTree?key=journal&formkey=receiver',
-                content: '${ctx}/grgzt/fqlc/spr?key=zdgz&formkey=receiver',
+                content: '${ctx}/grgzt/fqlc/spr?key=${key}&formkey=${formkey}',
                 end: function () {
-                    getSprs("spr_add", "spr", "receiver");
+                    getSprs("spr_add", "spr", "${formkey}");
                 }
             })
         })
@@ -261,7 +257,7 @@
         function getSprs(ele, ele1, ele2) {
             $.ajax({
                 type: "post",
-                data: {id: "${USER.u_id}zdgz" + ele2},
+                data: {id: "${USER.u_id}zdgzsp" + ele2},
                 url: "${ctx}/grgzt/fqlc/getSprs",
                 beforeSend: function () {
                     index = layer.load(1);
@@ -274,11 +270,12 @@
                     $.each(data, function (i, v) {
                         console.log(123);
                         console.log(v);
-                        var msg = v.u_id;
+                        var msg = v.oiduid;//58#10232  #前面是部门id，后面是人员id
+                        sprs = [];
                         sprs.push(msg);
                         html += '<div class="spr-select">';
                         html += '<p>' + v.nickname + '</p>';
-                        html += '<i class="fa fa-close spr-close" data-id="' + v.u_id + '"></i>';
+                        html += '<i class="fa fa-close spr-close" data-id="' + v.oiduid + '"></i>';
                         html += '</div>';
                     })
 

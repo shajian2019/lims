@@ -130,13 +130,15 @@
                 });
 
             } else if(action == 'detail'){
+                var auditter = data.auditter.split('#')[1];
                 var url = "${ctx}/swgl/zdgz/zdgzdetail?attach_id="+data.attach_id
                             +"&content="+data.content
                             +"&createtime="+data.createtime
                             +"&id="+data.id
                             +"&submitter="+data.submitter
                             +"&submitterName="+data.submitterName
-                            +"&title="+data.title;
+                            +"&title="+data.title
+                            +"&auditter="+auditter;
                 var index = layer.open({
                     title:action,
                     type: 2,
@@ -148,6 +150,36 @@
                     }
                 });
                 layer.full(index);
+            }else if(action == 'send'){//选择重点工作的执行人
+                var result = true;
+                if(data.audit_state == 0){
+                    layer.msg("该工作尚未被审核");
+                    result = false;
+                    return;
+                }else if(data.audit_state == 2){
+                    layer.msg("该工作审核不通过");
+                    result = false;
+                    return;
+                }else if(data.distribution_state == 1){
+                    layer.msg("该工作已被指派");
+                    result = false;
+                    return;
+                }
+                if(result == true){//弹出人员树,选择工作负责人
+
+                    layer.open({
+                        type: 2,
+                        area: ['728px', '516px'],
+                        title: false,
+                        offset: '15px',
+                        // content: '${ctx}/swgl/gzrz/empTree?key=journal&formkey=receiver',
+                        content: '${ctx}/grgzt/fqlc/spr?key=zdgzfs&formkey=zdgzprincipal',
+                        end: function () {
+                            // getSprs("spr_add", "spr", "receiver");
+                        }
+                    })
+
+                }
             }
         });
 
