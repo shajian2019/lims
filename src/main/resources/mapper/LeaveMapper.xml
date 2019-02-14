@@ -7,4 +7,13 @@
 		VALUES
 			(#{proid},#{bk},#{sqr},#{bmmc},#{sqrq},#{qjlx},#{ksrq},#{jsrq},#{qjly})
 	</insert>
+	
+	<delete id="delLeave" parameterType="java.util.Map">
+		DELETE FROM oa_t_leave
+		<where>
+			<if test="proid !=null and proid !=''">
+				and proid = #{proid}
+			</if>
+		</where>
+	</delete>
 </mapper>

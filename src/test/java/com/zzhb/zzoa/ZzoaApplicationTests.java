@@ -66,6 +66,18 @@ public class ZzoaApplicationTests {
 
 	@Autowired
 	ActivitiService activitiService;
+	
+	@Test
+	public void contextLoads12() {
+		String bk = "201902141600392";
+		String userId = "10232";
+		try {
+			activitiService.revoke(userId, bk);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 	@Test
 	public void contextLoads() {

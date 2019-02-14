@@ -102,7 +102,7 @@
 	{{#  if(d.DELEGATION_ == 'PENDING'){ }}
 		<span style="color: blue">委托【{{ d.DESCRIPTION_ }}】</span>
 	{{#  } else { }}
-		{{#  if(d.CLAIM_TIME_ && d.ASSIGNEE_){ }}
+		{{#  if(!d.DESCRIPTION_ && d.CLAIM_TIME_ && d.ASSIGNEE_){ }}
 			<span style="color: green">领办</span>
 		{{#  } else if(!d.DESCRIPTION_ && !d.OWNER_ && !d.CLAIM_TIME_ && d.ASSIGNEE_) { }}
 			<span style="color: green">指定</span>

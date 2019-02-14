@@ -94,51 +94,19 @@
 </body>
 
 </html>
-<script type="text/html" id="clzt">
-   {{#  if(d.deleteReason == null){ }}
-		{{#  if(d.endTime == ''){ }}
-			<span style="color: #FFC125;">审核中</span>
-   		{{#  } else { }}
-			{{#  if(d.sftg){ }}
-				<span style="color: green">已通过</span>
-   			{{#  } else { }}
-				<span style="color: red">未通过</span>
-   			{{#  } }}
-   		{{#  } }}
-   {{#  } else { }}
-		<span style="color: red">已撤销</span>
-   {{#  } }}
-</script>
-<script type="text/html" id="lczt">
-   {{#  if(d.suspended){ }}
-		<span style="color: red">挂起</span>
-   {{#  } else { }}
-		<span style="color: green">正常</span>
-   {{#  } }}
-</script>
 <script type="text/html" id="rightBar">
     <div class="layui-btn-group">
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="details">
-            <i class="fa fa-bars" title="详情"></i>
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="revoke">
+            <i class="fa fa-reply" title="撤销"></i>
         </a>
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="preview">
-            <i class="fa fa-image" title="流程图"></i>
-        </a>
-		{{#  if(d.endTime == ''){ }}
-			 {{#  if(d.suspended){ }}
-				<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="play">
-					<i class="fa fa-play" title="激活"></i>
-				</a>
-   			 {{#  } else { }}
-				<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="pause">
-					<i class="fa fa-pause" title="挂起"></i>
-				</a>
-   			 {{#  } }}
-			 	<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del">
-            		<i class="fa fa-reply" title="撤销"></i>
-        		</a>
-        {{#  } }}
     </div>
+</script>
+<script type="text/html" id="lczt">
+   {{#  if(d.lcsfjs){ }}
+		<span style="color: green">已完成</span>
+   {{#  } else { }}
+		<span style="color: green">审核中</span>
+   {{#  } }}
 </script>
 <script src="${ctx}/plugins/layui/layui.js"></script>
 <script src="${ctx}/js/common/time.js"></script>
@@ -187,7 +155,7 @@
         
         table.render({
             elem: '#' + tableId,
-            url: '${ctx}/grgzt/wfqd/list',
+            url: '${ctx}/grgzt/ybsx/list',
             where: {u_id:"${USER.u_id}",dateS:dateS,dateE:dateE},
             title: '参数设置',
             page: true,
@@ -209,19 +177,30 @@
                     field: 'processDefinitionName',
                     title: '流程名称',
                     align: 'center'
+                },{
+                    field: 'name',
+                    title: '已办节点',
+                    align: 'center'
+                },{
+                    field: 'currentName',
+                    title: '当前节点',
+                    align: 'center'
                 }, {
                     field: 'startTime',
-                    title: '申请时间',
+                    title: '开始时间',
+                    width: 200,
+                    align: 'center'
+                }, {
+                    field: 'endTime',
+                    title: '结束时间',
                     width: 200,
                     align: 'center'
                 },{
-                    field: 'endTime',
-                    title: '处理状态',
-                	width: 150,
-                    align: 'center',
-                    templet: '#clzt'
+                    field: 'description',
+                    title: '任务类型',
+                    width: 200,
+                    align: 'center'
                 },{
-                    field: 'suspended',
                     title: '流程状态',
                 	width: 100,
                     align: 'center',
@@ -240,69 +219,30 @@
         
         table.on('tool(tableBox)', function (obj) {
             var data = obj.data;
-            if (obj.event === 'details') {
-				alert("详情TODO")
-            } else if("preview" == obj.event){
-            	index = layer.open({
-             		  type: 2,
-             		  title: '流程图',
-                      maxmin: true,
-             		  content: '${ctx}/grgzt/wfqd/history/preview?businessKey='+data.businessKey
-        		 });
-                 layer.full(index);
-            } else if("del" == obj.event){
-            	layer.confirm('确定撤销该【'+data.processDefinitionName+'】吗?', function (index) {
+            if("revoke" == obj.event){
+            	layer.confirm('确定撤回该【'+data.processDefinitionName+'】吗?', function (index) {
             		$.ajax({
                         type: "post",
-                        data: {processInstanceId: data.processInstanceId},
-                        url: "${ctx}/grgzt/wfqd/revoke",
+                        data: {bk: data.businessKey,userId:"${USER.u_id}"},
+                        url: "${ctx}/grgzt/ybsx/revoke",
                         beforeSend: function () {
                             index = layer.load(1);
                         },
                         success: function (data) {
                             layer.close(index);
-                            if (data > 0) {
-                                layer.msg("撤销成功", {offset: ['50%'], time: 1000}, function () {
-                                	table.reload(tableId, {
-                                        where: data.field
-                                    });
+                            layer.msg(data.msg, {offset: ['50%'], time: 1000}, function () {
+                               	table.reload(tableId, {
+                                    where: data.field
                                 });
-                            } else {
-                                layer.msg("操作失败")
-                            }
+                            });
                         },
                         error: function (data) {
+                            layer.close(index);
                             layer.msg("服务端异常");
                         }
                     });
             	})
-            } else if("pause" == obj.event || "play" == obj.event){
-           		$.ajax({
-                       type: "post",
-                       data: {processInstanceId: data.processInstanceId},
-                       url: "${ctx}/grgzt/wfqd/pauseAndPlay/"+obj.event,
-                       beforeSend: function () {
-                           index = layer.load(1);
-                       },
-                       success: function (data) {
-                           layer.close(index);
-                           if (data.code > 0) {
-                               layer.msg(data.msg, {offset: ['50%'], time: 1000}, function () {
-                               	table.reload(tableId, {
-                                       where: data.field
-                                   });
-                               });
-                           } else {
-                               layer.msg("操作失败")
-                           }
-                       },
-                       error: function (data) {
-                           layer.close(index);
-                           layer.msg("服务端异常");
-                       }
-                   });
-            }
-            
+            } 
         })
         
         form.on('submit(query)', function (data) {

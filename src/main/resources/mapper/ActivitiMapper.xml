@@ -119,4 +119,16 @@
 			</if>
 		</where>
 	</select>
+	
+	<delete id="delHiActInst" parameterType="java.util.List">
+		DELETE FROM act_hi_actinst
+		<where>
+			<if test="lists !=null and lists.size() != 0">
+				and ID_ in 
+				<foreach collection="lists" item="id" open="(" separator="," close=")">
+           			#{id}
+        		</foreach>
+			</if>
+		</where>
+	</delete>
 </mapper>

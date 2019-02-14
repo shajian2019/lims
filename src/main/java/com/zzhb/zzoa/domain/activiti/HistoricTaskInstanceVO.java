@@ -14,6 +14,8 @@ public class HistoricTaskInstanceVO {
 
 	private String name;
 
+	private String currentName;
+
 	private String startTime;
 
 	private String endTime;
@@ -31,6 +33,54 @@ public class HistoricTaskInstanceVO {
 	private String spyj;
 
 	private boolean sftg;
+
+	private String description;
+
+	private String businessKey;
+
+	private String processDefinitionName;
+
+	private boolean lcsfjs;
+
+	public String getCurrentName() {
+		return currentName;
+	}
+
+	public void setCurrentName(String currentName) {
+		this.currentName = currentName;
+	}
+
+	public boolean isLcsfjs() {
+		return lcsfjs;
+	}
+
+	public void setLcsfjs(boolean lcsfjs) {
+		this.lcsfjs = lcsfjs;
+	}
+
+	public String getBusinessKey() {
+		return businessKey;
+	}
+
+	public void setBusinessKey(String businessKey) {
+		this.businessKey = businessKey;
+	}
+
+	public String getProcessDefinitionName() {
+		return processDefinitionName;
+	}
+
+	public void setProcessDefinitionName(String processDefinitionName) {
+		this.processDefinitionName = processDefinitionName;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
 	public boolean isSftg() {
 		return sftg;
@@ -132,8 +182,8 @@ public class HistoricTaskInstanceVO {
 		List<HistoricTaskInstanceVO> list = new ArrayList<HistoricTaskInstanceVO>();
 		for (HistoricTaskInstance hp : hps) {
 			HistoricTaskInstanceVO vo = new HistoricTaskInstanceVO();
-			vo.setProcessInstanceId(hp.getProcessInstanceId());
 			vo.setId(hp.getId());
+			vo.setProcessInstanceId(hp.getProcessInstanceId());
 			vo.setDeleteReason(hp.getDeleteReason());
 			vo.setName(hp.getName());
 			vo.setStartTime(TimeUtil.getTimeFromDate("yyyy-MM-dd HH:mm:ss", hp.getStartTime()));
@@ -142,8 +192,18 @@ public class HistoricTaskInstanceVO {
 			vo.setDurationInMillis(hp.getDurationInMillis());
 			vo.setAssignee(hp.getAssignee());
 			vo.setOwner(hp.getOwner());
+
+			vo.setDescription(hp.getDescription());
 			list.add(vo);
 		}
 		return list;
+	}
+
+	@Override
+	public String toString() {
+		return "HistoricTaskInstanceVO [id=" + id + ", processInstanceId=" + processInstanceId + ", name=" + name
+				+ ", startTime=" + startTime + ", endTime=" + endTime + ", assignee=" + assignee + ", owner=" + owner
+				+ ", durationInMillis=" + durationInMillis + ", claimTime=" + claimTime + ", deleteReason="
+				+ deleteReason + ", spyj=" + spyj + ", sftg=" + sftg + "]";
 	}
 }

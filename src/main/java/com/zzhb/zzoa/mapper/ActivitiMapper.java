@@ -3,6 +3,7 @@ package com.zzhb.zzoa.mapper;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -49,4 +50,6 @@ public interface ActivitiMapper {
 
 	@Update("UPDATE ACT_HI_TASKINST SET OWNER_ = #{owner}, DESCRIPTION_ = #{description}, ASSIGNEE_ = #{assignee} WHERE ID_ = #{taskId}")
 	public Integer updateHiTaskInst(Map<String, String> params);
+
+	public void delHiActInst(@Param("lists") List<String> list);
 }

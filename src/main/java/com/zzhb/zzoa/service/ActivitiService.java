@@ -1,7 +1,5 @@
 package com.zzhb.zzoa.service;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -32,6 +30,7 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricTaskInstanceQuery;
+import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -315,19 +314,14 @@ public class ActivitiService {
 	}
 
 	public JSONObject historyTask(String businessKey) {
+		// 查询已办理任务
 		List<HistoricTaskInstance> list = hs.createHistoricTaskInstanceQuery().processInstanceBusinessKey(businessKey)
 				.finished().orderByTaskCreateTime().asc().list();
 		List<HistoricTaskInstanceVO> historicTaskInstanceVOs = HistoricTaskInstanceVO.getHistoricTaskInstanceVOs(list);
 		for (HistoricTaskInstanceVO vo : historicTaskInstanceVOs) {
-			String u_id = null;
-			if (vo.getOwner() != null) {
-				u_id = vo.getOwner();
-			}
 			if (vo.getAssignee() != null) {
-				u_id = vo.getAssignee();
-			}
-			if (u_id != null) {
-				User user = userMapper.getUserById(u_id);
+				User user = userMapper.getUserById(vo.getAssignee());
+				// 设置办理人
 				vo.setAssignee(user.getNickname());
 			}
 			String spyj = "";
@@ -347,6 +341,8 @@ public class ActivitiService {
 			vo.setSftg(sftg);
 			vo.setSpyj(spyj);
 		}
+
+		// 查询进行中的任务
 		Task ruTask = taskService.createTaskQuery().processInstanceBusinessKey(businessKey).singleResult();
 		if (ruTask != null) {
 			HistoricTaskInstanceVO vo = new HistoricTaskInstanceVO();
@@ -379,7 +375,9 @@ public class ActivitiService {
 	@Transactional
 	public Integer deleteProcessInstance(String processInstanceId, String deleteReason) {
 		runtimeService.deleteProcessInstance(processInstanceId, deleteReason);
-		return 1;
+		Map<String, Object> params = new HashMap<>();
+		params.put("proid", processInstanceId);
+		return leaveMapper.delLeave(params);
 	}
 
 	@Transactional
@@ -478,37 +476,47 @@ public class ActivitiService {
 		// 判断流程是否被挂起
 		if (!ruTask.isSuspended()) {
 
-			// 判断该任务是否为委托任务
-			DelegationState delegationState = ruTask.getDelegationState();
-			if (delegationState != null && delegationState.toString().equals("PENDING")) {
-				taskService.resolveTask(taskId);
-				logger.debug("=owner=" + ruTask.getOwner() + "=assignee=" + ruTask.getAssignee());
-				// 委派的任务 代理人 依旧是委托人
-				params.put("owner", ruTask.getOwner());
-				if (ruTask.getClaimTime() != null) {
-					params.put("description", "领办-委托");
-				} else {
-					params.put("description", "委托");
-				}
-				params.put("assignee", ruTask.getAssignee());
-			} else {
-				if (ruTask.getClaimTime() != null) {
-					if (ruTask.getOwner() != null) {
-						params.put("owner", ruTask.getOwner());
-						params.put("description", "领办-指派");
-					} else {
-						params.put("owner", ruTask.getAssignee());
-						params.put("description", "领办");
-					}
+			if (ruTask.getClaimTime() != null) {
+				DelegationState delegationState = ruTask.getDelegationState();
+				if (delegationState != null && delegationState.toString().equals("PENDING")) {
+					// 委托
+					taskService.resolveTask(taskId);
+					User userById = userMapper.getUserById(ruTask.getAssignee());
+					params.put("description", "领办-委托" + "【" + userById.getNickname() + "】");
 					params.put("assignee", ruTask.getAssignee());
+					params.put("owner", ruTask.getOwner());
 				} else {
-					params.put("owner", ruTask.getAssignee());
-					if (ruTask.getOwner() != null) {
-						params.put("description", "指派");
+					if (ruTask.getDescription() != null) {
+						// 领办-指派
+						params.put("description", "领办-指派" + "【" + ruTask.getDescription() + "】");
+						params.put("assignee", ruTask.getAssignee());
+						params.put("owner", ruTask.getAssignee());
+					} else {
+						params.put("description", "领办");
+						params.put("assignee", ruTask.getAssignee());
+						params.put("owner", ruTask.getAssignee());
+					}
+				}
+			} else {
+				DelegationState delegationState = ruTask.getDelegationState();
+				if (delegationState != null && delegationState.toString().equals("PENDING")) {
+					// 委托
+					taskService.resolveTask(taskId);
+					params.put("description", "委托" + "【" + ruTask.getDescription() + "】");
+					params.put("assignee", ruTask.getAssignee());
+					params.put("owner", ruTask.getOwner());
+				} else {
+					// 指派 或指定
+					if (ruTask.getDescription() != null) {
+						// 指派
+						params.put("description", "指派" + "【" + ruTask.getDescription() + "】");
+						params.put("assignee", ruTask.getAssignee());
+						params.put("owner", ruTask.getAssignee());
 					} else {
 						params.put("description", "指定");
+						params.put("assignee", ruTask.getAssignee());
+						params.put("owner", ruTask.getAssignee());
 					}
-					params.put("assignee", ruTask.getAssignee());
 				}
 			}
 			String processInstanceId = ruTask.getProcessInstanceId();
@@ -564,14 +572,7 @@ public class ActivitiService {
 		String dateS = params.get("dateS");
 		String dateE = params.get("dateE");
 		String keys = params.get("keys");
-		String finish = params.get("finish");
-		if (finish != null && !"".equals(finish)) {
-			if ("0".equals(finish)) {
-				hpiq.unfinished();
-			} else {
-				hpiq.finished();
-			}
-		}
+
 		if (u_id != null && !"".equals(u_id)) {
 			hpiq.startedBy(u_id);
 		}
@@ -613,15 +614,38 @@ public class ActivitiService {
 
 	// 已办事项 查询
 	public JSONObject getHistoricTaskInstance(Integer page, Integer limit, Map<String, String> params) {
-		String ownerid = params.get("ownerid");
-		ownerid = "2";
-		HistoricTaskInstanceQuery hit = hs.createHistoricTaskInstanceQuery();
-		hit.taskOwner(ownerid);
-		List<HistoricTaskInstance> list = hit.list();
-		for (HistoricTaskInstance ht : list) {
-			System.out.println(ht.getAssignee() + "" + ht.getName() + "" + ht.getDescription());
+		String ownerid = params.get("u_id");
+		String dateS = params.get("dateS");
+		String dateE = params.get("dateE");
+		String keys = params.get("keys");
+		HistoricTaskInstanceQuery hit = hs.createHistoricTaskInstanceQuery().finished().taskOwner(ownerid);
+		if (keys != null && !"".equals(keys)) {
+			hit.processDefinitionKeyIn(Arrays.asList(keys.split(",")));
 		}
-		return null;
+		if (dateS != null && !"".equals(dateS)) {
+			hit.taskCompletedAfter(TimeUtil.getDateByCustom("yyyy-MM-dd HH:mm:ss", dateS + " 00:00:00"));
+		}
+		if (dateE != null && !"".equals(dateE)) {
+			hit.taskCompletedBefore(TimeUtil.getDateByCustom("yyyy-MM-dd HH:mm:ss", dateE + " 23:59:59"));
+		}
+		long count = hit.count();
+		hit = hit.orderByHistoricTaskInstanceEndTime().desc();
+		List<HistoricTaskInstance> list = hit.listPage((page - 1) * limit, page * limit);
+		List<HistoricTaskInstanceVO> htvs = HistoricTaskInstanceVO.getHistoricTaskInstanceVOs(list);
+		for (HistoricTaskInstanceVO htv : htvs) {
+			Task ruTask = taskService.createTaskQuery().processInstanceId(htv.getProcessInstanceId()).singleResult();
+			if (ruTask != null) {
+				htv.setCurrentName(ruTask.getName());
+			} else {
+				htv.setCurrentName("--");
+			}
+			HistoricProcessInstance hpi = hs.createHistoricProcessInstanceQuery()
+					.processInstanceId(htv.getProcessInstanceId()).singleResult();
+			htv.setBusinessKey(hpi.getBusinessKey());
+			htv.setLcsfjs(hpi.getEndTime() == null ? false : true);
+			htv.setProcessDefinitionName(hpi.getProcessDefinitionName());
+		}
+		return LayUiUtil.pagination(count, htvs);
 	}
 
 	private List<String> getHighLightedFlows(BpmnModel bpmnModel,
@@ -794,6 +818,91 @@ public class ActivitiService {
 		} else {
 			result.put("code", -2);
 			result.put("msg", "当前任务已失效");
+		}
+		return result;
+	}
+
+	@Transactional
+	public JSONObject revoke(String userId, String bk) {
+		JSONObject result = new JSONObject();
+		Task task = taskService.createTaskQuery().processInstanceBusinessKey(bk).singleResult();
+		if (task == null) {
+			result.put("code", -1);
+			result.put("msg", "流程已执行完成，无法撤回");
+		} else {
+			List<HistoricTaskInstance> htiList = hs.createHistoricTaskInstanceQuery().processInstanceBusinessKey(bk)
+					.orderByTaskCreateTime().asc().list();
+
+			String myTaskId = null;
+			HistoricTaskInstance myTask = null;
+			for (HistoricTaskInstance hti : htiList) {
+				if (userId.equals(hti.getAssignee())) {
+					myTaskId = hti.getId();
+					myTask = hti;
+					break;
+				}
+			}
+			if (null == myTaskId) {
+				result.put("code", -1);
+				result.put("msg", "任务已被完成，无法撤回");
+			} else {
+				hs.deleteHistoricTaskInstance(myTaskId);
+				String processDefinitionId = myTask.getProcessDefinitionId();
+				BpmnModel bpmnModel = repositoryService.getBpmnModel(processDefinitionId);
+
+				String myActivityId = null;
+				List<HistoricActivityInstance> haiList = hs.createHistoricActivityInstanceQuery()
+						.executionId(myTask.getExecutionId()).orderByHistoricActivityInstanceStartTime().desc().list();
+				List<String> delList = new ArrayList<>();
+				for (HistoricActivityInstance hai : haiList) {
+					if (hai.getEndTime() != null && "userTask".equals(hai.getActivityType())) {
+						myActivityId = hai.getActivityId();
+						break;
+					} else {
+						delList.add(hai.getId());
+					}
+				}
+				activitiMapper.delHiActInst(delList);
+
+				FlowNode myFlowNode = (FlowNode) bpmnModel.getMainProcess().getFlowElement(myActivityId);
+
+				org.activiti.engine.runtime.Execution execution = runtimeService.createExecutionQuery()
+						.executionId(task.getExecutionId()).singleResult();
+				String activityId = execution.getActivityId();
+
+				FlowNode flowNode = (FlowNode) bpmnModel.getMainProcess().getFlowElement(activityId);
+
+				// 记录原活动方向
+				List<SequenceFlow> oriSequenceFlows = new ArrayList<SequenceFlow>();
+				oriSequenceFlows.addAll(flowNode.getOutgoingFlows());
+
+				// 清理活动方向
+				flowNode.getOutgoingFlows().clear();
+
+				// 建立新方向
+				List<SequenceFlow> newSequenceFlowList = new ArrayList<SequenceFlow>();
+				SequenceFlow newSequenceFlow = new SequenceFlow();
+				newSequenceFlow.setId("newSequenceFlowId");
+				newSequenceFlow.setSourceFlowElement(flowNode);
+				newSequenceFlow.setTargetFlowElement(myFlowNode);
+				newSequenceFlowList.add(newSequenceFlow);
+				flowNode.setOutgoingFlows(newSequenceFlowList);
+
+				JSONObject comment = new JSONObject();
+				comment.put("agree", "false");
+				comment.put("cancel_spyj", "撤回");
+				Authentication.setAuthenticatedUserId(userId);
+				taskService.addComment(task.getId(), task.getProcessInstanceId(), JSON.toJSONString(comment));
+
+				Map<String, Object> currentVariables = new HashMap<String, Object>();
+				currentVariables.put("sprs", userId);
+				// 完成任务
+				taskService.complete(task.getId(), currentVariables);
+				// 恢复原方向
+				flowNode.setOutgoingFlows(oriSequenceFlows);
+				result.put("code", 0);
+				result.put("msg", "任务撤回成功");
+			}
 		}
 		return result;
 	}
