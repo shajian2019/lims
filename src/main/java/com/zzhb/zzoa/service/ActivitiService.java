@@ -451,6 +451,11 @@ public class ActivitiService {
 				}
 			}
 		}
+		
+		//更新历史表
+		params.put("assignee", task.getAssignee());
+		params.put("taskId", task.getId());
+		activitiMapper.updateHiTaskInst(params);
 
 		// 保存业务数据
 		params.put("proid", pi.getId());
@@ -488,10 +493,11 @@ public class ActivitiService {
 				params.put("assignee", ruTask.getAssignee());
 			} else {
 				if (ruTask.getClaimTime() != null) {
-					params.put("owner", ruTask.getOwner());
 					if (ruTask.getOwner() != null) {
+						params.put("owner", ruTask.getOwner());
 						params.put("description", "领办-指派");
 					} else {
+						params.put("owner", ruTask.getAssignee());
 						params.put("description", "领办");
 					}
 					params.put("assignee", ruTask.getAssignee());
@@ -520,6 +526,12 @@ public class ActivitiService {
 			if (task != null) {
 				// 更新审批人缓存表
 				userSprMapper.updateSprs(params);
+				//更新历史表
+				params.clear();
+				params.put("assignee", task.getAssignee());
+				params.put("taskId", task.getId());
+				activitiMapper.updateHiTaskInst(params);
+
 				result.put("code", 1);
 				result.put("msg", task.getName());
 			} else {
@@ -742,6 +754,13 @@ public class ActivitiService {
 			task.setDescription(user.getNickname());
 			taskService.saveTask(task);
 			taskService.delegateTask(taskId, userId);
+			
+			//更新历史表
+			Map<String, String> params = new HashMap<>();
+			params.put("taskId", taskId);
+			params.put("assignee", userId);
+			activitiMapper.updateHiTaskInst(params);
+			
 			result.put("code", 1);
 			result.put("msg", "任务委托成功");
 		} else {
