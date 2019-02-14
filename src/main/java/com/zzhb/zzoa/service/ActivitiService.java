@@ -502,7 +502,8 @@ public class ActivitiService {
 				if (delegationState != null && delegationState.toString().equals("PENDING")) {
 					// 委托
 					taskService.resolveTask(taskId);
-					params.put("description", "委托" + "【" + ruTask.getDescription() + "】");
+					User userById = userMapper.getUserById(ruTask.getAssignee());
+					params.put("description", "委托" + "【" + userById.getNickname() + "】");
 					params.put("assignee", ruTask.getAssignee());
 					params.put("owner", ruTask.getOwner());
 				} else {
@@ -836,7 +837,7 @@ public class ActivitiService {
 			String myTaskId = null;
 			HistoricTaskInstance myTask = null;
 			for (HistoricTaskInstance hti : htiList) {
-				if (userId.equals(hti.getAssignee())) {
+				if (userId.equals(hti.getAssignee()) || userId.equals(hti.getOwner())) {
 					myTaskId = hti.getId();
 					myTask = hti;
 					break;
@@ -890,7 +891,8 @@ public class ActivitiService {
 
 				JSONObject comment = new JSONObject();
 				comment.put("agree", "false");
-				comment.put("cancel_spyj", "撤回");
+				User userById = userMapper.getUserById(userId);
+				comment.put("cancel_spyj", "撤回" + "【" + userById.getNickname() + "】");
 				Authentication.setAuthenticatedUserId(userId);
 				taskService.addComment(task.getId(), task.getProcessInstanceId(), JSON.toJSONString(comment));
 
