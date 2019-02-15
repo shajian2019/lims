@@ -178,4 +178,4 @@ logging:
     org.activiti: DEBUG
 
 server:
-  port: 8888
+  port: 9008
