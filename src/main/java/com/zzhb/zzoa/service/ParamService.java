@@ -12,6 +12,7 @@ import freemarker.template.TemplateModelException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
@@ -33,6 +34,8 @@ public class ParamService {
 		return LayUiUtil.pagination(pageInfo);
 	}
 
+	
+	@Transactional
 	public Integer saveParam(Param param, String flag) {
 		Integer result = 0;
 		Integer checkKey = paramMapper.checkKey(param);
@@ -51,6 +54,17 @@ public class ParamService {
 			result = -1;
 		}
 		return result;
+	}
+	
+	@Transactional
+	public Integer delParam(Map<String, String> map) {
+		Integer delParamById = paramMapper.delParamById(map);
+		try {
+			initService.initParams();
+		} catch (TemplateModelException e) {
+			e.printStackTrace();
+		}
+		return delParamById;
 	}
 
 }
