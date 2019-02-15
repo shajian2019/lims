@@ -54,7 +54,7 @@
 </body>
 <script type="text/html" id="rightBar">
     <div class="layui-btn-group">
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail" title="审核">
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="sh" title="审核">
             <i class="fa fa-file-text-o"></i>
         </a>
 
@@ -126,9 +126,9 @@
                     }
                 });
 
-            } else if(action == 'detail'){
+            } else if(action == 'sh'){
                 var auditter = data.auditter.split('#')[1];
-                var url = "${ctx}/swgl/zdgz/zdgzdetail?attach_id="+data.attach_id
+                var url = "${ctx}/swgl/zdgz/zdgzshpage?attach_id="+data.attach_id
                     +"&content="+data.content
                     +"&createtime="+data.createtime
                     +"&id="+data.id
@@ -137,7 +137,7 @@
                     +"&title="+data.title
                     +"&auditter="+auditter;
                 var index = layer.open({
-                    title:action,
+                    title:"重点工作审核",
                     type: 2,
                     fixed: false, //不固定
                     maxmin: true,

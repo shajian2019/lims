@@ -40,7 +40,7 @@ public class ZdgzService {
         for(Map<String,String> m:zdgzList){
             if(Integer.parseInt(String.valueOf(m.get("audit_state"))) == 0){
                 m.put("audit_state_info","未审核");
-            }else if(m.get("audit_state").equals("1")){
+            }else if(Integer.parseInt(String.valueOf(m.get("audit_state"))) == 1){
                 m.put("audit_state_info","审核同意");
             }else{
                 m.put("audit_state_info","审核不同意");
@@ -114,5 +114,10 @@ public class ZdgzService {
         List<Map<String,String>> zdgzlist = zdgzMapper.getzdgzsh(params);
         PageInfo<Map<String,String>> pageInfo = new PageInfo<Map<String,String>>(zdgzlist);
         return LayUiUtil.pagination(pageInfo);
+    }
+
+
+    public Integer getShResult(Map<String, String> params){
+        return zdgzMapper.getShResult(params);
     }
 }

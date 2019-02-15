@@ -43,6 +43,7 @@
         a.auditter
         FROM aff_t_zdgz a, sys_t_user b
         <where>
+        and a.audit_state = 0
             <if test="createtime != null and createtime != ''">
                 AND createtime = #{createtime}
             </if>
@@ -57,6 +58,27 @@
         </where>
         order by a.createtime desc
     </select>
+
+    <update id="getShResult" parameterType="java.util.Map">
+        UPDATE aff_t_zdgz
+        <set>
+            <if test="audit_state != null and audit_state !='' ">
+                audit_state = #{audit_state},
+            </if>
+            <if test="distribution_state != null and distribution_state !='' ">
+                distribution_state = #{distribution_state},
+            </if>
+            <if test="principal != null and principal !='' ">
+                principal = #{principal},
+            </if>
+        </set>
+        <where>
+            <if test="id != null and id !='' ">
+                AND id = #{id}
+            </if>
+        </where>
+    </update>
+
 
 
     <delete id="delCarById" parameterType="java.util.Map">
@@ -73,40 +95,7 @@
         VALUES (#{title},#{content},#{attach_id},now(),#{submitter},#{auditter})
     </insert>
 
-    <update id="editCar" parameterType="java.util.Map">
-        UPDATE aff_car_info
-        <set>
-            <if test="car_model != null and car_model !='' ">
-                car_model = #{car_model},
-            </if>
-            <if test="car_card != null and car_card !='' ">
-                car_card = #{car_card},
-            </if>
-            <if test="car_type != null and car_type !=''">
-                car_type = #{car_type},
-            </if>
-            <if test="car_limit != null and car_limit !='' ">
-                car_limit = #{car_limit},
-            </if>
-            <if test="buy_time != null and buy_time !='' ">
-                buy_time = #{buy_time},
-            </if>
-            <if test="kilometres != null and kilometres !='' ">
-                kilometres = #{kilometres},
-            </if>
-            <if test="next_inspection_time != null and next_inspection_time !='' ">
-                next_inspection_time = #{next_inspection_time},
-            </if>
-            <if test="car_status != null and car_status !='' ">
-                car_status = #{car_status},
-            </if>
-        </set>
-        <where>
-            <if test="c_id != null and c_id !='' ">
-                AND c_id = #{c_id}
-            </if>
-        </where>
-    </update>
+
 
 
 

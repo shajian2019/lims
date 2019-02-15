@@ -267,11 +267,11 @@
                     console.log(data);
                     layer.close(index);
                     var html = "";
+                    sprs = [];
                     $.each(data, function (i, v) {
                         console.log(123);
                         console.log(v);
                         var msg = v.oiduid;//58#10232  #前面是部门id，后面是人员id
-                        sprs = [];
                         sprs.push(msg);
                         html += '<div class="spr-select">';
                         html += '<p>' + v.nickname + '</p>';
