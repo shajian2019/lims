@@ -78,6 +78,59 @@
    </form>
 </section>
 <p class="copyright">©<a href = "#" target="_blank" style="color: #333">${system.copyright!'© www.ofosft.cn'}</a></p>
-<input hidden="hidden" id="code_hidden">
+	<script src="${ctx}/plugins/layui/layui.js"></script>
+    <script src="${ctx}/plugins/sideshow/js/TweenLite.min.js"></script>
+    <script src="${ctx}/plugins/sideshow/js/EasePack.min.js"></script>
+    <script src="${ctx}/plugins/sideshow/js/rAF.js"></script>
+    <script src="${ctx}/plugins/sideshow/js/demo-1.js"></script>
+    <script>
+        layui.use(['layer', 'form'], function() {
+            var layer = layui.layer,
+                $ = layui.jquery,
+                form = layui.form;
+
+            $('#changeCode').on('click', function() {
+                $('#changeCode > img')[0].src = 'captcha?tm='+Math.random();
+            });
+
+            //清理左侧菜单缓存
+            var index = layer.load(2, {
+                shade: [0.3, '#333']
+            });
+            $(window).on('load', function() {
+                layer.close(index);
+                form.on('submit(login)', function(data) {
+                    var loadIndex = layer.load(2, {
+                        shade: [0.3, '#333']
+                    });
+                    $.ajax({
+					    type: "post",
+					    data: data.field,
+					    url: data.form.action,
+					    beforeSend: function () {
+					    	index = layer.load(1);
+					    },
+					    success: function (data) {
+					    	console.log(data)
+					    	if("0000" == data.code){
+						    	location.href="index";
+						    }else{
+						    	$('#changeCode').click(); //刷新验证码
+						    	layer.msg(data.msg,{icon:2})
+						    }
+					    },
+					    error: function (data) {
+					    	layer.msg("登录异常",{icon:2});
+					    	$('#changeCode').click(); //刷新验证码
+					    },
+					    complete:function(XMLHttpRequest, textStatus){
+					    	layer.close(index);
+					    }
+					});
+                    return false;
+                });
+            }());
+        });
+    </script>
 </body>
 </html>
