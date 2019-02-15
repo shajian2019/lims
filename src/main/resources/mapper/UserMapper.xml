@@ -197,9 +197,6 @@
 			<if test="p_id !=null and p_id !='' ">
 				and p_id = #{p_id}
 			</if>
-			<if test="u_id !=null and u_id !='' ">
-				and u_id = #{u_id}
-			</if>
 		</where>
 	</delete>
 	

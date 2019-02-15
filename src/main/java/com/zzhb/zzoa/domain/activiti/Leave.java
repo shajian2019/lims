@@ -1,8 +1,10 @@
 package com.zzhb.zzoa.domain.activiti;
 
 public class Leave {
+	
 	private String proid;
 	private String bk;
+	private String u_id;
 	private String sqr;
 	private String bmmc;
 	private String sqrq;
@@ -10,6 +12,14 @@ public class Leave {
 	private String ksrq;
 	private String jsrq;
 	private String qjly;
+
+	public String getU_id() {
+		return u_id;
+	}
+
+	public void setU_id(String u_id) {
+		this.u_id = u_id;
+	}
 
 	public String getProid() {
 		return proid;
@@ -85,8 +95,8 @@ public class Leave {
 
 	@Override
 	public String toString() {
-		return "Leave [proid=" + proid + ", bk=" + bk + ", sqr=" + sqr + ", bmmc=" + bmmc + ", sqrq=" + sqrq + ", qjlx="
-				+ qjlx + ", ksrq=" + ksrq + ", jsrq=" + jsrq + ", qjly=" + qjly + "]";
+		return "Leave [proid=" + proid + ", bk=" + bk + ", u_id=" + u_id + ", sqr=" + sqr + ", bmmc=" + bmmc + ", sqrq="
+				+ sqrq + ", qjlx=" + qjlx + ", ksrq=" + ksrq + ", jsrq=" + jsrq + ", qjly=" + qjly + "]";
 	}
 
 }

@@ -3,9 +3,9 @@
 <mapper namespace="com.zzhb.zzoa.mapper.LeaveMapper">
 	<insert id="addLeave" parameterType="com.zzhb.zzoa.domain.activiti.Leave">
 		INSERT INTO oa_t_leave 
-			(proid,bk,sqr,bmmc,sqrq,qjlx,ksrq,jsrq,qjly)
+			(proid,bk,sqr,bmmc,sqrq,qjlx,ksrq,jsrq,qjly,u_id)
 		VALUES
-			(#{proid},#{bk},#{sqr},#{bmmc},#{sqrq},#{qjlx},#{ksrq},#{jsrq},#{qjly})
+			(#{proid},#{bk},#{sqr},#{bmmc},#{sqrq},#{qjlx},#{ksrq},#{jsrq},#{qjly},#{u_id})
 	</insert>
 	
 	<delete id="delLeave" parameterType="java.util.Map">

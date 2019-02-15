@@ -71,7 +71,7 @@ public class FqlcController {
 		User user = SessionUtils.getUser();
 		Object renderedStartForm = formService.getRenderedStartForm(processDefinitionId);
 		String startFormKey = formService.getStartFormKey(processDefinitionId);
-		//生成业务ID
+		// 生成业务ID
 		String businessKey = TimeUtil.getTimeByCustom("yyyyMMddHHmmss") + user.getU_id();
 		modelMap.put(key, initLeave(user, businessKey));
 		modelMap.put("form", renderedStartForm);
@@ -88,6 +88,7 @@ public class FqlcController {
 
 	private Leave initLeave(User user, String bk) {
 		Leave leave = new Leave();
+		leave.setU_id(user.getU_id() + "");
 		leave.setSqr(user.getNickname());
 		leave.setBk(bk);
 		leave.setSqrq(TimeUtil.getTimeByCustom("yyyy-MM-dd HH:mm:ss"));

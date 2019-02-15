@@ -218,11 +218,15 @@ public class ActivitiService {
 			}
 		}
 		repositoryService.deleteDeployment(params.get("deployment_id"), sfjl);
-		Map<String, String> params2 = new HashMap<>();
-		params2.put("key", params.get("key"));
-		params2.put("version", (Integer.parseInt(params.get("version")) - 1) + "");
-		ProcessDefinitionExt preVersionProcessDefinitionExt = activitiMapper.getPreVersionProcessDefinitionExt(params2);
-		if (preVersionProcessDefinitionExt != null) {
+		String version = (Integer.parseInt(params.get("version")) - 1) + "";
+		if ("0".equals(version)) {
+			userMapper.delUserProcdef(params.get("p_id"));
+		} else {
+			Map<String, String> params2 = new HashMap<>();
+			params2.put("key", params.get("key"));
+			params2.put("version", version);
+			ProcessDefinitionExt preVersionProcessDefinitionExt = activitiMapper
+					.getPreVersionProcessDefinitionExt(params2);
 			params2.put("newpid", preVersionProcessDefinitionExt.getId());
 			params2.put("oldpid", params.get("p_id"));
 			userMapper.updateUserProcdef(params2);
