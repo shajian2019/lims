@@ -160,7 +160,7 @@
 	</springProfile>
 	
 	<springProfile name="dev">
-		<root level="ERROR">
+		<root level="DEBUG">
 			<appender-ref ref="CONSOLE" />
 		</root>
 	</springProfile>

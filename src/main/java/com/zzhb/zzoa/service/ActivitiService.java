@@ -962,6 +962,7 @@ public class ActivitiService {
 							String assignee = commentJ.getString("assignee");
 							User userById = userMapper.getUserById(assignee);
 							data.put(pre + "spr", userById.getNickname());
+							logger.debug("===data===" + JSON.toJSONString(data));
 							break;
 						}
 					}
