@@ -156,4 +156,12 @@ public class ZdgzService {
         return LayUiUtil.pagination(pageInfo);
     }
 
+    public Integer addZdgzjz(Map<String, String> params){
+        SessionUtils s = new SessionUtils();
+        User user = s.getUser();
+        Integer u_id = user.getU_id();
+        params.put("submitter",String.valueOf(u_id));
+        return zdgzMapper.addZdgzjz(params);
+    }
+
 }

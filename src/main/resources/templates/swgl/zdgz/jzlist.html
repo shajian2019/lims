@@ -141,7 +141,7 @@
     });
 
     function add() {
-        var url = "${ctx}/swgl/zdgz/addZdgzjz";
+        var url = "${ctx}/swgl/zdgz/addZdgzjz?id=${params.id}";
         var table = layui.table;
         layer.open({
             title: '重点工作进展填写',
@@ -150,7 +150,7 @@
             area: ['800px', '400px'],
             content: url,
             end: function () {
-                table.reload(tableId)
+                table.reload(tableId);
             }
         });
     }

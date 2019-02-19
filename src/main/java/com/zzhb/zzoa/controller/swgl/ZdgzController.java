@@ -122,8 +122,17 @@ public class ZdgzController {
     }
 
     @GetMapping("/addZdgzjz")
-    public String addZdgzjz(){
-        return "swgl/zdgz/jzpage";
+    public ModelAndView addZdgzjz(@RequestParam Map<String, String> params){
+        ModelAndView mv = new ModelAndView();
+        mv.addObject("params",params);
+        mv.setViewName("swgl/zdgz/jzpage");
+        return mv;
+    }
+
+    @PostMapping("/addzdgzjz")
+    @ResponseBody
+    public Integer addZdgzjz1(@RequestParam Map<String, String> params){
+        return zdgzService.addZdgzjz(params);
     }
 
 }

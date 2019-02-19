@@ -41,13 +41,13 @@
     <div class="layui-form-item">
         <label class="layui-form-label">完成内容：</label>
         <div class="layui-inline">
-            <textarea readonly="true" name="content" placeholder="请输入内容" class="layui-textarea" value="" style="height:280px;"></textarea>
+            <textarea name="work_content" id="work_content" placeholder="请输入内容" class="layui-textarea" value="" style="height:280px;"></textarea>
         </div>
     </div>
 
     </div>
     <div class="layui-btn-container">
-        <a class="layui-btn  layui-btn-primary" lay-submit lay-filter="" id="save">保存</a>
+        <a class="layui-btn  layui-btn-primary" lay-submit lay-filter="save" id="save">保存</a>
         <a class="layui-btn  layui-btn-primary" lay-submit lay-filter="" id="cancel">关闭</a>
     </div>
 </form>
@@ -93,6 +93,32 @@
             var index = parent.layer.getFrameIndex(window.name);
             parent.layer.close(index);
         })
+
+        form.on('submit(save)', function (data) {
+            var id = "${params.id}";
+            data.field.zdgz_id = id;
+            $.ajax({
+                type: "POST",
+                url: "${ctx}/swgl/zdgz/addzdgzjz",
+                data:data.field,
+                success: function (data) {
+                    if (data > 0) {
+                        var msg = "保存成功";
+                        layer.msg(msg, {offset: ['50%'], time: 1000}, function () {
+                            index = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(index);
+                        });
+                    } else {
+                        layer.msg("保存失败");
+                    }
+                },
+                error: function (data) {
+                    layer.close(index);
+                    layer.msg("服务端异常");
+                }
+
+            });
+        });
 
         Array.prototype.remove = function (val) {
             var index = this.indexOf(val);

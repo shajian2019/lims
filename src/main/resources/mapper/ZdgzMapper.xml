@@ -150,6 +150,11 @@
         order by a.createtime desc
     </select>
 
+    <insert id="addZdgzjz" keyProperty="id" useGeneratedKeys="true" parameterType="java.util.Map" >
+        INSERT INTO aff_t_zdgzjz(zdgz_id,work_content,createtime,submitter)
+        VALUES (#{zdgz_id},#{work_content},now(),#{submitter})
+    </insert>
+
 
 
     <!--<update id="updateUserByUser" parameterType="com.zzhb.zzoa.domain.User">-->
