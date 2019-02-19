@@ -176,19 +176,26 @@
                         content: '${ctx}/grgzt/fqlc/spr?key=zdgzfs&formkey=zdgzfs',
                         end: function () {
                             getSprs("spr_add", "spr", "zdgzfs");//向sprs数组中塞入选择的人员信息
+                            console.log("是否塞入spr");
                             //选择人员树成功后执行保存操作，如果没有选择人员就不进行保存
                             if(sprs.length > 0){
                                 var id = data.id;
                                 var pmsg = sprs.join(",");
                                 $.ajax({
                                     type: "post",
-                                    data: {id: id,principal:pmsg},
-                                    url: "${ctx}/",
+                                    data: {id: id,
+                                           principal:pmsg,
+                                           distribution_state:1},
+                                    url: "${ctx}/swgl/zdgz/addprincipal",
                                     beforeSend: function () {
                                         index = layer.load(1);
                                     },
                                     success: function (data) {
-
+                                        if(data == 1){
+                                            layer.msg("操作成功",{offset:['50%'],time: 1000},function(){
+                                                table.reload(tableId);
+                                            });
+                                        }
                                     },
                                     error: function (data) {
                                         layer.close(index);
@@ -220,18 +227,14 @@
                 type: "post",
                 data: {id: "${USER.u_id}zdgzfs" + ele2},
                 url: "${ctx}/grgzt/fqlc/getSprs",
+                async:false,
                 beforeSend: function () {
                     index = layer.load(1);
                 },
                 success: function (data) {
-                    console.log(321);
-                    console.log(data);
                     layer.close(index);
-                    var html = "";
                     sprs = [];
                     $.each(data, function (i, v) {
-                        console.log(123);
-                        console.log(v);
                         var msg = v.oiduid;
                         sprs.push(msg);
                     })

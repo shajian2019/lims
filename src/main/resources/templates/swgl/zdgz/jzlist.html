@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>年度重点工作</title>
+    <title>${(params.title)!''}重点工作进度列表</title>
     <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
     <script src="${ctx}/plugins/layui/layui.js"></script>
     <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" />
@@ -35,6 +35,9 @@
 <form class="layui-form" id="query">
     <div class="layui-form-item">
         <div class="layui-inline">
+            <input class="layui-input" type="hidden" placeholder="主键" name="id" id="id" value="${(params.id)!''}">
+        </div>
+        <div class="layui-inline">
             <input class="layui-input" type="text" placeholder="标题" name="title" id="title">
         </div>
         <div class="layui-inline">
@@ -43,7 +46,7 @@
 
         <div class="layui-inline">
             <a class="layui-btn layui-btn-primary" lay-submit="" lay-filter="query" datatype="reload">查询</a>
-            <!--<a class="layui-btn layui-btn-primary" onclick="add();">重点工作登记</a>-->
+            <a class="layui-btn layui-btn-primary" onclick="add();">重点工作进度填写</a>
         </div>
     </div>
 </form>
@@ -59,7 +62,7 @@
             <i class="fa fa-file-text-o"></i>
         </a>
 
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="jl" title="工作进展记录">
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="send" title="选择发送人">
             <i class="fa layui-icon-friends"></i>
         </a>
     </div>
@@ -68,6 +71,7 @@
 <script>
     var editObj = null, ptable = null, treeGrid = null, tableId = 'dataTable', layer = null, form = null,$=null;
     layui.use(['table','laydate'], function () {
+        var sprs = [];
         var laydate = layui.laydate;
         laydate.render({
             elem: '#createtime'
@@ -78,23 +82,21 @@
         form = layui.form;
         table.render({
             elem: '#' + tableId
-            , url: '${ctx}/swgl/zdgz/zdgzglysh'//后台接受路径
+            , url: '${ctx}/swgl/zdgz/zdgzjzlist?id=${params.id}'//后台接受路径
             , page: true
             , id: tableId
             , height: 'full-80'
             , method: 'get'
             , cols: [[
                 {field: '序号',width:50,fixed:'left',type:'numbers',title:'序号'}
-                ,{field: 'title', title: '标题'}
-                ,{field: 'content', title: '工作内容'}
-                ,{field: 'submitterName', width: 140, title: '提交人'}
-                , {field: 'createtime', width: 150, title: '提交时间'}
+                ,{field: 'work_content', title: '完成内容'}
+                ,{field: 'submitterName', width: 180, title: '提交人'}
+                , {field: 'createtime', width: 230, title: '提交时间'}
                 // , {field: 'attachment_id', width: 140, title: '附件'}
-
-                ,{
-                    title: '操作', align: 'center',width: 170,
-                    toolbar: '#rightBar'
-                }
+                // ,{
+                //     title: '操作', align: 'center',width: 170,
+                //     toolbar: '#rightBar'
+                // }
             ]]
         });
 
@@ -126,75 +128,6 @@
                         layer.msg("服务端异常");
                     }
                 });
-
-            } else if(action == 'detail'){
-                var auditter = data.auditter.split('#')[1];
-                var url = "${ctx}/swgl/zdgz/zdgzdetail?attach_id="+data.attach_id
-                    +"&content="+data.content
-                    +"&createtime="+data.createtime
-                    +"&id="+data.id
-                    +"&submitter="+data.submitter
-                    +"&submitterName="+data.submitterName
-                    +"&title="+data.title
-                    +"&auditter="+auditter;
-                var index = layer.open({
-                    title:action,
-                    type: 2,
-                    fixed: false, //不固定
-                    maxmin: true,
-                    content: url,
-                    end: function(){
-                        table.reload(tableId)
-                    }
-                });
-                layer.full(index);
-            }else if(action == 'send'){//选择重点工作的执行人
-                var result = true;
-                if(data.audit_state == 0){
-                    layer.msg("该工作尚未被审核");
-                    result = false;
-                    return;
-                }else if(data.audit_state == 2){
-                    layer.msg("该工作审核不通过");
-                    result = false;
-                    return;
-                }else if(data.distribution_state == 1){
-                    layer.msg("该工作已被指派");
-                    result = false;
-                    return;
-                }
-                if(result == true){//弹出人员树,选择工作负责人
-                    layer.open({
-                        type: 2,
-                        area: ['728px', '516px'],
-                        title: false,
-                        offset: '15px',
-                        // content: '${ctx}/swgl/gzrz/empTree?key=journal&formkey=receiver',
-                        content: '${ctx}/grgzt/fqlc/spr?key=zdgzfs&formkey=zdgzprincipal',
-                        end: function () {
-                            // getSprs("spr_add", "spr", "receiver");
-                        }
-                    })
-
-                }
-            }else if(action == 'jl'){//进入重点工作记录页面
-
-                var auditter = data.auditter.split('#')[1];
-                var url = "${ctx}/swgl/zdgz/zdgzjz?&id="+data.id
-                    +"&title="+data.title;
-                var index = layer.open({
-                    title:"重点工作进展",
-                    type: 2,
-                    fixed: false, //不固定
-                    maxmin: true,
-                    content: url,
-                    end: function(){
-                        // table.reload(tableId);
-                    }
-                });
-                layer.full(index);
-
-
             }
         });
 
@@ -208,13 +141,13 @@
     });
 
     function add() {
-        var url = "${ctx}/swgl/zdgz/addZdgz";
+        var url = "${ctx}/swgl/zdgz/addZdgzjz";
         var table = layui.table;
         layer.open({
-            title: '重点工作登记',
+            title: '重点工作进展填写',
             type: 2,
             offset: '50px',
-            area: ['1135px', '630px'],
+            area: ['800px', '400px'],
             content: url,
             end: function () {
                 table.reload(tableId)

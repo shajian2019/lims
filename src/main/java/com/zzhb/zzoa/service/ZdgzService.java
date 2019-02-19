@@ -120,4 +120,40 @@ public class ZdgzService {
     public Integer getShResult(Map<String, String> params){
         return zdgzMapper.getShResult(params);
     }
+
+    public JSONObject getzdgzysh(Integer page, Integer limit, Map<String, String> params){
+        PageHelper.startPage(page, limit);
+        SessionUtils s = new SessionUtils();
+        User user = s.getUser();
+        Integer u_id = user.getU_id();
+        String o_id = userOrgJobMapper.getUserOrgs(String.valueOf(u_id)).get(0);
+        String auditter = o_id + "#" + u_id;
+        List<Map<String,String>> zdgzyshlist = zdgzMapper.getzdgzysh(params);
+        List<Map<String,String>> zdgzyshList = new ArrayList<>();
+        for(Map<String,String> m:zdgzyshlist){
+            if(m.containsKey("principal")){
+                String auditterids = m.get("principal");
+                String[] auditteridsArr = auditterids.split(",");
+                for(String str:auditteridsArr){
+                    if(str.equals(auditter)){
+                        zdgzyshList.add(m);
+                    }
+                }
+            }
+        }
+        PageInfo<Map<String,String>> pageInfo = new PageInfo<Map<String,String>>(zdgzyshList);
+        return LayUiUtil.pagination(pageInfo);
+    }
+
+    public Integer addPrincipal(Map<String, String> params){
+        return zdgzMapper.getShResult(params);
+    }
+
+    public JSONObject getZdgzjzList(Integer page, Integer limit, Map<String, String> params){
+        PageHelper.startPage(page, limit);
+        List<Map<String,String>> zdgzyjzlist = zdgzMapper.getzdgzyjz(params);
+        PageInfo<Map<String,String>> pageInfo = new PageInfo<Map<String,String>>(zdgzyjzlist);
+        return LayUiUtil.pagination(pageInfo);
+    }
+
 }

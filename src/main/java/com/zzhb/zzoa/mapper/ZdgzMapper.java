@@ -12,4 +12,10 @@ public interface ZdgzMapper {
     public List<Map<String,String>> getzdgzsh(Map<String, String> params);
 
     public Integer getShResult(Map<String, String> params);
+
+    public List<Map<String,String>> getzdgzysh(Map<String, String> params);
+
+    public List<Map<String,String>> getzdgzyjz(Map<String, String> params);
+
+
 }

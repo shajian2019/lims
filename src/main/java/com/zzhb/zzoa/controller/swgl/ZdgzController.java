@@ -95,4 +95,35 @@ public class ZdgzController {
         return "swgl/zdgz/ndzdgzjztx";
     }
 
+    @GetMapping("/zdgzglysh")
+    @ResponseBody
+    public JSONObject getzdgzysh(Integer page, Integer limit, @RequestParam Map<String, String> params){
+        return zdgzService.getzdgzysh(page,limit,params);
+    }
+
+    @PostMapping("/addprincipal")
+    @ResponseBody
+    public Integer addprincipal(@RequestParam Map<String, String> params) {
+        return zdgzService.addPrincipal(params);
+    }
+
+    @GetMapping("/zdgzjz")
+    public ModelAndView goJzPage(@RequestParam Map<String, String> params){
+        ModelAndView mv = new ModelAndView();
+        mv.addObject("params",params);
+        mv.setViewName("swgl/zdgz/jzlist");//进展列表
+        return mv;
+    }
+
+    @GetMapping("/zdgzjzlist")
+    @ResponseBody
+    public JSONObject zdgzjzlist(Integer page, Integer limit,@RequestParam Map<String, String> params){
+        return zdgzService.getZdgzjzList(page,limit,params);
+    }
+
+    @GetMapping("/addZdgzjz")
+    public String addZdgzjz(){
+        return "swgl/zdgz/jzpage";
+    }
+
 }
