@@ -70,7 +70,7 @@
             checkOldPass:function(value){
             	var data = {};
             	data.password = value;
-            	data.username = "${user.username}";
+            	data.username = "${USER.username}";
                 var message = '';
                 $.ajax({
                     url: '${ctx}/grzx/pass/check',
@@ -94,8 +94,8 @@
         })
 
         form.on('submit(save)', function (data) {
-            data.field.u_id = "${user.u_id}";
-            data.field.username = "${user.username}";
+            data.field.u_id = "${USER.u_id}";
+            data.field.username = "${USER.username}";
             var index;
             $.ajax({
                 type: "POST",
