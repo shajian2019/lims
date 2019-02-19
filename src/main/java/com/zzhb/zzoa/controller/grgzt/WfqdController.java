@@ -69,4 +69,11 @@ public class WfqdController {
 		return activitiService.pauseAndPlay(event, processInstanceId);
 	}
 
+	// 流程实例生成PDF文件
+	@PostMapping("/createPdf")
+	@ResponseBody
+	public JSONObject createPdf(@RequestParam Map<String, String> params) {
+		return activitiService.createPdf(params);
+	}
+
 }

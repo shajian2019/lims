@@ -241,7 +241,29 @@
         table.on('tool(tableBox)', function (obj) {
             var data = obj.data;
             if (obj.event === 'details') {
-				alert("详情TODO")
+				 $.ajax({
+                    type: "post",
+                    data: {key: data.processDefinitionKey,bk:data.businessKey},
+                    url: "${ctx}/grgzt/wfqd/createPdf/",
+                    beforeSend: function () {
+                        index = layer.load(1);
+                    },
+                    success: function (data) {
+                        layer.close(index);
+                        if (data.code > 0) {
+                        	console.log(data.msg)
+                        	var file = "${ctx}/pdf/preview/"+data.msg
+                        	var url = "${ctx}/plugins/pdfjs/web/viewer.html?file="+encodeURIComponent(file);
+                        	window.open(url)
+                        } else {
+                            layer.msg(data.msg)
+                        }
+                    },
+                    error: function (data) {
+                        layer.close(index);
+                        layer.msg("服务端异常");
+                    }
+                });
             } else if("preview" == obj.event){
             	index = layer.open({
              		  type: 2,

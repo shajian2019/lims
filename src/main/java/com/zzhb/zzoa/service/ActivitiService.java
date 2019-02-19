@@ -66,6 +66,7 @@ import com.zzhb.zzoa.mapper.UserSprMapper;
 import com.zzhb.zzoa.utils.CustomProcessDiagramGenerator;
 import com.zzhb.zzoa.utils.FileUtil;
 import com.zzhb.zzoa.utils.LayUiUtil;
+import com.zzhb.zzoa.utils.PdfUtil;
 import com.zzhb.zzoa.utils.SessionUtils;
 import com.zzhb.zzoa.utils.TimeUtil;
 import com.zzhb.zzoa.utils.ZipUtils;
@@ -913,4 +914,70 @@ public class ActivitiService {
 		return result;
 	}
 
+	public JSONObject createPdf(Map<String, String> params) {
+
+		JSONObject result = new JSONObject();
+
+		String key = params.get("key");
+		String bk = params.get("bk");
+		String pdfName = key + "_" + bk + ".pdf";
+
+		String tempPath = "static/pdftemp/" + key + "_temp.pdf";
+		String outPdfPath = props.getTempPath() + File.separator + pdfName;
+
+		Map<String, String> data = new HashMap<>();
+		List<HistoricTaskInstance> list = hs.createHistoricTaskInstanceQuery().processInstanceBusinessKey(bk).finished()
+				.orderByTaskCreateTime().asc().list();
+		if ("leave".equals(key)) {
+			Leave leave = leaveMapper.getLeave(params);
+			data.put("sqr", leave.getSqr());
+			data.put("bmmc", leave.getBmmc());
+
+			String ksrq = leave.getKsrq();
+			data.put("ksrq_year", ksrq.substring(0, 4));
+			data.put("ksrq_month", ksrq.substring(5, 7));
+			data.put("ksrq_day", ksrq.substring(8, 10));
+
+			String jsrq = leave.getJsrq();
+			data.put("jsrq_year", jsrq.substring(0, 4));
+			data.put("jsrq_month", jsrq.substring(5, 7));
+			data.put("jsrq_day", jsrq.substring(8, 10));
+
+			data.put("qjlx", leave.getQjlx());
+			data.put("qjly", leave.getQjly());
+
+			for (HistoricTaskInstance hi : list) {
+				String endtime = TimeUtil.getTimeByCustom("yyyy-MM-dd", hi.getEndTime());
+				List<Comment> taskComments = taskService.getTaskComments(hi.getId(), "comment");
+				for (Comment comment : taskComments) {
+					JSONObject commentJ = JSON.parseObject(comment.getFullMessage());
+					Set<String> keySet = commentJ.keySet();
+					for (String string : keySet) {
+						if (string.endsWith("spyj")) {
+							data.put(string, commentJ.getString(string));
+							String pre = string.split("_")[0] + "_";
+							data.put(pre + "year", endtime.substring(0, 4));
+							data.put(pre + "month", endtime.substring(5, 7));
+							data.put(pre + "day", endtime.substring(8, 10));
+							String assignee = commentJ.getString("assignee");
+							User userById = userMapper.getUserById(assignee);
+							data.put(pre + "spr", userById.getNickname());
+							break;
+						}
+					}
+				}
+			}
+		} else {
+
+		}
+		String path = PdfUtil.createPdfByTemp(tempPath, outPdfPath, data);
+		if (path != null) {
+			result.put("code", 1);
+			result.put("msg", pdfName);
+		} else {
+			result.put("code", 0);
+			result.put("msg", "pdf生成失败");
+		}
+		return result;
+	}
 }
