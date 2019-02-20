@@ -3,7 +3,7 @@ package com.zzhb.zzoa.listener.activiti;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
 
-public class CustomExecutionListener implements ExecutionListener {
+public class ProcessExecutionListener implements ExecutionListener {
 
 	private static final long serialVersionUID = 7182968777123637771L;
 
