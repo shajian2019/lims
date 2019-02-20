@@ -10,7 +10,6 @@ public class Message {
 	private String status;
 	private String createtime;
 	private String updatetime;
-	private String createrId;
 	private String recipientId;
 
 	public String getId() {
@@ -67,14 +66,6 @@ public class Message {
 
 	public void setUpdatetime(String updatetime) {
 		this.updatetime = updatetime;
-	}
-
-	public String getCreaterId() {
-		return createrId;
-	}
-
-	public void setCreaterId(String createrId) {
-		this.createrId = createrId;
 	}
 
 	public String getRecipientId() {

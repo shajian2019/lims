@@ -33,6 +33,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.CollectionUtils;
 
+import com.zzhb.zzoa.async.AsyncService;
 import com.zzhb.zzoa.controller.FileController;
 import com.zzhb.zzoa.controller.grgzt.DbsxController;
 import com.zzhb.zzoa.controller.xtgl.ZzglController;
@@ -66,6 +67,15 @@ public class ZzoaApplicationTests {
 
 	@Autowired
 	ActivitiService activitiService;
+	
+	@Autowired
+	AsyncService asyncService;
+	
+	@Test
+	public void testMessage() {
+		String bk = "2019022016192010233";
+		asyncService.message(bk);
+	}
 	
 	@Test
 	public void contextLoads12() {

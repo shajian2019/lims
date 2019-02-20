@@ -27,11 +27,11 @@ public class DictService {
 
 	@Autowired
 	DictMapper dictMapper;
-	
+
 	@Autowired
 	CacheService cacheService;
 
-	public JSONObject listDicts(Integer page, Integer limit, @RequestParam Map<String, String> params) {
+	public JSONObject listDicts(Integer page, Integer limit, Map<String, String> params) {
 		PageHelper.startPage(page, limit);
 		List<Dict> dicts = dictMapper.getDicts(params);
 		PageInfo<Dict> pageInfo = new PageInfo<Dict>(dicts);
@@ -75,7 +75,7 @@ public class DictService {
 		List<Dict> dicts = dictMapper.getDicts(params);
 		return dicts;
 	}
-	
+
 	@CacheEvict(value = "DICT", allEntries = true)
 	public void flushDicts() {
 	}

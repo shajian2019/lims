@@ -52,6 +52,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.zzhb.zzoa.async.AsyncService;
 import com.zzhb.zzoa.config.Props;
 import com.zzhb.zzoa.domain.User;
 import com.zzhb.zzoa.domain.activiti.HistoricProcessInstanceVO;
@@ -96,6 +97,9 @@ public class ActivitiService {
 
 	@Autowired
 	UserMapper userMapper;
+
+	@Autowired
+	AsyncService asyncService;
 
 	@Transactional
 	public Integer deploy(Map<String, String> params, MultipartFile file) throws IOException {
@@ -549,6 +553,7 @@ public class ActivitiService {
 				result.put("code", 1);
 				result.put("msg", task.getName());
 			} else {
+				asyncService.message(bk);
 				result.put("code", 0);
 				result.put("msg", "审批成功");
 			}

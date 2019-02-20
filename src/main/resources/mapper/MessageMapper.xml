@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzhb.zzoa.mapper.MessageMapper">
+
+	<insert id="addMessages" parameterType="java.util.List">
+		INSERT INTO sys_t_message (m_title,m_content,m_type,m_status,createtime,m_recipientId)
+		VALUES
+		<foreach collection="list" item="item" index="index" separator=",">
+            (#{item.title}, #{item.content},#{item.type},#{item.status},now(),#{item.recipientId})
+        </foreach>
+	</insert>
+	
+	<select id="getMessages" parameterType="java.util.Map" resultType="com.zzhb.zzoa.domain.Message">
+		SELECT m_id id,m_title title,m_content content, m_type type,m_status status,createtime,updatetime,m_recipientId recipientId FROM sys_t_message
+		<where>
+			<if test="recipientId !=null and recipientId !='' ">
+				and m_recipientId = #{recipientId}
+			</if>
+			<if test="status !=null and status !='' ">
+				and m_status = #{status}
+			</if>
+		</where>
+	</select>
+	
+</mapper>
