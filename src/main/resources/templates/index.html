@@ -27,7 +27,11 @@
             <p id="date" class="layui-header-time"></p>
             <ul id="ds" class="layui-nav layui-layout-left kit-nav"></ul>
             <ul class="layui-nav layui-layout-right kit-nav">
-                <li><a href="javascript:;" class="zdy-sys-msg" id="user_msg"><i class="layui-icon layui-icon-notice"></i><span class="layui-badge">233</span></a></li>
+                <li>
+                	<a href="javascript:;" kit-target data-options="{url:'${ctx}/message/message',icon:'&#xe658;',title:'全部消息',id:'qbxx'}" class="zdy-sys-msg" >
+                		<i class="layui-icon layui-icon-notice"></i><span class="layui-badge">233</span>
+                	</a>
+                </li>
                 <li class="layui-nav-item">
                     <a href="javascript:;">
                         <img src="http://m.zhengjinfan.cn/images/0.jpg" class="layui-nav-img">${USER.nickname}
@@ -35,7 +39,7 @@
                     <dl class="layui-nav-child">
                         <dd><a href="javascript:;" kit-target data-options="{url:'${ctx}/grzx/grzx',icon:'&#xe658;',title:'个人中心',id:'grzx'}"><span>个人中心</span></a></dd>
                         <dd><a href="javascript:;" kit-target data-options="{url:'${ctx}/grzx/xgmm',icon:'&#xe658;',title:'修改密码',id:'xgmm'}"><span>修改密码</span></a></dd>
-                        <dd><a href="logout" kit-target><span>注销</span></a></dd>
+                        <dd><a href="logout"><span>注销</span></a></dd>
                     </dl>
                 </li>
 
@@ -98,15 +102,6 @@
             $(this).parents().find('a').removeClass('layui-active');
             $(this).addClass('layui-active');
         })
-        $('#user_msg').click(function(e) {
-            var options = {
-                id: new Date().getTime(),
-                title: '新标签页',
-                icon: 'fa-file',
-                url: '404.html'
-            }
-            addTab(options);
-        });
     });
 
     function changepass() {
