@@ -144,8 +144,8 @@
 .zdy-sys-msg .layui-badge {
     position: relative;
     margin: 0;
-    top: -12px;
-    left: 0px;
+    top: -3px;
+    left: 2px;
 }
 
 .zdy-sys-msg>i {

@@ -1,10 +1,81 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+    <meta charset="UTF-8">
+    <title>消息列表</title>
+    <link rel="stylesheet" href="${ctx}/plugins/layui/css/layui.css" media="all" />
+    <link rel="stylesheet" href="${ctx}/plugins/font-awesome/css/font-awesome.min.css" media="all" />
+    <script src="${ctx}/plugins/layui/layui.all.js"></script>
+    <style>
+        .layui-input {
+            height: 32px;
+        }
+    </style>
 </head>
+
 <body>
-全部消息
+    <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+        <ul class="layui-tab-title">
+            <li class="layui-this">全部消息</li>
+            <li>未读消息<span class="layui-badge">33</span></li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <form class="layuiform">
+                    <div class="layui-inline">
+                        <input type="text" class="layui-input" placeholder="输入..">
+                    </div>
+                    <a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-primary" lay-submit lay-filter="search">查询</a>
+                </form>
+                <table id="allMsg" lay-filter="allMsg"></table>
+            </div>
+        </div>
+        <div class="layui-tab-item">
+            <form class="layuiform">
+                <div class="layui-inline">
+                    <input type="text" class="layui-input" placeholder="输入..">
+                </div>
+                <a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-primary" lay-submit lay-filter="search">查询</a>
+            </form>
+            <table id="unreadMsg" lay-filter="unreadMsg"></table>
+        </div>
+    </div>
+    </div>
 </body>
+
 </html>
+<script>
+    var element = layui.element,
+        form = layui.form,
+        table = layui.table;
+
+    table.render({
+        elem: '#allMsg',
+        height: "full",
+        url: '/demo/table/user/',
+        page: true,
+        cols: [
+            [{
+                field: 'id',
+                title: 'ID',
+                width: 80,
+                sort: true,
+                fixed: 'left'
+            }, {
+                field: 'username',
+                title: '用户名',
+                width: 80
+            }, {
+                field: 'sex',
+                title: '性别',
+                width: 80,
+                sort: true
+            }, {
+                field: 'city',
+                title: '城市',
+                width: 80
+            }]
+        ]
+    });
+</script>
