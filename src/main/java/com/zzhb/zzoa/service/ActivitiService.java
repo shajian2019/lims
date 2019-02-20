@@ -612,7 +612,11 @@ public class ActivitiService {
 			}
 			if (params.get("u_id") == null && hio.getOwerId() != null) {
 				User user = userMapper.getUserById(hio.getOwerId());
-				hio.setOwerId(user.getNickname());
+				if (user != null) {
+					hio.setOwerId(user.getNickname());
+				} else {
+					hio.setOwerId("--");
+				}
 			}
 		}
 		return LayUiUtil.pagination(count, historicProcessInstanceVOs);
