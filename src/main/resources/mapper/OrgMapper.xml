@@ -73,6 +73,14 @@
 		</where>
 	</update>
 	
+	<insert id="addUserOrg" parameterType="java.util.Map">
+		INSERT INTO sys_t_user_org (u_id,o_id)
+		VALUES
+		<foreach collection="u_ids" item="u_id" index="index" separator=",">
+            (#{u_id,jdbcType=INTEGER}, #{o_id,jdbcType=INTEGER})
+        </foreach>
+	</insert>
+	
 	<delete id="delOrg" parameterType="java.util.List">
 		DELETE FROM sys_t_org
 		<where>

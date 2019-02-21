@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzhb.mapper.ZdgzMapper">
+    <select id="getAllZdgz" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        a.id,
+        a.title,
+        a.content,
+        a.attach_id,
+        a.createtime,
+        a.submitter,
+        b.username as submitterName,
+        a.audit_state,
+        a.distribution_state,
+        a.principal,
+        a.auditter
+        FROM aff_t_zdgz a, sys_t_user b
+        <where>
+            <if test="createtime != null and createtime != ''">
+                AND a.createtime = #{createtime}
+             </if>
+            and a.submitter = b.u_id
+            <if test="title != null and title != ''">
+                <bind name="_title" value="'%'+title+'%'"/>
+                AND title like #{_title}
+            </if>
+        </where>
+        order by a.createtime desc
+    </select>
+
+    <select id="getzdgzsh" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        a.id,
+        a.title,
+        a.content,
+        a.attach_id,
+        a.createtime,
+        a.submitter,
+        b.username as submitterName,
+        a.audit_state,
+        a.distribution_state,
+        a.principal,
+        a.auditter
+        FROM aff_t_zdgz a, sys_t_user b
+        <where>
+        and a.audit_state = 0
+            <if test="createtime != null and createtime != ''">
+                AND createtime = #{createtime}
+            </if>
+            and a.submitter = b.u_id
+            <if test="title != null and title != ''">
+                <bind name="_title" value="'%'+title+'%'"/>
+                AND title like #{_title}
+            </if>
+            <if test="auditter != null and auditter != ''">
+                AND auditter = #{auditterid}
+            </if>
+        </where>
+        order by a.createtime desc
+    </select>
+
+    <update id="getShResult" parameterType="java.util.Map">
+        UPDATE aff_t_zdgz
+        <set>
+            <if test="audit_state != null and audit_state !='' ">
+                audit_state = #{audit_state},
+            </if>
+            <if test="distribution_state != null and distribution_state !='' ">
+                distribution_state = #{distribution_state},
+            </if>
+            <if test="principal != null and principal !='' ">
+                principal = #{principal},
+            </if>
+
+        </set>
+        <where>
+            <if test="id != null and id !='' ">
+                AND id = #{id}
+            </if>
+        </where>
+    </update>
+
+
+
+    <delete id="delCarById" parameterType="java.util.Map">
+        DELETE FROM aff_car_info
+        <where>
+            <if test="c_id != null and c_id != ''">
+                c_id = #{c_id}
+            </if>
+        </where>
+    </delete>
+
+    <insert id="addZdgz" keyProperty="id" useGeneratedKeys="true" parameterType="java.util.Map" >
+        INSERT INTO aff_t_zdgz(title,content,attach_id,createtime,submitter,auditter)
+        VALUES (#{title},#{content},#{attach_id},now(),#{submitter},#{auditter})
+    </insert>
+
+    <select id="getzdgzysh" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        a.id,
+        a.title,
+        a.content,
+        a.attach_id,
+        a.createtime,
+        a.submitter,
+        b.username as submitterName,
+        a.audit_state,
+        a.distribution_state,
+        a.principal,
+        a.auditter
+        FROM aff_t_zdgz a, sys_t_user b
+        <where>
+            and a.audit_state = 1 and a.submitter = b.u_id
+            <if test="createtime != null and createtime != ''">
+                AND createtime = #{createtime}
+            </if>
+            <if test="title != null and title != ''">
+                <bind name="_title" value="'%'+title+'%'"/>
+                AND title like #{_title}
+            </if>
+            <if test="auditter != null and auditter != ''">
+                AND auditter = #{auditterid}
+            </if>
+        </where>
+        order by a.createtime desc
+    </select>
+
+
+    <select id="getzdgzyjz" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        a.id,
+        a.zdgz_id,
+        a.work_content,
+        a.createtime,
+        a.submitter,
+        b.username as submitterName
+        FROM aff_t_zdgzjz a, sys_t_user b
+        <where>
+            and a.submitter = b.u_id
+            <if test="createtime != null and createtime != ''">
+                AND a.createtime = #{createtime}
+            </if>
+            <if test="work_content != null and work_content != ''">
+                <bind name="_work_content" value="'%'+work_content+'%'"/>
+                AND a.work_content like #{_work_content}
+            </if>
+
+        </where>
+        order by a.createtime desc
+    </select>
+
+    <insert id="addZdgzjz" keyProperty="id" useGeneratedKeys="true" parameterType="java.util.Map" >
+        INSERT INTO aff_t_zdgzjz(zdgz_id,work_content,createtime,submitter)
+        VALUES (#{zdgz_id},#{work_content},now(),#{submitter})
+    </insert>
+
+
+
+    <!--<update id="updateUserByUser" parameterType="com.zzhb.domain.User">-->
+        <!--UPDATE sys_t_user-->
+        <!--<set>-->
+            <!--<if test="nickname != null and nickname !='' ">-->
+                <!--nickname = #{nickname},-->
+            <!--</if>-->
+            <!--<if test="true">-->
+                <!--updatetime = now(),-->
+            <!--</if>-->
+            <!--<if test="remark != null">-->
+                <!--remark = #{remark},-->
+            <!--</if>-->
+            <!--<if test="email != null">-->
+                <!--email = #{email},-->
+            <!--</if>-->
+            <!--<if test="phone != null">-->
+                <!--phone = #{phone},-->
+            <!--</if>-->
+            <!--<if test="status != null and status !='' ">-->
+                <!--status = #{status}-->
+            <!--</if>-->
+        <!--</set>-->
+        <!--<where>-->
+            <!--<if test="u_id != null and u_id !='' ">-->
+                <!--AND u_id = #{u_id}-->
+            <!--</if>-->
+        <!--</where>-->
+    <!--</update>-->
+
+    <!--<update id="updateUserRole" parameterType="java.util.Map">-->
+        <!--UPDATE sys_t_user_role-->
+        <!--<set>-->
+            <!--<if test="r_id != null and r_id !='' ">-->
+                <!--r_id = #{r_id}-->
+            <!--</if>-->
+        <!--</set>-->
+        <!--<where>-->
+            <!--<if test="u_id != null and u_id !='' ">-->
+                <!--AND u_id = #{u_id}-->
+            <!--</if>-->
+        <!--</where>-->
+    <!--</update>-->
+
+    <!--<insert id="addUrole" parameterType="java.util.Map">-->
+        <!--INSERT INTO sys_t_user_role(u_id,r_id)-->
+        <!--VALUES (#{u_id},#{r_id})-->
+    <!--</insert>-->
+
+
+    <!--<update id="resetPass" parameterType="java.util.Map">-->
+        <!--UPDATE sys_t_user-->
+        <!--<set>-->
+            <!--<if test="password != null and password !='' ">-->
+                <!--password = #{password}-->
+            <!--</if>-->
+        <!--</set>-->
+        <!--<where>-->
+            <!--<if test="u_id != null and u_id !='' ">-->
+                <!--AND u_id = #{u_id}-->
+            <!--</if>-->
+        <!--</where>-->
+    <!--</update>-->
+
+</mapper>

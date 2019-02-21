@@ -45,6 +45,8 @@ public interface UserMapper {
 
 	public Integer countUserByUserName(Map<String, String> params);
 
+	public List<User> getUsersByOid(@Param("o_id") String o_id);
+
 	public List<String> getUsernames(Map<String, List<String>> u_ids);
 
 	public List<String> getUsersIdByPId(@Param("p_id") String p_id);

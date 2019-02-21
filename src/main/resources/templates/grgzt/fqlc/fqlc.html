@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>发起流程</title>
+    <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
+    <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <link rel="stylesheet" href="${ctx}/plugins/layui/extend/dtree/dtree.css">
+    <link rel="stylesheet" href="${ctx}/plugins/layui/extend/dtree/font/dtreefont.css">
+    <style>
+        html,body{margin: 0;height: 100%;}
+ .layui-table, .layui-table-view {margin:0;}
+ .layui-table-tool {
+    position: relative;
+    z-index: 890;
+    width: 100%;
+    min-height: 50px;
+    line-height: 49px;
+    padding: 0px 5px;
+    border-width: 0 0 1px;
+}
+.layui-input{height:32px;line-height: 32px;}
+.dtree{width: 210px;}
+ .left-box{float: left;width:240px;height:100%;padding:3px;box-sizing: border-box;overflow-y: auto;border-right:1px solid #e6e6e6;}
+ .bm_name_tit{height:42px;line-height: 42px;background-color: #f3f5f7;text-align: center;font-size:16px;}
+ * {
+            box-sizing: border-box;
+   }
+
+   .flex-box {
+       padding: 8px;
+       text-align: center;
+   }
+
+   .zdy-list {
+       display: flex;
+       align-items: center;
+       justify-content: space-between;
+       flex-wrap: wrap;
+   }
+
+   .zdy-list>li {
+       width: 20%;
+       padding: 10px;
+       margin-bottom: 12px;
+   }
+
+   .zdy-list .zdy-list-box {
+       background-color: #f3f5f7;
+       border: 1px solid #e6e6e6;
+       border-radius: 4px;
+       display: flex;
+       flex-direction: column;
+       height: 140px;
+       justify-content: space-between;
+       padding: 10px;
+   }
+   .zdy-icon{margin-right: 5px;}
+</style>
+</head>
+<body>
+    <div class="left-box">
+        <h4 class="bm_name_tit">流程分类</h4>
+        <div style="overflow: auto;" id="toolbarDiv">
+            <ul id="left_tree" class="dtree" data-id="0"></ul>
+        </div>
+    </div>
+    <div class="flex-box">
+    	
+    </div>
+    
+    <div id="preview" class="hide" style="display: none;">
+		<img alt="" src="">
+	</div>
+</body>
+
+</html>
+<script src="${ctx}/plugins/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '${ctx}/plugins/layui/extend/dtree/'
+    }).extend({
+        dtree: 'dtree'
+    })
+    var $ = null,table=null,upload=null,dtree=null,layer=null,dtreeID=null,index=null;
+    layui.use(['table', 'layer', 'dtree','upload'], function () {
+            $ = layui.jquery,
+            table = layui.table,
+            upload=layui.upload,
+            dtree = layui.dtree,
+            layer = layui.layer,
+            dtreeID = 'left_tree';
+            
+        load('');
+        
+        var dtreeObj = dtree.render({
+            elem: "#" + dtreeID, //绑定元素
+            method:'GET',
+            url: "${ctx}/lcgl/lcdy/lcfl/list",  //异步接口
+            ficon: "-1", // 隐藏一级图标
+            icon: "2",
+            dot: false,
+            skin: "layui",
+            menubar:true,
+            menubarTips:{
+            	group:['refresh','searchNode']
+            }
+        });
+        
+        dtree.on("node('" + dtreeID + "')", function (obj) {
+          	load(obj.param.nodeId)
+        });
+    })
+    
+    function start(title,processDefinitionId){
+    	var options = {};
+    	options.id = processDefinitionId.split(":")[0];
+    	options.title = title;
+    	options.icon = "fa-pencil";
+    	options.url = "${ctx}/grgzt/fqlc/beforeStart/"+processDefinitionId;
+    	parent.window.addTab(options);
+    }
+    
+    function preview(id,dgrm_resource_name){
+    	$.ajax({
+            type: "post",
+            data: {dgrm_resource_name:dgrm_resource_name,id:id},
+            url: "${ctx}/lcgl/lcdy/preview",
+            beforeSend: function () {
+                index = layer.load(1);
+            },
+            success: function (data) {
+                layer.close(index);
+                $("img").attr('src',"${ctx}/"+data)
+                index = layer.open({
+              		  type: 1,
+              		  title: '流程图',
+                      maxmin: true,
+              		  content: $('#preview')
+         		 });
+                layer.full(index);
+            },
+            error: function (data) {
+            	layer.close(index);
+                layer.msg("服务端异常");
+            }
+        });
+    }
+    
+    function load(protype){
+    	$.ajax({
+            type: "get",
+            data:{u_id:"${USER.u_id}",protype:protype,lastversion:true},
+            url: "${ctx}/grgzt/fqlc/list",
+            beforeSend: function () {
+                index = layer.load(1);
+            },
+            success: function (data) {
+                layer.close(index);
+                if(data.data.length > 0){
+             	   var html = '<ul class="zdy-list">'
+	                   $.each(data.data,function(index,value){
+	                	   console.log(value)
+	                	   html +='<li>';
+	                	   html +='<div class="zdy-list-box">';
+	                	   html +='<p>'+value.name+'</p>';
+	                	   html +='<div class="layui-btn-container">';
+	                	   html +='<a href="javascript:void(0);" onclick=start("'+value.name+'","'+value.id+'") class="layui-btn layui-btn-sm layui-bg-red"><i class="fa fa-play-circle-o zdy-icon"></i>发起</a>';
+	                	   html +='<a href="javascript:void(0);" onclick=preview("'+value.id+'","'+value.dgrm_resource_name+'") class="layui-btn layui-btn-sm layui-bg-blue"><i class="fa fa-file-image-o zdy-icon"></i>流程图</a>';
+	                	   html +='</div>';
+	                	   html +='</div>';
+	                	   html +='</li>';
+					   });
+             	   html +='</ul>';
+             	   $(".flex-box").html(html);
+                }else{
+               	   $(".flex-box").html('<img alt="暂无" src="${ctx}/img/withoutprocess.png">');
+                }
+            },
+            error: function (data) {
+                layer.msg("服务端异常");
+            }
+     	});
+    	
+    }
+</script>

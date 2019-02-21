@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>新增</title>
+    <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
+    <link rel="stylesheet" href="${ctx}/plugins/font-awesome/css/font-awesome.min.css" media="all" />
+    <link rel="stylesheet" href="${ctx}/plugins/ztree/css/zTreeStyle/zTreeStyle.css">
+    <link rel="stylesheet" href="${ctx}/plugins/ztree/css/zTreeStyle/zdy-icon.css">
+    <style>
+        #search_input{width:220px;display:inline-block;height:31px;line-height:31px;}
+        .form-box{display: flex;align-items: center;width: 675px;margin: 10px auto 0;flex-wrap: nowrap;}
+        .form-l,.form-r{border:1px solid #e6e6e6;height:450px;width:326px;overflow: auto;}
+        .tit{background-color: #f3f5f7;line-height:30px;border-bottom: 1px solid #e6e6e6;padding:0 12px;}
+        .tit-r{display: flex;align-items: center;justify-content: space-between;}
+        #r_list li{display: flex;align-items: center;justify-content: space-between;padding: 8px 15px;margin-bottom: 4px;}
+        #r_list li:hover{background-color: #e6e6e6;}
+        #r_list li:hover .layui-icon-close-fill{color:#ff5722;}
+        .num,#all_clear{color:#1E9FFF;}
+        .layui-btn{background-color: #0a8cbf;}
+        /* zdy主题风格*/
+        .dtree-zzfc-item-this{background-color: #c2c2c2!important;} /* 当前选中行样式*/
+        .dtree-zzfc-item:hover{background-color: #f2f2f2!important;} /* 行悬停样式*/
+        .dtree-zzfc-item cite{font-size:14px!important;} /* 行文字样式*/
+        .dtree-zzfc-item:hover cite{color:#1E9FFF!important;} /* 行悬停文字样式*/
+        .dtree-zzfc-dtreefont{font-size: 18px!important;} /* 一级图标、二级图标、复选框样式*/
+        .dtree-zzfc-ficon{color:#2F4056!important;}  /*一级图标特定样式*/
+        .dtree-zzfc-icon{color:#1E9FFF!important;}  /*二级图标特定样式*/
+        .dtree-zzfc-checkbox:hover{color:#1E9FFF!important;}  /*复选框悬停样式*/
+        .dtree-zzfc-choose{color:#1E9FFF!important;} /* 复选框选中样式*/
+    </style>
+</head>
+
+<body>
+    <form class="layui-form">
+        <div class="form-box">
+            <div class="form-l">
+                <p class="tit">所有部门</p>
+                <div class="layui-input-block" style="width:280px;margin: 10px auto 0;">
+                    <input class="layui-input" id="search_input" placeholder="关键字">
+                    <a class="layui-btn layui-btn-sm layui-btn-normal" id="search_btn" style="display:inline-block;">搜索</a>
+                </div>
+                <ul id="left_tree" class="ztree"></ul>
+            </div>
+            <i class="layui-icon layui-icon-next" style="padding:0 5px;"></i>
+            <div class="form-r">
+                <p class="tit tit-r">
+                    <span>已经选择<span class="num">(<span id="selected_num">0</span>)</span></span>
+                    <a href="javascript:;" id="all_clear">全部清除</a>
+                </p>
+                <ul id="r_list"></ul>
+            </div>
+        </div>
+        <div style="text-align: center;width:100%;padding-top:10px;">
+            <a href="javascript:;" class="layui-btn layui-btn-sm" lay-submit lay-filter="save">保存</a>
+        </div>
+    </form>
+<script src="${ctx}/plugins/ztree/js/jquery-1.4.4.min.js"></script>
+<script src="${ctx}/plugins/ztree/js/jquery.ztree.all.js"></script>
+<script src="${ctx}/plugins/ztree/js/jquery.ztree.exhide.js"></script>
+<script src="${ctx}/plugins/ztree/js/fuzzysearch.js"></script>
+<script src="${ctx}/plugins/layui/layui.all.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	var index;
+	var form = layui.form
+	var $$ = layui.jquery
+	//数组对象对应删除
+    Array.prototype.remove = function (val) {
+        var index = this.indexOf(val);
+        if (index > -1) {
+            this.splice(index, 1);
+        }
+    };
+	
+	var checkUser = [];
+	var ztree;
+	var rList = $$("#r_list");
+	var selectedNum = $$("#selected_num");
+	var allClear = $$("#all_clear");
+	var setting = {
+	    	async: {
+	            enable: true,
+	            url:"${ctx}/orgUser/sqr?p_id=${p_id}",
+	            type: "get"
+			},
+			check: {
+				enable: true
+			},
+			view:{
+				selectedMulti: false
+			},
+			callback: {
+				onClick: function(event, treeId, treeNode){
+					ztree.expandNode(treeNode, !treeNode.open, true, false);
+				},
+				onCheck: function(event, treeId, treeNode){
+					zTreeOnCheck(event, treeId, treeNode)
+				},
+				onAsyncSuccess: zTreeOnCheck
+			}
+	};
+	ztree =$.fn.zTree.init($("#left_tree"), setting);
+	fuzzySearch ("left_tree","#search_input",false,true);
+	
+	rList.on("click", ".layui-icon-close-fill", function (obj) {
+        var element = $$(this)
+        delPersonnel(element);
+    });
+	
+	allClear.click(function (e) {
+        allClearPersonnel();
+    });
+	
+	function allClearPersonnel() {
+		ztree.checkAllNodes(false);
+        addPersonnel([]);
+    }
+	
+	function delPersonnel(e) {
+        var id = e.attr("data-id");
+		var removeNode = ztree.getNodeByParam("id", id, null);
+        checkUser.remove(removeNode);
+        ztree.checkNode(removeNode, false, true,false);
+        addPersonnel(checkUser);
+    }
+	
+	function zTreeOnCheck(event, treeId, treeNode){
+		var nodes = ztree.getCheckedNodes(true);
+		checkUser = [];
+		$.each(nodes,function(index,node){
+			var id = node.id + "";
+			if(id.indexOf("#") != -1){
+				checkUser.push(node);
+			}
+		})
+		addPersonnel(checkUser);
+	}
+	
+	function addPersonnel(obj) {
+        var html = '';
+        $.each(obj, function (i, val) {
+               html += "<li><p>" + val.name +"</p><i class='layui-icon layui-icon-close-fill del-p' data-id='" + val.id + "'></i></li>";
+        });
+        rList.html(html);
+        var staff = obj.length;
+        selectedNum.text(staff);
+    }
+	
+	form.on('submit(save)', function (data) {
+    	var params = checkUser;
+    	if(params.length == 0){
+    		layer.msg("请选择用户", {offset: ['50%'], time: 2000});
+    	} else {
+    		var u_Id = [];
+        	$.each(params, function (i, v) {
+        		u_Id.push(v.id)
+            });
+        	var u_ids = u_Id.join(",");
+        	var p_id = "${p_id}";
+        	$.ajax({
+                type: "POST",
+                data:{u_ids:u_ids,p_id:p_id},
+                url: "${ctx}/lcgl/lcsq/fqsq/bindUser",
+                beforeSend: function () {
+                    index = layer.load(1);
+                },
+                success: function (data) {
+                    layer.close(index);
+                    layer.msg("授权成功", {offset: ['50%'], time: 1000}, function () {
+                        index = parent.layer.getFrameIndex(window.name);
+				    	parent.layer.close(index);
+                    });
+                },
+                error: function (data) {
+                	layer.close(index);
+                    layer.msg("服务端异常");
+                }
+         	});
+    	}
+        return false;
+    });
+	
+})
+</script>
+</body>
+</html>
+

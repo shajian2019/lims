@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>流程删除</title>
+    <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
+    <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <link href="${ctx}/css/common/reset.css" rel="stylesheet" />
+    <link rel="stylesheet" href="${ctx}/plugins/layui/extend/dtree/dtree.css">
+    <link rel="stylesheet" href="${ctx}/plugins/layui/extend/dtree/font/dtreefont.css">
+    <style>
+ .layui-table, .layui-table-view {margin:0;}
+ .layui-table-tool {
+    position: relative;
+    z-index: 890;
+    width: 100%;
+    min-height: 50px;
+    line-height: 49px;
+    padding: 0px 5px;
+    border-width: 0 0 1px;
+}
+.layui-input{height:32px;line-height: 32px;}
+.dtree{width: 210px;}
+ .left-box{float: left;width:230px;height:100%;box-sizing: border-box;overflow-y: auto;border-right:1px solid #e6e6e6;}
+ .right-box{float: left;width:calc(100% - 240px); ;height:100%;margin-left: 5px;}
+#query{margin: 5px 0;}
+ .bm_name_tit{height:42px;line-height: 42px;background-color: #f3f5f7;text-align: center;font-size:16px;}
+	   .flex-box {
+	       padding: 8px;
+	   }
+	   .zdy-list {
+	       display: flex;
+	       align-items: center;
+	       justify-content: space-between;
+	       flex-wrap: wrap;
+	   }
+	   .zdy-list>li {
+	       width: 20%;
+	       padding: 10px;
+	       margin-bottom: 12px;
+	   }
+	   .zdy-list .zdy-list-box {
+	       background-color: #f3f5f7;
+	       border: 1px solid #e6e6e6;
+	       border-radius: 4px;
+	       display: flex;
+	       flex-direction: column;
+	       height: 140px;
+	       justify-content: space-between;
+	       padding: 10px;
+	   }
+	   .zdy-icon{margin-right: 5px;}
+	   
+	   .inner{
+	   		padding: 10px;
+	   		text-align: center;
+	   		margin:0 auto;
+	   }
+</style>
+</head>
+<body>
+    <div class="left-box">
+        <h4 class="bm_name_tit">流程分类</h4>
+        <div style="overflow: auto;" id="toolbarDiv">
+            <ul id="left_tree" class="dtree" data-id="0"></ul>
+        </div>
+    </div> 
+    <div class="right-box">
+    	<form class="layui-form" id="query">
+    		<div class="layui-input-inline">
+                 <select name="finish">
+                     <option value="">全部</option>
+                     <option value="0">未完成</option>
+                     <option value="1">已完成</option>
+                 </select>
+            </div>
+		    <div class="layui-inline">
+		        <input class="layui-input" type="text" placeholder="流程单号" name="businessKey">
+		    </div>
+		    <div class="layui-inline">
+		        <input type="text" id="dateS" name="dateS" placeholder="申请时间起" autocomplete="off" class="layui-input">
+		    </div>
+		    <div class="layui-inline">
+		        <input type="text" id="dateE" name="dateE" placeholder="申请时间止" autocomplete="off" class="layui-input">
+		    </div>
+		    <div class="layui-inline">
+		        <a class="layui-btn layui-btn-primary layui-btn-sm" lay-submit="" lay-filter="query" datatype="reload">查询</a>
+		    </div>
+		    <div class="layui-inline">
+		        <a class="layui-btn layui-btn-primary layui-btn-sm" lay-submit="" lay-filter="del" datatype="reload">删除</a>
+		    </div>
+		</form>
+		<table class="layui-hide" id="tableBox" lay-filter="tableBox"></table>
+		<div id="preview" class="hide" style="display: none;">
+			<div class="inner">
+				<img alt="" src="">
+			</div>
+			<div class="inner">
+				<table class="layui-hide" id="tableBoxHis" lay-filter="tableBoxHis"></table>
+			</div>
+		</div>
+    </div>
+</body>
+
+</html>
+<script type="text/html" id="lczt">
+   {{#  if(d.endTime == ''){ }}
+			<span style="color: #FFC125;">未完成</span>
+   {{#  } else { }}
+ 		{{#  if(d.deleteReason == null){ }}
+			<span style="color: green">已完成</span>
+   		{{#  } else { }}
+			<span style="color: red">已撤销</span>
+   		{{#  } }}
+   {{#  } }}
+</script>
+<script type="text/html" id="rightBar">
+    <div class="layui-btn-group">
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="details">
+            <i class="fa fa-bars" title="详情"></i>
+        </a>
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="preview">
+            <i class="fa fa-image" title="流程图"></i>
+        </a>
+		<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="remove">
+            <i class="fa fa-trash-o" title="删除"></i>
+        </a>
+    </div>
+</script>
+<script src="${ctx}/plugins/layui/layui.js"></script>
+<script src="${ctx}/js/common/time.js"></script>
+<script>
+    layui.config({
+        base: '${ctx}/plugins/layui/extend/dtree/'
+    }).extend({
+        dtree: 'dtree'
+    })
+    var $ = null,table=null,upload=null,dtree=null,layer=null,dtreeID=null,index=null,tableId = 'tableBox',form=null,tableIdImg = 'tableBoxHis';
+    layui.use(['table', 'layer', 'dtree','upload','laydate'], function () {
+            $ = layui.jquery,
+            table = layui.table,
+            upload=layui.upload,
+            dtree = layui.dtree,
+            layer = layui.layer,
+            form = layui.form,
+            laydate = layui.laydate,
+            dtreeID = 'left_tree';
+            
+         var dateS = getDate(new Date(),-7);
+         var dateE = getNowDate(new Date());
+         
+         laydate.render({
+             elem: '#dateS',
+             value: dateS
+         });
+         laydate.render({
+             elem: '#dateE',
+             value: dateE
+         });
+            
+        var dtreeObj = dtree.render({
+            elem: "#" + dtreeID, //绑定元素
+            method:'GET',
+            url: "${ctx}/lcgl/lcdy/lcfl/listByid",  //异步接口
+            ficon: "0", 
+            icon: ["0","4"],
+            dot: false,
+            skin: "layui",
+            menubar:true,
+            menubarTips:{
+            	group:['refresh','searchNode']
+            }
+        });
+        
+        table.render({
+            elem: '#' + tableId,
+            url: '${ctx}/grgzt/wfqd/list',
+            where: {dateS:dateS,dateE:dateE},
+            title: '参数设置',
+            page: true,
+            id: tableId,
+            method: 'get',
+            height: 'full-45',
+            cellMinWidth: 120,
+            cols: [
+                [{
+                    type: 'checkbox',
+                    width: 50
+                }, {
+                    field: 'businessKey',
+                    title: '流程单号',
+                   	width: 200,
+                    align: 'center'
+                }, {
+                    field: 'processDefinitionName',
+                    title: '流程名称',
+                    align: 'center'
+                }, {
+                    field: 'owerId',
+                    title: '发起人',
+                    align: 'center'
+                }, {
+                    field: 'startTime',
+                    title: '申请时间',
+                    width: 200,
+                    align: 'center'
+                },{
+                    field: 'endTime',
+                    title: '流程状态',
+                	width: 150,
+                    align: 'center',
+                    templet: '#lczt'
+                }, {
+                    title: '操作', align: 'center',
+                    width: 140,
+                    templet: '#rightBar'
+                }]
+            ],
+            page: true,
+            done: function(res){
+            	console.log(res)
+            }
+        });
+        
+        table.on('tool(tableBox)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'details') {
+				alert("详情TODO")
+            } else if("preview" == obj.event){
+            	index = layer.open({
+             		  type: 2,
+             		  title: '流程图',
+                      maxmin: true,
+             		  content: '${ctx}/grgzt/wfqd/history/preview?businessKey='+data.businessKey
+        		 });
+                 layer.full(index);
+            } else if("remove" == obj.event){
+            	layer.confirm('确定刪除'+data.owerId+'的【'+data.processDefinitionName+'】吗?', function (index) {
+            		$.ajax({
+                        type: "post",
+                        data: {processInstanceIds: data.processInstanceId},
+                        url: "${ctx}/lcgl/lcgy/remove",
+                        beforeSend: function () {
+                            index = layer.load(1);
+                        },
+                        success: function (data) {
+                            layer.close(index);
+                            if (data > 0) {
+                                layer.msg("删除成功", {offset: ['50%'], time: 1000}, function () {
+                                	table.reload(tableId, {
+                                        where: data.field
+                                    });
+                                });
+                            } else {
+                                layer.msg("删除失败")
+                            }
+                        },
+                        error: function (data) {
+                        	layer.close(index);
+                            layer.msg("服务端异常");
+                        }
+                    });
+            	})
+            }
+        })
+        
+        form.on('submit(query)', function (data) {
+            table.reload(tableId, {
+                where: data.field
+            });
+            return false;
+        });
+        
+        form.on('submit(del)', function (data) {
+        	var checkStatus = table.checkStatus(tableId);
+        	if(checkStatus.data.length == 0){
+        		layer.msg("请选择要删除的流程实例");
+        	} else {
+        		layer.confirm('确定刪除吗?', function (index) {
+        			var processInstanceIds = "";
+            		var rows = checkStatus.data;
+            		$.each(rows,function(index,row){
+            			processInstanceIds += row.processInstanceId+",";
+        			})
+            		$.ajax({
+                        type: "post",
+                        data: {processInstanceIds: processInstanceIds},
+                        url: "${ctx}/lcgl/lcgy/remove",
+                        beforeSend: function () {
+                            index = layer.load(1);
+                        },
+                        success: function (data) {
+                            layer.close(index);
+                            if (data > 0) {
+                                layer.msg("删除成功", {offset: ['50%'], time: 1000}, function () {
+                                	table.reload(tableId, {
+                                        where: data.field
+                                    });
+                                });
+                            } else {
+                                layer.msg("删除失败")
+                            }
+                        },
+                        error: function (data) {
+                        	layer.close(index);
+                            layer.msg("服务端异常");
+                        }
+                    });
+           		})
+        	}
+            return false;
+        });
+        
+        dtree.on("node('" + dtreeID + "')", function (obj) {
+        	var keys = obj.param.nodeId;
+			$.each(obj.childParams,function(index,data){
+				console.log(data.nodeId)
+				keys += ","+data.nodeId;
+			})
+			var data = {};
+			data.name = $("input[name='name']").val()
+			data.businessKey = $("input[name='businessKey']").val()
+			data.keys = keys;
+			console.log(data)
+			table.reload(tableId, {
+                where: data
+            });
+        });
+        
+    })
+    
+    function add() {
+        var url = "${ctx}/xtgl/xtsz/cssz/editpage?flag=add";
+        var table = layui.table;
+        var index = layer.open({
+            title: '新增参数',
+            type: 2,
+            area: ['620px', '400px'],
+            fixed: false, //不固定
+            maxmin: true,
+            content: url,
+            end: function () {
+                table.reload(tableId);
+            }
+        });
+        layer.full(index);
+    }
+</script>

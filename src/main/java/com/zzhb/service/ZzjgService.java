@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.IdentityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zzhb.domain.Job;
 import com.zzhb.domain.Org;
+import com.zzhb.mapper.ActivitiMapper;
 import com.zzhb.mapper.JobMapper;
 import com.zzhb.mapper.OrgMapper;
 import com.zzhb.mapper.OrgUserMapper;
@@ -25,6 +27,12 @@ import com.zzhb.utils.ZtreeUtil;
 
 @Service
 public class ZzjgService {
+
+	@Autowired
+	IdentityService identityService;
+
+	@Autowired
+	ActivitiMapper activitiMapper;
 
 	@Autowired
 	UserMapper userMapper;
@@ -109,6 +117,15 @@ public class ZzjgService {
 		userOrgJobMapper.updateByOId(orgs);
 		userOrgJobMapper.delEmptyByOId();
 		return orgMapper.delOrg(orgs);
+	}
+
+	@Transactional
+	public Integer zzjgUserAdd(String o_id, String u_ids) {
+		List<String> asList = Arrays.asList(u_ids.split("\\|"));
+		Map<String, Object> params = new HashMap<>();
+		params.put("u_ids", asList);
+		params.put("o_id", o_id);
+		return orgMapper.addUserOrg(params);
 	}
 
 	@Autowired

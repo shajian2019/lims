@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>待办事项</title>
+    <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
+    <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <link rel="stylesheet" href="${ctx}/plugins/layui/extend/dtree/dtree.css">
+    <link rel="stylesheet" href="${ctx}/plugins/layui/extend/dtree/font/dtreefont.css">
+    <style>
+        html,body{margin: 0;height: 100%;}
+ .layui-table, .layui-table-view {margin:0;}
+ .layui-table-tool {
+    position: relative;
+    z-index: 890;
+    width: 100%;
+    min-height: 50px;
+    line-height: 49px;
+    padding: 0px 5px;
+    border-width: 0 0 1px;
+}
+.layui-input{height:32px;line-height: 32px;}
+.dtree{width: 210px;}
+ .left-box{float: left;width:240px;height:100%;padding:3px;box-sizing: border-box;overflow-y: auto;border-right:1px solid #e6e6e6;}
+ .right-box{float: right;width:calc(100% - 249px); ;height:100%;padding: 0 4px 0 0;}
+ .bm_name_tit{height:42px;line-height: 42px;background-color: #f3f5f7;text-align: center;font-size:16px;}
+ * {
+            box-sizing: border-box;
+   }
+
+   .flex-box {
+       padding: 8px;
+   }
+
+   .zdy-list {
+       display: flex;
+       align-items: center;
+       justify-content: space-between;
+       flex-wrap: wrap;
+   }
+
+   .zdy-list>li {
+       width: 20%;
+       padding: 10px;
+       margin-bottom: 12px;
+   }
+
+   .zdy-list .zdy-list-box {
+       background-color: #f3f5f7;
+       border: 1px solid #e6e6e6;
+       border-radius: 4px;
+       display: flex;
+       flex-direction: column;
+       height: 140px;
+       justify-content: space-between;
+       padding: 10px;
+   }
+   .zdy-icon{margin-right: 5px;}
+   
+   .inner{
+   		padding: 10px;
+   		text-align: center;
+   		margin:0 auto;
+   }
+</style>
+</head>
+<body>
+    <div class="left-box">
+        <h4 class="bm_name_tit">流程分类</h4>
+        <div style="overflow: auto;" id="toolbarDiv">
+            <ul id="left_tree" class="dtree" data-id="0"></ul>
+        </div>
+    </div>
+    
+    <div class="right-box">
+    	<form class="layui-form" id="query">
+		    <div class="layui-inline">
+		        <input class="layui-input" type="text" placeholder="流程单号" name="businessKey">
+		    </div>
+		    <div class="layui-inline">
+		        <input class="layui-input" type="text" placeholder="申请人" name="sqr">
+		    </div>
+		    <div class="layui-inline">
+		        <a class="layui-btn layui-btn-primary layui-btn-sm" lay-submit="" lay-filter="query" datatype="reload">查询</a>
+		    </div>
+		</form>
+		<table class="layui-hide" id="tableBox" lay-filter="tableBox"></table>
+		<div id="preview" class="hide" style="display: none;">
+			<div class="inner">
+				<img alt="" src="">
+			</div>
+			<div class="inner">
+				<table class="layui-hide" id="tableBoxHis" lay-filter="tableBoxHis"></table>
+			</div>
+		</div>
+    </div>
+</body>
+
+</html>
+<script type="text/html" id="rwlx">
+	{{#  if(d.DELEGATION_ == 'PENDING'){ }}
+		<span style="color: blue">委托【{{ d.DESCRIPTION_ }}】</span>
+	{{#  } else { }}
+		{{#  if(!d.DESCRIPTION_ && d.CLAIM_TIME_ && d.ASSIGNEE_){ }}
+			<span style="color: green">领办</span>
+		{{#  } else if(!d.DESCRIPTION_ && !d.OWNER_ && !d.CLAIM_TIME_ && d.ASSIGNEE_) { }}
+			<span style="color: green">指定</span>
+		{{#  } else if(!d.ASSIGNEE_) { }}
+			<span style="color: green">待领</span>
+		{{#  } else if(d.DESCRIPTION_ && d.OWNER_ && d.ASSIGNEE_) { }}
+			<span style="color: blue">指派【{{ d.DESCRIPTION_ }}】</span>
+		{{#  } }}
+    {{#  } }}
+</script>
+<script type="text/html" id="rightBar">
+    <div class="layui-btn-group">
+		{{#  if(d.ASSIGNEE_){ }}
+ 			{{#  if(d.SUSPENSION_STATE_ == 2){ }}
+				<a class="layui-btn layui-btn-primary layui-btn-xs layui-btn-disabled">
+					<i class="fa fa-pencil" title="审批任务"></i>
+        		</a>
+   			{{#  } else { }}
+				<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="sprw">
+					<i class="fa fa-pencil" title="审批任务"></i>
+        		</a>
+				{{#  if(!(d.DESCRIPTION_ && d.OWNER_ && d.ASSIGNEE_)){ }}
+					{{#  if(d.CLAIM_TIME_ && d.ASSIGNEE_){ }}
+						<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="cxlq">
+							<i class="fa fa-undo" title="放弃处理"></i>
+        				</a>
+					{{#  } }}
+					<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="wt">
+						<i class="fa fa-hand-stop-o" title="委托"></i>
+        			</a>
+					<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="zp">
+						<i class="fa fa-hand-o-right" title="指派"></i>
+        			</a>
+				{{#  } }}
+   			{{#  } }}
+		{{#  } else { }}
+			{{#  if(d.SUSPENSION_STATE_ == 2){ }}
+				<a class="layui-btn layui-btn-primary layui-btn-xs layui-btn-disabled">
+					<i class="fa fa-check-square" title="领取任务"></i>
+        		</a>
+   			{{#  } else { }}
+				<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="lqrw">
+					<i class="fa fa-check-square" title="领取任务"></i>
+        		</a>
+   			{{#  } }}
+        {{#  } }}
+    </div>
+</script>
+<script type="text/html" id="lczt">
+   {{#  if(d.SUSPENSION_STATE_ == 2){ }}
+		<span style="color: red">挂起</span>
+   {{#  } else { }}
+		<span style="color: green">正常</span>
+   {{#  } }}
+</script>
+<script src="${ctx}/plugins/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '${ctx}/plugins/layui/extend/dtree/'
+    }).extend({
+        dtree: 'dtree'
+    })
+    var $ = null,table=null,upload=null,dtree=null,layer=null,dtreeID=null,index=null,tableId = 'tableBox',form=null,tableIdImg = 'tableBoxHis',tableObj=null,dtreeObj=null;
+    layui.use(['table', 'layer', 'dtree','upload'], function () {
+            $ = layui.jquery,
+            table = layui.table,
+            upload=layui.upload,
+            dtree = layui.dtree,
+            layer = layui.layer,
+            form = layui.form,
+            dtreeID = 'left_tree';
+            
+        dtreeObj = dtree.render({
+            elem: "#" + dtreeID, //绑定元素
+            method:'GET',
+            url: "${ctx}/lcgl/lcdy/lcfl/listByid",  //异步接口
+            ficon: "0", 
+            icon: ["0","4"],
+            dot: false,
+            skin: "layui",
+            menubar:true,
+            menubarTips:{
+            	group:['refresh','searchNode'],
+            }
+        });
+        
+       tableObj = table.render({
+            elem: '#' + tableId,
+            url: '${ctx}/grgzt/dbsx/list',
+            where: {u_id:"${USER.u_id}"},
+            title: '参数设置',
+            page: true,
+            id: tableId,
+            method: 'get',
+            height: 'full-45',
+            cellMinWidth: 120,
+            cols: [
+                [{
+                    type: 'numbers',
+                    title: '序号',
+                    width: 50
+                }, {
+                    field: 'bk',
+                    title: '流程单号',
+                   	width: 200,
+                    align: 'center'
+                }, {
+                    field: 'name',
+                    title: '流程名称',
+                    align: 'center'
+                }, {
+                    field: 'NAME_',
+                    title: '流程节点',
+                    align: 'center'
+                },{
+                    field: 'sqr',
+                    title: '申请人',
+                    align: 'center'
+                }, {
+                    field: 'sqrq',
+                    title: '申请时间',
+                    width: 200,
+                    align: 'center'
+                }, {
+                    title: '流程状态',
+                    align: 'center',
+                    width: 100,
+                    templet: '#lczt'
+                }, {
+                    title: '任务类型',
+                    align: 'center',
+                    width: 130,
+                    templet: '#rwlx'
+                },{
+                    title: '操作', align: 'center',
+                    width: 140,
+                    templet: '#rightBar'
+                }]
+            ],
+            page: true,
+            done: function(res){
+            }
+        });
+        
+        table.on('tool(tableBox)', function (obj) {
+            var data = obj.data;
+            if (obj.event == 'sprw') {
+            	sprw(data.NAME_,data.ID_,data.bk)
+            } else if("preview" == obj.event){
+            	index = layer.open({
+             		  type: 2,
+             		  title: '流程图',
+                      maxmin: true,
+             		  content: '${ctx}/grgzt/wfqd/history/preview?businessKey='+data.businessKey
+        		 });
+                 layer.full(index);
+            } else if("lqrw" == obj.event){
+            	if(data.SUSPENSION_STATE_ != '1'){
+            		layer.msg("【"+data.sqr+"】已挂起该流程,暂时无法领取", {offset: ['50%'], time: 2000});
+            	} else {
+	            	layer.confirm('确定领取该任务吗?', function (index) {
+		            		$.ajax({
+		                        type: "post",
+		                        data: {u_id:"${USER.u_id}", taskId:data.ID_},
+		                        url: "${ctx}/grgzt/dbsx/calimTask",
+		                        beforeSend: function () {
+		                            index = layer.load(1);
+		                        },
+		                        success: function (data) {
+		                            layer.close(index);
+		                            if (data > 0) {
+		                            	var msg = "";
+		                            	if(data == 1){
+		                            		msg = "领取成功";
+		                            	} else {
+		                            		msg = "任务已被领取";
+		                            	}
+		                                layer.msg(msg, {offset: ['50%'], time: 1000}, function () {
+		                                	table.reload(tableId, {
+		                                        where: data.field
+		                                    });
+		                                });
+		                            } else {
+		                                layer.msg("操作失败")
+		                            }
+		                        },
+		                        error: function (data) {
+		                        	layer.close(index);
+		                            layer.msg("服务端异常");
+		                        }
+		                    });
+	            	})
+            	}
+            } else if ("cxlq" == obj.event){
+            	if(data.SUSPENSION_STATE_ != '1'){
+            		layer.msg("【"+data.sqr+"】已挂起该流程,暂时无法撤销", {offset: ['50%'], time: 2000});
+            	} else {
+	            	layer.confirm('确定放弃处理该任务吗?', function (index) {
+		            		$.ajax({
+		                        type: "post",
+		                        data: {taskId:data.ID_},
+		                        url: "${ctx}/grgzt/dbsx/calimTask",
+		                        beforeSend: function () {
+		                            index = layer.load(1);
+		                        },
+		                        success: function (data) {
+		                            layer.close(index);
+		                            if (data > 0) {
+		                                layer.msg("放弃成功", {offset: ['50%'], time: 1000}, function () {
+		                                	table.reload(tableId, {
+		                                        where: data.field
+		                                    });
+		                                });
+		                            } else if (data == 0) {
+		                                layer.msg("您是唯一指定审批人，无法放弃处理", {offset: ['50%'], time: 2000})
+		                            } else {
+		                                layer.msg("操作失败")
+		                            }
+		                        },
+		                        error: function (data) {
+		                        	layer.close(index);
+		                            layer.msg("服务端异常");
+		                        }
+		                     });
+	            	})
+            	}
+            } else if ("wt" == obj.event){
+            	layer.open({
+                    type: 2,
+                    area: ['410px', '516px'],
+                 	title: false,
+                    fixed: false, //不固定
+                    content: '${ctx}/orgUser/membership?buttonname=委托&taskId='+data.ID_+"&action=delegateTask",
+                    end: function(){
+            			tableObj.reload();
+               	    }
+           	   	 })
+            } else if ("zp" == obj.event){
+            	layer.open({
+                    type: 2,
+                    area: ['410px', '516px'],
+                 	title: false,
+                    fixed: false, //不固定
+                    content: '${ctx}/orgUser/membership?buttonname=指派&taskId='+data.ID_+"&action=transferTask",
+                    end: function(){
+            			tableObj.reload();
+               	    }
+           	   	 })
+            }
+        })
+        
+        form.on('submit(query)', function (data) {
+        	var param = dtree.getNowParam(dtreeObj);
+        	if(param.nodeId){
+	        	var keys = param.nodeId;
+	        	if(param.level == '1'){
+	        		var childParams = dtree.getChildParam(dtreeObj, keys);
+		        	$.each(childParams,function(index,data){
+						keys += ","+data.nodeId;
+					})
+	        	}
+	        	data.field.keys = keys;
+        	}
+        	data.field.u_id = "${USER.u_id}";
+        	tableObj.reload({
+                where: data.field
+            });
+            return false;
+        });
+        
+        dtree.on("node('" + dtreeID + "')", function (obj) {
+        	var keys = obj.param.nodeId;
+			$.each(obj.childParams,function(index,data){
+				keys += ","+data.nodeId;
+			})
+			var data = {};
+			data.sqr = $("input[name='sqr']").val()
+			data.businessKey = $("input[name='businessKey']").val()
+			data.keys = keys;
+			data.u_id = "${USER.u_id}";
+			tableObj.reload({
+                where: data
+            });
+        });
+        
+    })
+    
+    function sprw(title,taskId,bk){
+    	var options = {};
+    	options.id = taskId;
+    	options.title = title;
+    	options.icon = "fa-pencil";
+    	options.url = "${ctx}/grgzt/dbsx/viewTask/"+taskId+"?bk="+bk;
+    	parent.window.addTab(options);
+    }
+</script>

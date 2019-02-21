@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>流程图和历史任务</title>
+<link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
+<style type="text/css">
+  .inner{
+   		padding: 10px;
+   		text-align: center;
+   		margin:0 auto;
+   }
+</style>
+</head>
+<body>
+<div id="preview" class="hide">
+	<div class="inner">
+		<img alt="" src="">
+	</div>
+	<div class="inner">
+		<table class="layui-hide" id="tableBoxHis" lay-filter="tableBoxHis"></table>
+	</div>
+</div>
+<script type="text/html" id="clzt">
+   {{#  if(d.assignee == null){ }}
+		<span style="color: #1E9FFF;">待领取</span>
+   {{#  } else { }}
+		{{#  if(d.endTime == '' || d.endTime == null){ }}
+			<span style="color: #FFC125;">待处理</span>
+   		{{#  } else { }}
+			{{#  if(d.sftg){ }}
+				<span style="color: green">已通过</span>
+   			{{#  } else { }}
+				<span style="color: red">不通过</span>
+   			{{#  } }}
+   		{{#  } }}
+   {{#  } }}
+</script>
+<script type="text/html" id="spyj">
+   {{#  if(d.spyj == null || d.spyj == ''){ }}
+		<span>--</span>
+   {{#  } else { }}
+		<span>{{ d.spyj }}</span>
+   {{#  } }}
+</script>
+<script src="${ctx}/plugins/layui/layui.js"></script>
+<script type="text/javascript">
+var $ = null,table=null,layer=null,index=null,tableIdImg = 'tableBoxHis';
+layui.use(['table', 'layer','jquery'], function () {
+	$ = layui.jquery,
+    table = layui.table,
+    layer = layui.layer,
+    
+    $.ajax({
+        type: "post",
+        data: {businessKey:"${businessKey}"},
+        url: "${ctx}/grgzt/wfqd/preview",
+        beforeSend: function () {
+            index = layer.load(1);
+        },
+        success: function (filename) {
+            layer.close(index);
+        	 $("img").attr('src',"${ctx}/"+filename)
+        	 table.render({
+		            elem: '#' + tableIdImg,
+		            url: '${ctx}/grgzt/wfqd/history/list',
+		            where: {businessKey:"${businessKey}"},
+		            id: tableIdImg,
+		           	size: 'sm',
+		            method: 'get',
+		            height: 'full',
+		            cellMinWidth: 150,
+		            cols: [
+		                [{
+		                    type: 'numbers',
+		                    title: '序号',
+		                    width: 50
+		                }, {
+		                    field: 'name',
+		                    title: '节点名称',
+		                    align: 'center'
+		                }, {
+		                    field: 'assignee',
+		                    title: '办理人',
+		                    align: 'center'
+		                }, {
+		                    field: 'startTime',
+		                    title: '开始时间',
+		                    width: 200,
+		                    align: 'center'
+		                }, {
+		                    field: 'endTime',
+		                    title: '结束时间',
+		                    width: 200,
+		                    align: 'center'
+		                }, {
+		                    field: 'spyj',
+		                    title: '审批意见',
+		                	width: 200,
+		                    align: 'center',
+		                    templet: '#spyj'
+		                }, {
+		                    field: 'endTime',
+		                    title: '处理状态',
+		                	width: 150,
+		                    align: 'center',
+		                    templet: '#clzt'
+		                }]
+		            ],
+			        done:function(res){
+			        }
+	        });
+        },
+        error: function (data) {
+            layer.msg("服务端异常");
+        }
+    });
+})
+</script>
+</body>
+</html>

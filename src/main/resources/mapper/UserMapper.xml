@@ -177,6 +177,12 @@
         </where>
     </update>
     
+    <select id="getUsersByOid" parameterType="java.lang.String" resultType="com.zzhb.domain.User">
+    	SELECT u.* FROM sys_t_user_org uo LEFT JOIN sys_t_user u 
+		on uo.u_id = u.u_id
+		WHERE uo.o_id = #{o_id}
+    </select>
+    
     <insert id="addUserProcdef" parameterType="java.util.Map">
 		INSERT INTO oa_t_user_procdef (u_id,p_id)
 		VALUES

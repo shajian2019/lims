@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.IdentityService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,8 @@ import com.zzhb.mapper.OrgUserMapper;
 import com.zzhb.mapper.RoleMapper;
 import com.zzhb.mapper.UserMapper;
 import com.zzhb.mapper.UserOrgJobMapper;
+
+import com.zzhb.mapper.UserSprMapper;
 import com.zzhb.utils.Constant;
 import com.zzhb.utils.LayUiUtil;
 
@@ -40,10 +43,16 @@ public class UserService {
 	LoginService loginService;
 
 	@Autowired
+	IdentityService identityService;
+
+	@Autowired
 	OrgUserMapper orgUserMapper;
 
 	@Autowired
 	UserOrgJobMapper userOrgJobMapper;
+
+	@Autowired
+	UserSprMapper userSprMapper;
 
 	public User getUser(String username) {
 		return userMapper.getUser(username);
@@ -77,6 +86,7 @@ public class UserService {
 		// 删除审批人缓存表
 		Map<String, String> params = new HashMap<>();
 		params.put("uid", u_id);
+		userSprMapper.delSprs(params);
 		// 删除用户表
 		return userMapper.delUser(u_id);
 	}
