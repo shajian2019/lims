@@ -73,7 +73,7 @@ public class ZzoaApplicationTests {
 	
 	@Test
 	public void testMessage() {
-		String bk = "2019022016192010233";
+		String bk = "2019022108421210233";
 		asyncService.message(bk);
 	}
 	

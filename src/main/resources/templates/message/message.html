@@ -21,27 +21,28 @@
         </ul>
         <div class="layui-tab-content">
             <div class="layui-tab-item layui-show">
-                <form class="layuiform">
+                <form class="layui-form layuiform">
                     <div class="layui-inline">
-                        <input type="text" class="layui-input" placeholder="消息标题">
+                        <input type="text" class="layui-input" placeholder="消息标题" name="title">
                     </div>
                     <div class="layui-inline">
-                        <input type="text" class="layui-input" placeholder="消息内容">
+                        <input type="text" class="layui-input" placeholder="消息内容" name="content">
                     </div>
                     <a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-primary" lay-submit lay-filter="unreadsearch">查询</a>
-                    <a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-primary" lay-submit lay-filter="unreadsearch">全部标记为已读</a>
+                    <a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-primary" lay-submit lay-filter="point">全部标记为已读</a>
                 </form>
                 <table id="unreadMsg" lay-filter="unreadMsg"></table>
             </div>
             <div class="layui-tab-item">
-	            <form class="layuiform">
+	            <form class="layui-form layuiform">
 	                <div class="layui-inline">
-                        <input type="text" class="layui-input" placeholder="消息标题">
+                        <input type="text" class="layui-input" placeholder="消息标题" name="title">
                     </div>
                     <div class="layui-inline">
-                        <input type="text" class="layui-input" placeholder="消息内容">
+                        <input type="text" class="layui-input" placeholder="消息内容" name="content">
                     </div>
                     <a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-primary" lay-submit lay-filter="readsearch">查询</a>
+                    <a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-primary" lay-submit lay-filter="delete">批量删除</a>
 	            </form>
 	            <table id="readMsg" lay-filter="readMsg"></table>
         	</div>
@@ -50,8 +51,8 @@
 <script src="${ctx}/plugins/layui/layui.all.js"></script>
 
 <script>
-    var element = layui.element,form = layui.form,table = layui.table,readMsg = "readMsg",unreadMsg="unreadMsg";
-   	var unreadMsgObj = table.render({
+    var element = layui.element,form = layui.form,table = layui.table,readMsg = "readMsg",unreadMsg="unreadMsg",readMsgObj,unreadMsgObj;
+    unreadMsgObj = table.render({
         elem: '#'+unreadMsg,
         height: "full-130",
         method:'GET',
@@ -81,9 +82,29 @@
         ]
     });
    	
+   	form.on('submit(unreadsearch)', function (data) {
+   		data.field.recipientId = "${USER.u_id}";
+   		data.field.status = "0";
+   		console.log(data.field)
+   		unreadMsgObj.reload({
+            where: data.field
+        });
+        return false;
+    });
+   	
+   	form.on('submit(readsearch)', function (data) {
+   		data.field.recipientId = "${USER.u_id}";
+   		data.field.status = "1";
+   		console.log(data.field)
+   		readMsgObj.reload({
+            where: data.field
+        });
+        return false;
+    });
+   	
    	element.on('tab(docDemoTabBrief)', function(data){
    	  if(data.index == 1){
-   		var readMsgObj = table.render({
+   		readMsgObj = table.render({
    	        elem: '#'+readMsg,
    	        height: "full-140",
    	        method:'GET',
@@ -92,6 +113,7 @@
    	        page: true,
    	        cols: [
    	            [
+ 	            {checkbox: true},
    	           	{
    	                field: 'id',
    	                hide:true

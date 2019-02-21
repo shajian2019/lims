@@ -19,6 +19,14 @@
 			<if test="status !=null and status !='' ">
 				and m_status = #{status}
 			</if>
+			<if test="content !=null and content !='' ">
+				<bind name="_content" value="'%'+content+'%'"/>
+				and m_content like #{_content}
+			</if>
+			<if test="title !=null and title !='' ">
+				<bind name="_title" value="'%'+title+'%'"/>
+				and m_title like #{_title}
+			</if>
 		</where>
 	</select>
 	

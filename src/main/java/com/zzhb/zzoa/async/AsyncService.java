@@ -50,6 +50,7 @@ public class AsyncService {
 	}
 
 	// 异步生成消息
+	@Async
 	public void message(String bk) {
 		List<Message> messages = new ArrayList<>();
 		HistoricProcessInstance hpi = historyService.createHistoricProcessInstanceQuery().processInstanceBusinessKey(bk)
@@ -74,7 +75,7 @@ public class AsyncService {
 
 		Message message0 = new Message();
 		message0.setTitle(processDefinition.getName());
-		message0.setContent(processDefinition.getName() + "->审批意见->" + spyj);
+		message0.setContent("流程单号：" + bk + "->" + processDefinition.getName() + "->处理结果->" + spyj);
 		message0.setType("1");
 		message0.setStatus("0");
 		message0.setRecipientId(createrId);
@@ -85,7 +86,8 @@ public class AsyncService {
 			Message message = new Message();
 			String title = processDefinition.getName() + "【" + user.getNickname() + "】";
 			message.setTitle(title);
-			String content = user.getNickname() + "->" + processDefinition.getName() + "->审批意见->" + spyj;
+			String content = "流程单号：" + bk + "->" + user.getNickname() + "->" + processDefinition.getName() + "->处理结果->"
+					+ spyj;
 			message.setContent(content);
 			message.setType("1");
 			message.setStatus("0");
