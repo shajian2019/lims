@@ -111,7 +111,6 @@ public class LcdyController {
 	public String preview(@RequestParam Map<String, String> params) {
 		return activitiService.preview(params);
 	}
-<<<<<<< HEAD
 
 	@PostMapping("/downloadZip")
 	public void downloadZip(String fileName, HttpServletRequest request, HttpServletResponse response) {
@@ -150,6 +149,4 @@ public class LcdyController {
 			}
 		}
 	}
-=======
->>>>>>> refs/heads/chj
 }
