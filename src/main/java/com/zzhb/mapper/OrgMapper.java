@@ -25,10 +25,6 @@ public interface OrgMapper {
 
 	public Integer delOrg(@Param("orgs") List<Org> orgs);
 
-	public List<Map<String, String>> getUsers(Map<String, String> params);
-
-	public List<Map<String, String>> getAddUsers(Map<String, String> params);
-
 	@Select("SELECT o.o_name name FROM sys_t_user_org_job uoj LEFT JOIN sys_t_org o ON uoj.o_id = o.o_id WHERE uoj.u_id = #{0}")
 	public List<Org> getUserOrgByUid(String u_id);
 }

@@ -197,12 +197,6 @@ public class ZzglController {
 		return zzjgService.zwglEdit(job);
 	}
 
-	@PostMapping("/zwgl/del")
-	@ResponseBody
-	public Integer zwglDel(Job job) {
-		return zzjgService.zwglDel(job);
-	}
-
 	@PostMapping("/zwgl/updateSort")
 	@ResponseBody
 	public Integer updateZwglSort(@RequestParam("ids") String ids) {

@@ -19,19 +19,7 @@ public interface JobMapper {
 
 	public Integer updateJob(Job job);
 
-	public List<Map<String, String>> getUsers(Map<String, String> params);
-
-	@Delete("DELETE FROM sys_t_user_job WHERE u_id = #{0}")
-	public Integer delUserJobByUid(String u_id);
-
-	public Integer addUserJob(Map<String, Object> params);
-
-	@Delete("DELETE FROM sys_t_user_job WHERE j_id = #{id}")
-	public Integer delUserJobByJid(Job job);
-
 	@Delete("DELETE FROM sys_t_job WHERE j_id = #{id}")
 	public Integer delJob(Job job);
-
-	public List<Map<String, String>> getAddUsers(Map<String, String> params);
 
 }
