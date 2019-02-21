@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.zzhb.zzoa.mapper.RoleMapper">
+<mapper namespace="com.zzhb.mapper.RoleMapper">
 	
 	<delete id="delRoleMenu" parameterType="java.util.Map">
 		DELETE FROM sys_t_role_menu 
@@ -17,7 +17,7 @@
 		</where>
 	</delete>
 	
-	<select id="getRoles" resultType="com.zzhb.zzoa.domain.Role" parameterType="java.util.Map">
+	<select id="getRoles" resultType="com.zzhb.domain.Role" parameterType="java.util.Map">
 		SELECT * FROM sys_t_role
 		<where>
 			<if test="rolename !=null and rolename !=''">
@@ -61,7 +61,7 @@
 		</where>
 	</update>
 	
-	<insert id="addRole" keyProperty="r_id" useGeneratedKeys="true" parameterType="com.zzhb.zzoa.domain.Role">
+	<insert id="addRole" keyProperty="r_id" useGeneratedKeys="true" parameterType="com.zzhb.domain.Role">
 		INSERT INTO sys_t_role (rolename,createtime,remark,status,rolecode)
 		VALUES(#{rolename},now(),#{remark},#{status},#{rolecode})
 	</insert>

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.zzhb.zzoa.mapper.DictMapper">
+<mapper namespace="com.zzhb.mapper.DictMapper">
 	
-	<select id="getDicts" resultType="com.zzhb.zzoa.domain.common.Dict" parameterType="java.util.Map">
+	<select id="getDicts" resultType="com.zzhb.domain.common.Dict" parameterType="java.util.Map">
 		SELECT d_id,name,value,remark,gtype,g_id,sort,status,createtime,updatetime
 		FROM sys_t_dict
 		<where>
@@ -27,7 +27,7 @@
 		ORDER BY sort,createtime desc
 	</select>
 	
-	<select id="checkDictGtype" resultType="java.lang.Integer" parameterType="com.zzhb.zzoa.domain.common.Dict">
+	<select id="checkDictGtype" resultType="java.lang.Integer" parameterType="com.zzhb.domain.common.Dict">
 		SELECT count(1)
 		FROM sys_t_dict
 		<where>
@@ -46,7 +46,7 @@
 		</where>
 	</select>
 	
-	<update id="updateDict" parameterType="com.zzhb.zzoa.domain.common.Dict">
+	<update id="updateDict" parameterType="com.zzhb.domain.common.Dict">
 		UPDATE sys_t_dict
 		<set>
 			<if test="name != null and name !='' ">
@@ -75,7 +75,7 @@
 		</where>
 	</update>
 	
-	<insert id="addDict" parameterType="com.zzhb.zzoa.domain.common.Dict">
+	<insert id="addDict" parameterType="com.zzhb.domain.common.Dict">
 		INSERT INTO sys_t_dict (name,value,remark,gtype,g_id,sort,status,createtime)
 		VALUES
 		(#{name,jdbcType=VARCHAR},#{value,jdbcType=VARCHAR},#{remark,jdbcType=VARCHAR},#{gtype,jdbcType=VARCHAR},#{g_id,jdbcType=INTEGER},#{sort,jdbcType=INTEGER},#{status},now())

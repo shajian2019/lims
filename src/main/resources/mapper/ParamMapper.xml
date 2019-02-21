@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.zzhb.zzoa.mapper.ParamMapper">
+<mapper namespace="com.zzhb.mapper.ParamMapper">
 	
-	<select id="getParams" resultType="com.zzhb.zzoa.domain.common.Param" parameterType="java.util.Map">
+	<select id="getParams" resultType="com.zzhb.domain.common.Param" parameterType="java.util.Map">
 		SELECT * FROM sys_t_params
 		<where>
 			<if test="status !=null and status !=''">
@@ -11,7 +11,7 @@
 		</where>
 	</select>
 
-	<select id="getAllParams" resultType="com.zzhb.zzoa.domain.common.Param" parameterType="java.util.Map">
+	<select id="getAllParams" resultType="com.zzhb.domain.common.Param" parameterType="java.util.Map">
 		SELECT * FROM sys_t_params
 		<where>
 			<if test="p_id !=null and p_id !=''">
@@ -28,7 +28,7 @@
 		</where>
 	</select>
 
-	<insert id="addNewParam" parameterType="com.zzhb.zzoa.domain.common.Param" keyProperty="u_id" useGeneratedKeys="true">
+	<insert id="addNewParam" parameterType="com.zzhb.domain.common.Param" keyProperty="u_id" useGeneratedKeys="true">
 		INSERT INTO sys_t_params(`name`,`key`,`value`,createtime,remark)
 		VALUES (#{name},#{key},#{value},now(),#{remark,jdbcType=VARCHAR})
 	</insert>
@@ -42,7 +42,7 @@
 		</where>
 	</delete>
 
-	<select id="checkKey" parameterType="com.zzhb.zzoa.domain.common.Param" resultType="java.lang.Integer">
+	<select id="checkKey" parameterType="com.zzhb.domain.common.Param" resultType="java.lang.Integer">
 		SELECT COUNT(1) FROM  sys_t_params
 		<where>
 			<if test="key != null and key != ''">
@@ -54,7 +54,7 @@
 		</where>
 	</select>
 
-	<update id="updateParam" parameterType="com.zzhb.zzoa.domain.common.Param">
+	<update id="updateParam" parameterType="com.zzhb.domain.common.Param">
 		UPDATE sys_t_params
 		<set>
 			<if test="name != null and name !='' ">
