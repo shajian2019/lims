@@ -48,7 +48,9 @@ public class GzglController {
     @PostMapping("/addNewStamperType")
     @ResponseBody
     public Integer addNewStamperType(@RequestParam Map<String, String> params){
-        return gzglService.addNewStamperType(params);
+//        return gzglService.addNewStamperType(params);
+        return null;
+
     }
 
 }
