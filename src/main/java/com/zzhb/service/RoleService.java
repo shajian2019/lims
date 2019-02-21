@@ -1,0 +1,92 @@
+package com.zzhb.service;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.zzhb.domain.Role;
+import com.zzhb.domain.User;
+import com.zzhb.mapper.RoleMapper;
+import com.zzhb.mapper.UserMapper;
+import com.zzhb.utils.LayUiUtil;
+
+@Service
+public class RoleService {
+
+	@Autowired
+	CacheService cacheService;
+
+	@Autowired
+	RoleMapper roleMapper;
+
+	@Autowired
+	UserMapper userMapper;
+
+	public JSONObject listRoles(Integer page, Integer limit, Map<String, String> params) {
+		PageHelper.startPage(page, limit);
+		List<Role> roles = roleMapper.getRoles(params);
+		PageInfo<Role> pageInfo = new PageInfo<Role>(roles);
+		return LayUiUtil.pagination(pageInfo);
+	}
+
+	@Transactional
+	public Integer updateRole(Map<String, String> params) {
+		User user = new User();
+		Integer updateRole = roleMapper.updateRole(params);
+		System.out.println(updateRole);
+		if ("0".equals(params.get("status"))) {
+			params.put("status", "3");
+		} else {
+			params.put("status", "0");
+		}
+		user.setR_id(Integer.parseInt(params.get("r_id")));
+		user.setStatus(params.get("status"));
+		Integer updateUser = userMapper.updateUserStatus(user);
+		cacheService.flushMenus();
+		return updateUser;
+	}
+
+	@Transactional
+	public Integer addRole(Map<String, String> params) {
+		Integer addRoleMenus = 0;
+		String flag = params.get("flag");
+		Map<String, Object> params2 = new HashMap<>();
+		String paramStr = params.get("paramStr");
+		if ("add".equals(flag)) {
+			Role role = new Role();
+			role.setRolecode(params.get("rolecode"));
+			role.setRolename(params.get("rolename"));
+			role.setStatus(params.get("status"));
+			role.setRemark(params.get("remark"));
+			roleMapper.addRole(role);
+			Integer r_id = role.getR_id();
+			params2.put("r_id", r_id + "");
+		} else if ("edit".equals(flag)) {
+			roleMapper.updateRole(params);
+			params2.put("r_id", params.get("r_id"));
+			roleMapper.delRoleMenu(params2);
+		}
+		params2.put("m_ids", Arrays.asList(paramStr.split("\\|")));
+		addRoleMenus = roleMapper.addRoleMenus(params2);
+		cacheService.flushMenus();
+		return addRoleMenus;
+	}
+
+	@Transactional
+	public Integer delRole(Map<String, Object> params) {
+		roleMapper.delRoleMenu(params);
+		Integer delUserRole = roleMapper.delRole(params);
+		delUserRole = roleMapper.updateUserRIdByRid(params.get("r_id").toString());
+		cacheService.flushMenus();
+		return delUserRole;
+	}
+
+}

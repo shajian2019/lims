@@ -33,11 +33,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.CollectionUtils;
 
-import com.zzhb.zzoa.controller.FileController;
-import com.zzhb.zzoa.controller.xtgl.ZzglController;
-import com.zzhb.zzoa.service.OrgUserService;
-import com.zzhb.zzoa.utils.CustomProcessDiagramGenerator;
-import com.zzhb.zzoa.utils.FileUtil;
+import com.zzhb.controller.FileController;
+import com.zzhb.controller.xtgl.ZzglController;
+import com.zzhb.service.OrgUserService;
+import com.zzhb.utils.CustomProcessDiagramGenerator;
+import com.zzhb.utils.FileUtil;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest

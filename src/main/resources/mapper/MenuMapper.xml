@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.zzhb.zzoa.mapper.MenuMapper">
+<mapper namespace="com.zzhb.mapper.MenuMapper">
 	
-	<select id="getMenu" resultType="com.zzhb.zzoa.domain.common.Menu" parameterType="java.util.Map">
+	<select id="getMenu" resultType="com.zzhb.domain.common.Menu" parameterType="java.util.Map">
 		SELECT
 			m_id id,
 			m_name title,
@@ -68,7 +68,7 @@
              ) t3 where ischild != 0
 	</select>
 	
-	<select id="getAllMenus" resultType="com.zzhb.zzoa.domain.common.Menu" parameterType="java.util.Map">
+	<select id="getAllMenus" resultType="com.zzhb.domain.common.Menu" parameterType="java.util.Map">
 		SELECT
 			m_id id,
 			m_name title,
@@ -94,7 +94,7 @@
 		order by m_sort
 	</select>
 	
-	<update id="updateMenu" parameterType="com.zzhb.zzoa.domain.common.Menu">
+	<update id="updateMenu" parameterType="com.zzhb.domain.common.Menu">
 		UPDATE sys_t_menu
 		<set>
 			<if test="title != null and title !='' ">
@@ -126,7 +126,7 @@
 		</where>
 	</update>
 	
-	<insert id="insertMenu" parameterType="com.zzhb.zzoa.domain.common.Menu">
+	<insert id="insertMenu" parameterType="com.zzhb.domain.common.Menu">
 		INSERT INTO sys_t_menu (m_name,m_url,m_icon,m_parentid,m_status,m_sort,m_level)
 		VALUES (#{title},#{url,jdbcType=VARCHAR},#{icon},#{parentid},#{status},#{sort},#{level})
 	</insert>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.zzhb.zzoa.mapper.CarMapper">
-    <select id="getAllCars" resultType="com.zzhb.zzoa.domain.Car" parameterType="java.util.Map">
+<mapper namespace="com.zzhb.mapper.CarMapper">
+    <select id="getAllCars" resultType="com.zzhb.domain.Car" parameterType="java.util.Map">
         SELECT
         c_id,
         car_model,
@@ -31,13 +31,13 @@
         </where>
     </select>
 
-    <select id="getCarType" resultType="com.zzhb.zzoa.domain.CarTypeInfo" parameterType="java.util.Map">
+    <select id="getCarType" resultType="com.zzhb.domain.CarTypeInfo" parameterType="java.util.Map">
         SELECT
         t_id,
         type_info
         FROM aff_car_info_type
     </select>
-    <select id="getCarStatus" resultType="com.zzhb.zzoa.domain.CarStatusInfo" parameterType="java.util.Map">
+    <select id="getCarStatus" resultType="com.zzhb.domain.CarStatusInfo" parameterType="java.util.Map">
         SELECT
         s_id,
         status_info
@@ -130,7 +130,7 @@
     </where>
     </select>
 
-    <!--<update id="updateUserByUser" parameterType="com.zzhb.zzoa.domain.User">-->
+    <!--<update id="updateUserByUser" parameterType="com.zzhb.domain.User">-->
         <!--UPDATE sys_t_user-->
         <!--<set>-->
             <!--<if test="nickname != null and nickname !='' ">-->

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.zzhb.zzoa.mapper.AttachmentMapper">
+<mapper namespace="com.zzhb.mapper.AttachmentMapper">
     <insert id="insertAttaInfo" parameterType="java.util.Map">
         INSERT INTO aff_t_attachment(attach_id,attach_name,attach_type,createtime,url)
         VALUES (#{uuid},#{attach_name},#{attach_type},now(),#{url})
@@ -8,7 +8,7 @@
     </insert>
 
 
-    <!--<select id="getCarStatus" resultType="com.zzhb.zzoa.domain.CarStatusInfo" parameterType="java.util.Map">-->
+    <!--<select id="getCarStatus" resultType="com.zzhb.domain.CarStatusInfo" parameterType="java.util.Map">-->
         <!--SELECT-->
         <!--s_id,-->
         <!--status_info-->
@@ -101,7 +101,7 @@
     </where>
     </select>
 
-    <!--<update id="updateUserByUser" parameterType="com.zzhb.zzoa.domain.User">-->
+    <!--<update id="updateUserByUser" parameterType="com.zzhb.domain.User">-->
         <!--UPDATE sys_t_user-->
         <!--<set>-->
             <!--<if test="nickname != null and nickname !='' ">-->

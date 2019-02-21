@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.zzhb.zzoa.mapper.JobMapper">
+<mapper namespace="com.zzhb.mapper.JobMapper">
 	
-	<select id="getJobs" resultType="com.zzhb.zzoa.domain.Job" parameterType="java.util.Map">
+	<select id="getJobs" resultType="com.zzhb.domain.Job" parameterType="java.util.Map">
 		SELECT
 			j_id id,
 			j_name name,
@@ -30,14 +30,14 @@
 		order by j_sort
 	</select>
 	
-	<insert id="addJob" parameterType="com.zzhb.zzoa.domain.Job">
+	<insert id="addJob" parameterType="com.zzhb.domain.Job">
 		INSERT INTO sys_t_job
 			(j_name,j_sort,j_remark,j_status,createtime)
 		VALUES
 			(#{name},#{sort},#{remark},#{status},now())
 	</insert>
 	
-	<update id="updateJob" parameterType="com.zzhb.zzoa.domain.Job">
+	<update id="updateJob" parameterType="com.zzhb.domain.Job">
 		UPDATE sys_t_job
 		<set>
 			<if test="name !=null and name !=''">

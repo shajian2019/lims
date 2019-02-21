@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.zzhb.zzoa.mapper.ZdgzMapper">
+<mapper namespace="com.zzhb.mapper.ZdgzMapper">
     <select id="getAllZdgz" resultType="java.util.Map" parameterType="java.util.Map">
         SELECT
         a.id,
@@ -157,7 +157,7 @@
 
 
 
-    <!--<update id="updateUserByUser" parameterType="com.zzhb.zzoa.domain.User">-->
+    <!--<update id="updateUserByUser" parameterType="com.zzhb.domain.User">-->
         <!--UPDATE sys_t_user-->
         <!--<set>-->
             <!--<if test="nickname != null and nickname !='' ">-->
