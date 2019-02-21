@@ -25,5 +25,6 @@ public class AppApplication {
 		String encoding = Charset.defaultCharset().name();
 		logger.info("======AppApplication===启动 success==encoding=" + encoding);
 		logger.debug("======AppApplication===启动 success==encoding=" + encoding);
+		
 	}
 }
