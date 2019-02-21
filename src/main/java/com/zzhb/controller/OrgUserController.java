@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.zzhb.domain.activiti.UserSpr;
 import com.zzhb.service.OrgUserService;
 
 @Controller
@@ -39,12 +38,5 @@ public class OrgUserController {
 	@ResponseBody
 	public List<Map<String, Object>> sqr(String p_id) {
 		return orgUserService.sqr(p_id);
-	}
-
-	// 审批人ztree
-	@GetMapping("/spr")
-	@ResponseBody
-	public List<Map<String, Object>> spr(UserSpr userSpr) {
-		return orgUserService.sprList(userSpr);
 	}
 }

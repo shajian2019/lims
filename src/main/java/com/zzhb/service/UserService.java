@@ -22,8 +22,6 @@ import com.zzhb.mapper.OrgUserMapper;
 import com.zzhb.mapper.RoleMapper;
 import com.zzhb.mapper.UserMapper;
 import com.zzhb.mapper.UserOrgJobMapper;
-
-import com.zzhb.mapper.UserSprMapper;
 import com.zzhb.utils.Constant;
 import com.zzhb.utils.LayUiUtil;
 
@@ -50,9 +48,6 @@ public class UserService {
 
 	@Autowired
 	UserOrgJobMapper userOrgJobMapper;
-
-	@Autowired
-	UserSprMapper userSprMapper;
 
 	public User getUser(String username) {
 		return userMapper.getUser(username);
@@ -86,7 +81,6 @@ public class UserService {
 		// 删除审批人缓存表
 		Map<String, String> params = new HashMap<>();
 		params.put("uid", u_id);
-		userSprMapper.delSprs(params);
 		// 删除用户表
 		return userMapper.delUser(u_id);
 	}
