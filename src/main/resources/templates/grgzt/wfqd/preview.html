@@ -23,15 +23,15 @@
 </div>
 <script type="text/html" id="clzt">
    {{#  if(d.assignee == null){ }}
-		<span style="color: #1E9FFF;">未领取</span>
+		<span style="color: #1E9FFF;">待领取</span>
    {{#  } else { }}
 		{{#  if(d.endTime == '' || d.endTime == null){ }}
-			<span style="color: #FFC125;">未处理</span>
+			<span style="color: #FFC125;">待处理</span>
    		{{#  } else { }}
 			{{#  if(d.sftg){ }}
 				<span style="color: green">已通过</span>
    			{{#  } else { }}
-				<span style="color: red">未通过</span>
+				<span style="color: red">不通过</span>
    			{{#  } }}
    		{{#  } }}
    {{#  } }}

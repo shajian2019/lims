@@ -48,6 +48,9 @@
 			<if test="key !=null and key !='' ">
 				and `key` = #{key}
 			</if>
+			<if test="uid !=null and uid !='' ">
+				and uid = #{uid}
+			</if>
 		</where>
 	</delete>
 </mapper>

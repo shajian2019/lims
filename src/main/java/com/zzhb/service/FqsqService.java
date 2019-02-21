@@ -19,7 +19,7 @@ public class FqsqService {
 
 	@Transactional
 	public Integer bindUser(String p_id, String u_ids) {
-		userMapper.delUserProcdef(p_id, "");
+		userMapper.delUserProcdef(p_id);
 		List<String> uIds = Arrays.asList(u_ids.split(","));
 		Map<String, Object> params = new HashMap<>();
 		params.put("p_id", p_id);

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>组织关系</title>
+    <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
+    <link rel="stylesheet" href="${ctx}/plugins/font-awesome/css/font-awesome.min.css" media="all" />
+    <link rel="stylesheet" href="${ctx}/plugins/ztree/css/zTreeStyle/zTreeStyle.css">
+    <link rel="stylesheet" href="${ctx}/plugins/ztree/css/zTreeStyle/zdy-icon.css">
+    <style>
+        #search_input{width:220px;display:inline-block;height:31px;line-height:31px;}
+        .form-box{display: flex;align-items: center;width: 355px;margin: 10px auto 0;flex-wrap: nowrap;}
+        .form-l,.form-r{border:1px solid #e6e6e6;height:450px;overflow: auto;flex-grow: 1;}
+        .tit{background-color: #f3f5f7;line-height:30px;border-bottom: 1px solid #e6e6e6;padding:0 12px;}
+        .tit-r{display: flex;align-items: center;justify-content: space-between;}
+        .layui-btn{background-color: #0a8cbf;}
+        /* zdy主题风格*/
+        .dtree-zzfc-item-this{background-color: #c2c2c2!important;} /* 当前选中行样式*/
+        .dtree-zzfc-item:hover{background-color: #f2f2f2!important;} /* 行悬停样式*/
+        .dtree-zzfc-item cite{font-size:14px!important;} /* 行文字样式*/
+        .dtree-zzfc-item:hover cite{color:#1E9FFF!important;} /* 行悬停文字样式*/
+        .dtree-zzfc-dtreefont{font-size: 18px!important;} /* 一级图标、二级图标、复选框样式*/
+        .dtree-zzfc-ficon{color:#2F4056!important;}  /*一级图标特定样式*/
+        .dtree-zzfc-icon{color:#1E9FFF!important;}  /*二级图标特定样式*/
+        .dtree-zzfc-checkbox:hover{color:#1E9FFF!important;}  /*复选框悬停样式*/
+        .dtree-zzfc-choose{color:#1E9FFF!important;} /* 复选框选中样式*/
+    </style>
+</head>
+
+<body>
+    <form class="layui-form">
+        <div class="form-box">
+            <div class="form-l">
+                <p class="tit">组织关系</p>
+                <div class="layui-input-block" style="width:280px;margin: 10px auto 0;">
+                    <input class="layui-input" id="search_input" placeholder="关键字">
+                    <a class="layui-btn layui-btn-sm layui-btn-normal" id="search_btn" style="display:inline-block;">搜索</a>
+                </div>
+                <ul id="left_tree" class="ztree"></ul>
+            </div>
+        </div>
+        <div style="text-align: center;width:100%;padding-top:10px;">
+            <a href="javascript:;" class="layui-btn layui-btn-sm" lay-submit lay-filter="save">${(params.buttonname)!'保存'}</a>
+        </div>
+    </form>
+<script src="${ctx}/plugins/ztree/js/jquery-1.4.4.min.js"></script>
+<script src="${ctx}/plugins/ztree/js/jquery.ztree.all.js"></script>
+<script src="${ctx}/plugins/ztree/js/jquery.ztree.exhide.js"></script>
+<script src="${ctx}/plugins/ztree/js/fuzzysearch.js"></script>
+<script src="${ctx}/plugins/layui/layui.all.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	var index;
+	var form = layui.form
+	var $$ = layui.jquery
+	
+	var ztree;
+	var nodes;
+	var setting = {
+	    	async: {
+	            enable: true,
+	            url:"${ctx}/orgUser/zpOrwt?chkDisabled=${USER.u_id}",
+	            type: "get"
+			},
+			check: {
+				enable: true,
+				chkStyle: "radio",
+				radioType: "all"
+			},
+			view:{
+				selectedMulti: false
+			}
+	};
+	
+	ztree =$.fn.zTree.init($("#left_tree"), setting);
+	fuzzySearch ("left_tree","#search_input",false,true);
+	
+	form.on('submit(save)', function (data) {
+		nodes = ztree.getCheckedNodes(true);
+		if (nodes.length == 0) {
+			layer.msg("请选择用户", {offset: ['50%'], time: 2000});
+		} else {
+			var userId = nodes[0].id.split("#")[1];
+			layer.confirm("确定${(params.buttonname)!''}给"+nodes[0].name+"处理吗?", function (index) {
+				$.ajax({
+	                type: "POST",
+	                data:{userId:userId,owerId:"${USER.u_id}",taskId:"${(params.taskId)!''}"},
+	                url: "${ctx}/grgzt/dbsx/${(params.action)!''}",
+	                beforeSend: function () {
+	                    index = layer.load(1);
+	                },
+	                success: function (data) {
+	                    layer.close(index);
+	                    layer.msg(data.msg, {offset: ['50%'], time: 1000}, function () {
+	                        index = parent.layer.getFrameIndex(window.name);
+					    	parent.layer.close(index);
+	                    });
+	                },
+	                error: function (data) {
+	                	layer.close(index);
+	                    layer.msg("服务端异常");
+	                }
+         		});
+			})
+		}
+        return false;
+    });
+})
+</script>
+</body>
+</html>

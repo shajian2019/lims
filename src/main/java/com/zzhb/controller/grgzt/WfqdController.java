@@ -55,18 +55,23 @@ public class WfqdController {
 		return activitiService.historyTask(businessKey);
 	}
 
-	//撤销请假流程
 	@PostMapping("/revoke")
 	@ResponseBody
 	public Integer revoke(String processInstanceId) {
-		return activitiService.deleteProcessInstance(processInstanceId, "撤销流程");
+		return activitiService.deleteProcessInstance(processInstanceId, "申请人撤销流程");
 	}
-	
-	//流程挂起与激活
+
+	// 流程挂起与激活
 	@PostMapping("/pauseAndPlay/{event}")
 	@ResponseBody
-	public Integer pauseAndPlay(@PathVariable("event") String event,String processInstanceId) {
+	public JSONObject pauseAndPlay(@PathVariable("event") String event, String processInstanceId) {
 		return activitiService.pauseAndPlay(event, processInstanceId);
 	}
-	
+
+	// 流程实例生成PDF文件
+	@PostMapping("/createPdf")
+	@ResponseBody
+	public JSONObject createPdf(@RequestParam Map<String, String> params) {
+		return activitiService.createPdf(params);
+	}
 }

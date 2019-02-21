@@ -9,129 +9,126 @@
         if (window != window.top) 
         	top.location.href = self.location.href;
     </script>
+    
     <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
-    <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" />
-    <link href="${ctx}/css/login.css" rel="stylesheet" />
-    <link href="${ctx}/plugins/sideshow/css/normalize.css" rel="stylesheet" />
-    <link href="${ctx}/plugins/sideshow/css/demo.css" rel="stylesheet" />
-    <link href="${ctx}/plugins/sideshow/css/component.css" rel="stylesheet" />
-    <!--[if IE]>
-        <script src="./plugins/sideshow/js/html5.js"></script>
-    <![endif]-->
-    <style>
-        canvas {
-            position: absolute;
-            z-index: -1;
-        }
-        
-        .kit-login-box header h1 {
-            line-height: normal;
-        }
-        
-        .kit-login-box header {
-            height: auto;
-        }
-        
-        .content {
-            position: relative;
-        }
-        
-        .codrops-demos {
-            position: absolute;
-            bottom: 0;
-            left: 40%;
-            z-index: 10;
-        }
-        
-        .codrops-demos a {
-            border: 2px solid rgba(242, 242, 242, 0.41);
-            color: rgba(255, 255, 255, 0.51);
-        }
-        
-        .kit-pull-right button,
-        .kit-login-main .layui-form-item input {
-            background-color: transparent;
-            color: white;
-        }
-        
-        .kit-login-main .layui-form-item input::-webkit-input-placeholder {
-            color: white;
-        }
-        
-        .kit-login-main .layui-form-item input:-moz-placeholder {
-            color: white;
-        }
-        
-        .kit-login-main .layui-form-item input::-moz-placeholder {
-            color: white;
-        }
-        
-        .kit-login-main .layui-form-item input:-ms-input-placeholder {
-            color: white;
-        }
-        
-        .kit-pull-right button:hover {
-            border-color: #009688;
-            color: #009688
-        }
-    </style>
+    <#if loginpage == "0">
+	    <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    	<link href="${ctx}/css/login0.css" rel="stylesheet" />
+    	<link href="${ctx}/plugins/sideshow/css/normalize.css" rel="stylesheet" />
+    	<link href="${ctx}/plugins/sideshow/css/demo.css" rel="stylesheet" />
+    	<link href="${ctx}/plugins/sideshow/css/component.css" rel="stylesheet" />
+    	<!--[if IE]>
+        	<script src="./plugins/sideshow/js/html5.js"></script>
+    	<![endif]-->
+    <#elseif loginpage == "1">
+    	<link href="${ctx}/css/login1.css" rel="stylesheet" />
+    </#if>
 </head>
 
-<body class="kit-login-bg">
-    <div class="container demo-1">
-        <div class="content">
-            <div id="large-header" class="large-header">
-                <canvas id="demo-canvas"></canvas>
-                <div class="kit-login-box">
-                    <header>
-                        <h1>${(sysname)!''}</h1>
-                    </header>
-                    <div class="kit-login-main">
-                        <form action="loginIn" class="layui-form">
-                            <div class="layui-form-item">
-                                <label class="kit-login-icon">
-                                    <i class="layui-icon">&#xe612;</i>
-                                </label>
-                                <input type="text" name="userName" lay-verify="required" autocomplete="off" placeholder="用户名" class="layui-input">
-                            </div>
-                            <div class="layui-form-item">
-                                <label class="kit-login-icon">
-                                    <i class="layui-icon">&#xe642;</i>
-                                </label>
-                                <input type="password" name="password" lay-verify="required" autocomplete="off" placeholder="密码" class="layui-input">
-                            </div>
-                            <div class="layui-form-item">
-                                <label class="kit-login-icon">
-                                    <i class="layui-icon">&#xe642;</i>
-                                </label>
-                                <input type="text" name="validCode" lay-verify="required" autocomplete="off" placeholder="验证码" class="layui-input">
-                                <span class="form-code" id="changeCode" style="position:absolute;right:-80px; top:2px;">
-                                    <img id="yzm" src="captcha">
-                                </span>
-                            </div>
-                            <div class="layui-form-item">
-                                <div class="kit-pull-right">
-                                    <button class="layui-btn layui-btn-primary" lay-submit lay-filter="login">
-                                        <i class="fa fa-sign-in" aria-hidden="true"></i> 登录
-                                    </button>
-                                </div>
-                                <div class="kit-clear"></div>
-                            </div>
-                        </form>
-                    </div>
-                    <footer>
-                        <p>${(copyright)!''} © <a href="${(companyurl)!'#'}" style="color:white; font-size:18px;" target="_blank">${(companyurl)!''}</a></p>
-                    </footer>
-                </div>
-            </div>
-        </div>
-    </div>
-    <script src="${ctx}/plugins/layui/layui.js"></script>
-    <script src="${ctx}/plugins/sideshow/js/TweenLite.min.js"></script>
-    <script src="${ctx}/plugins/sideshow/js/EasePack.min.js"></script>
-    <script src="${ctx}/plugins/sideshow/js/rAF.js"></script>
-    <script src="${ctx}/plugins/sideshow/js/demo-1.js"></script>
-    <script>
+<#if loginpage == "0">
+	<body class="kit-login-bg">
+	 	<div class="container demo-1">
+	        <div class="content">
+	            <div id="large-header" class="large-header">
+	                <canvas id="demo-canvas"></canvas>
+	                <div class="kit-login-box">
+	                    <header>
+	                        <h1>${(sysname)!''}</h1>
+	                    </header>
+	                    <div class="kit-login-main">
+	                        <form action="loginIn" class="layui-form">
+	                            <div class="layui-form-item">
+	                                <label class="kit-login-icon">
+	                                    <i class="layui-icon">&#xe612;</i>
+	                                </label>
+	                                <input type="text" name="userName" lay-verify="required" autocomplete="off" placeholder="用户名" class="layui-input">
+	                            </div>
+	                            <div class="layui-form-item">
+	                                <label class="kit-login-icon">
+	                                    <i class="layui-icon">&#xe642;</i>
+	                                </label>
+	                                <input type="password" name="password" lay-verify="required" autocomplete="off" placeholder="密码" class="layui-input">
+	                            </div>
+	                            <div class="layui-form-item">
+	                                <label class="kit-login-icon">
+	                                    <i class="layui-icon">&#xe642;</i>
+	                                </label>
+	                                <input type="text" name="validCode" lay-verify="required" autocomplete="off" placeholder="验证码" class="layui-input">
+	                                <span class="form-code" id="changeCode" style="position:absolute;right:-80px; top:2px;">
+	                                    <img id="yzm" src="captcha">
+	                                </span>
+	                            </div>
+	                            <div class="layui-form-item">
+	                                <div class="kit-pull-right">
+	                                    <button class="layui-btn layui-btn-primary" lay-submit lay-filter="login">
+	                                        <i class="fa fa-sign-in" aria-hidden="true"></i> 登录
+	                                    </button>
+	                                </div>
+	                                <div class="kit-clear"></div>
+	                            </div>
+	                        </form>
+	                    </div>
+	                    <footer>
+	                        <p>${(copyright)!''} © <a href="${(companyurl)!'#'}" style="color:white; font-size:18px;" target="_blank">${(companyurl)!''}</a></p>
+	                    </footer>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</body>
+<#elseif loginpage == "1">
+	<body style="background: url(${ctx}/img/login/bg.jpg) no-repeat center 0; background-size:100% 71%;">
+		<section>
+		   <div class="login-center">
+		            <div class="name-box">
+		            	<#if syslogo != "1">
+			                <img class="login-left" src="${syslogo}">
+		            	</#if>
+		                <h2 class="tit" style="color:#fff;font-size:36px;font-weight: 900;display:inline-block;">${(sysname)!''}</h2>
+		            </div>
+		
+		            <form class="login-input layui-form" action="loginIn">
+		                 <div class="input-box">
+		                   <div class="layui-form-item">
+		                        <label class="layui-form-label">用户名</label>
+		                        <div class="layui-input-inline" style="background:url(${ctx}/img/login/username.png) no-repeat 10px center;background-color:#fff;background-size:15px;">
+		                           <input id="username" type="text" lay-verify="required" name="userName" placeholder="账号" required class="layui-input ">
+		                       </div>
+		                   </div>
+		                   <div class="layui-form-item">
+			                    <label class="layui-form-label">密码</label>
+			                    <div class="layui-input-inline" style="background:url(${ctx}/img/login/password.png) no-repeat 10px center;background-color:#fff;background-size:14px;">
+			                        <input id="password" type="password" lay-verify="required" name="password" placeholder="密码" required class="layui-input ">
+			                    </div>
+			                </div>
+			                
+			               <div class="layui-form-item">
+			                    <label class="layui-form-label"></label>
+			                    <div class="layui-input-inline" style="display:flex;align-items: stretch;padding-left: 0;border: none;">
+							        <input id="code" class="layui-input code" type="text" name="validCode" placeholder="验证码" lay-verify="required" value="">
+							        <div id="v_container">
+							        	<span class="form-code" id="changeCode" style="position:absolute;height:36px;left: 140px;">
+		                                    <img id="yzm" src="captcha" style="height: 100%;">
+		                                </span>
+							        </div>
+			                    </div>
+			                </div>
+		               	   <button class="layui-btn login-btn" lay-submit lay-filter="login" id="loginBtn">立即登录</button>
+		           		</div>
+				    </form>
+		       </div>
+		</section>
+		<p class="copyright">${(copyright)!''} © <a href="${(companyurl)!'#'}" style="color:#333; font-size:14px;" target="_blank">${(companyurl)!''}</a></p>
+	</body>
+</#if>
+<script src="${ctx}/plugins/layui/layui.js"></script>
+<#if loginpage == "0">
+	<script src="${ctx}/plugins/sideshow/js/TweenLite.min.js"></script>
+	<script src="${ctx}/plugins/sideshow/js/EasePack.min.js"></script>
+	<script src="${ctx}/plugins/sideshow/js/rAF.js"></script>
+	<script src="${ctx}/plugins/sideshow/js/demo-1.js"></script>
+</#if>
+<script>
         layui.use(['layer', 'form'], function() {
             var layer = layui.layer,
                 $ = layui.jquery,
@@ -180,5 +177,4 @@
             }());
         });
     </script>
-</body>
 </html>

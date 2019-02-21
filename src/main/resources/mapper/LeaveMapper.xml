@@ -3,8 +3,17 @@
 <mapper namespace="com.zzhb.mapper.LeaveMapper">
 	<insert id="addLeave" parameterType="com.zzhb.domain.activiti.Leave">
 		INSERT INTO oa_t_leave 
-			(proid,bk,sqr,bmmc,sqrq,qjlx,ksrq,jsrq,qjly)
+			(proid,bk,sqr,bmmc,sqrq,qjlx,ksrq,jsrq,qjly,u_id)
 		VALUES
-			(#{proid},#{bk},#{sqr},#{bmmc},#{sqrq},#{qjlx},#{ksrq},#{jsrq},#{qjly})
+			(#{proid},#{bk},#{sqr},#{bmmc},#{sqrq},#{qjlx},#{ksrq},#{jsrq},#{qjly},#{u_id})
 	</insert>
+	
+	<delete id="delLeave" parameterType="java.util.Map">
+		DELETE FROM oa_t_leave
+		<where>
+			<if test="proid !=null and proid !=''">
+				and proid = #{proid}
+			</if>
+		</where>
+	</delete>
 </mapper>

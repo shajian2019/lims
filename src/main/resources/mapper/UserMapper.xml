@@ -184,7 +184,7 @@
     </select>
     
     <insert id="addUserProcdef" parameterType="java.util.Map">
-		INSERT INTO sys_t_user_procdef (u_id,p_id)
+		INSERT INTO oa_t_user_procdef (u_id,p_id)
 		VALUES
 		<foreach collection="u_ids" item="u_id" index="index" separator=",">
             (#{u_id}, #{p_id})
@@ -192,13 +192,10 @@
 	</insert>
 	
 	<delete id="delUserProcdef">
-		DELETE FROM sys_t_user_procdef
+		DELETE FROM oa_t_user_procdef
 		<where>
 			<if test="p_id !=null and p_id !='' ">
 				and p_id = #{p_id}
-			</if>
-			<if test="u_id !=null and u_id !='' ">
-				and u_id = #{u_id}
 			</if>
 		</where>
 	</delete>
@@ -226,7 +223,7 @@
 	</select>
 	
 	<select id="getUsersIdByPId" parameterType="java.lang.String" resultType="java.lang.String">
-		SELECT u_id FROM sys_t_user_procdef WHERE p_id = #{p_id}
+		SELECT u_id FROM oa_t_user_procdef WHERE p_id = #{p_id}
 	</select>
 	
 </mapper>

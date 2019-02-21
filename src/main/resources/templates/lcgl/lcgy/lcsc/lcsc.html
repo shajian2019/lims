@@ -239,7 +239,7 @@
             	layer.confirm('确定刪除'+data.owerId+'的【'+data.processDefinitionName+'】吗?', function (index) {
             		$.ajax({
                         type: "post",
-                        data: {processInstanceId: data.processInstanceId},
+                        data: {processInstanceIds: data.processInstanceId},
                         url: "${ctx}/lcgl/lcgy/remove",
                         beforeSend: function () {
                             index = layer.load(1);
@@ -273,7 +273,42 @@
         });
         
         form.on('submit(del)', function (data) {
-        	alert("TODO")
+        	var checkStatus = table.checkStatus(tableId);
+        	if(checkStatus.data.length == 0){
+        		layer.msg("请选择要删除的流程实例");
+        	} else {
+        		layer.confirm('确定刪除吗?', function (index) {
+        			var processInstanceIds = "";
+            		var rows = checkStatus.data;
+            		$.each(rows,function(index,row){
+            			processInstanceIds += row.processInstanceId+",";
+        			})
+            		$.ajax({
+                        type: "post",
+                        data: {processInstanceIds: processInstanceIds},
+                        url: "${ctx}/lcgl/lcgy/remove",
+                        beforeSend: function () {
+                            index = layer.load(1);
+                        },
+                        success: function (data) {
+                            layer.close(index);
+                            if (data > 0) {
+                                layer.msg("删除成功", {offset: ['50%'], time: 1000}, function () {
+                                	table.reload(tableId, {
+                                        where: data.field
+                                    });
+                                });
+                            } else {
+                                layer.msg("删除失败")
+                            }
+                        },
+                        error: function (data) {
+                        	layer.close(index);
+                            layer.msg("服务端异常");
+                        }
+                    });
+           		})
+        	}
             return false;
         });
         

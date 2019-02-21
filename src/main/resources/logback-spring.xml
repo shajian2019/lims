@@ -6,6 +6,10 @@
 	<springProfile name="local">
 		<property name="LOG_PATH" value="C:/log" />
 	</springProfile>
+	
+	<springProfile name="demo">
+		<property name="LOG_PATH" value="C:/log" />
+	</springProfile>
 
 	<springProfile name="dev">
 		<property name="LOG_PATH" value="C:/log" />
@@ -144,6 +148,12 @@
 	</appender>
 	
 	<springProfile name="local">
+		<root level="ERROR">
+			<appender-ref ref="CONSOLE" />
+		</root>
+	</springProfile>
+	
+	<springProfile name="demo">
 		<root level="ERROR">
 			<appender-ref ref="CONSOLE" />
 		</root>

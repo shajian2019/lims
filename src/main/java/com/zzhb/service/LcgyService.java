@@ -1,5 +1,8 @@
 package com.zzhb.service;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
@@ -21,12 +24,15 @@ public class LcgyService {
 	TaskService ts;
 
 	@Transactional
-	public Integer removeProcessInstance(String processInstanceId) {
-		Task ruTask = ts.createTaskQuery().processInstanceId(processInstanceId).singleResult();
-		if (ruTask != null) {
-			rs.deleteProcessInstance(processInstanceId, "流程干预刪除");
+	public Integer removeProcessInstance(String processInstanceIds) {
+		List<String> list = Arrays.asList(processInstanceIds.split(","));
+		for (String processInstanceId : list) {
+			Task ruTask = ts.createTaskQuery().processInstanceId(processInstanceId).singleResult();
+			if (ruTask != null) {
+				rs.deleteProcessInstance(processInstanceId, "流程干预刪除");
+			}
+			hs.deleteHistoricProcessInstance(processInstanceId);
 		}
-		hs.deleteHistoricProcessInstance(processInstanceId);
 		return 1;
 	}
 }

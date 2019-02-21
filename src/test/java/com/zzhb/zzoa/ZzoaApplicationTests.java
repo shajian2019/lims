@@ -33,8 +33,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.CollectionUtils;
 
+import com.zzhb.async.AsyncService;
 import com.zzhb.controller.FileController;
+import com.zzhb.controller.grgzt.DbsxController;
 import com.zzhb.controller.xtgl.ZzglController;
+import com.zzhb.service.ActivitiService;
 import com.zzhb.service.OrgUserService;
 import com.zzhb.utils.CustomProcessDiagramGenerator;
 import com.zzhb.utils.FileUtil;
@@ -54,10 +57,54 @@ public class ZzoaApplicationTests {
 
 	@Autowired
 	OrgUserService orgUserService;
+	
+	@Autowired
+	DbsxController dbsxController;
+	
+	
+	@Autowired
+	TaskService taskService;
+
+	@Autowired
+	ActivitiService activitiService;
+	
+	@Autowired
+	AsyncService asyncService;
+	
+	@Test
+	public void testMessage() {
+		String bk = "2019022108421210233";
+		asyncService.message(bk);
+	}
+	
+	@Test
+	public void contextLoads12() {
+		String bk = "201902141600392";
+		String userId = "10232";
+		try {
+			activitiService.revoke(userId, bk);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 	@Test
 	public void contextLoads() {
-
+		activitiService.getHistoricTaskInstance(null, null, new HashMap<>());
+	}
+	@Test
+	public void contextLoads11() {
+		String taskId = "627546";
+		String userId = "10232";
+		taskService.setAssignee(taskId, userId);
+	}
+	@Test
+	public void contextLoads0() {
+		String taskId = "617545";
+		String userId = "10232";
+		//委托
+		dbsxController.delegateTask(taskId,"", userId);
 	}
 
 	@Autowired
@@ -347,7 +394,7 @@ public class ZzoaApplicationTests {
 		return highLightedFlowIds;
 	}
 
-	@Test // 中止与激活流程
+	@Test // 挂起与激活流程
 	public void testSupend() {
 		String processInstanceId = "160011";
 		// rs.suspendProcessInstanceById(processInstanceId);

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -10,17 +11,27 @@
     <link rel="stylesheet" href="${ctx}/css/themes/skin.css" media="all" id="skin" kit-skin />
     <script src="${ctx}/plugins/layui/layui.js"></script>
 </head>
+
 <body class="kit-theme">
     <div class="layui-layout layui-layout-admin kit-layout-admin">
         <div class="layui-tit">
-             <div class="layui-logo"><img class="logo" src="${(syslogo)!'${ctx}/image/logo.png'}" alt=""></div>
-             <div class="layui-name layui-inline">${(sysname)!''}</div>
+            <div class="layui-name layui-inline">
+                <#if syslogo !="1">
+                    <img class="logo" src="${(syslogo)!''}">
+                </#if>
+                ${(sysname)!''}
+            </div>
         </div>
         <div class="layui-header layui-header-on">
             <div class="layui-logo kit-logo-mobile">K</div>
             <p id="date" class="layui-header-time"></p>
             <ul id="ds" class="layui-nav layui-layout-left kit-nav"></ul>
             <ul class="layui-nav layui-layout-right kit-nav">
+                <li>
+                	<a href="javascript:;" kit-target data-options="{url:'${ctx}/message/message',icon:'&#xe658;',title:'全部消息',id:'qbxx'}" class="zdy-sys-msg" >
+                		<i class="layui-icon layui-icon-notice"></i><span class="layui-badge">233</span>
+                	</a>
+                </li>
                 <li class="layui-nav-item">
                     <a href="javascript:;">
                         <img src="http://m.zhengjinfan.cn/images/0.jpg" class="layui-nav-img">${USER.nickname}
@@ -28,9 +39,10 @@
                     <dl class="layui-nav-child">
                         <dd><a href="javascript:;" kit-target data-options="{url:'${ctx}/grzx/grzx',icon:'&#xe658;',title:'个人中心',id:'grzx'}"><span>个人中心</span></a></dd>
                         <dd><a href="javascript:;" kit-target data-options="{url:'${ctx}/grzx/xgmm',icon:'&#xe658;',title:'修改密码',id:'xgmm'}"><span>修改密码</span></a></dd>
+                        <dd><a href="logout"><span>注销</span></a></dd>
                     </dl>
                 </li>
-                <li class="layui-nav-item"><a href="logout"><i class="fa fa-sign-out" aria-hidden="true"></i> 注销</a></li>
+
             </ul>
         </div>
 
@@ -44,8 +56,8 @@
 
         <div class="layui-body" id="container">
             <!-- 内容主体区域 -->
-            <div style="padding: 15px;"><i class="layui-icon layui-anim layui-anim-rotate layui-anim-loop">&#xe63e;</i>
-                请稍等...</div>
+            <div style="padding: 15px;"><i class="layui-icon layui-anim layui-anim-rotate layui-anim-loop">&#xe63e;</i> 请稍等...
+            </div>
         </div>
 
         <div class="layui-footer">
@@ -55,52 +67,53 @@
         </div>
     </div>
 </body>
+
 </html>
 <script>
-        var message;
-        layui.config({
-            base: '${ctx}/js/',
-            version: '1.0.1'
-        }).use(['app', 'message','tab'], function() {
-            var app = layui.app,
-                $ = layui.jquery,
-                tab = layui.tab,
-                layer = layui.layer;
-            //将message设置为全局以便子页面调用
-            message = layui.message;
-            
-            //主入口
-            app.set({
-                type: 'iframe',
-                r_id: "${(USER.r_id)!'superadmin'}",
-                menu:"${(menu)!'1'}"
-            }).init();
-            
-           	window.addTab=function(options){
-	           	tab.tabAdd(options)
-           	}
-           	
-           	window.closeTab=function(layId){
-	           	tab.close(layId)
-           	}
+    var message;
+    layui.config({
+        base: '${ctx}/js/',
+        version: '1.0.1'
+    }).use(['app', 'message', 'tab'], function() {
+        var app = layui.app,
+            $ = layui.jquery,
+            tab = layui.tab,
+            layer = layui.layer;
+        //将message设置为全局以便子页面调用
+        message = layui.message;
 
-            //点击导航增加样式
-            $(".layui-nav-tree").on('click', 'a[kit-target]', function () {
-                $(this).parents().find('a').removeClass('layui-active');
-                $(this).addClass('layui-active');
-            })
-        });
-        
-        function changepass() {
-            var url = "${ctx}/xtgl/zzgl/yhgl/editPassPage";
-            var index = layer.open({
-                title:"修改密码",
-                type: 2,
-                area:["800px","400px"],
-                content: url,
-                end: function(){
-                    window.location.href = 'logout';
-                }
-            });
+        //主入口
+        app.set({
+            type: 'iframe',
+            r_id: "${(USER.r_id)!'superadmin'}",
+            menu: "${(menu)!'1'}"
+        }).init();
+
+        window.addTab = function(options) {
+            tab.tabAdd(options)
         }
+
+        window.closeTab = function(layId) {
+            tab.close(layId)
+        }
+
+        //点击导航增加样式
+        $(".layui-nav-tree").on('click', 'a[kit-target]', function() {
+            $(this).parents().find('a').removeClass('layui-active');
+            $(this).addClass('layui-active');
+        })
+    });
+
+    function changepass() {
+        var url = "${ctx}/xtgl/zzgl/yhgl/editPassPage";
+        var index = layer.open({
+            title: "修改密码",
+            type: 2,
+            area: ["800px", "400px"],
+            content: url,
+            end: function() {
+                window.location.href = 'logout';
+            }
+        });
+    }
 </script>

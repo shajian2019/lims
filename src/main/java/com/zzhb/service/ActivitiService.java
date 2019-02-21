@@ -29,10 +29,13 @@ import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.history.HistoricTaskInstanceQuery;
+import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Comment;
+import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
 import org.activiti.image.ProcessDiagramGenerator;
@@ -49,6 +52,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.zzhb.async.AsyncService;
 import com.zzhb.config.Props;
 import com.zzhb.domain.User;
 import com.zzhb.domain.activiti.HistoricProcessInstanceVO;
@@ -63,6 +67,7 @@ import com.zzhb.mapper.UserSprMapper;
 import com.zzhb.utils.CustomProcessDiagramGenerator;
 import com.zzhb.utils.FileUtil;
 import com.zzhb.utils.LayUiUtil;
+import com.zzhb.utils.PdfUtil;
 import com.zzhb.utils.SessionUtils;
 import com.zzhb.utils.TimeUtil;
 import com.zzhb.utils.ZipUtils;
@@ -92,6 +97,9 @@ public class ActivitiService {
 
 	@Autowired
 	UserMapper userMapper;
+
+	@Autowired
+	AsyncService asyncService;
 
 	@Transactional
 	public Integer deploy(Map<String, String> params, MultipartFile file) throws IOException {
@@ -215,11 +223,15 @@ public class ActivitiService {
 			}
 		}
 		repositoryService.deleteDeployment(params.get("deployment_id"), sfjl);
-		Map<String, String> params2 = new HashMap<>();
-		params2.put("key", params.get("key"));
-		params2.put("version", (Integer.parseInt(params.get("version")) - 1) + "");
-		ProcessDefinitionExt preVersionProcessDefinitionExt = activitiMapper.getPreVersionProcessDefinitionExt(params2);
-		if (preVersionProcessDefinitionExt != null) {
+		String version = (Integer.parseInt(params.get("version")) - 1) + "";
+		if ("0".equals(version)) {
+			userMapper.delUserProcdef(params.get("p_id"));
+		} else {
+			Map<String, String> params2 = new HashMap<>();
+			params2.put("key", params.get("key"));
+			params2.put("version", version);
+			ProcessDefinitionExt preVersionProcessDefinitionExt = activitiMapper
+					.getPreVersionProcessDefinitionExt(params2);
 			params2.put("newpid", preVersionProcessDefinitionExt.getId());
 			params2.put("oldpid", params.get("p_id"));
 			userMapper.updateUserProcdef(params2);
@@ -311,19 +323,14 @@ public class ActivitiService {
 	}
 
 	public JSONObject historyTask(String businessKey) {
+		// 查询已办理任务
 		List<HistoricTaskInstance> list = hs.createHistoricTaskInstanceQuery().processInstanceBusinessKey(businessKey)
 				.finished().orderByTaskCreateTime().asc().list();
 		List<HistoricTaskInstanceVO> historicTaskInstanceVOs = HistoricTaskInstanceVO.getHistoricTaskInstanceVOs(list);
 		for (HistoricTaskInstanceVO vo : historicTaskInstanceVOs) {
-			String u_id = null;
-			if (vo.getOwner() != null) {
-				u_id = vo.getOwner();
-			}
 			if (vo.getAssignee() != null) {
-				u_id = vo.getAssignee();
-			}
-			if (u_id != null) {
-				User user = userMapper.getUserById(u_id);
+				User user = userMapper.getUserById(vo.getAssignee());
+				// 设置办理人
 				vo.setAssignee(user.getNickname());
 			}
 			String spyj = "";
@@ -343,6 +350,8 @@ public class ActivitiService {
 			vo.setSftg(sftg);
 			vo.setSpyj(spyj);
 		}
+
+		// 查询进行中的任务
 		Task ruTask = taskService.createTaskQuery().processInstanceBusinessKey(businessKey).singleResult();
 		if (ruTask != null) {
 			HistoricTaskInstanceVO vo = new HistoricTaskInstanceVO();
@@ -367,7 +376,7 @@ public class ActivitiService {
 	RuntimeService runtimeService;
 
 	@Autowired
-	IdentityService is;
+	IdentityService identityService;
 
 	@Autowired
 	HistoryService hs;
@@ -375,34 +384,56 @@ public class ActivitiService {
 	@Transactional
 	public Integer deleteProcessInstance(String processInstanceId, String deleteReason) {
 		runtimeService.deleteProcessInstance(processInstanceId, deleteReason);
-		return 1;
+		Map<String, Object> params = new HashMap<>();
+		params.put("proid", processInstanceId);
+		return leaveMapper.delLeave(params);
 	}
 
 	@Transactional
-	public Integer pauseAndPlay(String event, String processInstanceId) {
-		if ("play".equals(event)) {
-			runtimeService.activateProcessInstanceById(processInstanceId);
+	public JSONObject pauseAndPlay(String event, String processInstanceId) {
+		JSONObject result = new JSONObject();
+		ProcessInstance pi = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId)
+				.singleResult();
+		if (pi != null) {
+			if ("play".equals(event)) {
+				runtimeService.activateProcessInstanceById(processInstanceId);
+			} else {
+				runtimeService.suspendProcessInstanceById(processInstanceId);
+			}
+			result.put("code", 1);
+			result.put("msg", "操作成功");
 		} else {
-			runtimeService.suspendProcessInstanceById(processInstanceId);
+			result.put("code", 2);
+			result.put("msg", "流程已审批");
 		}
-		return 1;
+		return result;
 	}
 
+	/**
+	 * 
+	 * @param key
+	 *            流程KEY
+	 * @param params
+	 *            业务数据
+	 * @return
+	 */
 	@Transactional
 	public JSONObject startProcessInstance(String key, Map<String, String> params) {
-		User user = SessionUtils.getUser();
 		JSONObject result = new JSONObject();
+
+		User user = SessionUtils.getUser();
 		ProcessDefinition pd = repositoryService.createProcessDefinitionQuery().processDefinitionKey(key)
 				.latestVersion().singleResult();
-		is.setAuthenticatedUserId(user.getU_id() + "");
+		identityService.setAuthenticatedUserId(user.getU_id() + "");
 
 		ProcessInstance pi = formService.submitStartFormData(pd.getId(), params.get("bk"), params);
 
+		// 更新审批人缓存表
 		userSprMapper.updateSprs(params);
 
 		Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
 
-		// 添加附件
+		// 为下一个任务节点添加附件
 		List<String> readFilePath = FileUtil.readFilePath(props.getTempPath(), "&" + params.get("bk") + "&");
 		for (String fileName : readFilePath) {
 			String filePath = props.getTempPath() + File.separator + fileName;
@@ -415,6 +446,7 @@ public class ActivitiService {
 						fileName.split("&")[1], fileInputStream);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
+				logger.error("===附件文件未找到==" + e.getMessage());
 			} finally {
 				if (fileInputStream != null) {
 					try {
@@ -427,6 +459,12 @@ public class ActivitiService {
 			}
 		}
 
+		// 更新历史表
+		params.put("assignee", task.getAssignee());
+		params.put("taskId", task.getId());
+		activitiMapper.updateHiTaskInst(params);
+
+		// 保存业务数据
 		params.put("proid", pi.getId());
 		Integer saveBusiness = saveBusiness(key, params);
 
@@ -440,30 +478,88 @@ public class ActivitiService {
 	public JSONObject submitTaskFormData(String taskId, Map<String, String> params) {
 		User user = SessionUtils.getUser();
 		JSONObject result = new JSONObject();
-		String bk = params.get("bk");
+		String bk = params.get("bk").toString();
 
 		// 保存审批备注表
 		Task ruTask = taskService.createTaskQuery().taskId(taskId).singleResult();
-		String processInstanceId = ruTask.getProcessInstanceId();
-		is.setAuthenticatedUserId(user.getU_id() + "");
-		taskService.addComment(taskId, processInstanceId, JSON.toJSONString(params));
+		// 判断流程是否被挂起
+		if (!ruTask.isSuspended()) {
 
-		// 完成当前任务
-		formService.submitTaskFormData(taskId, params);
+			if (ruTask.getClaimTime() != null) {
+				DelegationState delegationState = ruTask.getDelegationState();
+				if (delegationState != null && delegationState.toString().equals("PENDING")) {
+					// 委托
+					taskService.resolveTask(taskId);
+					User userById = userMapper.getUserById(ruTask.getAssignee());
+					params.put("description", "领办-委托" + "【" + userById.getNickname() + "】");
+					params.put("assignee", ruTask.getAssignee());
+					params.put("owner", ruTask.getOwner());
+				} else {
+					if (ruTask.getDescription() != null) {
+						// 领办-指派
+						params.put("description", "领办-指派" + "【" + ruTask.getDescription() + "】");
+						params.put("assignee", ruTask.getAssignee());
+						params.put("owner", ruTask.getAssignee());
+					} else {
+						params.put("description", "领办");
+						params.put("assignee", ruTask.getAssignee());
+						params.put("owner", ruTask.getAssignee());
+					}
+				}
+			} else {
+				DelegationState delegationState = ruTask.getDelegationState();
+				if (delegationState != null && delegationState.toString().equals("PENDING")) {
+					// 委托
+					taskService.resolveTask(taskId);
+					User userById = userMapper.getUserById(ruTask.getAssignee());
+					params.put("description", "委托" + "【" + userById.getNickname() + "】");
+					params.put("assignee", ruTask.getAssignee());
+					params.put("owner", ruTask.getOwner());
+				} else {
+					// 指派 或指定
+					if (ruTask.getDescription() != null) {
+						// 指派
+						params.put("description", "指派" + "【" + ruTask.getDescription() + "】");
+						params.put("assignee", ruTask.getAssignee());
+						params.put("owner", ruTask.getAssignee());
+					} else {
+						params.put("description", "指定");
+						params.put("assignee", ruTask.getAssignee());
+						params.put("owner", ruTask.getAssignee());
+					}
+				}
+			}
+			String processInstanceId = ruTask.getProcessInstanceId();
+			identityService.setAuthenticatedUserId(user.getU_id() + "");
+			taskService.addComment(taskId, processInstanceId, JSON.toJSONString(params));
 
-		// 更新历史UserTask表
-		params.put("assignee", ruTask.getAssignee());
-		params.put("taskId", taskId);
-		activitiMapper.updateHiTaskInst(params);
+			// 完成当前任务
+			formService.submitTaskFormData(taskId, params);
 
-		Task task = taskService.createTaskQuery().processInstanceBusinessKey(bk).singleResult();
-		if (task != null) {
-			// 更新审批人缓存表
-			userSprMapper.updateSprs(params);
-			result.put("code", 1);
-			result.put("msg", task.getName());
+			// 更新历史UserTask表
+			params.put("taskId", taskId);
+			activitiMapper.updateHiTaskInst(params);
+
+			Task task = taskService.createTaskQuery().processInstanceBusinessKey(bk).singleResult();
+			if (task != null) {
+				// 更新审批人缓存表
+				userSprMapper.updateSprs(params);
+				// 更新历史表
+				params.clear();
+				params.put("assignee", task.getAssignee());
+				params.put("taskId", task.getId());
+				activitiMapper.updateHiTaskInst(params);
+
+				result.put("code", 1);
+				result.put("msg", task.getName());
+			} else {
+				asyncService.message(bk);
+				result.put("code", 0);
+				result.put("msg", "审批成功");
+			}
 		} else {
-			result.put("code", 0);
+			result.put("code", -1);
+			result.put("msg", "流程已挂起");
 		}
 		result.put("taskId", taskId);
 		return result;
@@ -478,6 +574,7 @@ public class ActivitiService {
 		return add;
 	}
 
+	// 我发起的流程查询
 	public JSONObject getHistoricProcessInstances(Integer page, Integer limit, Map<String, String> params) {
 		HistoricProcessInstanceQuery hpiq = hs.createHistoricProcessInstanceQuery();
 		String u_id = params.get("u_id");
@@ -486,14 +583,7 @@ public class ActivitiService {
 		String dateS = params.get("dateS");
 		String dateE = params.get("dateE");
 		String keys = params.get("keys");
-		String finish = params.get("finish");
-		if (finish != null && !"".equals(finish)) {
-			if ("0".equals(finish)) {
-				hpiq.unfinished();
-			} else {
-				hpiq.finished();
-			}
-		}
+
 		if (u_id != null && !"".equals(u_id)) {
 			hpiq.startedBy(u_id);
 		}
@@ -527,10 +617,50 @@ public class ActivitiService {
 			}
 			if (params.get("u_id") == null && hio.getOwerId() != null) {
 				User user = userMapper.getUserById(hio.getOwerId());
-				hio.setOwerId(user.getNickname());
+				if (user != null) {
+					hio.setOwerId(user.getNickname());
+				} else {
+					hio.setOwerId("--");
+				}
 			}
 		}
 		return LayUiUtil.pagination(count, historicProcessInstanceVOs);
+	}
+
+	// 已办事项 查询
+	public JSONObject getHistoricTaskInstance(Integer page, Integer limit, Map<String, String> params) {
+		String ownerid = params.get("u_id");
+		String dateS = params.get("dateS");
+		String dateE = params.get("dateE");
+		String keys = params.get("keys");
+		HistoricTaskInstanceQuery hit = hs.createHistoricTaskInstanceQuery().finished().taskOwner(ownerid);
+		if (keys != null && !"".equals(keys)) {
+			hit.processDefinitionKeyIn(Arrays.asList(keys.split(",")));
+		}
+		if (dateS != null && !"".equals(dateS)) {
+			hit.taskCompletedAfter(TimeUtil.getDateByCustom("yyyy-MM-dd HH:mm:ss", dateS + " 00:00:00"));
+		}
+		if (dateE != null && !"".equals(dateE)) {
+			hit.taskCompletedBefore(TimeUtil.getDateByCustom("yyyy-MM-dd HH:mm:ss", dateE + " 23:59:59"));
+		}
+		long count = hit.count();
+		hit = hit.orderByHistoricTaskInstanceEndTime().desc();
+		List<HistoricTaskInstance> list = hit.listPage((page - 1) * limit, page * limit);
+		List<HistoricTaskInstanceVO> htvs = HistoricTaskInstanceVO.getHistoricTaskInstanceVOs(list);
+		for (HistoricTaskInstanceVO htv : htvs) {
+			Task ruTask = taskService.createTaskQuery().processInstanceId(htv.getProcessInstanceId()).singleResult();
+			if (ruTask != null) {
+				htv.setCurrentName(ruTask.getName());
+			} else {
+				htv.setCurrentName("--");
+			}
+			HistoricProcessInstance hpi = hs.createHistoricProcessInstanceQuery()
+					.processInstanceId(htv.getProcessInstanceId()).singleResult();
+			htv.setBusinessKey(hpi.getBusinessKey());
+			htv.setLcsfjs(hpi.getEndTime() == null ? false : true);
+			htv.setProcessDefinitionName(hpi.getProcessDefinitionName());
+		}
+		return LayUiUtil.pagination(count, htvs);
 	}
 
 	private List<String> getHighLightedFlows(BpmnModel bpmnModel,
@@ -621,9 +751,9 @@ public class ActivitiService {
 
 	@Transactional
 	public Integer claimTask(String taskId, String u_id) {
+		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
 		if (u_id != null) {
-			Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
-			if (task.getAssignee() == null) {
+			if (task.getAssignee() == null && task.getClaimTime() == null) {
 				taskService.claim(taskId, u_id);
 				return 1;
 			} else {
@@ -631,7 +761,19 @@ public class ActivitiService {
 			}
 		} else {
 			List<IdentityLink> identityLinksForTask = taskService.getIdentityLinksForTask(taskId);
-			if (identityLinksForTask.size() > 1) {
+			Integer count = 0;
+			for (IdentityLink identityLink : identityLinksForTask) {
+				logger.debug(identityLink.getType() + "==" + identityLink.getUserId());
+				if (!identityLink.getType().equals("owner")) {
+					count++;
+				}
+			}
+			if (count > 1) {
+				Map<String, String> params = new HashMap<>();
+				params.put("taskId", task.getId());
+				// 放弃任务时 将领办时间设置为null
+				activitiMapper.updateHiRuTaskWhenUnclaim(params);
+				activitiMapper.updateRuTaskWhenUnclaim(params);
 				taskService.setAssignee(taskId, null);
 				return 3;
 			} else {
@@ -641,8 +783,211 @@ public class ActivitiService {
 	}
 
 	@Transactional
-	public Integer delegateTask(String taskId, String u_id) {
-		return 1;
+	public JSONObject delegateTask(String taskId, String owerId, String userId) {
+		JSONObject result = new JSONObject();
+		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+		if (task != null) {
+			String u_id = task.getAssignee();
+			User user = userMapper.getUserById(u_id);
+			// 添加委托人名称
+			task.setDescription(user.getNickname());
+			taskService.saveTask(task);
+			taskService.delegateTask(taskId, userId);
+
+			// 更新历史表
+			Map<String, String> params = new HashMap<>();
+			params.put("taskId", taskId);
+			params.put("assignee", userId);
+			activitiMapper.updateHiTaskInst(params);
+
+			result.put("code", 1);
+			result.put("msg", "任务委托成功");
+		} else {
+			result.put("code", -2);
+			result.put("msg", "当前任务已失效");
+		}
+		return result;
 	}
 
+	@Transactional
+	public JSONObject transferTask(String taskId, String owerId, String userId) {
+		JSONObject result = new JSONObject();
+		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+		if (task != null) {
+			String u_id = task.getAssignee();
+			User user = userMapper.getUserById(u_id);
+			// 添加指派人名称
+			task.setDescription(user.getNickname());
+			task.setOwner(owerId);
+			taskService.saveTask(task);
+			taskService.setAssignee(taskId, userId);
+
+			// 更新历史表
+			Map<String, String> params = new HashMap<>();
+			params.put("taskId", taskId);
+			params.put("assignee", userId);
+			activitiMapper.updateHiTaskInst(params);
+
+			result.put("code", 1);
+			result.put("msg", "任务指派成功");
+		} else {
+			result.put("code", -2);
+			result.put("msg", "当前任务已失效");
+		}
+		return result;
+	}
+
+	@Transactional
+	public JSONObject revoke(String userId, String bk) {
+		JSONObject result = new JSONObject();
+		Task task = taskService.createTaskQuery().processInstanceBusinessKey(bk).singleResult();
+		if (task == null) {
+			result.put("code", -1);
+			result.put("msg", "流程已执行完成，无法撤回");
+		} else {
+			List<HistoricTaskInstance> htiList = hs.createHistoricTaskInstanceQuery().processInstanceBusinessKey(bk)
+					.orderByTaskCreateTime().asc().list();
+
+			String myTaskId = null;
+			HistoricTaskInstance myTask = null;
+			for (HistoricTaskInstance hti : htiList) {
+				if (userId.equals(hti.getAssignee()) || userId.equals(hti.getOwner())) {
+					myTaskId = hti.getId();
+					myTask = hti;
+					break;
+				}
+			}
+			if (null == myTaskId) {
+				result.put("code", -1);
+				result.put("msg", "任务已被完成，无法撤回");
+			} else {
+				hs.deleteHistoricTaskInstance(myTaskId);
+				String processDefinitionId = myTask.getProcessDefinitionId();
+				BpmnModel bpmnModel = repositoryService.getBpmnModel(processDefinitionId);
+
+				String myActivityId = null;
+				List<HistoricActivityInstance> haiList = hs.createHistoricActivityInstanceQuery()
+						.executionId(myTask.getExecutionId()).orderByHistoricActivityInstanceStartTime().desc().list();
+				List<String> delList = new ArrayList<>();
+				for (HistoricActivityInstance hai : haiList) {
+					if (hai.getEndTime() != null && "userTask".equals(hai.getActivityType())) {
+						myActivityId = hai.getActivityId();
+						break;
+					} else {
+						delList.add(hai.getId());
+					}
+				}
+				activitiMapper.delHiActInst(delList);
+
+				FlowNode myFlowNode = (FlowNode) bpmnModel.getMainProcess().getFlowElement(myActivityId);
+
+				org.activiti.engine.runtime.Execution execution = runtimeService.createExecutionQuery()
+						.executionId(task.getExecutionId()).singleResult();
+				String activityId = execution.getActivityId();
+
+				FlowNode flowNode = (FlowNode) bpmnModel.getMainProcess().getFlowElement(activityId);
+
+				// 记录原活动方向
+				List<SequenceFlow> oriSequenceFlows = new ArrayList<SequenceFlow>();
+				oriSequenceFlows.addAll(flowNode.getOutgoingFlows());
+
+				// 清理活动方向
+				flowNode.getOutgoingFlows().clear();
+
+				// 建立新方向
+				List<SequenceFlow> newSequenceFlowList = new ArrayList<SequenceFlow>();
+				SequenceFlow newSequenceFlow = new SequenceFlow();
+				newSequenceFlow.setId("newSequenceFlowId");
+				newSequenceFlow.setSourceFlowElement(flowNode);
+				newSequenceFlow.setTargetFlowElement(myFlowNode);
+				newSequenceFlowList.add(newSequenceFlow);
+				flowNode.setOutgoingFlows(newSequenceFlowList);
+
+				JSONObject comment = new JSONObject();
+				comment.put("agree", "false");
+				User userById = userMapper.getUserById(userId);
+				comment.put("cancel_spyj", "撤回" + "【" + userById.getNickname() + "】");
+				Authentication.setAuthenticatedUserId(userId);
+				taskService.addComment(task.getId(), task.getProcessInstanceId(), JSON.toJSONString(comment));
+
+				Map<String, Object> currentVariables = new HashMap<String, Object>();
+				currentVariables.put("sprs", userId);
+				// 完成任务
+				taskService.complete(task.getId(), currentVariables);
+				// 恢复原方向
+				flowNode.setOutgoingFlows(oriSequenceFlows);
+				result.put("code", 0);
+				result.put("msg", "任务撤回成功");
+			}
+		}
+		return result;
+	}
+
+	public JSONObject createPdf(Map<String, String> params) {
+
+		JSONObject result = new JSONObject();
+
+		String key = params.get("key");
+		String bk = params.get("bk");
+		String pdfName = key + "_" + bk + ".pdf";
+
+		String tempPath = "static/pdftemp/" + key + "_temp.pdf";
+		String outPdfPath = props.getTempPath() + File.separator + pdfName;
+
+		Map<String, String> data = new HashMap<>();
+		List<HistoricTaskInstance> list = hs.createHistoricTaskInstanceQuery().processInstanceBusinessKey(bk).finished()
+				.orderByTaskCreateTime().asc().list();
+		if ("leave".equals(key)) {
+			Leave leave = leaveMapper.getLeave(params);
+			data.put("sqr", leave.getSqr());
+			data.put("bmmc", leave.getBmmc());
+
+			String ksrq = leave.getKsrq();
+			data.put("ksrq_year", ksrq.substring(0, 4));
+			data.put("ksrq_month", ksrq.substring(5, 7));
+			data.put("ksrq_day", ksrq.substring(8, 10));
+
+			String jsrq = leave.getJsrq();
+			data.put("jsrq_year", jsrq.substring(0, 4));
+			data.put("jsrq_month", jsrq.substring(5, 7));
+			data.put("jsrq_day", jsrq.substring(8, 10));
+
+			data.put("qjlx", leave.getQjlx());
+			data.put("qjly", leave.getQjly());
+
+			for (HistoricTaskInstance hi : list) {
+				String endtime = TimeUtil.getTimeByCustom("yyyy-MM-dd", hi.getEndTime());
+				List<Comment> taskComments = taskService.getTaskComments(hi.getId(), "comment");
+				for (Comment comment : taskComments) {
+					JSONObject commentJ = JSON.parseObject(comment.getFullMessage());
+					Set<String> keySet = commentJ.keySet();
+					for (String string : keySet) {
+						if (string.endsWith("spyj")) {
+							data.put(string, commentJ.getString(string));
+							String pre = string.split("_")[0] + "_";
+							data.put(pre + "year", endtime.substring(0, 4));
+							data.put(pre + "month", endtime.substring(5, 7));
+							data.put(pre + "day", endtime.substring(8, 10));
+							String assignee = commentJ.getString("assignee");
+							User userById = userMapper.getUserById(assignee);
+							data.put(pre + "spr", userById.getNickname());
+							logger.debug("===data===" + JSON.toJSONString(data));
+							break;
+						}
+					}
+				}
+			}
+		} else {
+
+		}
+		String path = PdfUtil.createPdfByTemp(tempPath, outPdfPath, data);
+		if (path != null) {
+			result.put("code", 1);
+			result.put("msg", pdfName);
+		} else {
+			result.put("code", 0);
+			result.put("msg", "pdf生成失败");
+		}
+		return result;
+	}
 }

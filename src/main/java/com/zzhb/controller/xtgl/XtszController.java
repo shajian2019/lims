@@ -190,7 +190,7 @@ public class XtszController {
 	@PostMapping("/cssz/delParamById")
 	@ResponseBody
 	public Integer delParamById(@RequestParam Map<String, String> map) {
-		return paramMapper.delParamById(map);
+		return paramService.delParam(map);
 	}
 
 	@Autowired

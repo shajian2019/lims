@@ -1,5 +1,7 @@
 package com.zzhb;
 
+import java.nio.charset.Charset;
+
 import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +14,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @EnableAsync
 @EnableCaching
-@MapperScan({"com.zzhb.mapper","com.zzhb.shiro.mapper"})
+@MapperScan({ "com.zzhb.mapper", "com.zzhb.shiro.mapper" })
 @SpringBootApplication
 public class ZzoaApplication {
 
@@ -20,8 +22,8 @@ public class ZzoaApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ZzoaApplication.class, args);
-		logger.info("======ZzoaApplication===start success==");
-		logger.debug("======ZzoaApplication===start success==");
+		String encoding = Charset.defaultCharset().name();
+		logger.info("======ZzoaApplication===启动 success==encoding=" + encoding);
+		logger.debug("======ZzoaApplication===启动 success==encoding=" + encoding);
 	}
-
 }

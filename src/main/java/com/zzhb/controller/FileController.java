@@ -1,12 +1,24 @@
 package com.zzhb.controller;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.activiti.engine.TaskService;
 import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.Task;
+import org.apache.shiro.codec.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +33,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.zzhb.config.Props;
 import com.zzhb.utils.Constant;
 import com.zzhb.utils.FileUtil;
+import com.zzhb.utils.ZipUtils;
 
 @Controller
 @RequestMapping("/file")
@@ -75,4 +88,63 @@ public class FileController {
 		return fileNames;
 	}
 
+	@PostMapping("/downloadAttachment")
+	@ResponseBody
+	public String downloadAttachment(@RequestParam("bk") String bk) {
+		String dir = props.getTempPath();
+		String fileName = bk + ".zip";
+		String outFileFullName = dir + File.separator + fileName;
+		File files = new File(dir);
+		File[] listFiles = files.listFiles();
+		List<File> fileArr = new ArrayList<File>();
+		for (File file : listFiles) {
+			if (file.getName().indexOf("&" + bk + "&") != -1) {
+				fileArr.add(file);
+			}
+		}
+		try {
+			ZipUtils.toZip(fileArr, new FileOutputStream(new File(outFileFullName)));
+		} catch (FileNotFoundException | RuntimeException e) {
+			e.printStackTrace();
+		}
+		return fileName;
+	}
+
+	@PostMapping("/downloadZip")
+	public void downloadZip(String fileName, HttpServletRequest request, HttpServletResponse response) {
+		InputStream is = null;
+		OutputStream os = null;
+		String filePath = props.getTempPath() + "/" + fileName;
+		try {
+			is = new BufferedInputStream(new FileInputStream(filePath));
+			byte[] buffer = new byte[is.available()];
+			is.read(buffer);
+			response.reset();
+			String agent = request.getHeader("USER-AGENT");
+			if (agent != null && agent.toLowerCase().indexOf("firefox") > 0) {
+				fileName = "=?UTF-8?B?" + (new String(Base64.encode(fileName.getBytes("UTF-8")))) + "?=";
+			} else {
+				fileName = java.net.URLEncoder.encode(fileName, "UTF-8");
+			}
+			String contentDisposition = "attachment;filename=" + fileName;
+			response.addHeader("Content-Disposition", contentDisposition);
+			os = new BufferedOutputStream(response.getOutputStream());
+			response.setContentType("application/octet-stream");
+			os.write(buffer);
+			os.flush();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (is != null) {
+					is.close();
+				}
+				if (os != null) {
+					os.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 }

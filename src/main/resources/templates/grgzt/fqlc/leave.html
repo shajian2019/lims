@@ -30,6 +30,7 @@
 		${(form!'开发中')}
 </body>
 <script src="${ctx}/plugins/layui/layui.all.js"></script>
+<script src="${ctx}/js/common/download.js"></script>
 <script type="text/javascript">
 	var $ = layui.jquery,laydate = layui.laydate,form=layui.form,upload = layui.upload,laytpl=layui.laytpl,index=null,formFilter="leave";
 	var formkey = "${formkey!''}";
@@ -38,10 +39,11 @@
 	if(formkey == 'leave_startevent1.html'){
 		
 		form.val(formFilter, {
+			  "u_id": "${(leave.u_id)!''}",
 			  "sqr": "${(leave.sqr)!''}",
-			  "sqrq": "${(leave.sqrq)!''}",
+			  "sqrq": "${(leave.sqrq)!''}", 
 		})
-
+		
 		$.ajax({
             type: "get",
             data: {"u_id":"${USER.u_id}"},
@@ -56,7 +58,7 @@
                 layer.msg("服务端异常");
             }
         });
-
+		
 		$.ajax({
             type: "get",
             data: {gtype:'qjlx_type'},
@@ -228,8 +230,10 @@
 		            			}, function(){
 		            			parent.window.closeTab(data.taskId);
 	            			});
-		            	}else if(data.code == "0") {
-		            		layer.msg("审批成功", {offset: ['50%'], time: 2000});
+		            	}else if(data.code == "0" || data.code == "-1") {
+		            		layer.msg(data.msg, {offset: ['50%'], time: 2000},function(){
+		            			parent.window.closeTab(data.taskId);
+		            		});
 		            	}else {
 		            		layer.msg("审批失败", {offset: ['50%'], time: 2000});
 		            	}
@@ -277,8 +281,8 @@
 		            			}, function(){
 		            			parent.window.closeTab(data.taskId);
 	            			});
-		            	}else if(data.code == "0") {
-		            		layer.msg("审批成功", {offset: ['50%'], time: 2000},function(){
+		            	}else if(data.code == "0" || data.code == "-1") {
+		            		layer.msg(data.msg, {offset: ['50%'], time: 2000},function(){
 		            			parent.window.closeTab(data.taskId);
 		            		});
 		            	}else {
@@ -297,7 +301,7 @@
 		});
 		
 	} else if (formkey == 'leave_usertask3.html'){
-
+		
 		previewImage();
 		
 		form.on('submit(sp)', function(data){
@@ -325,8 +329,8 @@
 	            			}, function(){
 	            			parent.window.closeTab(data.taskId);
             			});
-	            	}else if(data.code == "0") {
-	            		layer.msg("审批成功", {offset: ['50%'], time: 2000},function(){
+	            	}else if(data.code == "0" || data.code == "-1") {
+	            		layer.msg(data.msg, {offset: ['50%'], time: 2000},function(){
 	            			parent.window.closeTab(data.taskId);
 	            		});
 	            	}else {
@@ -342,12 +346,16 @@
 		});
 		
 	}
-
+	
 	function previewImage(){
 		$.getJSON('${ctx}/file/taskAttachments/${taskId!''}', function(json){
+			var bk = "";
 			var imgHtml = "";
 			$.each(json,function(i,v){
 				var detail = v.split("&");
+				if(bk == ""){
+					bk = v.split("&")[1];
+				}
 				imgHtml += "<img layer-src='/"+v+"' src='/"+v+"' alt='"+detail[2]+"''>"
 			})
 			$("#layer-photos").html(imgHtml)
@@ -356,6 +364,32 @@
 			   ,shade:[0.1, '#ffffff']
 			   ,anim: 5
 			});
+			
+			if(json.length == 0){
+				$("#download").hide();
+			}else{
+				//绑定下载附件事件
+				$("#download").click(function(){
+					$.ajax({
+		                 type: "post",
+		                 data: {bk:bk},
+		                 url: "${ctx}/file/downloadAttachment",
+		                 beforeSend: function () {
+		                     index = layer.load(1);
+		                 },
+		                 success: function (data) {
+		                     layer.close(index);
+		                     var url = "${ctx}/file/downloadZip"
+		               		 var field = {};
+		                     field.fileName = data;
+		               		 formPost(url, field);
+		                 },
+		                 error: function (data) {
+		                     layer.msg("服务端异常");
+		                 }
+		             });
+				})
+			}
 		});
 		
 	}
@@ -383,7 +417,7 @@
 	function getSprs(){
 		$.ajax({
             type: "post",
-            data: {id:"${user.u_id}leave${formkey!''}"},
+            data: {id:"${USER.u_id}leave${formkey!''}"},
             url: "${ctx}/grgzt/fqlc/getSprs",
             beforeSend: function () {
                 index = layer.load(1);

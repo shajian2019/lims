@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>消息列表</title>
+    <link rel="stylesheet" href="${ctx}/plugins/layui/css/layui.css" media="all" />
+    <link rel="stylesheet" href="${ctx}/plugins/font-awesome/css/font-awesome.min.css" media="all" />
+    <style>
+        .layui-input {
+            height: 32px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+        <ul class="layui-tab-title">
+            <li class="layui-this">未读消息</li>
+            <li>已读消息</li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <form class="layui-form layuiform">
+                    <div class="layui-inline">
+                        <input type="text" class="layui-input" placeholder="消息标题" name="title">
+                    </div>
+                    <div class="layui-inline">
+                        <input type="text" class="layui-input" placeholder="消息内容" name="content">
+                    </div>
+                    <a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-primary" lay-submit lay-filter="unreadsearch">查询</a>
+                    <a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-primary" lay-submit lay-filter="point">全部标记为已读</a>
+                </form>
+                <table id="unreadMsg" lay-filter="unreadMsg"></table>
+            </div>
+            <div class="layui-tab-item">
+	            <form class="layui-form layuiform">
+	                <div class="layui-inline">
+                        <input type="text" class="layui-input" placeholder="消息标题" name="title">
+                    </div>
+                    <div class="layui-inline">
+                        <input type="text" class="layui-input" placeholder="消息内容" name="content">
+                    </div>
+                    <a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-primary" lay-submit lay-filter="readsearch">查询</a>
+                    <a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-primary" lay-submit lay-filter="delete">批量删除</a>
+	            </form>
+	            <table id="readMsg" lay-filter="readMsg"></table>
+        	</div>
+        </div>
+</body>
+<script src="${ctx}/plugins/layui/layui.all.js"></script>
+
+<script>
+    var element = layui.element,form = layui.form,table = layui.table,readMsg = "readMsg",unreadMsg="unreadMsg",readMsgObj,unreadMsgObj;
+    unreadMsgObj = table.render({
+        elem: '#'+unreadMsg,
+        height: "full-130",
+        method:'GET',
+        where: {"recipientId":"${USER.u_id}","status":"0"},
+        url: '${ctx}/message/list',
+        page: true,
+        cols: [
+            [
+           	{checkbox: true},
+           	{
+                field: 'id',
+                hide:true
+            }, {
+                field: 'title',
+                title: '消息标题',
+                width: 200,
+                align: 'center'
+            }, {
+                field: 'content',
+                title: '信息内容',
+            }, {
+                field: 'createtime',
+                title: '创建时间',
+                width: 200,
+                align: 'center'
+            }]
+        ]
+    });
+   	
+   	form.on('submit(unreadsearch)', function (data) {
+   		data.field.recipientId = "${USER.u_id}";
+   		data.field.status = "0";
+   		console.log(data.field)
+   		unreadMsgObj.reload({
+            where: data.field
+        });
+        return false;
+    });
+   	
+   	form.on('submit(readsearch)', function (data) {
+   		data.field.recipientId = "${USER.u_id}";
+   		data.field.status = "1";
+   		console.log(data.field)
+   		readMsgObj.reload({
+            where: data.field
+        });
+        return false;
+    });
+   	
+   	element.on('tab(docDemoTabBrief)', function(data){
+   	  if(data.index == 1){
+   		readMsgObj = table.render({
+   	        elem: '#'+readMsg,
+   	        height: "full-140",
+   	        method:'GET',
+   	        where: {"recipientId":"${USER.u_id}","status":"1"},
+   	        url: '${ctx}/message/list',
+   	        page: true,
+   	        cols: [
+   	            [
+ 	            {checkbox: true},
+   	           	{
+   	                field: 'id',
+   	                hide:true
+   	            }, {
+   	                field: 'title',
+   	                title: '消息标题',
+   	                width: 200,
+   	                align: 'center'
+   	            }, {
+   	                field: 'content',
+   	                title: '信息内容',
+   	            }, {
+   	                field: 'createtime',
+   	                title: '创建时间',
+   	                width: 200,
+   	                align: 'center'
+   	            }, {
+   	                field: 'updatetime',
+   	                title: '查看时间',
+   	                width: 200,
+   	                align: 'center'
+   	            }]
+   	        ]
+   	    });
+   	  }else{
+   		unreadMsgObj.reload()
+   	  }
+   	});
+	
+</script>
+</html>

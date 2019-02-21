@@ -29,6 +29,11 @@ public class TimeUtil {
 		return format.format(new Date());
 	}
 
+	public static String getTimeByCustom(String dataFormatStr, Date date) {
+		SimpleDateFormat format = new SimpleDateFormat(dataFormatStr);
+		return format.format(date);
+	}
+
 	public static String getTimeByCustom(String dateFormatStr, int calendar, int size) {
 		SimpleDateFormat format = new SimpleDateFormat(dateFormatStr);
 		Calendar c = Calendar.getInstance();
