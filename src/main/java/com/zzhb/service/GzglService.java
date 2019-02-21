@@ -36,5 +36,17 @@ public class GzglService {
 
     }
 
+    public Integer addNewStamperType(Map<String, String> params){
+        return gzglMapper.addNewStamperType(params);
+    }
+
+    public Integer deleteStamperType(Map<String, String> params){
+        return gzglMapper.deleteStamperType(params);
+    }
+
+    public Integer editNewStamperTypeInfo(Map<String, String> params){
+        return gzglMapper.editNewStamperTypeInfo(params);
+    }
+
 
 }

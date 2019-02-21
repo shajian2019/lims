@@ -89,6 +89,7 @@
             , cols: [[
                 {field: '序号',width:50,fixed:'left',type:'numbers',title:'序号'}
                 ,{field: 'stamper_name', title: '印章名称'}
+                ,{field: 'stamper_typeinfo', title: '印章类型'}
                 ,{field: 'keeperName', width: 180, title: '保管人'}
                 , {field: 'createtime', width: 230, title: '创建时间'}
                 // , {field: 'attachment_id', width: 140, title: '附件'}
@@ -144,7 +145,7 @@
 
     //添加新印章
     function add() {
-        var url = "${ctx}/swgl/yzgl/";
+        var url = "${ctx}/swgl/yzgl/addNewStamper";
         var table = layui.table;
         layer.open({
             title: '添加新印章',

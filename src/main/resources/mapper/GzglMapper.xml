@@ -36,19 +36,17 @@
         </where>
     </select>
 
-    <update id="getShResult" parameterType="java.util.Map">
-        UPDATE aff_t_zdgz
-        <set>
-            <if test="audit_state != null and audit_state !='' ">
-                audit_state = #{audit_state},
-            </if>
-            <if test="distribution_state != null and distribution_state !='' ">
-                distribution_state = #{distribution_state},
-            </if>
-            <if test="principal != null and principal !='' ">
-                principal = #{principal},
-            </if>
+    <insert id="addNewStamperType" keyProperty="id" useGeneratedKeys="true" parameterType="java.util.Map" >
+        INSERT INTO aff_t_stamper_type(type_info)
+        VALUES (#{type_info})
+    </insert>
 
+    <update id="editNewStamperTypeInfo" parameterType="java.util.Map">
+        UPDATE aff_t_stamper_type
+        <set>
+            <if test="type_info != null and type_info !='' ">
+                type_info = #{type_info},
+            </if>
         </set>
         <where>
             <if test="id != null and id !='' ">
@@ -59,19 +57,16 @@
 
 
 
-    <delete id="delCarById" parameterType="java.util.Map">
-        DELETE FROM aff_car_info
+    <delete id="deleteStamperType" parameterType="java.util.Map">
+        DELETE FROM aff_t_stamper_type
         <where>
-            <if test="c_id != null and c_id != ''">
-                c_id = #{c_id}
+            <if test="id != null and id != ''">
+                id = #{id}
             </if>
         </where>
     </delete>
 
-    <insert id="addZdgz" keyProperty="id" useGeneratedKeys="true" parameterType="java.util.Map" >
-        INSERT INTO aff_t_zdgz(title,content,attach_id,createtime,submitter,auditter)
-        VALUES (#{title},#{content},#{attach_id},now(),#{submitter},#{auditter})
-    </insert>
+
 
     <select id="getzdgzysh" resultType="java.util.Map" parameterType="java.util.Map">
         SELECT
