@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.IdentityService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,9 +38,6 @@ public class UserService {
 
 	@Autowired
 	LoginService loginService;
-
-	@Autowired
-	IdentityService identityService;
 
 	@Autowired
 	OrgUserMapper orgUserMapper;
