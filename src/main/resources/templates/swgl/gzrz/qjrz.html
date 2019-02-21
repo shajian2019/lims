@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<#assign ctx=req.contextPath />
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>全局日志</title>
+    <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
+    <script src="${ctx}/plugins/layui/layui.js"></script>
+    <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" />
+</head>
+<style>
+    html, body {
+        height: 100%;
+    }
+
+    div {
+        -moz-box-sizing: border-box; /*Firefox3.5+*/
+        -webkit-box-sizing: border-box; /*Safari3.2+*/
+        -o-box-sizing: border-box; /*Opera9.6*/
+        -ms-box-sizing: border-box; /*IE8*/
+        box-sizing: border-box; /*W3C标准(IE9+，Safari5.1+,Chrome10.0+,Opera10.6+都符合box-sizing的w3c标准语法)*/
+    }
+
+    .layui-form-item {
+        margin-bottom: 0px
+    }
+
+    .layui-table, .layui-table-view {
+        margin: 0px 0;
+    }
+</style>
+<body class="layui-layout-body" style="padding: 10px">
+
+<form class="layui-form" id="query">
+    <div class="layui-form-item">
+        <div class="layui-inline">
+        <input class="layui-input" type="text" placeholder="提交人" name="submitter" id="submitter">
+        </div>
+        <div class="layui-inline">
+            <input class="layui-input" type="text" placeholder="提交时间" name="submit_time" id="submit_time">
+        </div>
+
+        <div class="layui-inline">
+            <a class="layui-btn layui-btn-primary" lay-submit="" lay-filter="query" datatype="reload">查询</a>
+        </div>
+    </div>
+</form>
+
+<div style="height:100%">
+    <table class="layui-hidden layui-table" id="dataTable" lay-filter="dataTable"></table>
+</div>
+
+</body>
+<script type="text/html" id="rightBar">
+    <div class="layui-btn-group">
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">
+            <i class="fa fa-file-text-o"></i>
+        </a>
+    </div>
+</script>
+
+<script>
+    var editObj = null, ptable = null, treeGrid = null, tableId = 'dataTable', layer = null, form = null,$=null;
+    layui.use(['table','laydate'], function () {
+        var laydate = layui.laydate;
+        laydate.render({
+            elem: '#submit_time'
+        });
+
+        var table = layui.table;
+        $=layui.jquery;
+        form = layui.form;
+        table.render({
+            elem: '#' + tableId
+            , url: '${ctx}/swgl/gzrz/getAllJournalInfo'//后台接受路径
+            , page: true
+            , id: tableId
+            , height: 'full-80'
+            , method: 'get'
+            , cols: [[
+                {field: '序号',width:50,fixed:'left',type:'numbers',title:'序号'}
+                ,{field: 'today_work_content', title: '当日工作内容'}
+                ,{field: 'unfinished_work', title: '未完成工作'}
+                , {field: 'submit_time', width: 150, title: '提交时间'}
+                // , {field: 'attachment_id', width: 140, title: '附件'}
+                ,{field: 'submitter', width: 140, title: '提交人'}
+                ,{
+                    title: '操作', align: 'center',width: 170,
+                    toolbar: '#rightBar'
+                }
+            ]]
+        });
+
+        //点击行事件
+        table.on('tool(' + tableId + ')', function (obj) {
+            var data = obj.data;
+            console.log(data);
+            var action = obj.event;
+            if (action == 'del') {
+                var index;
+                $.ajax({
+                    type: "post",
+                    data: {j_id: data.j_id},
+                    url: "${ctx}/",
+                    beforeSend: function () {
+                        index = layer.load(1);
+                    },
+                    success: function (data) {
+                        layer.close(index);
+                        if (data > 0) {
+                            layer.msg("删除成功", {offset: ['50%'], time: 1000}, function () {
+                                table.reload(tableId)
+                            });
+                        } else {
+                            layer.msg("操作失败")
+                        }
+                    },
+                    error: function (data) {
+                        layer.msg("服务端异常");
+                    }
+                });
+
+            } else if(action == 'detail'){
+                var url = "${ctx}/swgl/gzrz/journalDetail?flag=${flag}&j_id="+data.j_id
+                    +"&submit_time="+data.submit_time
+                    +"&today_work_content="+data.today_work_content
+                    +"&unfinished_work="+data.unfinished_work
+                    +"&coordinated_work="+data.coordinated_work
+                    +"&uniqueid="+data.uniqueid;
+                var index = layer.open({
+                    title:action,
+                    type: 2,
+                    fixed: false, //不固定
+                    maxmin: true,
+                    content: url,
+                    end: function(){
+                        table.reload(tableId)
+                    }
+                });
+                layer.full(index);
+            }
+        });
+
+        form.on('submit(query)', function (data) {
+            table.reload(tableId, {
+                where: data.field
+            });
+            return false;
+        });
+
+    });
+
+</script>
+</html>
