@@ -111,15 +111,6 @@ public class ZzjgService {
 		return orgMapper.delOrg(orgs);
 	}
 
-	@Transactional
-	public Integer zzjgUserAdd(String o_id, String u_ids) {
-		List<String> asList = Arrays.asList(u_ids.split("\\|"));
-		Map<String, Object> params = new HashMap<>();
-		params.put("u_ids", asList);
-		params.put("o_id", o_id);
-		return orgMapper.addUserOrg(params);
-	}
-
 	@Autowired
 	JobMapper jobMapper;
 
