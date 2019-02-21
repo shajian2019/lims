@@ -34,8 +34,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.CollectionUtils;
 
 import com.zzhb.async.AsyncService;
-import com.zzhb.controller.FileController;
 import com.zzhb.controller.grgzt.DbsxController;
+import com.zzhb.controller.grgzt.FileController;
 import com.zzhb.controller.xtgl.ZzglController;
 import com.zzhb.service.ActivitiService;
 import com.zzhb.service.OrgUserService;
