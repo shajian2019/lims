@@ -108,7 +108,6 @@ public class ZzjgService {
 		return updateOrg;
 	}
 
-	
 	@Transactional
 	public Integer zzjgDel(Org org) {
 		Map<String, String> params = new HashMap<>();
@@ -191,5 +190,9 @@ public class ZzjgService {
 			updateOrg += jobMapper.updateJob(job);
 		}
 		return updateOrg;
+	}
+
+	public Integer zwglDel(Job job) {
+		return jobMapper.delJob(job);
 	}
 }
