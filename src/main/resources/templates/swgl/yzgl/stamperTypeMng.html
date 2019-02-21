@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>${(params.title)!''}重点工作进度列表</title>
+    <title>公章管理</title>
     <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
     <script src="${ctx}/plugins/layui/layui.js"></script>
     <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet" />
@@ -34,19 +34,17 @@
 
 <form class="layui-form" id="query">
     <div class="layui-form-item">
-        <div class="layui-inline">
-            <input class="layui-input" type="hidden" placeholder="主键" name="id" id="id" value="${(params.id)!''}">
-        </div>
         <!--<div class="layui-inline">-->
-            <!--<input class="layui-input" type="text" placeholder="标题" name="title" id="title">-->
+        <!--<input class="layui-input" type="text" placeholder="标题" name="title" id="title">-->
         <!--</div>-->
         <div class="layui-inline">
-            <input class="layui-input" type="text" placeholder="提交时间" name="createtime" id="createtime">
+            <input class="layui-input" type="text" placeholder="类型信息" name="type_info" id="type_info">
         </div>
 
         <div class="layui-inline">
             <a class="layui-btn layui-btn-primary" lay-submit="" lay-filter="query" datatype="reload">查询</a>
-            <a class="layui-btn layui-btn-primary" onclick="add();">重点工作进度填写</a>
+            <a class="layui-btn layui-btn-primary" onclick="add();">印章类型添加</a>
+            <!--<a class="layui-btn layui-btn-primary" onclick="typeMng();">印章类型管理</a>-->
         </div>
     </div>
 </form>
@@ -58,12 +56,12 @@
 </body>
 <script type="text/html" id="rightBar">
     <div class="layui-btn-group">
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail" title="详情">
-            <i class="fa fa-file-text-o"></i>
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit" title="修改">
+            <i class="fa fa-pencil"></i>
         </a>
 
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="send" title="选择发送人">
-            <i class="fa layui-icon-friends"></i>
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del" title="删除">
+            <i class="fa fa-trash-o"></i>
         </a>
     </div>
 </script>
@@ -82,21 +80,21 @@
         form = layui.form;
         table.render({
             elem: '#' + tableId
-            , url: '${ctx}/swgl/zdgz/zdgzjzlist?id=${params.id}'//后台接受路径
+            , url: '${ctx}/swgl/yzgl/getStamperType'//后台接受路径
             , page: true
             , id: tableId
             , height: 'full-80'
             , method: 'get'
             , cols: [[
                 {field: '序号',width:50,fixed:'left',type:'numbers',title:'序号'}
-                ,{field: 'work_content', title: '完成内容'}
-                ,{field: 'submitterName', width: 180, title: '提交人'}
-                , {field: 'createtime', width: 230, title: '提交时间'}
+                ,{field: 'type_info', title: '印章类型'}
+                // ,{field: 'keeperName', width: 180, title: '保管人'}
+                // , {field: 'createtime', width: 230, title: '创建时间'}
                 // , {field: 'attachment_id', width: 140, title: '附件'}
-                // ,{
-                //     title: '操作', align: 'center',width: 170,
-                //     toolbar: '#rightBar'
-                // }
+                ,{
+                    title: '操作', align: 'center',width: 170,
+                    toolbar: '#rightBar'
+                }
             ]]
         });
 
@@ -109,7 +107,7 @@
                 var index;
                 $.ajax({
                     type: "post",
-                    data: {j_id: data.j_id},
+                    data: {id: data.id},
                     url: "${ctx}/",
                     beforeSend: function () {
                         index = layer.load(1);
@@ -118,16 +116,19 @@
                         layer.close(index);
                         if (data > 0) {
                             layer.msg("删除成功", {offset: ['50%'], time: 1000}, function () {
-                                table.reload(tableId)
+                                table.reload(tableId);
                             });
                         } else {
-                            layer.msg("操作失败")
+                            layer.msg("操作失败");
                         }
                     },
                     error: function (data) {
                         layer.msg("服务端异常");
                     }
                 });
+            }else if(action == 'edit'){
+
+
             }
         });
 
@@ -140,11 +141,12 @@
 
     });
 
+    //添加新印章类型
     function add() {
-        var url = "${ctx}/swgl/zdgz/addZdgzjz?id=${params.id}";
+        var url = "${ctx}/swgl/yzgl/addStamperType";
         var table = layui.table;
         layer.open({
-            title: '重点工作进展填写',
+            title: '添加新印章类型',
             type: 2,
             offset: '50px',
             area: ['800px', '400px'],

@@ -17,5 +17,6 @@ public interface ZdgzMapper {
 
     public List<Map<String,String>> getzdgzyjz(Map<String, String> params);
 
+    public Integer addZdgzjz(Map<String, String> params);
 
 }
