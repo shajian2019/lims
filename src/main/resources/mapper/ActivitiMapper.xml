@@ -31,7 +31,7 @@
 			DISTINCT ext.*,
 			pro.`name` proname 
 		FROM
-			sys_t_user_procdef p
+			oa_t_user_procdef p
 			LEFT JOIN ext_act_re_procdef ext ON p.p_id = ext.id
 			LEFT JOIN ext_act_proctype pro ON ext.protype = pro.type
 		<where>
