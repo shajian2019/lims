@@ -102,13 +102,9 @@ public class MessageWebSocket {
 
 	public void sendtoUser(String message, String userId) throws IOException {
 		if (webSocketMap.get(userId) != null) {
-			if (id != null && !userId.equals(id))
-				webSocketMap.get(userId).sendMessage("用户" + id + "发来消息：" + " <br/> " + message);
-			else
-				webSocketMap.get(userId).sendMessage(message);
+			webSocketMap.get(userId).sendMessage(message);
 		} else {
-			// 如果用户不在线则返回不在线信息给自己
-			sendtoUser("当前用户不在线", id);
+			// 用户不在线
 		}
 	}
 

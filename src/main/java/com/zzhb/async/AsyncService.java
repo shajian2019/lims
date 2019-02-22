@@ -24,6 +24,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.zzhb.domain.Message;
 import com.zzhb.domain.User;
+import com.zzhb.mapper.MessageMapper;
 import com.zzhb.mapper.UserMapper;
 import com.zzhb.service.MessageService;
 import com.zzhb.websocket.MessageWebSocket;
@@ -50,6 +51,9 @@ public class AsyncService {
 
 	@Autowired
 	MessageWebSocket messageWebSocket;
+
+	@Autowired
+	MessageMapper messageMapper;
 
 	@Async
 	public void async() {
@@ -80,15 +84,16 @@ public class AsyncService {
 			}
 		}
 
+		List<String> uIds = new ArrayList<>();
 		Message message0 = new Message();
 		message0.setTitle(processDefinition.getName());
 		message0.setContent("流程单号：" + bk + "->" + processDefinition.getName() + "->处理结果->" + spyj);
 		message0.setType("1");
 		message0.setStatus("0");
 		message0.setRecipientId(createrId);
+		uIds.add(createrId);
 		messages.add(message0);
 
-		Map<String, Integer> uIds = new HashMap<>();
 		User user = userMapper.getUserById(createrId);
 		for (HistoricTaskInstance hti : list) {
 			Message message = new Message();
@@ -100,19 +105,15 @@ public class AsyncService {
 			message.setType("1");
 			message.setStatus("0");
 			message.setRecipientId(hti.getAssignee());
-			if (uIds.containsKey(hti.getAssignee())) {
-				Integer count = uIds.get(hti.getAssignee());
-				uIds.put(hti.getAssignee(), count++);
-			} else {
-				uIds.put(hti.getAssignee(), 1);
-			}
 			messages.add(message);
+			uIds.add(hti.getAssignee());
 		}
 		messageService.saveMessage(messages);
-		//
+
 		try {
-			for (Map.Entry<String, Integer> entry : uIds.entrySet()) {
-				messageWebSocket.sendtoUser(entry.getValue() + "", entry.getKey());
+			for (String u_id : uIds) {
+				Integer countMessages = messageMapper.countMessages(u_id);
+				messageWebSocket.sendtoUser(countMessages + "", u_id);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
