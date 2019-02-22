@@ -1,4 +1,4 @@
-package com.zzhb.controller.common;
+package com.zzhb.controller.swgl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.zzhb.config.Props;
