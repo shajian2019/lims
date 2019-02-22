@@ -74,6 +74,13 @@
 		          </div>
 		      </div>
 		      <div class="layui-form-item">
+		          <label class="layui-form-label">撤销时长:</label>
+		          <div class="layui-inline" style="margin-bottom:0;width: 55%;">
+	          		  <input id="num" type="text" name="num" lay-verify="number" placeholder="默认无限制" autocomplete="off" class="layui-input">
+		          </div>
+		          <div class="layui-form-mid layui-word-aux">小时</div>
+		      </div>
+		      <div class="layui-form-item">
 			      	<label class="layui-form-label">备注信息:</label>
 					<div class="layui-inline">
 					    <textarea id="description" name="description" placeholder="请输入内容" class="layui-textarea"></textarea>
@@ -243,10 +250,11 @@
             cols: [[
                 {field: '序号',width:50,type:'numbers',title:'序号'}
               , {field: 'deployment_id', width: 100, title: '部署ID',align:'center'}
-              , {field: 'proname', width: 120, title: '流程分类',align:'center'}
+              , {field: 'proname', width: 100, title: '流程分类',align:'center'}
               , {field: 'name', width: 180, title: '流程名称',align:'center'}
               , {field: 'version', width: 70, title: '版本',align:'center'}
-              , {field: 'createuser', width: 120, title: '创建人',align:'center'}
+              , {field: 'createuser', width: 100, title: '创建人',align:'center'}
+              , {field: 'zdcxsc', width: 90, title: '撤销时长',align:'center'}
               , {field: 'createtime', width: 170, title: '创建时间',align:'center'}
               , {field: 'description', title: '备注',align:'center'}
               , {title: '操作', align: 'center', width: 120,toolbar: '#rightBar'}
@@ -367,7 +375,7 @@
      	    	var index = layer.open({
      	            title: '流程部署',
      	            type: 1,
-     	            area: ['490px', '300px'],
+     	            area: ['510px', '330px'],
      	            fixed: false, //不固定
      	            content: $("#pop"),
      	            end: function () {
@@ -389,25 +397,32 @@
             ,data: {
             	  protype: function(){
             		   var param = dtree.getNowParam(dtreeObj);
-	           		    return param.nodeId;
+	           		   return param.nodeId;
            		  },
            		  description: function(){
 	           		    return $("#description").val();
+           		  },
+           		  num: function(){
+	           		    return $("#num").val();
            		  },
            		  createuser: function(){
 	           		    return '${USER.nickname}';
            		  }
              }
             ,bindAction: '#lc_upload_btn'
-           	,before: function(obj){ //obj参数包含的信息，跟 choose回调完全一致，可参见上文。
+           	,before: function(obj){ 
            		index = layer.load(1);
              }
             ,done: function(res){
             	layer.close(index);
 				if(res.code < 0){
+					if(res.code == "-3"){
+						$("#num").val('');
+					}
 					layer.msg(res.msg, {offset: ['50%'], time: 2000});
 				}else{
 					$("#description").val('');
+					$("#num").val('');
 					layer.closeAll();
 				}       	
             }

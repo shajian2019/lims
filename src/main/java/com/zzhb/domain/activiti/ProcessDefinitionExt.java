@@ -17,6 +17,16 @@ public class ProcessDefinitionExt {
 	private String protype;
 	private String proname;
 
+	private String zdcxsc;
+
+	public String getZdcxsc() {
+		return zdcxsc;
+	}
+
+	public void setZdcxsc(String zdcxsc) {
+		this.zdcxsc = zdcxsc;
+	}
+
 	public String getId() {
 		return id;
 	}

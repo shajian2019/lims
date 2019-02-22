@@ -122,6 +122,7 @@ public class ActivitiService {
 			pde.setResource_name(pdf.getResourceName());
 			pde.setVersion(pdf.getVersion());
 			pde.setProtype(params.get("protype"));
+			pde.setZdcxsc(params.get("num"));
 			pdes.add(pde);
 			params2.put("key", pdf.getKey());
 			params2.put("version", (pdf.getVersion() - 1) + "");

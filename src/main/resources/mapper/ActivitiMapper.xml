@@ -2,10 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zzhb.mapper.ActivitiMapper">
 	<insert id="addProcessDefinitionExt" parameterType="com.zzhb.domain.activiti.ProcessDefinitionExt">
-		INSERT INTO ext_act_re_procdef (id,name,`key`,version,deployment_id,resource_name,dgrm_resource_name,createtime,createuser,protype,description)
+		INSERT INTO ext_act_re_procdef (id,name,`key`,version,deployment_id,resource_name,dgrm_resource_name,createtime,createuser,protype,description,zdcxsc)
 		VALUES
 		<foreach collection ="pdes" item="pde" index= "index" separator =",">
-			(#{pde.id},#{pde.name},#{pde.key},#{pde.version},#{pde.deployment_id},#{pde.resource_name},#{pde.dgrm_resource_name},now(),#{pde.createuser},#{pde.protype},#{pde.description})
+			(#{pde.id},#{pde.name},#{pde.key},#{pde.version},#{pde.deployment_id},#{pde.resource_name},#{pde.dgrm_resource_name},now(),#{pde.createuser},#{pde.protype},#{pde.description},#{pde.zdcxsc})
 		</foreach>
 	</insert>
 	

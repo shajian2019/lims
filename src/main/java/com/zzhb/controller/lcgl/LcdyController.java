@@ -25,6 +25,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.zzhb.config.Props;
 import com.zzhb.domain.activiti.ProcessDefinitionType;
 import com.zzhb.service.ActivitiService;
+import com.zzhb.utils.StringUtil;
 
 @Controller
 @RequestMapping("/lcgl/lcdy")
@@ -83,6 +84,14 @@ public class LcdyController {
 	public JSONObject deploy(@RequestParam("file") MultipartFile file, @RequestParam Map<String, String> params) {
 		JSONObject json = new JSONObject();
 		String fileName = file.getOriginalFilename();
+		String num = params.get("num");
+		if (!"".equals(num)) {
+			if (!StringUtil.isZInteger(num)) {
+				json.put("code", "-3");
+				json.put("msg", "数字不合法");
+				return json;
+			}
+		}
 		if (fileName.indexOf(".zip") == -1) {
 			json.put("code", "-1");
 			json.put("msg", "文件类型错误，仅支持zip文件");
