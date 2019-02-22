@@ -129,7 +129,7 @@ public class FileUploadController{
                     String todayString = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
                     String uploadDir = request.getParameter("uploadDir");
                     String resultStr =  File.separator + uploadDir + File.separator + todayString + File.separator +logImageName;
-                    String dir = props.getTempPath();
+                    String dir = props.getUploadPath();
                     fileName = dir + resultStr;
                     File restore = new File(fileName);
                     if(!restore.getParentFile().exists()){
@@ -160,7 +160,7 @@ public class FileUploadController{
         String logImageName = UUID.randomUUID().toString() +"_"+ _fileName;
         String todayString = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 //        String uploadDir = request.getParameter("uploadDir");
-        String dir = props.getTempPath();
+        String dir = props.getUploadPath();
         String resultStr =  File.separator + File.separator + todayString + File.separator +logImageName;
         String fileName = dir + resultStr;
         File restore = new File(fileName);
@@ -193,7 +193,7 @@ public class FileUploadController{
             fileId = attmap.get("url");
             fileName = attmap.get("attach_name");
         }
-        String realPath = props.getTempPath()+fileId;
+        String realPath = props.getUploadPath()+fileId;
         response.reset();
         response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
