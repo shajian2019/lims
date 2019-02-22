@@ -93,15 +93,15 @@
 
         //印章种类下拉框
         $.ajax({
-            url: '${ctx}/swgl/clgl/listcartype',
+            url: '${ctx}/swgl/yzgl/stampertypeselect',
             dataType: 'json',
             type: 'get',
             success: function (data) {
                 $.each(data.data, function (index, item) {
-                    $('#car_type').append(new Option(item.type_info, item.t_id));// 下拉菜单里添加元素
+                    $('#stamper_type').append(new Option(item.type_info, item.id));// 下拉菜单里添加元素
                 });
-                if ('${(car.car_type)!''}' != ''){
-                    $("#car_type").val('${(car.car_type)!''}');
+                if ('${(type_info)!''}' != ''){
+                    $("#stamper_type").val('${(type_info)!''}');
                 }
                 layui.form.render("select");
             }
@@ -109,37 +109,37 @@
 
 
 
-        form.on('submit(save)', function (data) {
-            console.log(data);
-            var url = "${ctx}/swgl/clgl/editCar";
-            data.field.flag = '${map.flag}';
-            data.field.c_id = '${(car.c_id)!''}';
-            var index;
-            $.ajax({
-                type: "POST",
-                data: data.field,
-                url: url,
-                beforeSend: function () {
-                    index = layer.load(1);
-                },
-                success: function (data) {
-                    layer.close(index);
-                    if (data > 0) {
-                        var msg = "保存成功";
-                        layer.msg(msg, {offset: ['50%'], time: 1000}, function () {
-                            index = parent.layer.getFrameIndex(window.name);
-                            parent.layer.close(index);
-                        });
-                    } else {
-                        layer.msg("操作失败")
-                    }
-                },
-                error: function (data) {
-                    layer.msg("服务端异常");
-                }
-            });
-            return false;
-        });
+        // form.on('submit(save)', function (data) {
+        //     console.log(data);
+        //     var url = "${ctx}/swgl/clgl/editCar";
+        //     // data.field.flag = '${map.flag}';
+        //     // data.field.c_id = '${(car.c_id)!''}';
+        //     var index;
+        //     $.ajax({
+        //         type: "POST",
+        //         data: data.field,
+        //         url: url,
+        //         beforeSend: function () {
+        //             index = layer.load(1);
+        //         },
+        //         success: function (data) {
+        //             layer.close(index);
+        //             if (data > 0) {
+        //                 var msg = "保存成功";
+        //                 layer.msg(msg, {offset: ['50%'], time: 1000}, function () {
+        //                     index = parent.layer.getFrameIndex(window.name);
+        //                     parent.layer.close(index);
+        //                 });
+        //             } else {
+        //                 layer.msg("操作失败")
+        //             }
+        //         },
+        //         error: function (data) {
+        //             layer.msg("服务端异常");
+        //         }
+        //     });
+        //     return false;
+        // });
 
         //取消
         $("#cancel").click(function () {

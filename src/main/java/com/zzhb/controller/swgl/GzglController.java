@@ -66,4 +66,17 @@ public class GzglController {
     public Integer editNewStamperTypeInfo(@RequestParam Map<String, String> params){
         return gzglService.editNewStamperTypeInfo(params);
     }
+
+    @GetMapping("/addNewStamper")
+    public String addNewStamperPage(){
+        return "swgl/yzgl/addNewStamper";
+    }
+
+    @PostMapping("/stampertypeselect")
+    @ResponseBody
+    public JSONObject stamperTypeSelect(@RequestParam Map<String, String> params){
+        return gzglService.getStamperType(1,Integer.MAX_VALUE,params);
+    }
+
+
 }

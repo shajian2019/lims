@@ -3,6 +3,7 @@ package com.zzhb.controller;
 import java.util.List;
 import java.util.Map;
 
+import com.zzhb.domain.activiti.UserSpr;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -38,5 +39,12 @@ public class OrgUserController {
 	@ResponseBody
 	public List<Map<String, Object>> sqr(String p_id) {
 		return orgUserService.sqr(p_id);
+	}
+
+	// 审批人ztree
+	@GetMapping("/spr")
+	@ResponseBody
+	public List<Map<String, Object>> spr(UserSpr userSpr) {
+		return orgUserService.sprList(userSpr);
 	}
 }
