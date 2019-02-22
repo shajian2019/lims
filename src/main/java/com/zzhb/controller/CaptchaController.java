@@ -1,4 +1,4 @@
-package com.zzhb.controller.common;
+package com.zzhb.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;

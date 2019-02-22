@@ -1,21 +1,19 @@
 package com.zzhb.service;
 
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zzhb.domain.Car;
 import com.zzhb.domain.CarStatusInfo;
 import com.zzhb.domain.CarTypeInfo;
-import com.zzhb.domain.User;
 import com.zzhb.mapper.CarMapper;
 import com.zzhb.utils.LayUiUtil;
-
-import org.omg.PortableInterceptor.INACTIVE;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Map;
 
 @Service
 public class CarService {

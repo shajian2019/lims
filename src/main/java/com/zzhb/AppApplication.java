@@ -16,14 +16,15 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableCaching
 @MapperScan({ "com.zzhb.mapper", "com.zzhb.shiro.mapper" })
 @SpringBootApplication
-public class ZzoaApplication {
+public class AppApplication {
 
-	private static Logger logger = LoggerFactory.getLogger(ZzoaApplication.class);
+	private static Logger logger = LoggerFactory.getLogger(AppApplication.class);
 
 	public static void main(String[] args) {
-		SpringApplication.run(ZzoaApplication.class, args);
+		SpringApplication.run(AppApplication.class, args);
 		String encoding = Charset.defaultCharset().name();
-		logger.info("======ZzoaApplication===启动 success==encoding=" + encoding);
-		logger.debug("======ZzoaApplication===启动 success==encoding=" + encoding);
+		logger.info("======AppApplication===启动 success==encoding=" + encoding);
+		logger.debug("======AppApplication===启动 success==encoding=" + encoding);
+		
 	}
 }

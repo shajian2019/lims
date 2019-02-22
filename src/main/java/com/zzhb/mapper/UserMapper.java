@@ -45,8 +45,6 @@ public interface UserMapper {
 
 	public Integer countUserByUserName(Map<String, String> params);
 
-	public List<User> getUsersByOid(@Param("o_id") String o_id);
-
 	public List<String> getUsernames(Map<String, List<String>> u_ids);
 
 	public List<String> getUsersIdByPId(@Param("p_id") String p_id);
@@ -55,10 +53,10 @@ public interface UserMapper {
 
 	public Integer addUserProcdef(Map<String, Object> params);
 
-	@Update("UPDATE sys_t_user_procdef set p_id = #{newpid} WHERE p_id = #{oldpid}")
+	@Update("UPDATE oa_t_user_procdef set p_id = #{newpid} WHERE p_id = #{oldpid}")
 	public Integer updateUserProcdef(Map<String, String> params);
 
-	@Delete("DELETE FROM sys_t_user_procdef WHERE u_id like #{0}")
+	@Delete("DELETE FROM oa_t_user_procdef WHERE u_id like #{0}")
 	public Integer delUserProcdefByUid(String u_id);
 
 }

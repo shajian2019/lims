@@ -63,49 +63,4 @@
 		</where>
 	</update>
 	
-	<select id="getUsers" resultType="java.util.Map" parameterType="java.util.Map">
-		SELECT
-			o.j_id,
-			o.j_name,
-			u.*,
-			m.o_name 
-		FROM
-			sys_t_user_job uo
-			LEFT JOIN sys_t_job o ON uo.j_id = o.j_id
-			LEFT JOIN sys_t_user u ON uo.u_id = u.u_id
-			LEFT JOIN ( SELECT u.u_id, o.o_name FROM sys_t_user_org u LEFT JOIN sys_t_org o ON u.o_id = o.o_id ) m ON uo.u_id = m.u_id
-		<where>
-			<if test="j_id !=null and j_id !=''">
-				and uo.j_id = #{j_id}
-			</if>
-			<if test="username !=null and username !=''">
-				<bind name="_username" value="'%'+username+'%'"/>
-				and u.username like #{_username}
-			</if>
-			<if test="nickname !=null and nickname !=''">
-				<bind name="_nickname" value="'%'+nickname+'%'"/>
-				and u.nickname like #{_nickname}
-			</if>
-		</where>
-	</select>
-	
-	<insert id="addUserJob" parameterType="java.util.Map">
-		INSERT INTO sys_t_user_job (u_id,j_id)
-		VALUES
-		<foreach collection="u_ids" item="u_id" index="index" separator=",">
-            (#{u_id,jdbcType=INTEGER}, #{j_id,jdbcType=INTEGER})
-        </foreach>
-	</insert>
-	
-	<select id="getAddUsers" resultType="java.util.Map">
-		SELECT
-			* 
-		FROM
-			sys_t_user u
-			LEFT JOIN sys_t_user_job o ON u.u_id = o.u_id
-			LEFT JOIN ( SELECT o.o_name, u.u_id FROM sys_t_org o LEFT JOIN sys_t_user_org u ON o.o_id = u.o_id ) m ON u.u_id = m.u_id 
-		WHERE
-			o.u_id IS NULL 
-			AND u.username != 'superadmin'
-	</select>
 </mapper>

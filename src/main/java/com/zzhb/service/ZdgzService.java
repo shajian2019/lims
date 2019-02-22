@@ -1,5 +1,13 @@
 package com.zzhb.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -10,14 +18,6 @@ import com.zzhb.mapper.UserOrgJobMapper;
 import com.zzhb.mapper.ZdgzMapper;
 import com.zzhb.utils.LayUiUtil;
 import com.zzhb.utils.SessionUtils;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Service
 public class ZdgzService {

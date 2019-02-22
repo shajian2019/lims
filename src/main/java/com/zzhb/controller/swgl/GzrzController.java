@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.zzhb.domain.User;
 import com.zzhb.mapper.JournalMapper;
 import com.zzhb.service.JournalService;
-
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;

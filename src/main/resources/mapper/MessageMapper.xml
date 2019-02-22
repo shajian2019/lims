@@ -28,6 +28,36 @@
 				and m_title like #{_title}
 			</if>
 		</where>
+		<if test="status !=null and status == 0 ">
+				order by createtime desc
+		</if>
+		<if test="status !=null and status == 1 ">
+				order by updatetime desc
+		</if>
 	</select>
+	
+	<update id="updateMessage" parameterType="java.util.Map">
+		UPDATE sys_t_message set m_status = #{status},updatetime=now()
+		<where>
+			<if test="m_ids !=null and m_ids.size() != 0">
+					and m_id in 
+				<foreach collection="m_ids" item="m_id" open="(" separator="," close=")">
+	          			#{m_id}
+	       		</foreach>
+			</if>
+		</where>
+	</update>
+	
+	<delete id="deleteMessage" parameterType="java.util.Map">
+		DELETE FROM sys_t_message
+		<where>
+			<if test="m_ids !=null and m_ids.size() != 0">
+					and m_id in 
+				<foreach collection="m_ids" item="m_id" open="(" separator="," close=")">
+	          			#{m_id}
+	       		</foreach>
+			</if>
+		</where>
+	</delete>
 	
 </mapper>

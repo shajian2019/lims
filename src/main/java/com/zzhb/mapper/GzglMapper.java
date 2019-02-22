@@ -9,4 +9,10 @@ public interface GzglMapper {
 
     public List<Map<String,String>> getStamperTypeList(Map<String, String> params);
 
+    public Integer addNewStamperType(Map<String, String> params);
+
+    public Integer deleteStamperType(Map<String, String> params);
+
+    public Integer editNewStamperTypeInfo(Map<String, String> params);
+
 }

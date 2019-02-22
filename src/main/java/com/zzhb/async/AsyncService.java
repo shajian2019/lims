@@ -1,7 +1,10 @@
 package com.zzhb.async;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.activiti.engine.HistoryService;
@@ -23,6 +26,7 @@ import com.zzhb.domain.Message;
 import com.zzhb.domain.User;
 import com.zzhb.mapper.UserMapper;
 import com.zzhb.service.MessageService;
+import com.zzhb.websocket.MessageWebSocket;
 
 @Service
 public class AsyncService {
@@ -43,6 +47,9 @@ public class AsyncService {
 
 	@Autowired
 	MessageService messageService;
+
+	@Autowired
+	MessageWebSocket messageWebSocket;
 
 	@Async
 	public void async() {
@@ -81,6 +88,7 @@ public class AsyncService {
 		message0.setRecipientId(createrId);
 		messages.add(message0);
 
+		Map<String, Integer> uIds = new HashMap<>();
 		User user = userMapper.getUserById(createrId);
 		for (HistoricTaskInstance hti : list) {
 			Message message = new Message();
@@ -92,9 +100,23 @@ public class AsyncService {
 			message.setType("1");
 			message.setStatus("0");
 			message.setRecipientId(hti.getAssignee());
+			if (uIds.containsKey(hti.getAssignee())) {
+				Integer count = uIds.get(hti.getAssignee());
+				uIds.put(hti.getAssignee(), count++);
+			} else {
+				uIds.put(hti.getAssignee(), 1);
+			}
 			messages.add(message);
 		}
 		messageService.saveMessage(messages);
+		//
+		try {
+			for (Map.Entry<String, Integer> entry : uIds.entrySet()) {
+				messageWebSocket.sendtoUser(entry.getValue() + "", entry.getKey());
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

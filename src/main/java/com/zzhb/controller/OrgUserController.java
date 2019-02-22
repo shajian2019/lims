@@ -40,7 +40,7 @@ public class OrgUserController {
 	public List<Map<String, Object>> sqr(String p_id) {
 		return orgUserService.sqr(p_id);
 	}
-
+	
 	// 审批人ztree
 	@GetMapping("/spr")
 	@ResponseBody
