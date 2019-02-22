@@ -73,10 +73,22 @@ public class GzglController {
         return "swgl/yzgl/addNewStamper";
     }
 
-    @PostMapping("/stampertypeselect")
+    @GetMapping("/stampertypeselect")
     @ResponseBody
     public JSONObject stamperTypeSelect(@RequestParam Map<String, String> params){
         return gzglService.getStamperType(1,Integer.MAX_VALUE,params);
+    }
+
+
+    @PostMapping("/addNewStamperInfo")
+    @ResponseBody
+    public Integer addNewStamperInfo(@RequestParam Map<String, String> params){
+        return gzglService.addNewStamperInfo(params);
+    }
+
+    @GetMapping("/yzsytj")
+    public String goTjPage(){
+        return "swgl/yzgl/yzshtj";
     }
 
 

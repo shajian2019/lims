@@ -15,4 +15,6 @@ public interface GzglMapper {
 
     public Integer editNewStamperTypeInfo(Map<String, String> params);
 
+    public Integer addNewStamperInfo(Map<String, String> params);
+
 }

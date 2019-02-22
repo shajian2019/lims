@@ -6,12 +6,9 @@
         a.id,
         a.stamper_type,
         a.stamper_name,
-        a.keeper,
-        b.username as keeperName,
         a.createtime
-        FROM aff_t_stamper a, sys_t_user b
+        FROM aff_t_stamper a
         <where>
-            and a.keeper = b.u_id
             <if test="createtime != null and createtime != ''">
                 AND a.createtime = #{createtime}
              </if>
@@ -32,6 +29,9 @@
             <if test="type_info != null and type_info != ''">
                 <bind name="_type_info" value="'%'+type_info+'%'"/>
                 AND type_info like #{_type_info}
+            </if>
+            <if test="id != null and id != ''">
+                AND id = #{id}
             </if>
         </where>
     </select>
@@ -66,7 +66,10 @@
         </where>
     </delete>
 
-
+    <insert id="addNewStamperInfo" keyProperty="id" useGeneratedKeys="true" parameterType="java.util.Map" >
+        INSERT INTO aff_t_stamper(stamper_type,stamper_name,createtime)
+        VALUES (#{stamper_type},#{stamper_name},now())
+    </insert>
 
     <select id="getzdgzysh" resultType="java.util.Map" parameterType="java.util.Map">
         SELECT

@@ -72,7 +72,7 @@
     <div class="layui-form-item">
            <label class="layui-form-label">印章名称:</label>
         <div class="layui-inline">
-            <input name="kilometres" lay-verify="required" placeholder="公里数" class="layui-input" type="text" value="${(car.kilometres)!''}" id="stamper_name" name="stamper_name"/>
+            <input lay-verify="required" placeholder="印章名称" class="layui-input" type="text" value="${(car.kilometres)!''}" id="stamper_name" name="stamper_name"/>
         </div>
     </div>
 
@@ -108,37 +108,35 @@
 
 
 
-        // form.on('submit(save)', function (data) {
-        //     console.log(data);
-        //     var url = "${ctx}/swgl/clgl/editCar";
-        //     // data.field.flag = '${map.flag}';
-        //     // data.field.c_id = '${(car.c_id)!''}';
-        //     var index;
-        //     $.ajax({
-        //         type: "POST",
-        //         data: data.field,
-        //         url: url,
-        //         beforeSend: function () {
-        //             index = layer.load(1);
-        //         },
-        //         success: function (data) {
-        //             layer.close(index);
-        //             if (data > 0) {
-        //                 var msg = "保存成功";
-        //                 layer.msg(msg, {offset: ['50%'], time: 1000}, function () {
-        //                     index = parent.layer.getFrameIndex(window.name);
-        //                     parent.layer.close(index);
-        //                 });
-        //             } else {
-        //                 layer.msg("操作失败")
-        //             }
-        //         },
-        //         error: function (data) {
-        //             layer.msg("服务端异常");
-        //         }
-        //     });
-        //     return false;
-        // });
+        form.on('submit(save)', function (data) {
+            console.log(data);
+            var url = "${ctx}/swgl/yzgl/addNewStamperInfo";
+            var index;
+            $.ajax({
+                type: "POST",
+                data: data.field,
+                url: url,
+                beforeSend: function () {
+                    index = layer.load(1);
+                },
+                success: function (data) {
+                    layer.close(index);
+                    if (data > 0) {
+                        var msg = "保存成功";
+                        layer.msg(msg, {offset: ['50%'], time: 1000}, function () {
+                            index = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(index);
+                        });
+                    } else {
+                        layer.msg("操作失败")
+                    }
+                },
+                error: function (data) {
+                    layer.msg("服务端异常");
+                }
+            });
+            return false;
+        });
 
         //取消
         $("#cancel").click(function () {
