@@ -28,120 +28,209 @@
                     <div class="layui-inline">
                         <input type="text" class="layui-input" placeholder="消息内容" name="content">
                     </div>
-                    <a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-primary" lay-submit lay-filter="unreadsearch">查询</a>
-                    <a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-primary" lay-submit lay-filter="point">全部标记为已读</a>
+                    <a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-primary" lay-submit
+                        lay-filter="unreadsearch">查询</a>
+                    <a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-primary" lay-submit
+                        lay-filter="point">全部标记为已读</a>
                 </form>
                 <table id="unreadMsg" lay-filter="unreadMsg"></table>
             </div>
             <div class="layui-tab-item">
-	            <form class="layui-form layuiform">
-	                <div class="layui-inline">
+                <form class="layui-form layuiform">
+                    <div class="layui-inline">
                         <input type="text" class="layui-input" placeholder="消息标题" name="title">
                     </div>
                     <div class="layui-inline">
                         <input type="text" class="layui-input" placeholder="消息内容" name="content">
                     </div>
-                    <a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-primary" lay-submit lay-filter="readsearch">查询</a>
-                    <a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-primary" lay-submit lay-filter="delete">批量删除</a>
-	            </form>
-	            <table id="readMsg" lay-filter="readMsg"></table>
-        	</div>
+                    <a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-primary" lay-submit
+                        lay-filter="readsearch">查询</a>
+                    <a href="javascript:;" class="layui-btn layui-btn-sm layui-btn-primary" lay-submit
+                        lay-filter="delete">批量删除</a>
+                </form>
+                <table id="readMsg" lay-filter="readMsg"></table>
+            </div>
         </div>
 </body>
 <script src="${ctx}/plugins/layui/layui.all.js"></script>
 
 <script>
-    var element = layui.element,form = layui.form,table = layui.table,readMsg = "readMsg",unreadMsg="unreadMsg",readMsgObj,unreadMsgObj;
+    var element = layui.element, form = layui.form, table = layui.table, readMsg = "readMsg", unreadMsg = "unreadMsg", readMsgObj, unreadMsgObj,$ = layui.jquery;
     unreadMsgObj = table.render({
-        elem: '#'+unreadMsg,
+        elem: '#' + unreadMsg,
+        id:unreadMsg,
         height: "full-130",
-        method:'GET',
-        where: {"recipientId":"${USER.u_id}","status":"0"},
+        method: 'GET',
+        where: { "recipientId": "${USER.u_id}", "status": "0" },
         url: '${ctx}/message/list',
         page: true,
         cols: [
             [
-           	{checkbox: true},
-           	{
-                field: 'id',
-                hide:true
-            }, {
-                field: 'title',
-                title: '消息标题',
-                width: 200,
-                align: 'center'
-            }, {
-                field: 'content',
-                title: '信息内容',
-            }, {
-                field: 'createtime',
-                title: '创建时间',
-                width: 200,
-                align: 'center'
-            }]
-        ]
+                { checkbox: true },
+                {
+                    field: 'id',
+                    hide: true
+                }, {
+                    field: 'title',
+                    title: '消息标题',
+                    width: 200,
+                    align: 'center'
+                }, {
+                    field: 'content',
+                    title: '信息内容',
+                    event: 'content'
+                }, {
+                    field: 'createtime',
+                    title: '创建时间',
+                    width: 200,
+                    align: 'center'
+                }]
+        ],
+        done: function (res, curr, count) {
+            table.on('tool(unreadMsg)', function (obj) {
+                var data = obj.data;
+                if(obj.event == 'content'){
+                	layer.open({
+                        type: 1,
+                        title: "消息标题："+data.title,
+                        area: ['420px', '240px'], //宽高
+                        content: '<p style="padding:10px;">' + data.content + '</p>',
+                        end: function () {
+                            $.ajax({
+                                type: "post",
+                                url: "${ctx}/message/update",
+                                data: {"u_id":"${USER.u_id}","status":"1","m_ids":data.id},
+                                success: function (response) {
+                                    unreadMsgObj.reload();
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        }
     });
-   	
-   	form.on('submit(unreadsearch)', function (data) {
-   		data.field.recipientId = "${USER.u_id}";
-   		data.field.status = "0";
-   		console.log(data.field)
-   		unreadMsgObj.reload({
+
+    form.on('submit(unreadsearch)', function (data) {
+        data.field.recipientId = "${USER.u_id}";
+        data.field.status = "0";
+        unreadMsgObj.reload({
             where: data.field
         });
         return false;
     });
-   	
-   	form.on('submit(readsearch)', function (data) {
-   		data.field.recipientId = "${USER.u_id}";
-   		data.field.status = "1";
-   		console.log(data.field)
-   		readMsgObj.reload({
+
+    form.on('submit(readsearch)', function (data) {
+        data.field.recipientId = "${USER.u_id}";
+        data.field.status = "1";
+        console.log(data.field)
+        readMsgObj.reload({
             where: data.field
         });
         return false;
     });
-   	
-   	element.on('tab(docDemoTabBrief)', function(data){
-   	  if(data.index == 1){
-   		readMsgObj = table.render({
-   	        elem: '#'+readMsg,
-   	        height: "full-140",
-   	        method:'GET',
-   	        where: {"recipientId":"${USER.u_id}","status":"1"},
-   	        url: '${ctx}/message/list',
-   	        page: true,
-   	        cols: [
-   	            [
- 	            {checkbox: true},
-   	           	{
-   	                field: 'id',
-   	                hide:true
-   	            }, {
-   	                field: 'title',
-   	                title: '消息标题',
-   	                width: 200,
-   	                align: 'center'
-   	            }, {
-   	                field: 'content',
-   	                title: '信息内容',
-   	            }, {
-   	                field: 'createtime',
-   	                title: '创建时间',
-   	                width: 200,
-   	                align: 'center'
-   	            }, {
-   	                field: 'updatetime',
-   	                title: '查看时间',
-   	                width: 200,
-   	                align: 'center'
-   	            }]
-   	        ]
-   	    });
-   	  }else{
-   		unreadMsgObj.reload()
-   	  }
-   	});
-	
+    
+    form.on('submit(point)', function (data) {
+    	var checkStatus = table.checkStatus(unreadMsg); //idTest 即为基础参数 id 对应的值
+    	if(checkStatus.data.length == 0){
+    		
+    	} else {
+    		var rows = checkStatus.data;
+    		var m_ids = "";
+    		console.log(rows)
+    		$.each(rows,function(index,row){
+    			m_ids +=row.id+","
+    		})
+    		$.ajax({
+                type: "post",
+                url: "${ctx}/message/update",
+                data: {"u_id":"${USER.u_id}","status":"1","m_ids":m_ids},
+                success: function (response) {
+                    unreadMsgObj.reload();
+                }
+            });
+    	}
+        return false;
+    });
+
+    element.on('tab(docDemoTabBrief)', function (data) {
+        if (data.index == 1) {
+            readMsgObj = table.render({
+                elem: '#' + readMsg,
+                height: "full-140",
+                method: 'GET',
+                where: { "recipientId": "${USER.u_id}", "status": "1" },
+                url: '${ctx}/message/list',
+                page: true,
+                cols: [
+                    [
+                        { checkbox: true },
+                        {
+                            field: 'id',
+                            hide: true
+                        }, {
+                            field: 'title',
+                            title: '消息标题',
+                            width: 200,
+                            align: 'center'
+                        }, {
+                            field: 'content',
+                            title: '信息内容',
+                            event: 'content'
+                        }, {
+                            field: 'createtime',
+                            title: '创建时间',
+                            width: 200,
+                            align: 'center'
+                        }, {
+                            field: 'updatetime',
+                            title: '查看时间',
+                            width: 200,
+                            align: 'center'
+                        }]
+                ],
+                done: function (res, curr, count) {
+                    table.on('tool(readMsg)', function (obj) {
+                        var data = obj.data;
+                        if(obj.event == 'content'){
+                        	layer.open({
+                                type: 1,
+                                title: "消息标题："+data.title,
+                                area: ['420px', '240px'], //宽高
+                                content: '<p style="padding:10px;">' + data.content + '</p>',
+                            });
+                        }
+                    });
+                }
+            });
+        } else {
+            unreadMsgObj.reload()
+        }
+    });
+    
+    form.on('submit(delete)', function (data) {
+    	var checkStatus = table.checkStatus(readMsg); //idTest 即为基础参数 id 对应的值
+    	if(checkStatus.data.length == 0){
+    		
+    	} else {
+    		var rows = checkStatus.data;
+    		var m_ids = "";
+    		console.log(rows)
+    		$.each(rows,function(index,row){
+    			m_ids +=row.id+","
+    		})
+    		$.ajax({
+                type: "post",
+                url: "${ctx}/message/delete",
+                data: {"m_ids":m_ids},
+                success: function (response) {
+                    readMsgObj.reload();
+                }
+            });
+    	}
+        return false;
+    });
+
 </script>
+
 </html>
