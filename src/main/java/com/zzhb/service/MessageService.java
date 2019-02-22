@@ -1,5 +1,7 @@
 package com.zzhb.service;
 
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +17,7 @@ import com.github.pagehelper.PageInfo;
 import com.zzhb.domain.Message;
 import com.zzhb.mapper.MessageMapper;
 import com.zzhb.utils.LayUiUtil;
+import com.zzhb.websocket.MessageWebSocket;
 
 @Service
 public class MessageService {
@@ -34,5 +37,28 @@ public class MessageService {
 	@Transactional
 	public void saveMessage(List<Message> messages) {
 		messageMapper.addMessages(messages);
+	}
+
+	@Autowired
+	MessageWebSocket messageWebSocket;
+
+	@Transactional
+	public void updateMessage(Map<String, Object> params) {
+		List<String> m_ids = Arrays.asList(params.get("m_ids").toString().split(","));
+		params.put("m_ids", m_ids);
+		messageMapper.updateMessage(params);
+		Integer countMessages = messageMapper.countMessages(params.get("u_id").toString());
+		try {
+			messageWebSocket.sendtoUser(countMessages + "", params.get("u_id").toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Transactional
+	public void deleteMessage(Map<String, Object> params) {
+		List<String> m_ids = Arrays.asList(params.get("m_ids").toString().split(","));
+		params.put("m_ids", m_ids);
+		messageMapper.deleteMessage(params);
 	}
 }
