@@ -60,7 +60,7 @@
 <body>
 
 <form class="layui-form layui-form-pane" lay-filter="edit" action="/menus/update"
-      style="position: absolute;top: 50%;left:50%;margin:-210px 0 0 -265px ;">
+      style="">
     <div class="layui-form-item">
         <label class="layui-form-label">印章类型:</label>
         <div class="layui-inline">
@@ -68,13 +68,12 @@
                 <option value=""></option>
             </select>
         </div>
-        <label class="layui-form-label">印章名称:</label>
+    </div>
+    <div class="layui-form-item">
+           <label class="layui-form-label">印章名称:</label>
         <div class="layui-inline">
-            <input name="kilometres" lay-verify="required" placeholder="公里数" class="layui-input" type="text" value="${(car.kilometres)!''}"
-                id="stamper_name" name="stamper_name"
-            />
+            <input name="kilometres" lay-verify="required" placeholder="公里数" class="layui-input" type="text" value="${(car.kilometres)!''}" id="stamper_name" name="stamper_name"/>
         </div>
-
     </div>
 
     <div class="layui-btn-container">
