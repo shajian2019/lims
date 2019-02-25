@@ -74,7 +74,7 @@
 	</insert>
 	
 	<select id="getTodoTaskAndToClaimTask" resultType="java.util.Map" parameterType="java.util.Map">
-		SELECT a.*,oa.*,rp.* FROM(
+		SELECT a.*,pp.*,rp.* FROM(
 			SELECT DISTINCT
 				RES.* 
 			FROM
@@ -91,7 +91,15 @@
 				RES.ASSIGNEE_ IS NULL 
 				AND I.TYPE_ = 'candidate' 
 				AND ( I.USER_ID_ = #{u_id} ) 
-		) a LEFT JOIN oa_t_leave oa on a.PROC_INST_ID_ = oa.proid
+		) a 
+		  LEFT JOIN (SELECT
+			p.PROC_INST_ID_,
+			p.BUSINESS_KEY_ bk,
+			DATE_FORMAT( p.START_TIME_, '%Y-%m-%d %h:%i:%s' ) sqrq,
+			u.nickname sqr
+			FROM
+			act_hi_procinst p
+			LEFT JOIN sys_t_user u ON p.START_USER_ID_ = u.u_id) pp ON a.PROC_INST_ID_ = pp.PROC_INST_ID_
 		  LEFT JOIN ext_act_re_procdef rp on a.PROC_DEF_ID_ = rp.id
 		<where>
 			<if test="sqr !=null and sqr !=''">

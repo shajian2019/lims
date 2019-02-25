@@ -28,10 +28,14 @@
 		{{#  if(d.endTime == '' || d.endTime == null){ }}
 			<span style="color: #FFC125;">待处理</span>
    		{{#  } else { }}
-			{{#  if(d.sftg){ }}
-				<span style="color: green">已通过</span>
+			{{#  if(d.deleteReason){ }}
+				<span style="color: red">已撤销</span>
    			{{#  } else { }}
-				<span style="color: red">不通过</span>
+				{{#  if(d.sftg){ }}
+					<span style="color: green">已通过</span>
+   				{{#  } else { }}
+					<span style="color: red">不通过</span>
+   				{{#  } }}
    			{{#  } }}
    		{{#  } }}
    {{#  } }}

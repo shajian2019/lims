@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -42,6 +43,7 @@ import org.activiti.image.ProcessDiagramGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -54,14 +56,14 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zzhb.async.AsyncService;
 import com.zzhb.config.Props;
+import com.zzhb.domain.Table;
 import com.zzhb.domain.User;
 import com.zzhb.domain.activiti.HistoricProcessInstanceVO;
 import com.zzhb.domain.activiti.HistoricTaskInstanceVO;
-import com.zzhb.domain.activiti.Leave;
 import com.zzhb.domain.activiti.ProcessDefinitionExt;
 import com.zzhb.domain.activiti.ProcessDefinitionType;
 import com.zzhb.mapper.ActivitiMapper;
-import com.zzhb.mapper.LeaveMapper;
+import com.zzhb.mapper.TableMapper;
 import com.zzhb.mapper.UserMapper;
 import com.zzhb.mapper.UserSprMapper;
 import com.zzhb.utils.CustomProcessDiagramGenerator;
@@ -88,9 +90,6 @@ public class ActivitiService {
 
 	@Autowired
 	FormService formService;
-
-	@Autowired
-	LeaveMapper leaveMapper;
 
 	@Autowired
 	ProcessEngine pes;
@@ -388,11 +387,11 @@ public class ActivitiService {
 	HistoryService hs;
 
 	@Transactional
-	public Integer deleteProcessInstance(String processInstanceId, String deleteReason) {
+	public Integer deleteProcessInstance(String processInstanceId, String deleteReason,String key) {
 		runtimeService.deleteProcessInstance(processInstanceId, deleteReason);
-		Map<String, Object> params = new HashMap<>();
-		params.put("proid", processInstanceId);
-		return leaveMapper.delLeave(params);
+		Table table = tableMapper.getTableByProcdefkey(key);
+		String sql = "DELETE FROM "+table.getPrefix()+table.getProcdefkey()+" WHERE proid = "+"'"+processInstanceId+"'";
+		return jdbcTemplate.update(sql);
 	}
 
 	@Transactional
@@ -571,13 +570,37 @@ public class ActivitiService {
 		return result;
 	}
 
+	@Autowired
+	JdbcTemplate jdbcTemplate;
+
+	@Autowired
+	TableMapper tableMapper;
+
 	public Integer saveBusiness(String key, Map<String, String> params) {
-		Integer add = null;
-		if ("leave".equals(key)) {
-			Leave leave = JSON.parseObject(JSON.toJSONString(params), Leave.class);
-			add = leaveMapper.addLeave(leave);
+		Table table = tableMapper.getTableByProcdefkey(key);
+		if (table != null) {
+			Set<String> set = new HashSet<>();
+			String cols = table.getCols().trim();
+			List<String> asList = Arrays.asList(cols.split(","));
+			for (String string : asList) {
+				set.add(string.trim());
+			}
+			cols = "";
+			String values = "";
+			for (String string : set) {
+				cols += string + ",";
+				String value = params.get(string) == null ? "" : params.get(string);
+				values += "'" + value + "'" + ",";
+			}
+			cols = " (" + cols.substring(0, cols.length() - 1) + ") ";
+			values = " (" + values.substring(0, values.length() - 1) + ") ";
+
+			String sql = "INSERT INTO " + table.getPrefix().trim() + table.getProcdefkey().trim() + cols + "VALUES"
+					+ values;
+			return jdbcTemplate.update(sql);
+		} else {
+			return 0;
 		}
-		return add;
 	}
 
 	// 我发起的流程查询
@@ -943,56 +966,64 @@ public class ActivitiService {
 		Map<String, String> data = new HashMap<>();
 		List<HistoricTaskInstance> list = hs.createHistoricTaskInstanceQuery().processInstanceBusinessKey(bk).finished()
 				.orderByTaskCreateTime().asc().list();
-		if ("leave".equals(key)) {
-			Leave leave = leaveMapper.getLeave(params);
-			data.put("sqr", leave.getSqr());
-			data.put("bmmc", leave.getBmmc());
+		Table table = tableMapper.getTableByProcdefkey(key);
+		if (table == null) {
+			result.put("code", 0);
+			result.put("msg", "未维护sys_t_table表");
+		} else {
+			String sql = "SELECT * FROM " + table.getPrefix().trim() + table.getProcdefkey().trim();
+			sql += " WHERE bk = '" + bk + "'";
+			Map<String, Object> map = jdbcTemplate.queryForMap(sql);
+			if ("leave".equals(key)) {
+				data.put("sqr", map.get("sqr").toString());
+				data.put("bmmc", map.get("bmmc").toString());
 
-			String ksrq = leave.getKsrq();
-			data.put("ksrq_year", ksrq.substring(0, 4));
-			data.put("ksrq_month", ksrq.substring(5, 7));
-			data.put("ksrq_day", ksrq.substring(8, 10));
+				String ksrq = map.get("ksrq").toString();
+				data.put("ksrq_year", ksrq.substring(0, 4));
+				data.put("ksrq_month", ksrq.substring(5, 7));
+				data.put("ksrq_day", ksrq.substring(8, 10));
 
-			String jsrq = leave.getJsrq();
-			data.put("jsrq_year", jsrq.substring(0, 4));
-			data.put("jsrq_month", jsrq.substring(5, 7));
-			data.put("jsrq_day", jsrq.substring(8, 10));
+				String jsrq = map.get("jsrq").toString();
+				data.put("jsrq_year", jsrq.substring(0, 4));
+				data.put("jsrq_month", jsrq.substring(5, 7));
+				data.put("jsrq_day", jsrq.substring(8, 10));
 
-			data.put("qjlx", leave.getQjlx());
-			data.put("qjly", leave.getQjly());
+				data.put("qjlx", map.get("qjlx").toString());
+				data.put("qjly", map.get("qjly").toString());
 
-			for (HistoricTaskInstance hi : list) {
-				String endtime = TimeUtil.getTimeByCustom("yyyy-MM-dd", hi.getEndTime());
-				List<Comment> taskComments = taskService.getTaskComments(hi.getId(), "comment");
-				for (Comment comment : taskComments) {
-					JSONObject commentJ = JSON.parseObject(comment.getFullMessage());
-					Set<String> keySet = commentJ.keySet();
-					for (String string : keySet) {
-						if (string.endsWith("spyj")) {
-							data.put(string, commentJ.getString(string));
-							String pre = string.split("_")[0] + "_";
-							data.put(pre + "year", endtime.substring(0, 4));
-							data.put(pre + "month", endtime.substring(5, 7));
-							data.put(pre + "day", endtime.substring(8, 10));
-							String assignee = commentJ.getString("assignee");
-							User userById = userMapper.getUserById(assignee);
-							data.put(pre + "spr", userById.getNickname());
-							logger.debug("===data===" + JSON.toJSONString(data));
-							break;
+				for (HistoricTaskInstance hi : list) {
+					String endtime = TimeUtil.getTimeByCustom("yyyy-MM-dd", hi.getEndTime());
+					List<Comment> taskComments = taskService.getTaskComments(hi.getId(), "comment");
+					for (Comment comment : taskComments) {
+						JSONObject commentJ = JSON.parseObject(comment.getFullMessage());
+						Set<String> keySet = commentJ.keySet();
+						for (String string : keySet) {
+							if (string.endsWith("spyj")) {
+								data.put(string, commentJ.getString(string));
+								String pre = string.split("_")[0] + "_";
+								data.put(pre + "year", endtime.substring(0, 4));
+								data.put(pre + "month", endtime.substring(5, 7));
+								data.put(pre + "day", endtime.substring(8, 10));
+								String assignee = commentJ.getString("assignee");
+								User userById = userMapper.getUserById(assignee);
+								data.put(pre + "spr", userById.getNickname());
+								logger.debug("===data===" + JSON.toJSONString(data));
+								break;
+							}
 						}
 					}
 				}
-			}
-		} else {
+			} else if ("chapter".equals(key)) {
 
-		}
-		String path = PdfUtil.createPdfByTemp(tempPath, outPdfPath, data);
-		if (path != null) {
-			result.put("code", 1);
-			result.put("msg", pdfName);
-		} else {
-			result.put("code", 0);
-			result.put("msg", "pdf生成失败");
+			}
+			String path = PdfUtil.createPdfByTemp(tempPath, outPdfPath, data);
+			if (path != null) {
+				result.put("code", 1);
+				result.put("msg", pdfName);
+			} else {
+				result.put("code", 0);
+				result.put("msg", "pdf生成失败");
+			}
 		}
 		return result;
 	}

@@ -38,7 +38,8 @@ public class ProcessExpireTask implements Runnable {
 			Long zdcxsc = Long.parseLong(map.get("zdcxsc").toString()) * 3600 * 1000;
 			Long times = nowDate.getTime() - startTime.getTime();
 			if (times >= zdcxsc) {
-				activitiService.deleteProcessInstance(map.get("PROC_INST_ID_").toString(), "实例已过期，自动撤销");
+				// todo
+				activitiService.deleteProcessInstance(map.get("PROC_INST_ID_").toString(), "实例已过期，自动撤销", "");
 				count++;
 			}
 		}

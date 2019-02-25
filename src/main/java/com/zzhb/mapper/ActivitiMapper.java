@@ -35,7 +35,7 @@ public interface ActivitiMapper {
 	@Select("SELECT * from ext_act_proctype")
 	public List<ProcessDefinitionType> getProcessDefinitionTypes();
 
-	@Select("SELECT rp.* FROM ext_act_proctype p LEFT JOIN ext_act_re_procdef rp on p.type = rp.protype WHERE p.type = #{0} and rp.key is not null")
+	@Select("SELECT rp.* FROM ext_act_proctype p LEFT JOIN ext_act_re_procdef rp on p.type = rp.protype WHERE p.type = #{0} and rp.key is not null and rp.version = (SELECT max(version) FROM	ext_act_re_procdef WHERE `key` = rp.`key`)")
 	public List<ProcessDefinitionExt> getProcessDefinitionExtByProType(String proType);
 
 	public Integer addProcessDefinitionType(ProcessDefinitionType processDefinitionType);
