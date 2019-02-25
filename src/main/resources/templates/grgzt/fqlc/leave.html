@@ -74,21 +74,6 @@
             }
         });
 		
-		$.ajax({
-            type: "get",
-            data: {gtype:'gzsc_type'},
-            url: "${ctx}/dict/get",
-            success: function (data) {
-				$.each(data, function (index, item) {
-                    $('#gzsc').append(new Option(item.name, item.value));// 下拉菜单里添加元素
-                });
-				form.render("select");
-            },
-            error: function (data) {
-                layer.msg("服务端异常");
-            }
-        });
-		
 		laydate.render({
 		   elem: '#ksrq'
 		   ,type: 'datetime'

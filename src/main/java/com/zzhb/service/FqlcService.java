@@ -20,6 +20,7 @@ import com.zzhb.mapper.ActivitiMapper;
 import com.zzhb.mapper.OrgMapper;
 import com.zzhb.mapper.UserSprMapper;
 import com.zzhb.utils.LayUiUtil;
+import com.zzhb.utils.ZtreeUtil;
 
 @Service
 public class FqlcService {
@@ -29,7 +30,7 @@ public class FqlcService {
 
 	@Autowired
 	UserSprMapper userSprMapper;
-	
+
 	@Autowired
 	OrgMapper orgMapper;
 
@@ -50,7 +51,7 @@ public class FqlcService {
 		UserSpr userSprs = userSprMapper.getUserSprs(userSpr);
 		if (userSprs != null) {
 			List<String> asList = Arrays.asList(userSprs.getSprs().split(","));
-			Map<String, String> params = new HashMap<>(); 
+			Map<String, String> params = new HashMap<>();
 			for (String key : asList) {
 				params.put("o_id", key.split("#")[0]);
 				params.put("u_id", key.split("#")[1]);
@@ -59,8 +60,18 @@ public class FqlcService {
 		}
 		return sprs;
 	}
-	
+
 	public List<Org> getOrgs(String u_id) {
 		return orgMapper.getUserOrgByUid(u_id);
+	}
+
+	public List<Map<String, Object>> getZtreeChapters() {
+		List<Map<String, Object>> chapters = activitiMapper.getChapters();
+		for (Map<String, Object> map : chapters) {
+			if ("0".equals(map.get("parentid"))) {
+				map.put("nocheck", true);
+			}
+		}
+		return ZtreeUtil.getStandardJSON(chapters);
 	}
 }

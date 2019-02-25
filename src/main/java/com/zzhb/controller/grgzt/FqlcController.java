@@ -1,5 +1,6 @@
 package com.zzhb.controller.grgzt;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -72,7 +73,7 @@ public class FqlcController {
 		Object renderedStartForm = formService.getRenderedStartForm(processDefinitionId);
 		String startFormKey = formService.getStartFormKey(processDefinitionId);
 		String businessKey = TimeUtil.getTimeByCustom("yyyyMMddHHmmss") + user.getU_id();
-		modelMap.put(key, initLeave(user, businessKey));
+		modelMap.put(key, initData(key, user, businessKey));
 		modelMap.put("form", renderedStartForm);
 		modelMap.put("formkey", startFormKey);
 		return "grgzt/fqlc/" + key;
@@ -85,13 +86,12 @@ public class FqlcController {
 		return as.startProcessInstance(key, params);
 	}
 
-	private Leave initLeave(User user, String bk) {
-		Leave leave = new Leave();
-		leave.setU_id(user.getU_id() + "");
-		leave.setSqr(user.getNickname());
-		leave.setBk(bk);
-		leave.setSqrq(TimeUtil.getTimeByCustom("yyyy-MM-dd HH:mm:ss"));
-		return leave;
+	private Object initData(String key, User user, String bk) {
+		Map<String, Object> data = new HashMap<String, Object>();
+		data.put("sqr", user.getNickname());
+		data.put("bk", bk);
+		data.put("sqrq", TimeUtil.getTimeByCustom("yyyy-MM-dd HH:mm:ss"));
+		return data;
 	}
 
 	@GetMapping("/spr")
@@ -117,5 +117,11 @@ public class FqlcController {
 	@ResponseBody
 	public List<Org> getOrgs(String u_id) {
 		return fqlcService.getOrgs(u_id);
+	}
+
+	@GetMapping("/getZtreeChapter")
+	@ResponseBody
+	public List<Map<String, Object>> getZtreeChapter() {
+		return fqlcService.getZtreeChapters();
 	}
 }

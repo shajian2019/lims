@@ -50,6 +50,7 @@
 				and ext.version = (SELECT max(version) FROM	ext_act_re_procdef WHERE `key` = ext.`key`)
 			</if>
 		</where>
+		ORDER BY createtime
 	</select>
 	
 	<delete id="delProcessDefinitionExt" parameterType="java.util.Map">
@@ -131,4 +132,21 @@
 			</if>
 		</where>
 	</delete>
+	
+	<select id="getChapters" resultType="java.util.Map">
+		SELECT
+			id,
+			type_info name,
+			"0" parentid 
+		FROM
+			aff_t_stamper_type UNION ALL
+		SELECT
+			CONCAT("C",s.id) id,
+			s.stamper_name name,
+			t.id parentid 
+		FROM
+			aff_t_stamper s
+			LEFT JOIN aff_t_stamper_type t ON s.stamper_type = t.id
+	</select>
+	
 </mapper>
