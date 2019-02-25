@@ -1,5 +1,6 @@
 package com.zzhb.controller.swgl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.zzhb.service.GzglService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,11 +50,11 @@ public class GzglController {
         return mv;
     }
 
-    @PostMapping("/addNewStamperTypeInfo")
+    @PostMapping("/addNewStamperType")
     @ResponseBody
     public Integer addNewStamperType(@RequestParam Map<String, String> params){
-//        return gzglService.addNewStamperType(params);
-        return 1;
+        return gzglService.addNewStamperType(params);
+//        return 1;
     }
 
     @PostMapping("/deleteStamperType")
@@ -69,8 +70,11 @@ public class GzglController {
     }
 
     @GetMapping("/addNewStamper")
-    public String addNewStamperPage(){
-        return "swgl/yzgl/addNewStamper";
+    public ModelAndView addNewStamperPage(@RequestParam Map<String, String> params){
+        ModelAndView mv = new ModelAndView();
+        mv.addObject("params",params);
+        mv.setViewName("swgl/yzgl/addNewStamper");
+        return mv;
     }
 
     @GetMapping("/stampertypeselect")
@@ -91,6 +95,22 @@ public class GzglController {
         return "swgl/yzgl/yzshtj";
     }
 
+    @GetMapping("/stamperUsageCount")
+    @ResponseBody
+    public JSONObject stamperUsageCount(Integer page, Integer limit, @RequestParam Map<String, String> params){
+        return gzglService.stamperUsageCount(page,limit,params);
+    }
 
+    @PostMapping("/deleteStamper")
+    @ResponseBody
+    public Integer deleteStamper(@RequestParam Map<String, String> params){
+        return gzglService.deleteStamper(params);
+    }
+
+    @PostMapping("/editStamperInfo")
+    @ResponseBody
+    public Integer editStamperInfo(@RequestParam Map<String, String> params){
+        return gzglService.editStamperInfo(params);
+    }
 
 }

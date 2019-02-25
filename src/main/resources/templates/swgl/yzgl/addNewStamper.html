@@ -72,7 +72,7 @@
     <div class="layui-form-item">
            <label class="layui-form-label">印章名称:</label>
         <div class="layui-inline">
-            <input lay-verify="required" placeholder="印章名称" class="layui-input" type="text" value="${(car.kilometres)!''}" id="stamper_name" name="stamper_name"/>
+            <input lay-verify="required" placeholder="印章名称" class="layui-input" type="text" value="${(params.stamper_name)!''}" id="stamper_name" name="stamper_name"/>
         </div>
     </div>
 
@@ -99,8 +99,8 @@
                 $.each(data.data, function (index, item) {
                     $('#stamper_type').append(new Option(item.type_info, item.id));// 下拉菜单里添加元素
                 });
-                if ('${(type_info)!''}' != ''){
-                    $("#stamper_type").val('${(type_info)!''}');
+                if ('${(params.stamper_type)!''}' != ''){
+                    $("#stamper_type").val('${(params.stamper_type)!''}');
                 }
                 layui.form.render("select");
             }
@@ -109,32 +109,62 @@
 
 
         form.on('submit(save)', function (data) {
+            var flag = "${params.flag}";
             console.log(data);
-            var url = "${ctx}/swgl/yzgl/addNewStamperInfo";
             var index;
-            $.ajax({
-                type: "POST",
-                data: data.field,
-                url: url,
-                beforeSend: function () {
-                    index = layer.load(1);
-                },
-                success: function (data) {
-                    layer.close(index);
-                    if (data > 0) {
-                        var msg = "保存成功";
-                        layer.msg(msg, {offset: ['50%'], time: 1000}, function () {
-                            index = parent.layer.getFrameIndex(window.name);
-                            parent.layer.close(index);
-                        });
-                    } else {
-                        layer.msg("操作失败")
+            if(flag=="add"){
+                var url = "${ctx}/swgl/yzgl/addNewStamperInfo";
+                $.ajax({
+                    type: "POST",
+                    data: data.field,
+                    url: url,
+                    beforeSend: function () {
+                        index = layer.load(1);
+                    },
+                    success: function (data) {
+                        layer.close(index);
+                        if (data > 0) {
+                            var msg = "保存成功";
+                            layer.msg(msg, {offset: ['50%'], time: 1000}, function () {
+                                index = parent.layer.getFrameIndex(window.name);
+                                parent.layer.close(index);
+                            });
+                        } else {
+                            layer.msg("操作失败")
+                        }
+                    },
+                    error: function (data) {
+                        layer.msg("服务端异常");
                     }
-                },
-                error: function (data) {
-                    layer.msg("服务端异常");
-                }
-            });
+                });
+            }else if(flag == "edit"){
+                var url = "${ctx}/swgl/yzgl/editStamperInfo";
+                data.field.id="${(params.id)!''}";
+                $.ajax({
+                    type: "POST",
+                    data: data.field,
+                    url: url,
+                    beforeSend: function () {
+                        index = layer.load(1);
+                    },
+                    success: function (data) {
+                        layer.close(index);
+                        if (data > 0) {
+                            var msg = "保存成功";
+                            layer.msg(msg, {offset: ['50%'], time: 1000}, function () {
+                                index = parent.layer.getFrameIndex(window.name);
+                                parent.layer.close(index);
+                            });
+                        } else {
+                            layer.msg("操作失败")
+                        }
+                    },
+                    error: function (data) {
+                        layer.msg("服务端异常");
+                    }
+                });
+            }
+
             return false;
         });
 

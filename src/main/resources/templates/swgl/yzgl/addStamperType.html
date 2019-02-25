@@ -195,8 +195,8 @@
     <div class="layui-form-item">
         <label class="layui-form-label">印章类型：</label>
         <div class="layui-inline">
-            <textarea name="type_info" placeholder="请输入内容" class="layui-textarea"
-                      lay-verify="required" style="height:250px;"></textarea>
+            <input name="type_info" placeholder="请输入内容" class="layui-input"
+                      lay-verify="required" />
         </div>
     </div>
     <div class="layui-btn-container">
@@ -209,7 +209,7 @@
 <script type="text/javascript">
     var $ = layui.jquery, treeSelect = layui.treeSelect, form = layui.form, layer = layui.layer, upload = layui.upload;
 
-    layui.use(['form', 'layer', 'dtree', 'upload', 'laydate'], function () {
+    layui.use(['form', 'layer',  'upload', 'laydate'], function () {
         var $ = layui.jquery;
         var form = layui.form;
 

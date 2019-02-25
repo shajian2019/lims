@@ -66,69 +66,84 @@
         </where>
     </delete>
 
+    <delete id="deleteStamper" parameterType="java.util.Map">
+        DELETE FROM aff_t_stamper
+        <where>
+            <if test="id != null and id != ''">
+                id = #{id}
+            </if>
+        </where>
+    </delete>
+
     <insert id="addNewStamperInfo" keyProperty="id" useGeneratedKeys="true" parameterType="java.util.Map" >
         INSERT INTO aff_t_stamper(stamper_type,stamper_name,createtime)
         VALUES (#{stamper_type},#{stamper_name},now())
     </insert>
 
-    <select id="getzdgzysh" resultType="java.util.Map" parameterType="java.util.Map">
-        SELECT
-        a.id,
-        a.title,
-        a.content,
-        a.attach_id,
-        a.createtime,
-        a.submitter,
-        b.username as submitterName,
-        a.audit_state,
-        a.distribution_state,
-        a.principal,
-        a.auditter
-        FROM aff_t_zdgz a, sys_t_user b
+    <select id="stamperUsageCount" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT count(*) as amount,
+        a.stamper_id,
+        date_format(a.apply_time,'%Y-%m') as apply_date,
+        b.stamper_name
+        FROM `aff_t_stamper_usage_statistics` a,aff_t_stamper b
         <where>
-            and a.audit_state = 1 and a.submitter = b.u_id
-            <if test="createtime != null and createtime != ''">
-                AND createtime = #{createtime}
+            and a.stamper_id = b.id
+            <if test="apply_time != null and apply_time != ''">
+                AND date_format(apply_time,'%Y-%m') = #{apply_time}
             </if>
-            <if test="title != null and title != ''">
-                <bind name="_title" value="'%'+title+'%'"/>
-                AND title like #{_title}
-            </if>
-            <if test="auditter != null and auditter != ''">
-                AND auditter = #{auditterid}
+            <if test="stamper_name != null and stamper_name != ''">
+                <bind name="_stamper_name" value="'%'+stamper_name+'%'"/>
+                AND b.stamper_name like #{_stamper_name}
             </if>
         </where>
-        order by a.createtime desc
+        GROUP BY apply_date
+        order by apply_time desc
     </select>
 
-
-    <select id="getzdgzyjz" resultType="java.util.Map" parameterType="java.util.Map">
-        SELECT
-        a.id,
-        a.zdgz_id,
-        a.work_content,
-        a.createtime,
-        a.submitter,
-        b.username as submitterName
-        FROM aff_t_zdgzjz a, sys_t_user b
+    <update id="editStamperInfo" parameterType="java.util.Map">
+        UPDATE aff_t_stamper
+        <set>
+            <if test="stamper_type != null and stamper_type !='' ">
+                stamper_type = #{stamper_type},
+            </if>
+            <if test="stamper_name != null and stamper_name !='' ">
+                stamper_name = #{stamper_name},
+            </if>
+        </set>
         <where>
-            and a.submitter = b.u_id
-            <if test="createtime != null and createtime != ''">
-                AND a.createtime = #{createtime}
+            <if test="id != null and id !='' ">
+                AND id = #{id}
             </if>
-            <if test="work_content != null and work_content != ''">
-                <bind name="_work_content" value="'%'+work_content+'%'"/>
-                AND a.work_content like #{_work_content}
-            </if>
-
         </where>
-        order by a.createtime desc
-    </select>
+    </update>
 
-    <insert id="addZdgzjz" keyProperty="id" useGeneratedKeys="true" parameterType="java.util.Map" >
-        INSERT INTO aff_t_zdgzjz(zdgz_id,work_content,createtime,submitter)
-        VALUES (#{zdgz_id},#{work_content},now(),#{submitter})
-    </insert>
+    <!--<select id="getzdgzyjz" resultType="java.util.Map" parameterType="java.util.Map">-->
+        <!--SELECT-->
+        <!--a.id,-->
+        <!--a.zdgz_id,-->
+        <!--a.work_content,-->
+        <!--a.createtime,-->
+        <!--a.submitter,-->
+        <!--b.username as submitterName-->
+        <!--FROM aff_t_zdgzjz a, sys_t_user b-->
+        <!--<where>-->
+            <!--and a.submitter = b.u_id-->
+            <!--<if test="createtime != null and createtime != ''">-->
+                <!--AND a.createtime = #{createtime}-->
+            <!--</if>-->
+            <!--<if test="work_content != null and work_content != ''">-->
+                <!--<bind name="_work_content" value="'%'+work_content+'%'"/>-->
+                <!--AND a.work_content like #{_work_content}-->
+            <!--</if>-->
+
+        <!--</where>-->
+        <!--order by a.createtime desc-->
+    <!--</select>-->
+
+    <!--<insert id="addZdgzjz" keyProperty="id" useGeneratedKeys="true" parameterType="java.util.Map" >-->
+        <!--INSERT INTO aff_t_zdgzjz(zdgz_id,work_content,createtime,submitter)-->
+        <!--VALUES (#{zdgz_id},#{work_content},now(),#{submitter})-->
+    <!--</insert>-->
 
 
 

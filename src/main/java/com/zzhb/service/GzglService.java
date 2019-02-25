@@ -66,4 +66,18 @@ public class GzglService {
     }
 
 
+    public JSONObject stamperUsageCount(Integer page, Integer limit, Map<String, String> params){
+        PageHelper.startPage(page, limit);
+        List<Map<String,String>> stamperCountList = gzglMapper.stamperUsageCount(params);
+        PageInfo<Map<String, String>> pageInfo = new PageInfo<Map<String, String>>(stamperCountList);
+        return LayUiUtil.pagination(pageInfo);
+    }
+
+    public Integer deleteStamper(Map<String, String> params){
+        return gzglMapper.deleteStamper(params);
+    }
+    public Integer editStamperInfo(Map<String, String> params){
+        return gzglMapper.editStamperInfo(params);
+    }
+
 }

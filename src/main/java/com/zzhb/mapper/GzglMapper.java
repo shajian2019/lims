@@ -17,4 +17,9 @@ public interface GzglMapper {
 
     public Integer addNewStamperInfo(Map<String, String> params);
 
+    public List<Map<String,String>> stamperUsageCount(Map<String, String> params);
+
+    public Integer deleteStamper(Map<String, String> params);
+    public Integer editStamperInfo(Map<String, String> params);
+
 }

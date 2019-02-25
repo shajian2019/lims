@@ -105,30 +105,46 @@
             console.log(data);
             var action = obj.event;
             if (action == 'del') {
-                var index;
-                $.ajax({
-                    type: "post",
-                    data: {id: data.id},
-                    url: "${ctx}/",
-                    beforeSend: function () {
-                        index = layer.load(1);
-                    },
-                    success: function (data) {
-                        layer.close(index);
-                        if (data > 0) {
-                            layer.msg("删除成功", {offset: ['50%'], time: 1000}, function () {
-                                table.reload(tableId);
-                            });
-                        } else {
-                            layer.msg("操作失败");
+                layer.confirm('确定删除该印章信息吗?', function (index) {
+                    var index;
+                    $.ajax({
+                        type: "post",
+                        data: {id: data.id},
+                        url: "${ctx}/swgl/yzgl/deleteStamper",
+                        beforeSend: function () {
+                            index = layer.load(1);
+                        },
+                        success: function (data) {
+                            layer.close(index);
+                            if (data > 0) {
+                                layer.msg("删除成功", {offset: ['50%'], time: 1000}, function () {
+                                    table.reload(tableId);
+                                });
+                            } else {
+                                layer.msg("操作失败");
+                            }
+                        },
+                        error: function (data) {
+                            layer.msg("服务端异常");
                         }
-                    },
-                    error: function (data) {
-                        layer.msg("服务端异常");
-                    }
+                    });
                 });
             }else if(action == 'edit'){
-
+                var url = "${ctx}/swgl/yzgl/addNewStamper?flag=edit"
+                    + "&id="+data.id
+                    + "&stamper_type="+data.stamper_type
+                    + "&stamper_name="+data.stamper_name;
+                var table = layui.table;
+                layer.open({
+                    title: '印章信息修改',
+                    type: 2,
+                    offset: '50px',
+                    area: ['800px', '400px'],
+                    content: url,
+                    end: function () {
+                        table.reload(tableId);
+                    }
+                });
 
             }
         });
