@@ -118,9 +118,11 @@
 </script>
 <script type="text/html" id="rightBar">
     <div class="layui-btn-group">
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="details">
-            <i class="fa fa-file-pdf-o" title="pdf"></i>
-        </a>
+		{{#  if(d.deleteReason == null){ }}
+        	<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="details">
+            	<i class="fa fa-file-pdf-o" title="pdf"></i>
+        	</a>
+		{{#  } }}
         <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="preview">
             <i class="fa fa-image" title="流程图"></i>
         </a>

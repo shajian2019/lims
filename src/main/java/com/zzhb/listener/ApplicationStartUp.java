@@ -35,8 +35,9 @@ public class ApplicationStartUp implements InitializingBean {
 		logger.info("==============configuration================" + configuration);
 		configuration.setSharedVariable("ctx", contextpath);
 		initService.initParams();
-
 		String flushdb = redisService.flushdb();
 		logger.info("==============flushdb====" + flushdb + "============");
+		initService.initTask();
+		logger.info("==============initTask====");
 	}
 }

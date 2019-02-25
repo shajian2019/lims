@@ -6,8 +6,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class TaskService {
 
+	/**
+	 * 定时任务监测过期流程实例
+	 */
 	@Scheduled(cron = "0/30 * * * * ?")
-	public void task() {
-//		System.out.println("定时任务开始执行");
+	public void revoke() {
+
 	}
 }

@@ -2,11 +2,14 @@ package com.zzhb.controller.xtgl;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ScheduledFuture;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.zzhb.domain.Task;
 import com.zzhb.domain.common.Dict;
 import com.zzhb.domain.common.Icon;
 import com.zzhb.domain.common.Menu;
@@ -24,10 +28,12 @@ import com.zzhb.mapper.DictMapper;
 import com.zzhb.mapper.IconMapper;
 import com.zzhb.mapper.MenuMapper;
 import com.zzhb.mapper.ParamMapper;
+import com.zzhb.mapper.TaskMapper;
 import com.zzhb.service.DictService;
 import com.zzhb.service.IconService;
 import com.zzhb.service.MenuService;
 import com.zzhb.service.ParamService;
+import com.zzhb.service.TaskScheduleService;
 
 //系统设置
 @Controller
@@ -228,4 +234,63 @@ public class XtszController {
 	public Integer tbglPopDel(Icon icon) {
 		return iconService.tbglPodDel(icon.getId() + "");
 	}
+
+	@Autowired
+	TaskScheduleService taskScheduleService;
+
+	public static final Map<String, ScheduledFuture<?>> MAP = new ConcurrentHashMap<>();
+
+	@GetMapping("/dsrw")
+	public String task() {
+		return "xtgl/xtsz/dsrw/dsrw";
+	}
+
+	@GetMapping("/dsrw/list")
+	@ResponseBody
+	public JSONObject dsrwList(Integer page, Integer limit, @RequestParam Map<String, Object> params) {
+		return taskScheduleService.list(page, limit, params);
+	}
+
+	@PostMapping("/dsrw/start/{task}")
+	@ResponseBody
+	public Integer dsrwStart(@PathVariable("task") String task, @RequestParam String cron) {
+		return taskScheduleService.startTask(task, cron);
+	}
+
+	@PostMapping("/dsrw/stop/{taskId}")
+	@ResponseBody
+	public Integer dsrwStop(@PathVariable("taskId") String taskId) {
+		return taskScheduleService.stopTask(taskId);
+	}
+
+	// 设置定时任务是否自启
+	@PostMapping("/dsrw/sfzq")
+	@ResponseBody
+	public Integer sfzq(Task task) {
+		return taskScheduleService.sfzq(task);
+	}
+
+	@Autowired
+	TaskMapper taskMapper;
+
+	@GetMapping("/dsrw/addOrUpdate")
+	public ModelAndView addOrUpdate(@RequestParam Map<String, Object> params) {
+		ModelAndView model = new ModelAndView();
+		String flag = params.get("flag").toString();
+		String url = "xtgl/xtsz/dsrw/addOrUpdate";
+		model.setViewName(url);
+		if (flag.equals("update")) {
+			Task task = taskMapper.getTasks(params).get(0);
+			model.addObject("task", task);
+		}
+		model.addObject("map", params);
+		return model;
+	}
+
+	@PostMapping("/dsrw/add")
+	@ResponseBody
+	public Integer add(Task task, String flag, String oldTaskId) {
+		return taskScheduleService.add(task, flag, oldTaskId);
+	}
+
 }

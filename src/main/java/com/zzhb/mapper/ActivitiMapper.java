@@ -51,4 +51,7 @@ public interface ActivitiMapper {
 	public Integer updateHiTaskInst(Map<String, String> params);
 
 	public void delHiActInst(@Param("lists") List<String> list);
+
+	@Select("SELECT PROC_INST_ID_,START_TIME_,zdcxsc FROM act_hi_procinst ap LEFT JOIN ext_act_re_procdef ep on ap.PROC_DEF_ID_ = ep.id WHERE ap.END_TIME_ is null and ep.zdcxsc is not null")
+	public List<Map<String, Object>> getUnfinishedProcessInstanceAndHavingZdcxsc();
 }

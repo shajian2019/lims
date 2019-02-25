@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzhb.mapper.TaskMapper">
+	
+	<select id="getTasks" resultType="com.zzhb.domain.Task" parameterType="java.util.Map">
+		SELECT * FROM sys_t_task
+		<where>
+			<if test="id !=null and id !=''">
+				and id = #{id}
+			</if>
+			<if test="sfzq !=null and sfzq !=''">
+				and sfzq = #{sfzq}
+			</if>
+			<if test="taskId !=null and taskId !=''">
+				<bind name="_taskId" value="'%'+taskId+'%'"/>
+				and taskId like #{_taskId}
+			</if>
+			<if test="taskName !=null and taskName !=''">
+				<bind name="_taskName" value="'%'+taskName+'%'"/>
+				and taskName like #{_taskName}
+			</if>
+		</where>
+	</select>
+	
+	<update id="updateTask" parameterType="com.zzhb.domain.Task">
+		update sys_t_task
+		<set>
+			<if test="taskId !=null and taskId !=''">
+				taskId = #{taskId},
+			</if>
+			<if test="taskName !=null and taskName !=''">
+				taskName = #{taskName},
+			</if>
+			<if test="remark !=null and remark !=''">
+				remark = #{remark},
+			</if>
+			<if test="cron !=null and cron !=''">
+				cron = #{cron},
+			</if>
+			<if test="sfzq !=null and sfzq !=''">
+				sfzq = #{sfzq},
+			</if>
+			<if test="true">
+				updatetime = now(),
+			</if>
+		</set>
+		<where>
+			<if test="id !=null and id !=''">
+				and id = #{id}
+			</if>
+		</where>
+	</update>
+	
+	<insert id="addTask" parameterType="com.zzhb.domain.Task">
+		INSERT INTO sys_t_task (taskId,taskName,remark,cron,sfzq,createtime,createId)
+		VALUES (#{taskId},#{taskName},#{remark},#{cron},#{sfzq},now(),#{createId})
+	</insert>
+	
+</mapper>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>参数设置</title>
+    <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet"/>
+    <link href="${ctx}/css/common/reset.css" rel="stylesheet" />
+    <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet"/>
+    <style>
+        .layui-table, .layui-table-view {
+            margin: 0;
+        }
+        #query{margin-bottom: 5px;}
+    </style>
+</head>
+
+<body style="padding:5px;">
+<form class="layui-form" id="query">
+    <div class="layui-inline">
+        <input class="layui-input" type="text" placeholder="任务ID" name="taskId">
+    </div>
+    <div class="layui-inline">
+        <input class="layui-input" type="text" placeholder="任务名称" name="taskName">
+    </div>
+    <div class="layui-inline">
+        <a class="layui-btn layui-btn-primary" lay-submit="" lay-filter="query" datatype="reload">查询</a>
+        <a class="layui-btn layui-btn-primary" id="addBtn" onclick="add();">新增</a>
+    </div>
+</form>
+<table class="layui-hide" id="tableBox" lay-filter="tableBox"></table>
+</body>
+
+</html>
+<script type="text/html" id="rightBar">
+    <div class="layui-btn-group">
+		{{#  if(d.status == "0"){ }}
+			<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="play">
+				<i class="fa fa-play" title="开启"></i>
+			</a>
+   	    {{#  } else { }}
+			<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="stop">
+				<i class="fa fa-stop" title="停止"></i>
+			</a>
+   		{{#  } }}
+    </div>
+</script>
+<script src="${ctx}/plugins/layui/layui.all.js"></script>
+<script type="text/html" id="switch" >
+	<input type="checkbox" name="switch" lay-skin="switch" lay-filter="switchstatus" lay-text="自启|禁止" {{ d.sfzq == '1' ? 'checked' : '' }}>
+</script>
+<script>
+    var tableId = 'tableBox',index;
+    layui.use('table', function () {
+        var $ = layui.jquery;
+        var table = layui.table;
+        form = layui.form;
+        table.render({
+            elem: '#' + tableId,
+            url: '${ctx}/xtgl/xtsz/dsrw/list',
+            title: '参数设置',
+            page: true,
+            id: tableId,
+            method: 'get',
+            height: 'full-48',
+            cellMinWidth: 120,
+            cols: [
+                [{
+                    type: 'numbers',
+                    width: 50
+                }, {
+                    field: 'id',
+                    hide: true
+                }, {
+                    field: 'taskId',
+                    title: '任务ID',
+                    align:'center'
+                }, {
+                    field: 'taskName',
+                    title: '任务名称',
+                    align:'center'
+                }, {
+                    field: 'cron',
+                    title: 'cron表达式',
+                    align:'center'
+                }, {
+                    field: 'remark',
+                    title: '备注',
+                }, {
+                    field: 'updatetime',
+                    title: '修改时间',
+                }, {
+                    title: '是否自启',
+                    width: 100,
+                    align:'center',
+					templet:"#switch"
+                }, {
+                    title: '操作', align: 'center',
+                    width: 80,
+                    templet: '#rightBar'
+                }]
+            ],
+            page: true
+        });
+        table.on('tool(tableBox)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'play') {
+                $.ajax({
+        		    type: "post",
+        		    data:{cron:data.cron},
+        		    url: '${ctx}/xtgl/xtsz/dsrw/start/'+data.taskId,
+        		    beforeSend: function () {
+        		    	index = layer.load(1);
+        		    },
+        		    success: function (data) {
+        		    	layer.close(index)
+        		    	var msg = "";
+        		    	if(data > 0){
+        		    		msg = "修改成功";
+        		    	}else{
+        		    		msg = "修改失败";
+        		    	}
+        		    	layer.msg(msg,{offset:['50%'],time: 1000},function(){
+        		    		table.reload(tableId)
+                        });
+        		    },
+        		    error: function (data) {
+        		    	layer.close(index)
+        		    	layer.msg("服务器异常",{icon:2});
+        		    }
+        		});
+            	
+            } else if (obj.event === 'stop') {
+                $.ajax({
+        		    type: "post",
+        		    url: '${ctx}/xtgl/xtsz/dsrw/stop/'+data.taskId,
+        		    beforeSend: function () {
+        		    	index = layer.load(1);
+        		    },
+        		    success: function (data) {
+        		    	layer.close(index)
+        		    	var msg = "";
+        		    	if(data > 0){
+        		    		msg = "修改成功";
+        		    	}else{
+        		    		msg = "修改失败";
+        		    	}
+        		    	layer.msg(msg,{offset:['50%'],time: 1000},function(){
+        		    		table.reload(tableId)
+                        });
+        		    },
+        		    error: function (data) {
+        		    	layer.close(index)
+        		    	layer.msg("服务器异常",{icon:2});
+        		    }
+        		});
+            } else {
+            	 var url = "${ctx}/xtgl/xtsz/dsrw/addOrUpdate?flag=update&id="+data.id;
+                 var index = layer.open({
+                     title: '修改任务',
+                     type: 2,
+                     area: ['620px', '400px'],
+                     fixed: false, //不固定
+                     maxmin: true,
+                     content: url,
+                     end: function () {
+                         table.reload(tableId);
+                     }
+                 });
+                 layer.full(index);
+            }
+        })
+        form.on('submit(query)', function (data) {
+            console.log(data);
+            table.reload(tableId, {
+                where: data.field
+            });
+            return false;
+        });
+        
+        form.on('switch(switchstatus)', function(obj){
+			var selectIfKey=obj.othis;                                  
+			var parentTr = selectIfKey.parents("tr");
+			var id = $(parentTr).find("td:eq(1)").find(".layui-table-cell").text();
+		    var sfzq = obj.elem.checked == true? '1':'0';
+		    $.ajax({
+    		    type: "post",
+    		    data:{id:id,sfzq:sfzq},
+    		    url: '${ctx}/xtgl/xtsz/dsrw/sfzq',
+    		    beforeSend: function () {
+    		    	index = layer.load(1);
+    		    },
+    		    success: function (data) {
+    		    	layer.close(index)
+    		    	var msg = "";
+    		    	if(data > 0){
+    		    		msg = "修改成功";
+    		    	}else{
+    		    		msg = "修改失败";
+    		    	}
+    		    	layer.msg(msg,{offset:['50%'],time: 1000},function(){
+    		    		table.reload(tableId)
+                    });
+    		    },
+    		    error: function (data) {
+    		    	layer.close(index)
+    		    	layer.msg("服务器异常",{icon:2});
+    		    }
+    		});
+		})
+    });
+
+    function add() {
+        var url = "${ctx}/xtgl/xtsz/dsrw/addOrUpdate?flag=add";
+        var table = layui.table;
+        var index = layer.open({
+            title: '新增任务',
+            type: 2,
+            area: ['620px', '400px'],
+            fixed: false, //不固定
+            maxmin: true,
+            content: url,
+            end: function () {
+                table.reload(tableId);
+            }
+        });
+        layer.full(index);
+    }
+</script>
