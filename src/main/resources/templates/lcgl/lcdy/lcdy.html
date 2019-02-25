@@ -254,12 +254,42 @@
               , {field: 'name', width: 180, title: '流程名称',align:'center'}
               , {field: 'version', width: 70, title: '版本',align:'center'}
               , {field: 'createuser', width: 100, title: '创建人',align:'center'}
-              , {field: 'zdcxsc', width: 90, title: '撤销时长',align:'center'}
+              , {field: 'zdcxsc', width: 90, title: '撤销时长',align:'center',edit:'text'}
               , {field: 'createtime', width: 170, title: '创建时间',align:'center'}
               , {field: 'description', title: '备注',align:'center'}
               , {title: '操作', align: 'center', width: 120,toolbar: '#rightBar'}
           ]]
         });
+        
+        table.on('edit(' + tbID + ')', function(obj){ //注：edit是固定事件名，test是table原始容器的属性 lay-filter="对应的值"
+        	  var data = {};
+        	  data.id = obj.data.id;
+        	  data.zdcxsc = obj.value;
+        	  $.ajax({
+                  type: "post",
+                  data: data,
+                  url: "${ctx}/lcgl/lcdy/update",
+                  beforeSend: function () {
+                      index = layer.load(1);
+                  },
+                  success: function (data) {
+                      layer.close(index);
+                      if (data > 0) {
+                          layer.msg("修改成功", {offset: ['50%'], time: 1000}, function () {
+                              rightTB.reload({
+          	                    	where:{lastversion:true,protype:param.nodeId}
+          	               	 });
+                          });
+                      } else {
+                    	  
+                      }
+                  },
+                  error: function (data) {
+                      layer.close(index);
+                      layer.msg("服务端异常");
+                  }
+              });
+       	});
         
         /* 删除流程定义 */
         function delLcdy(data,param){
@@ -289,6 +319,7 @@
                      }
                  },
                  error: function (data) {
+                	 layer.close(index);
                      layer.msg("服务端异常");
                  }
              });

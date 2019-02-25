@@ -25,6 +25,9 @@ public interface ActivitiMapper {
 
 	public List<ProcessDefinitionExt> getProcessDefinitionExtsByUid(Map<String, String> params);
 
+	@Update("UPDATE ext_act_re_procdef set zdcxsc = #{zdcxsc},updatetime = now() WHERE id = #{id} ")
+	public Integer updateProcessDefinitionExtById(Map<String, String> params);
+
 	public Integer delProcessDefinitionExt(Map<String, String> params);
 
 	public List<User> getAddUsers(Map<String, String> params);

@@ -79,6 +79,12 @@ public class LcdyController {
 		return activitiService.lcdyDel(params);
 	}
 
+	@PostMapping("/update")
+	@ResponseBody
+	public Integer lcdyUpdate(@RequestParam Map<String, String> params) {
+		return activitiService.lcdyUpdate(params);
+	}
+
 	@PostMapping("/deploy")
 	@ResponseBody
 	public JSONObject deploy(@RequestParam("file") MultipartFile file, @RequestParam Map<String, String> params) {

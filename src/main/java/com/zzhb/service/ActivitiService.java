@@ -240,6 +240,11 @@ public class ActivitiService {
 		return activitiMapper.delProcessDefinitionExt(params);
 	}
 
+	@Transactional
+	public Integer lcdyUpdate(Map<String, String> params) {
+		return activitiMapper.updateProcessDefinitionExtById(params);
+	}
+
 	public String download(Map<String, String> params) {
 		String fileName = "";
 		String resource_name = params.get("resource_name");
