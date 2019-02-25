@@ -60,6 +60,9 @@ public class FileUtil {
 	public static List<String> readFilePath(String dir, String key) {
 		List<String> fileNames = new ArrayList<>();
 		File file = new File(dir);
+		if (!file.exists()) {
+			file.mkdirs();
+		}
 		File[] listFiles = file.listFiles();
 		for (File file2 : listFiles) {
 			String fileName = file2.getName();
