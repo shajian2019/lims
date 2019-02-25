@@ -24,6 +24,8 @@
 		.spr-close{cursor: pointer;position: absolute;top: 0;right: -7px;font-size: 12px;color: #fff;border-radius: 20px;width: 16px;background-color: #000;text-align: center;line-height: 16px;}
 		#layer-photos{display:flex;align-items: center;max-width: 500px;flex-wrap: wrap;}
 		#layer-photos img{width: 80px; height: 80px;display: block;margin-right: 5px;margin-bottom: 5px;}
+		.tree-yylx{position: relative;}
+		#yylx{position: absolute;z-index: 999;width: 178px;border:1px solid #e6e6e6;background-color: #fff;border-top:none;display: none;}
 	</style>
 </head>
 
@@ -53,9 +55,11 @@
        </div>
        <div class="layui-form-item">
         	<label class="layui-form-label"><span style="color:red;">*</span>用印类别</label>
-            <div class="layui-input-inline">
-               <input type="text" name="yylx" placeholder="用印类别" lay-verify="required" autocomplete="off" class="layui-input">
-            </div>
+            <div class="layui-input-inline tree-yylx">
+			   <input type="text" name="yylx" placeholder="用印类别" lay-verify="required" autocomplete="off" class="layui-input">
+			   <ul id="yylx" class="ztree"></ul>
+			</div>
+			
        </div>
        <div class="layui-form-item layui-form-text">
            <label class="layui-form-label">用印内容</label>
@@ -77,7 +81,6 @@
            </div>
        </div>
 </form>
-<ul id="yylx" class="ztree" style="margin-top:0; width:160px;"></ul>
 </body>
 <script src="${ctx}/plugins/ztree/js/jquery-1.4.4.min.js"></script>
 <script src="${ctx}/plugins/ztree/js/jquery.ztree.all.js"></script>
@@ -130,11 +133,33 @@
 			},
 			view:{
 				selectedMulti: false
+			},
+			callback:{
+				onClick:treeInput
 			}
 		};
 	
 		var ztree =$z.fn.zTree.init($("#yylx"), setting);
-		
+		$(".tree-yylx").hover(function () {
+				// over
+				$('#yylx').show();
+			}, function () {
+				$('#yylx').hide();
+			}
+		);
+		$('input[name="yylx"]').click(function(){
+			ztree.getNodeByParam("id",1);
+		});
+		$('input[name="yylx"]').blur(function (e) {
+			 
+			e.preventDefault();			
+		});
+		function  treeInput(event,treeId,treeNode) { 
+			if(!treeNode.children){
+				$('input[name="yylx"]').val(treeNode.name);
+				$('#yylx').hide();
+			}
+		 }
   	//申请
 	form.on('submit(sq)', function(data){
 		if(sprs.length > 0){
