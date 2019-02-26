@@ -1027,7 +1027,32 @@ public class ActivitiService {
 					}
 				}
 			} else if ("chapter".equals(key)) {
-
+				data.put("sqr", map.get("sqr").toString());
+				data.put("bmmc", map.get("bmmc").toString());
+				data.put("yylx", map.get("yylx").toString());
+				data.put("yyfs", map.get("yyfs").toString());
+				data.put("yynr", map.get("yynr").toString());
+				for (HistoricTaskInstance hi : list) {
+					String endtime = TimeUtil.getTimeByCustom("yyyy-MM-dd", hi.getEndTime());
+					List<Comment> taskComments = taskService.getTaskComments(hi.getId(), "comment");
+					for (Comment comment : taskComments) {
+						JSONObject commentJ = JSON.parseObject(comment.getFullMessage());
+						Set<String> keySet = commentJ.keySet();
+						for (String string : keySet) {
+							if (string.endsWith("spyj")) {
+								data.put(string, commentJ.getString(string));
+								data.put("year", endtime.substring(0, 4));
+								data.put("month", endtime.substring(5, 7));
+								data.put("day", endtime.substring(8, 10));
+								String assignee = commentJ.getString("assignee");
+								User userById = userMapper.getUserById(assignee);
+								data.put("spr", userById.getNickname());
+								break;
+							}
+						}
+					}
+				}
+				
 			}
 			String path = PdfUtil.createPdfByTemp(tempPath, outPdfPath, data);
 			if (path != null) {
