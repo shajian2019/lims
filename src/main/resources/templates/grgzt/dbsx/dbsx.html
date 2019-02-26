@@ -391,11 +391,22 @@
     })
     
     function sprw(title,taskId,bk){
-    	var options = {};
+    	/* var options = {};
     	options.id = taskId;
     	options.title = title;
     	options.icon = "fa-pencil";
     	options.url = "${ctx}/grgzt/dbsx/viewTask/"+taskId+"?bk="+bk;
-    	parent.window.addTab(options);
+    	parent.window.addTab(options); */
+    	var url = "${ctx}/grgzt/dbsx/viewTask/"+taskId+"?bk="+bk;
+    	var index = layer.open({
+            title: title,
+            type: 2,
+            area: ['1038px', '500px'],
+            content: url,
+            end: function(){
+            	tableObj.reload();
+      	  	}
+     	});
+    	layer.full(index);
     }
 </script>

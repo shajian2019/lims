@@ -387,10 +387,11 @@ public class ActivitiService {
 	HistoryService hs;
 
 	@Transactional
-	public Integer deleteProcessInstance(String processInstanceId, String deleteReason,String key) {
+	public Integer deleteProcessInstance(String processInstanceId, String deleteReason, String key) {
 		runtimeService.deleteProcessInstance(processInstanceId, deleteReason);
 		Table table = tableMapper.getTableByProcdefkey(key);
-		String sql = "DELETE FROM "+table.getPrefix()+table.getProcdefkey()+" WHERE proid = "+"'"+processInstanceId+"'";
+		String sql = "DELETE FROM " + table.getPrefix() + table.getProcdefkey() + " WHERE proid = " + "'"
+				+ processInstanceId + "'";
 		return jdbcTemplate.update(sql);
 	}
 
@@ -612,7 +613,15 @@ public class ActivitiService {
 		String dateS = params.get("dateS");
 		String dateE = params.get("dateE");
 		String keys = params.get("keys");
+		String finish = params.get("finish");
 
+		if (finish != null && !"".equals(finish)) {
+			if ("1".equals(finish)) {
+				hpiq.finished();
+			} else {
+				hpiq.unfinished();
+			}
+		}
 		if (u_id != null && !"".equals(u_id)) {
 			hpiq.startedBy(u_id);
 		}
@@ -662,7 +671,11 @@ public class ActivitiService {
 		String dateS = params.get("dateS");
 		String dateE = params.get("dateE");
 		String keys = params.get("keys");
+		String businessKey = params.get("businessKey");
 		HistoricTaskInstanceQuery hit = hs.createHistoricTaskInstanceQuery().finished().taskOwner(ownerid);
+		if (businessKey != null && !"".equals(businessKey)) {
+			hit.processInstanceBusinessKeyLike(businessKey);
+		}
 		if (keys != null && !"".equals(keys)) {
 			hit.processDefinitionKeyIn(Arrays.asList(keys.split(",")));
 		}

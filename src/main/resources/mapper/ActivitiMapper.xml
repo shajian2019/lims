@@ -104,10 +104,10 @@
 		<where>
 			<if test="sqr !=null and sqr !=''">
 				<bind name="_sqr" value="'%'+sqr+'%'"/>
-				and oa.sqr like #{_sqr}
+				and pp.sqr like #{_sqr}
 			</if>
 			<if test="businessKey !=null and businessKey !=''">
-				and oa.bk = #{businessKey}
+				and pp.bk = #{businessKey}
 			</if>
 			<if test="keys !=null and keys.size() > 0">
 				and rp.key in 

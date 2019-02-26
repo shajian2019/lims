@@ -166,11 +166,13 @@
 	            			  closeBtn:0,
 	            			  btn: ['确定'] //按钮
 	            			}, function(){
-	            			parent.window.closeTab(data.taskId);
+	            			index = parent.layer.getFrameIndex(window.name);
+					    	parent.layer.close(index);
             			});
 	            	}else if(data.code == "0" || data.code == "-1") {
 	            		layer.msg(data.msg, {offset: ['50%'], time: 2000},function(){
-	            			parent.window.closeTab(data.taskId);
+	            			index = parent.layer.getFrameIndex(window.name);
+					    	parent.layer.close(index);
 	            		});
 	            	}else {
 	            		layer.msg("审批失败", {offset: ['50%'], time: 2000});
