@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzhb.mapper.JournalMapper">
+	<select id="getMyJournalInfo" resultType="java.util.Map" parameterType="java.util.Map">
+		SELECT
+		a.j_id,
+		a.today_work_content,
+		a.attachment_id,
+		a.submit_time,
+		a.receiver,
+		a.unfinished_work,
+		a.coordinated_work,
+		a.uniqueid
+		FROM aff_t_journal a
+		<where>
+			<if test="submitter != null and submitter != ''">
+				AND a.submitter = #{submitter}
+			</if>
+			<if test="submit_time != null and submit_time != ''">
+				AND a.submit_time = #{submit_time}
+			</if>
+			<if test="username != null and username != ''">
+				<bind name="_username" value="'%'+username+'%'"/>
+				AND b.username like #{_username}
+			</if>
+		</where>
+		order by a.submit_time desc
+	</select>
+
+	<select id="getDistinctId" resultType="java.util.Map">
+        SELECT DISTINCT
+        uniqueid
+        FROM aff_t_journal
+    </select>
+
+	<select id="getDistinctJournal" resultType="java.util.Map" parameterType="java.util.Map">
+		SELECT
+		*
+		FROM aff_t_journal a
+		<where>
+			<if test="uniqueid != null and uniqueid != ''">
+				AND a.uniqueid = #{uniqueid}
+			</if>
+		</where>
+	</select>
+
+	<select id="getReceivers" resultType="java.util.Map" parameterType="java.util.Map">
+		SELECT
+		a.receiver
+		FROM aff_t_journal a
+		<where>
+			<if test="uniqueid != null and uniqueid != ''">
+				AND a.uniqueid = #{uniqueid}
+			</if>
+		</where>
+	</select>
+
+	<select id="getRecname" resultType="java.lang.String" parameterType="java.util.Map">
+		SELECT
+		username
+		FROM sys_t_user
+		<where>
+			<if test="u_id != null and u_id != ''">
+				AND u_id = #{u_id}
+			</if>
+		</where>
+	</select>
+
+
+	<select id="getSubmit" resultType="java.lang.String" parameterType="java.util.Map">
+		SELECT
+		a.username
+		FROM sys_t_user a,aff_t_journal b
+		<where>
+			and a.u_id = b.submitter
+			<if test="uniqueid != null and uniqueid != ''">
+				AND b.uniqueid = #{uniqueid}
+			</if>
+		</where>
+	</select>
+
+	<select id="getAttIds" resultType="java.lang.String" parameterType="java.util.Map">
+		SELECT
+		attachment_id
+		FROM aff_t_journal
+		<where>
+			<if test="uniqueid != null and uniqueid != ''">
+				AND uniqueid = #{uniqueid}
+			</if>
+		</where>
+	</select><select id="getAtt" resultType="java.util.Map" parameterType="java.util.Map">
+	SELECT
+	attach_id,
+	attach_name,
+	attach_type,
+	createtime,
+	url
+	FROM aff_t_attachment
+	<where>
+		<if test="attach_id != null and attach_id != ''">
+			AND attach_id = #{attach_id}
+		</if>
+	</where>
+</select>
+
+	<select id="getRzyb" resultType="java.util.Map" parameterType="java.util.Map">
+		select count(*) as sumary,a.submitter,a.username,date_format(a.submit_time,'%Y-%m') as subtime from
+		(
+		select DISTINCT b.uniqueid,b.submitter,c.username,b.submit_time from aff_t_journal b,sys_t_user c
+		<where>
+			and b.submitter = c.u_id
+			<if test="submit_time != null and submit_time != ''">
+				and date_format(b.submit_time,'%Y-%m')=#{submit_time}
+			</if>
+			<if test="username != null and username != ''">
+				<bind name="_username" value="'%'+username+'%'"/>
+				AND c.username like #{_username}
+			</if>
+		</where>
+		) a
+		GROUP BY a.submitter
+	</select>
+	<insert id="addNewJournal" keyProperty="c_id" useGeneratedKeys="true" parameterType="java.util.Map" >
+        INSERT INTO aff_t_journal(today_work_content,attachment_id,submitter,submit_time,receiver,unfinished_work,coordinated_work,uniqueid)
+        VALUES (#{today_work_content},#{attachment_id},#{submitter},now(),#{receiver},#{unfinished_work},#{coordinated_work},#{uniqueid})
+    </insert>
+
+	<select id="getReceiveJour" resultType="java.util.Map" parameterType="java.util.Map">
+		SELECT
+		a.*
+		FROM aff_t_journal a
+		<where>
+			<if test="receiver != null and receiver != ''">
+				AND a.receiver = #{receiver}
+			</if>
+		</where>
+	</select>
+
+
+</mapper>

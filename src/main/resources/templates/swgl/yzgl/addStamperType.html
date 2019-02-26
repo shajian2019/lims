@@ -1,0 +1,254 @@
+<#assign ctx=req.contextPath />
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet"/>
+    <link href="${ctx}/plugins/font-awesome/css/font-awesome.css" rel="stylesheet"/>
+    <style type="text/css">
+        /* layui重置 */
+        .layui-form {
+            width: 600px;
+            margin: 10px auto 0;
+        }
+
+        .layui-form-item {
+            display: flex;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .layui-form-label {
+            width: 100px;
+        }
+
+        .layui-form-item .layui-inline, .layui-form-item .layui-input-block {
+            width: 450px;
+        }
+
+        .layui-form-item > a {
+            display: inline-block;
+            height: 36px;
+            line-height: 36px;
+        }
+
+        .layui-form-item .radio-box {
+            border: 1px solid #e6e6e6;
+        }
+
+        .layui-btn-container {
+            width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .layui-textarea {
+            min-height: 48px;
+        }
+
+        /* 自定义 */
+        div.icon-box {
+            height: 36px;
+            border: 1px solid #e6e6e6;
+            border-left: none;
+            background-color: #fff;
+            border-radius: 2px;
+        }
+
+        .icon-box .icon {
+            width: 36px;
+            height: 36px;
+            text-align: center;
+            line-height: 36px;
+            border-right: 1px solid #e6e6e6;
+            display: inline-block;
+        }
+
+        .icon-box .layui-inline-block {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .icon-box .icon-input {
+            display: inline-block;
+            border: none;
+            flex-grow: 1;
+            padding: 0 10px;
+        }
+
+        .layui-form-item {
+            margin-top: 150px;
+            margin-bottom: 10px;
+        }
+
+        .main {
+            width: 800px;
+            margin: 1% auto 0;
+        }
+
+        .img-up-box, #spr, #spr1 {
+            max-width: 500px;
+            height: auto;
+            display: flex;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .img-up-box .img-box {
+            position: relative;
+            display: inline-block;
+            width: 80px;
+            height: 80px;
+            border: 1px solid #e6e6e6;
+            margin-right: 8px;
+            margin-top: 8px;
+        }
+
+        .img-up-box .img-box .img-close {
+            position: absolute;
+            top: -7px;
+            right: -7px;
+            font-size: 12px;
+            color: #fff;
+            border-radius: 20px;
+            width: 16px;
+            height: 16px;
+            background-color: #000;
+            text-align: center;
+            line-height: 16px;
+        }
+
+        .img-up-box .img-box > img {
+            width: 100%;
+            height: 100%;
+        }
+
+        #spr_add {
+            display: flex;;
+            align-items: center;
+        }
+
+        .spr-select {
+            text-align: center;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .spr-box {
+            color: #fff;
+            text-align: center;
+            background-color: cornflowerblue;
+            border-radius: 1000px;
+            font-size: 12px;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .spr-close {
+            cursor: pointer;
+            font-size: 14px;
+            color: #999;
+            width: 16px;
+        }
+
+        #layer-photos {
+            display: flex;
+            align-items: center;
+            max-width: 500px;
+            flex-wrap: wrap;
+        }
+
+        #layer-photos img {
+            width: 70px;
+            height: 70px;
+            display: block;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+
+        .layui-btn-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: auto;
+            background-color: #fff;
+            border-top: 1px solid #e6e6e6;
+            padding-top: 10px;
+        }
+
+        .layui-upload-list {
+            margin: 0;
+            width: 450px;
+            margin-left: 130px;
+        }
+    </style>
+</head>
+<body>
+
+<form class="layui-form-pane layui-form" lay-filter="edit">
+    <div class="layui-form-item">
+        <label class="layui-form-label">印章类型：</label>
+        <div class="layui-inline">
+            <input name="type_info" placeholder="请输入内容" class="layui-input"
+                      lay-verify="required" />
+        </div>
+    </div>
+    <div class="layui-btn-container">
+        <a class="layui-btn  layui-btn-primary" lay-submit lay-filter="sq" id="">保存</a>
+        <a class="layui-btn  layui-btn-primary" lay-submit lay-filter="" id="cancel">取消</a>
+    </div>
+</form>
+
+<script src="${ctx}/plugins/layui/layui.js"></script>
+<script type="text/javascript">
+    var $ = layui.jquery, treeSelect = layui.treeSelect, form = layui.form, layer = layui.layer, upload = layui.upload;
+
+    layui.use(['form', 'layer',  'upload', 'laydate'], function () {
+        var $ = layui.jquery;
+        var form = layui.form;
+
+        form.on('submit(sq)', function (data) {
+            $.ajax({
+                type: "post",
+                data: data.field,
+                url: "${ctx}/swgl/yzgl/addNewStamperType",
+                beforeSend: function () {
+                    index = layer.load(1);
+                },
+                success: function (data) {
+                    debugger;
+                    console.log(data);
+                    layer.close(index);
+                    if (data > 0) {
+                        var msg = "保存成功";
+                        layer.msg(msg, {offset: ['50%'], time: 1000}, function () {
+                            index = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(index);
+                        });
+                    } else {
+                        layer.msg("保存失败");
+                    }
+                },
+                error: function (data) {
+                    layer.close(index);
+                    layer.msg("服务端异常");
+                }
+            });
+        });
+
+        //取消
+        $("#cancel").click(function () {
+            var index = parent.layer.getFrameIndex(window.name);
+            parent.layer.close(index);
+        })
+
+    })
+</script>
+</body>
+</html>

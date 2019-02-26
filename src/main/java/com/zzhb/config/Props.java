@@ -17,6 +17,8 @@ public class Props {
 	private Long globalSessionTimeout;
 
 	private String tempPath;
+
+	private String uploadPath;
 	
 	private List<String> flushkeys = new ArrayList<>();
 	
@@ -60,4 +62,11 @@ public class Props {
 		this.tempPath = tempPath;
 	}
 
+	public String getUploadPath() {
+		return uploadPath;
+	}
+
+	public void setUploadPath(String uploadPath) {
+		this.uploadPath = uploadPath;
+	}
 }
