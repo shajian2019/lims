@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "props")
 public class Props {
 
+	private boolean single;
+
 	private String loginUrl;
 
 	private String cookiename;
@@ -17,9 +19,17 @@ public class Props {
 	private Long globalSessionTimeout;
 
 	private String tempPath;
-	
+
 	private List<String> flushkeys = new ArrayList<>();
-	
+
+	public boolean isSingle() {
+		return single;
+	}
+
+	public void setSingle(boolean single) {
+		this.single = single;
+	}
+
 	public List<String> getFlushkeys() {
 		return flushkeys;
 	}

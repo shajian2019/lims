@@ -28,6 +28,8 @@ public interface UserMapper {
 
 	public Integer addUser(User user);
 
+	public Integer updateUserLogin(User user);
+
 	public Integer updateUserStatus(User user);
 
 	public Integer updateUser(User user);

@@ -136,7 +136,6 @@
 
     //接收到消息的回调方法
     websocket.onmessage = function(event){
-    	console.log(event.data)
         setMessageInnerHTML(event.data);
     }
 
