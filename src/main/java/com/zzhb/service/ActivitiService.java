@@ -1012,15 +1012,17 @@ public class ActivitiService {
 						Set<String> keySet = commentJ.keySet();
 						for (String string : keySet) {
 							if (string.endsWith("spyj")) {
-								data.put(string, commentJ.getString(string));
-								String pre = string.split("_")[0] + "_";
-								data.put(pre + "year", endtime.substring(0, 4));
-								data.put(pre + "month", endtime.substring(5, 7));
-								data.put(pre + "day", endtime.substring(8, 10));
 								String assignee = commentJ.getString("assignee");
-								User userById = userMapper.getUserById(assignee);
-								data.put(pre + "spr", userById.getNickname());
-								logger.debug("===data===" + JSON.toJSONString(data));
+								if (assignee != null) {
+									data.put(string, commentJ.getString(string));
+									String pre = string.split("_")[0] + "_";
+									data.put(pre + "year", endtime.substring(0, 4));
+									data.put(pre + "month", endtime.substring(5, 7));
+									data.put(pre + "day", endtime.substring(8, 10));
+									User userById = userMapper.getUserById(assignee);
+									data.put(pre + "spr", userById.getNickname());
+									logger.debug("===data===" + JSON.toJSONString(data));
+								}
 								break;
 							}
 						}
@@ -1052,7 +1054,7 @@ public class ActivitiService {
 						}
 					}
 				}
-				
+
 			}
 			String path = PdfUtil.createPdfByTemp(tempPath, outPdfPath, data);
 			if (path != null) {
