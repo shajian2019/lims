@@ -388,10 +388,11 @@ public class ActivitiService {
 
 	@Transactional
 	public Integer deleteProcessInstance(String processInstanceId, String deleteReason, String key) {
+
 		runtimeService.deleteProcessInstance(processInstanceId, deleteReason);
 		Table table = tableMapper.getTableByProcdefkey(key);
-		String sql = "DELETE FROM " + table.getPrefix() + table.getProcdefkey() + " WHERE proid = " + "'"
-				+ processInstanceId + "'";
+		String sql = "UPDATE " + table.getPrefix().trim() + table.getProcdefkey().trim() + " SET spjg = '2'"
+				+ " WHERE proid = '" + processInstanceId + "'";
 		return jdbcTemplate.update(sql);
 	}
 
@@ -559,6 +560,15 @@ public class ActivitiService {
 				result.put("code", 1);
 				result.put("msg", task.getName());
 			} else {
+				String agree = params.get("agree");
+				if (agree != null) {
+					agree = agree.equals("true") ? "1" : "0";
+					String processDefinitionId = ruTask.getProcessDefinitionId();
+					Table table = tableMapper.getTableByProcdefkey(processDefinitionId.split(":")[0]);
+					String sql = "UPDATE " + table.getPrefix().trim() + table.getProcdefkey().trim() + " SET spjg = '"
+							+ agree + "'" + " where bk = '" + bk + "'";
+					jdbcTemplate.update(sql);
+				}
 				asyncService.message(bk);
 				result.put("code", 0);
 				result.put("msg", "审批成功");

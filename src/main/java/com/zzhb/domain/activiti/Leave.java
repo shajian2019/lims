@@ -1,7 +1,7 @@
 package com.zzhb.domain.activiti;
 
 public class Leave {
-	
+
 	private String proid;
 	private String bk;
 	private String u_id;
@@ -12,6 +12,15 @@ public class Leave {
 	private String ksrq;
 	private String jsrq;
 	private String qjly;
+	private String spjg;
+
+	public String getSpjg() {
+		return spjg;
+	}
+
+	public void setSpjg(String spjg) {
+		this.spjg = spjg;
+	}
 
 	public String getU_id() {
 		return u_id;

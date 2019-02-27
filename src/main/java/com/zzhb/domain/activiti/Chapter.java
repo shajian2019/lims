@@ -13,6 +13,16 @@ public class Chapter {
 	private String yylx;
 	private String yynr;
 
+	private String spjg;
+
+	public String getSpjg() {
+		return spjg;
+	}
+
+	public void setSpjg(String spjg) {
+		this.spjg = spjg;
+	}
+
 	public String getProid() {
 		return proid;
 	}
