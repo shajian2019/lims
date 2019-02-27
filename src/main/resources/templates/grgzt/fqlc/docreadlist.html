@@ -35,79 +35,7 @@
 
 <body>
 		<h2>文件阅办单</h2>
-<form class="layui-form main layui-upload" lay-filter="docreadlist">
-		<div class="layui-form-item">
-           <label class="layui-form-label"><span style="color:red;">*</span>申请人</label>
-           <div class="layui-input-inline">
-               <input type="text" name="sqr" lay-verify="required" readonly="readonly" placeholder="申请人" autocomplete="off" class="layui-input">
-           	   <input type="hidden" name="u_id">
-           </div>
-           <label class="layui-form-label"><span style="color:red;">*</span>部门名称</label>
-           <div class="layui-input-inline">
-	            <select class="layui-input" name="bmmc" id="bmmc" lay-verify="required" lay-search></select>
-        	</div>
-        	<label class="layui-form-label"><span style="color:red;">*</span>申请日期</label>
-           <div class="layui-input-inline">
-               <input type="text" name="sqrq" readonly="readonly" lay-verify="required" autocomplete="off" class="layui-input">
-           </div>
-       </div>
-		<div class="layui-form-item">
-           <label class="layui-form-label"><span style="color:red;">*</span>收文日期</label>
-           <div class="layui-input-inline">
-               <input type="text" name="swrq" id="swrq" placeholder="收文日期" lay-verify="required" autocomplete="off" class="layui-input">
-           </div>
-           <label class="layui-form-label"><span style="color:red;">*</span>发文机关</label>
-           <div class="layui-input-inline">
-               <input type="text" name="fwjg" lay-verify="required" placeholder="发文机关" autocomplete="off" class="layui-input">
-           </div>
-           <label class="layui-form-label">来文字号</label>
-           <div class="layui-input-inline">
-               <input type="text" name="lwzh" lay-verify="required" placeholder="来文字号" autocomplete="off" class="layui-input">
-           </div>
-       </div>
-       <div class="layui-form-item">
-           <label class="layui-form-label">来文性质</label>
-           <div class="layui-input-inline">
-               <input type="text" name="lwxz" lay-verify="required" placeholder="来文性质" autocomplete="off" class="layui-input">
-           </div>
-           <label class="layui-form-label"><span style="color:red;">*</span>文件编号</label>
-           <div class="layui-input-inline">
-               <input type="text" name="lwbh" lay-verify="required" placeholder="文件编号" autocomplete="off" class="layui-input">
-           </div>
-       </div>
-       <div class="layui-form-item">
-           <label class="layui-form-label"><span style="color:red;">*</span>文件标题</label>
-           <div class="layui-input-block" style="width: 808px">
-               <input type="text" name="wjbt" lay-verify="required" placeholder="文件标题" autocomplete="off" class="layui-input">
-            </div>
-       </div>
-       <div class="layui-form-item">
-           <label class="layui-form-label"><span style="color:red;">*</span>拟办</label>
-            <div class="layui-input-inline">
-               <textarea name="nb" class="layui-textarea" placeholder="拟办"></textarea>
-            </div>
-       </div>
-       <div class="layui-form-item layui-form-text">
-			<label class="layui-form-label"><span style="color:red;">*</span>文件</label>
-			<input type="text" name='fileName' lay-verify="required" class="layui-hide">
-            <div class="layui-inline" style="display: flex;align-items: center;">
-				  <button type="button" id="file_up" class="layui-btn layui-btn-primary"><i class="fa fa-plus"></i></button> 
-			</div>
-       </div>
-       <div class="layui-form-item layui-form-text">
-               <label class="layui-form-label"><span style="color:red;">*</span>阅办领导</label>
-			<div class="layui-inline" id="spr">
-				<div id="spr_add">
-					<i class="fa fa-plus"></i>
-				</div>
-			</div>
-       </div>
-       <div class="layui-form-item">
-           <div class="layui-input-block">
-               <button class="layui-btn layui-btn-primary" lay-submit lay-filter="sq" id="sq">申请</button>
-           </div>
-       </div>
-</form>
+		${(form!'开发中')}
 </body>
 <script src="${ctx}/plugins/layui/layui.all.js"></script>
 <script src="${ctx}/js/common/download.js"></script>
@@ -206,41 +134,87 @@
 				 data.field.usersprs = usersprs.join(",")
 				 data.field.id = "${USER.u_id}docreadlist${formkey!''}";
 				 data.field.bk = "${(docreadlist.bk)!''}";
-				 $.ajax({
-			            type: "post",
-			            data: data.field,
-			            url: "${ctx}/grgzt/fqlc/start/docreadlist",
-			            beforeSend: function () {
-			                index = layer.load(1);
-			            },
-			            success: function (data) {
-			            	layer.close(index);
-			            	if(data.code >0){
-			            		layer.confirm("申请成功,流程单号："+data.bk+",下一流程节点："+data.msg, {
-			            			  closeBtn:0,
-			            			  btn: ['确定'] //按钮
-			            			}, function(){
-			            			 parent.window.closeTab("docreadlist");
-		            			});
-			            	}else{
-			            		layer.msg("申请失败");
-			            	}
-			            },
-			            error: function (data) {
-			            	layer.close(index);
-			                layer.msg("服务端异常");
-			            }
-			      });
+				 data.field.sdsj = "${.now?string('yyyy年MM月dd')}";
+				 if(fileNameArray.length < 1){
+					 layer.msg("请先上传文件", {offset: ['50%'], time: 2000});
+				 }else{
+					 $.ajax({
+				            type: "post",
+				            data: data.field,
+				            url: "${ctx}/grgzt/fqlc/start/docreadlist",
+				            beforeSend: function () {
+				                index = layer.load(1);
+				            },
+				            success: function (data) {
+				            	layer.close(index);
+				            	if(data.code >0){
+				            		layer.confirm("申请成功,流程单号："+data.bk+",下一流程节点："+data.msg, {
+				            			  closeBtn:0,
+				            			  btn: ['确定'] //按钮
+				            			}, function(){
+				            			 parent.window.closeTab("docreadlist");
+			            			});
+				            	}else{
+				            		layer.msg("申请失败");
+				            	}
+				            },
+				            error: function (data) {
+				            	layer.close(index);
+				                layer.msg("服务端异常");
+				            }
+				      });
+				 }
 			 } else {
 				 layer.msg("请选择阅办领导", {offset: ['50%'], time: 2000});
 			 }
 			 return false;
 		 });
 	} else if (formkey == 'docreadlist_usertask1.html'){
+		fileList();
 		
+		form.on('submit(sp)', function(data){
+			data.field.id = "${USER.u_id}docreadlist${formkey!''}";
+			data.field.bk = "${bk!''}";
+			data.field.agree = "true";
+			
+			$.ajax({
+	            type: "post",
+	            data: data.field,
+	            url: "${ctx}/grgzt/dbsx/complete/${taskId!''}",
+	            beforeSend: function () {
+	                index = layer.load(1);
+	            },
+	            success: function (data) {
+	            	layer.close(index);
+	            	if(data.code >0){
+	            		index = layer.confirm("审批成功,下一流程节点："+data.msg, {
+	            			  closeBtn:0,
+	            			  btn: ['确定'] //按钮
+	            			}, function(){
+	            			//parent.window.closeTab(data.taskId);
+	            			index = parent.layer.getFrameIndex(window.name);
+					    	parent.layer.close(index);
+            			});
+	            	}else if(data.code == "0" || data.code == "-1") {
+	            		layer.msg(data.msg, {offset: ['50%'], time: 2000},function(){
+	            			//parent.window.closeTab(data.taskId);
+	            			index = parent.layer.getFrameIndex(window.name);
+					    	parent.layer.close(index);
+	            		});
+	            	}else {
+	            		layer.msg("审批失败", {offset: ['50%'], time: 2000});
+	            	}
+	            },
+	            error: function (data) {
+	            	layer.close(index);
+	                layer.msg("服务端异常");
+	            }
+	        });
+			return false;
+		});
 	}
 	
-	  //数组对象对应删除
+    //数组对象对应删除
     Array.prototype.remove = function (val) {
         var index = this.indexOf(val);
         if (index > -1) {
@@ -301,6 +275,52 @@
                 layer.msg("服务端异常");
             }
       });
+	}
+	
+	function fileList(){
+		$.getJSON('${ctx}/file/taskAttachments/${taskId!''}', function(json){
+			console.log(json)
+			var bk = "";
+			var imgHtml = "";
+			$.each(json,function(i,v){
+				var detail = v.split("&");
+				if(bk == ""){
+					bk = v.split("&")[1];
+				}
+				imgHtml += '<div class="img-box layui-btn layui-btn-primary">'+
+				'<p>'+detail[2]+'</p>'+
+				'</div>'
+			})
+			
+			$("#fileDiv").html(imgHtml)
+			
+			if(json.length == 0){
+				$("#download").hide();
+			}else{
+				//绑定下载附件事件
+				$("#download").click(function(){
+					$.ajax({
+		                 type: "post",
+		                 data: {bk:bk},
+		                 url: "${ctx}/file/downloadAttachment",
+		                 beforeSend: function () {
+		                     index = layer.load(1);
+		                 },
+		                 success: function (data) {
+		                     layer.close(index);
+		                     var url = "${ctx}/file/downloadZip"
+		               		 var field = {};
+		                     field.fileName = data;
+		               		 formPost(url, field);
+		                 },
+		                 error: function (data) {
+		                     layer.msg("服务端异常");
+		                 }
+		             });
+				})
+			}
+		});
+		
 	}
 </script>
 </html>

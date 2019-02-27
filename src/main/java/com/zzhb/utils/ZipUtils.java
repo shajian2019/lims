@@ -58,7 +58,7 @@ public class ZipUtils {
 	 * @throws RuntimeException
 	 *             压缩失败会抛出运行时异常
 	 */
-	public static void toZip(List<File> srcFiles, OutputStream out) throws RuntimeException {
+	public static void toZip(List<File> srcFiles, OutputStream out, boolean flag) throws RuntimeException {
 		long start = System.currentTimeMillis();
 		ZipOutputStream zos = null;
 		try {
@@ -73,6 +73,9 @@ public class ZipUtils {
 				}
 				zos.closeEntry();
 				in.close();
+				if (flag) {
+					srcFile.delete();
+				}
 			}
 			long end = System.currentTimeMillis();
 			System.out.println("压缩完成，耗时：" + (end - start) + " ms");

@@ -451,21 +451,17 @@ public class ActivitiService {
 			FileInputStream fileInputStream = null;
 			try {
 				fileInputStream = new FileInputStream(new File(filePath));
-				for (Task task : tasks) {
-					taskService.createAttachment(attachmentType, task.getId(), pi.getId(), attachmentName,
-							fileName.split("&")[1], fileInputStream);
-				}
-			} catch (FileNotFoundException e) {
+				taskService.createAttachment(attachmentType, null, pi.getId(), attachmentName, fileName.split("&")[1],
+						fileInputStream);
+			} catch (IOException e) {
 				e.printStackTrace();
 				logger.error("===附件文件未找到==" + e.getMessage());
 			} finally {
-				if (fileInputStream != null) {
-					try {
-						fileInputStream.close();
-						FileUtil.delete(filePath);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+				try {
+					fileInputStream.close();
+					FileUtil.delete(filePath);
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
 			}
 		}
@@ -553,8 +549,9 @@ public class ActivitiService {
 			params.put("taskId", taskId);
 			activitiMapper.updateHiTaskInst(params);
 
-			Task task = taskService.createTaskQuery().processInstanceBusinessKey(bk).singleResult();
-			if (task != null) {
+			List<Task> tasks = taskService.createTaskQuery().processInstanceBusinessKey(bk).list();
+			if (tasks.size() == 1) {
+				Task task = tasks.get(0);
 				// 更新审批人缓存表
 				userSprMapper.updateSprs(params);
 				// 更新历史表
@@ -565,7 +562,7 @@ public class ActivitiService {
 
 				result.put("code", 1);
 				result.put("msg", task.getName());
-			} else {
+			} else if (tasks.size() == 0) {
 				String agree = params.get("agree");
 				if (agree != null) {
 					agree = agree.equals("true") ? "1" : "0";
@@ -577,7 +574,10 @@ public class ActivitiService {
 				}
 				asyncService.message(bk);
 				result.put("code", 0);
-				result.put("msg", "审批成功");
+				result.put("msg", "流程结束");
+			} else {
+				result.put("code", 0);
+				result.put("msg", "流程结束");
 			}
 		} else {
 			result.put("code", -1);
@@ -990,6 +990,9 @@ public class ActivitiService {
 		String pdfName = key + "_" + bk + ".pdf";
 
 		String tempPath = "static/pdftemp/" + key + "_temp.pdf";
+		if (!new File(props.getTempPath()).exists()) {
+			new File(props.getTempPath()).mkdirs();
+		}
 		String outPdfPath = props.getTempPath() + File.separator + pdfName;
 
 		Map<String, String> data = new HashMap<>();
@@ -1070,7 +1073,6 @@ public class ActivitiService {
 						}
 					}
 				}
-
 			}
 			String path = PdfUtil.createPdfByTemp(tempPath, outPdfPath, data);
 			if (path != null) {
