@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -42,6 +43,7 @@ import org.activiti.image.ProcessDiagramGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -54,14 +56,14 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zzhb.async.AsyncService;
 import com.zzhb.config.Props;
+import com.zzhb.domain.Table;
 import com.zzhb.domain.User;
 import com.zzhb.domain.activiti.HistoricProcessInstanceVO;
 import com.zzhb.domain.activiti.HistoricTaskInstanceVO;
-import com.zzhb.domain.activiti.Leave;
 import com.zzhb.domain.activiti.ProcessDefinitionExt;
 import com.zzhb.domain.activiti.ProcessDefinitionType;
 import com.zzhb.mapper.ActivitiMapper;
-import com.zzhb.mapper.LeaveMapper;
+import com.zzhb.mapper.TableMapper;
 import com.zzhb.mapper.UserMapper;
 import com.zzhb.mapper.UserSprMapper;
 import com.zzhb.utils.CustomProcessDiagramGenerator;
@@ -88,9 +90,6 @@ public class ActivitiService {
 
 	@Autowired
 	FormService formService;
-
-	@Autowired
-	LeaveMapper leaveMapper;
 
 	@Autowired
 	ProcessEngine pes;
@@ -358,18 +357,20 @@ public class ActivitiService {
 		}
 
 		// 查询进行中的任务
-		Task ruTask = taskService.createTaskQuery().processInstanceBusinessKey(businessKey).singleResult();
-		if (ruTask != null) {
-			HistoricTaskInstanceVO vo = new HistoricTaskInstanceVO();
-			vo.setId(ruTask.getId());
-			vo.setDeleteReason(null);
-			vo.setName(ruTask.getName());
-			vo.setStartTime(TimeUtil.getTimeFromDate("yyyy-MM-dd HH:mm:ss", ruTask.getCreateTime()));
-			if (ruTask.getAssignee() != null) {
-				User user = userMapper.getUserById(ruTask.getAssignee());
-				vo.setAssignee(user.getNickname());
+		List<Task> ruTasks = taskService.createTaskQuery().processInstanceBusinessKey(businessKey).list();
+		if (ruTasks != null) {
+			for (Task ruTask : ruTasks) {
+				HistoricTaskInstanceVO vo = new HistoricTaskInstanceVO();
+				vo.setId(ruTask.getId());
+				vo.setDeleteReason(null);
+				vo.setName(ruTask.getName());
+				vo.setStartTime(TimeUtil.getTimeFromDate("yyyy-MM-dd HH:mm:ss", ruTask.getCreateTime()));
+				if (ruTask.getAssignee() != null) {
+					User user = userMapper.getUserById(ruTask.getAssignee());
+					vo.setAssignee(user.getNickname());
+				}
+				historicTaskInstanceVOs.add(vo);
 			}
-			historicTaskInstanceVOs.add(vo);
 		}
 
 		return LayUiUtil.pagination(historicTaskInstanceVOs.size(), historicTaskInstanceVOs);
@@ -388,11 +389,13 @@ public class ActivitiService {
 	HistoryService hs;
 
 	@Transactional
-	public Integer deleteProcessInstance(String processInstanceId, String deleteReason) {
+	public Integer deleteProcessInstance(String processInstanceId, String deleteReason, String key) {
+
 		runtimeService.deleteProcessInstance(processInstanceId, deleteReason);
-		Map<String, Object> params = new HashMap<>();
-		params.put("proid", processInstanceId);
-		return leaveMapper.delLeave(params);
+		Table table = tableMapper.getTableByProcdefkey(key);
+		String sql = "UPDATE " + table.getPrefix().trim() + table.getProcdefkey().trim() + " SET spjg = '2'"
+				+ " WHERE proid = '" + processInstanceId + "'";
+		return jdbcTemplate.update(sql);
 	}
 
 	@Transactional
@@ -437,7 +440,7 @@ public class ActivitiService {
 		// 更新审批人缓存表
 		userSprMapper.updateSprs(params);
 
-		Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
+		List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).list();
 
 		// 为下一个任务节点添加附件
 		List<String> readFilePath = FileUtil.readFilePath(props.getTempPath(), "&" + params.get("bk") + "&");
@@ -448,8 +451,10 @@ public class ActivitiService {
 			FileInputStream fileInputStream = null;
 			try {
 				fileInputStream = new FileInputStream(new File(filePath));
-				taskService.createAttachment(attachmentType, task.getId(), pi.getId(), attachmentName,
-						fileName.split("&")[1], fileInputStream);
+				for (Task task : tasks) {
+					taskService.createAttachment(attachmentType, task.getId(), pi.getId(), attachmentName,
+							fileName.split("&")[1], fileInputStream);
+				}
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 				logger.error("===附件文件未找到==" + e.getMessage());
@@ -466,16 +471,18 @@ public class ActivitiService {
 		}
 
 		// 更新历史表
-		params.put("assignee", task.getAssignee());
-		params.put("taskId", task.getId());
-		activitiMapper.updateHiTaskInst(params);
+		for (Task task : tasks) {
+			params.put("assignee", task.getAssignee());
+			params.put("taskId", task.getId());
+			activitiMapper.updateHiTaskInst(params);
+		}
 
 		// 保存业务数据
 		params.put("proid", pi.getId());
 		Integer saveBusiness = saveBusiness(key, params);
 
 		result.put("code", saveBusiness);
-		result.put("msg", task.getName());
+		result.put("msg", tasks.get(0).getName());
 		result.put("bk", params.get("bk"));
 		return result;
 	}
@@ -559,6 +566,15 @@ public class ActivitiService {
 				result.put("code", 1);
 				result.put("msg", task.getName());
 			} else {
+				String agree = params.get("agree");
+				if (agree != null) {
+					agree = agree.equals("true") ? "1" : "0";
+					String processDefinitionId = ruTask.getProcessDefinitionId();
+					Table table = tableMapper.getTableByProcdefkey(processDefinitionId.split(":")[0]);
+					String sql = "UPDATE " + table.getPrefix().trim() + table.getProcdefkey().trim() + " SET spjg = '"
+							+ agree + "'" + " where bk = '" + bk + "'";
+					jdbcTemplate.update(sql);
+				}
 				asyncService.message(bk);
 				result.put("code", 0);
 				result.put("msg", "审批成功");
@@ -571,13 +587,37 @@ public class ActivitiService {
 		return result;
 	}
 
+	@Autowired
+	JdbcTemplate jdbcTemplate;
+
+	@Autowired
+	TableMapper tableMapper;
+
 	public Integer saveBusiness(String key, Map<String, String> params) {
-		Integer add = null;
-		if ("leave".equals(key)) {
-			Leave leave = JSON.parseObject(JSON.toJSONString(params), Leave.class);
-			add = leaveMapper.addLeave(leave);
+		Table table = tableMapper.getTableByProcdefkey(key);
+		if (table != null) {
+			Set<String> set = new HashSet<>();
+			String cols = table.getCols().trim();
+			List<String> asList = Arrays.asList(cols.split(","));
+			for (String string : asList) {
+				set.add(string.trim());
+			}
+			cols = "";
+			String values = "";
+			for (String string : set) {
+				cols += string + ",";
+				String value = params.get(string) == null ? "" : params.get(string);
+				values += "'" + value + "'" + ",";
+			}
+			cols = " (" + cols.substring(0, cols.length() - 1) + ") ";
+			values = " (" + values.substring(0, values.length() - 1) + ") ";
+
+			String sql = "INSERT INTO " + table.getPrefix().trim() + table.getProcdefkey().trim() + cols + "VALUES"
+					+ values;
+			return jdbcTemplate.update(sql);
+		} else {
+			return 0;
 		}
-		return add;
 	}
 
 	// 我发起的流程查询
@@ -589,7 +629,15 @@ public class ActivitiService {
 		String dateS = params.get("dateS");
 		String dateE = params.get("dateE");
 		String keys = params.get("keys");
+		String finish = params.get("finish");
 
+		if (finish != null && !"".equals(finish)) {
+			if ("1".equals(finish)) {
+				hpiq.finished();
+			} else {
+				hpiq.unfinished();
+			}
+		}
 		if (u_id != null && !"".equals(u_id)) {
 			hpiq.startedBy(u_id);
 		}
@@ -639,7 +687,11 @@ public class ActivitiService {
 		String dateS = params.get("dateS");
 		String dateE = params.get("dateE");
 		String keys = params.get("keys");
+		String businessKey = params.get("businessKey");
 		HistoricTaskInstanceQuery hit = hs.createHistoricTaskInstanceQuery().finished().taskOwner(ownerid);
+		if (businessKey != null && !"".equals(businessKey)) {
+			hit.processInstanceBusinessKeyLike(businessKey);
+		}
 		if (keys != null && !"".equals(keys)) {
 			hit.processDefinitionKeyIn(Arrays.asList(keys.split(",")));
 		}
@@ -943,56 +995,91 @@ public class ActivitiService {
 		Map<String, String> data = new HashMap<>();
 		List<HistoricTaskInstance> list = hs.createHistoricTaskInstanceQuery().processInstanceBusinessKey(bk).finished()
 				.orderByTaskCreateTime().asc().list();
-		if ("leave".equals(key)) {
-			Leave leave = leaveMapper.getLeave(params);
-			data.put("sqr", leave.getSqr());
-			data.put("bmmc", leave.getBmmc());
+		Table table = tableMapper.getTableByProcdefkey(key);
+		if (table == null) {
+			result.put("code", 0);
+			result.put("msg", "未维护sys_t_table表");
+		} else {
+			String sql = "SELECT * FROM " + table.getPrefix().trim() + table.getProcdefkey().trim();
+			sql += " WHERE bk = '" + bk + "'";
+			Map<String, Object> map = jdbcTemplate.queryForMap(sql);
+			if ("leave".equals(key)) {
+				data.put("sqr", map.get("sqr").toString());
+				data.put("bmmc", map.get("bmmc").toString());
 
-			String ksrq = leave.getKsrq();
-			data.put("ksrq_year", ksrq.substring(0, 4));
-			data.put("ksrq_month", ksrq.substring(5, 7));
-			data.put("ksrq_day", ksrq.substring(8, 10));
+				String ksrq = map.get("ksrq").toString();
+				data.put("ksrq_year", ksrq.substring(0, 4));
+				data.put("ksrq_month", ksrq.substring(5, 7));
+				data.put("ksrq_day", ksrq.substring(8, 10));
 
-			String jsrq = leave.getJsrq();
-			data.put("jsrq_year", jsrq.substring(0, 4));
-			data.put("jsrq_month", jsrq.substring(5, 7));
-			data.put("jsrq_day", jsrq.substring(8, 10));
+				String jsrq = map.get("jsrq").toString();
+				data.put("jsrq_year", jsrq.substring(0, 4));
+				data.put("jsrq_month", jsrq.substring(5, 7));
+				data.put("jsrq_day", jsrq.substring(8, 10));
 
-			data.put("qjlx", leave.getQjlx());
-			data.put("qjly", leave.getQjly());
+				data.put("qjlx", map.get("qjlx").toString());
+				data.put("qjly", map.get("qjly").toString());
 
-			for (HistoricTaskInstance hi : list) {
-				String endtime = TimeUtil.getTimeByCustom("yyyy-MM-dd", hi.getEndTime());
-				List<Comment> taskComments = taskService.getTaskComments(hi.getId(), "comment");
-				for (Comment comment : taskComments) {
-					JSONObject commentJ = JSON.parseObject(comment.getFullMessage());
-					Set<String> keySet = commentJ.keySet();
-					for (String string : keySet) {
-						if (string.endsWith("spyj")) {
-							data.put(string, commentJ.getString(string));
-							String pre = string.split("_")[0] + "_";
-							data.put(pre + "year", endtime.substring(0, 4));
-							data.put(pre + "month", endtime.substring(5, 7));
-							data.put(pre + "day", endtime.substring(8, 10));
-							String assignee = commentJ.getString("assignee");
-							User userById = userMapper.getUserById(assignee);
-							data.put(pre + "spr", userById.getNickname());
-							logger.debug("===data===" + JSON.toJSONString(data));
-							break;
+				for (HistoricTaskInstance hi : list) {
+					String endtime = TimeUtil.getTimeByCustom("yyyy-MM-dd", hi.getEndTime());
+					List<Comment> taskComments = taskService.getTaskComments(hi.getId(), "comment");
+					for (Comment comment : taskComments) {
+						JSONObject commentJ = JSON.parseObject(comment.getFullMessage());
+						Set<String> keySet = commentJ.keySet();
+						for (String string : keySet) {
+							if (string.endsWith("spyj")) {
+								String assignee = commentJ.getString("assignee");
+								if (assignee != null) {
+									data.put(string, commentJ.getString(string));
+									String pre = string.split("_")[0] + "_";
+									data.put(pre + "year", endtime.substring(0, 4));
+									data.put(pre + "month", endtime.substring(5, 7));
+									data.put(pre + "day", endtime.substring(8, 10));
+									User userById = userMapper.getUserById(assignee);
+									data.put(pre + "spr", userById.getNickname());
+									logger.debug("===data===" + JSON.toJSONString(data));
+								}
+								break;
+							}
 						}
 					}
 				}
-			}
-		} else {
+			} else if ("chapter".equals(key)) {
+				data.put("sqr", map.get("sqr").toString());
+				data.put("bmmc", map.get("bmmc").toString());
+				data.put("yylx", map.get("yylx").toString());
+				data.put("yyfs", map.get("yyfs").toString());
+				data.put("yynr", map.get("yynr").toString());
+				for (HistoricTaskInstance hi : list) {
+					String endtime = TimeUtil.getTimeByCustom("yyyy-MM-dd", hi.getEndTime());
+					List<Comment> taskComments = taskService.getTaskComments(hi.getId(), "comment");
+					for (Comment comment : taskComments) {
+						JSONObject commentJ = JSON.parseObject(comment.getFullMessage());
+						Set<String> keySet = commentJ.keySet();
+						for (String string : keySet) {
+							if (string.endsWith("spyj")) {
+								data.put(string, commentJ.getString(string));
+								data.put("year", endtime.substring(0, 4));
+								data.put("month", endtime.substring(5, 7));
+								data.put("day", endtime.substring(8, 10));
+								String assignee = commentJ.getString("assignee");
+								User userById = userMapper.getUserById(assignee);
+								data.put("spr", userById.getNickname());
+								break;
+							}
+						}
+					}
+				}
 
-		}
-		String path = PdfUtil.createPdfByTemp(tempPath, outPdfPath, data);
-		if (path != null) {
-			result.put("code", 1);
-			result.put("msg", pdfName);
-		} else {
-			result.put("code", 0);
-			result.put("msg", "pdf生成失败");
+			}
+			String path = PdfUtil.createPdfByTemp(tempPath, outPdfPath, data);
+			if (path != null) {
+				result.put("code", 1);
+				result.put("msg", pdfName);
+			} else {
+				result.put("code", 0);
+				result.put("msg", "pdf生成失败");
+			}
 		}
 		return result;
 	}

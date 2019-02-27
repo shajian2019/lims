@@ -15,7 +15,9 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import com.zzhb.domain.User;
 import com.zzhb.mapper.MessageMapper;
+import com.zzhb.mapper.UserMapper;
 
 @Controller
 @ServerEndpoint(value = "/message/{id}")
@@ -41,6 +43,13 @@ public class MessageWebSocket {
 		MessageWebSocket.messageMapper = messageMapper;
 	}
 
+	private static UserMapper userMapper;
+
+	@Autowired
+	public void setUserMapper(UserMapper userMapper) {
+		MessageWebSocket.userMapper = userMapper;
+	}
+
 	public String getId() {
 		return id;
 	}
@@ -60,6 +69,10 @@ public class MessageWebSocket {
 		addOnlineCount(); // 在线数加1
 		log.info(session.getId() + "有新连接加入！当前在线人数为" + getOnlineCount());
 		try {
+			User user = new User();
+			user.setU_id(Integer.parseInt(id));
+			user.setLogin("1");
+			userMapper.updateUserLogin(user);
 			sendMessage(messageMapper.countMessages(id) + "");
 		} catch (IOException e) {
 			log.error("websocket IO异常");
@@ -73,7 +86,11 @@ public class MessageWebSocket {
 	public void onClose() {
 		webSocketMap.remove(this.getId()); // 从set中删除
 		subOnlineCount(); // 在线数减1
-		log.info("有一连接关闭！当前在线人数为" + getOnlineCount());
+		User user = new User();
+		user.setU_id(Integer.parseInt(this.getId()));
+		user.setLogin("0");
+		userMapper.updateUserLogin(user);
+		log.info("========================================" + this.getId() + "==有一连接关闭！当前在线人数为" + getOnlineCount());
 	}
 
 	/**

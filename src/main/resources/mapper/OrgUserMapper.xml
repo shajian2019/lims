@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzhb.mapper.OrgUserMapper">
+	
+	<select id="listOrgUser" resultType="java.util.Map">
+		( SELECT
+		o.o_id id,
+		o.o_name name,
+		o.p_oid parentid 
+		FROM
+			sys_t_org o 
+		ORDER BY
+			o.o_level,
+			o.o_sort 
+			LIMIT 999999999 
+			) UNION ALL
+			(
+		SELECT
+			CONCAT( o.o_id, '#', u.u_id ) id,
+			CONCAT( u.nickname, '#', j.j_name ,'#', u.login) name,
+			o.o_id parentid 
+		FROM
+			sys_t_org o
+			LEFT JOIN sys_t_user_org_job uoj ON o.o_id = uoj.o_id
+			LEFT JOIN sys_t_user u ON uoj.u_id = u.u_id
+			LEFT JOIN sys_t_job j ON j.j_id = uoj.j_id 
+		WHERE
+			u.u_id IS NOT NULL 
+		ORDER BY
+			j.j_sort 
+			LIMIT 999999999 
+			)
+	</select>
+	
+</mapper>

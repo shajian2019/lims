@@ -10,7 +10,7 @@
 	<link rel="stylesheet" href="${ctx}/plugins/font-awesome/css/font-awesome.min.css" media="all" />
 	<style type="text/css">
 		.layui-form-item{margin-bottom: 10px;}
-    	.main{width:800px;margin: 1% auto 0;}
+    	.main{width:660px;margin: 1% auto 0;}
 		.img-up-box,#spr{max-width: 500px;height: auto;display:flex;align-items: flex-end;flex-wrap: wrap;}
 		.img-up-box .img-box{position: relative;display: inline-block;width: 80px;height:80px;border: 1px solid #e6e6e6;margin-right: 8px;margin-top: 8px;}
 		.img-up-box .img-box .img-close{position: absolute;top: -7px;right: -7px;font-size: 12px;color: #fff;border-radius: 20px;width: 16px;height: 16px;background-color: #000;text-align: center;line-height: 16px;}
@@ -23,10 +23,12 @@
 		.spr-close{cursor: pointer;position: absolute;top: 0;right: -7px;font-size: 12px;color: #fff;border-radius: 20px;width: 16px;background-color: #000;text-align: center;line-height: 16px;}
 		#layer-photos{display:flex;align-items: center;max-width: 500px;flex-wrap: wrap;}
 		#layer-photos img{width: 80px; height: 80px;display: block;margin-right: 5px;margin-bottom: 5px;}
+		h2{text-align: center;margin-top: 20px;margin-bottom: 20px}
 	</style>
 </head>
 
 <body>
+		<h2>环保局请销假审批表</h2>
 		${(form!'开发中')}
 </body>
 <script src="${ctx}/plugins/layui/layui.all.js"></script>
@@ -39,7 +41,7 @@
 	if(formkey == 'leave_startevent1.html'){
 		
 		form.val(formFilter, {
-			  "u_id": "${(leave.u_id)!''}",
+			  "u_id": "${(USER.u_id)!''}",
 			  "sqr": "${(leave.sqr)!''}",
 			  "sqrq": "${(leave.sqrq)!''}", 
 		})
@@ -113,7 +115,7 @@
 		        //删除
 		        img.find('.img-close').on('click', function(){
 		           delete files[index]; //删除对应的文件
-		           var filename = "image&${(leave.bk)!''}&"+file.name;
+		           var filename = "file&${(leave.bk)!''}&"+file.name;
 		           $.ajax({
 			            type: "get",
 			            data: {filename:filename},
@@ -123,7 +125,6 @@
 			            },
 			            success: function (data) {
 			            	fileNameArray.remove(file.name)
-			            	console.log(fileNameArray)
 			            	layer.close(index);
 			            },
 			            error: function (data) {
@@ -150,7 +151,6 @@
 			 data.field.usersprs = usersprs.join(",")
 			 data.field.id = "${USER.u_id}leave${formkey!''}";
 			 data.field.bk = "${(leave.bk)!''}";
-			 console.log(data.field)
 			 $.ajax({
 		            type: "post",
 		            data: data.field,
@@ -213,11 +213,14 @@
 		            			  closeBtn:0,
 		            			  btn: ['确定'] //按钮
 		            			}, function(){
-		            			parent.window.closeTab(data.taskId);
+		            			index = parent.layer.getFrameIndex(window.name);
+						    	parent.layer.close(index);
 	            			});
 		            	}else if(data.code == "0" || data.code == "-1") {
 		            		layer.msg(data.msg, {offset: ['50%'], time: 2000},function(){
-		            			parent.window.closeTab(data.taskId);
+		            			//parent.window.closeTab(data.taskId);
+		            			index = parent.layer.getFrameIndex(window.name);
+						    	parent.layer.close(index);
 		            		});
 		            	}else {
 		            		layer.msg("审批失败", {offset: ['50%'], time: 2000});
@@ -231,7 +234,7 @@
 			} else {
 				layer.msg("请选择审批人", {offset: ['50%'], time: 2000});
 			}
-			 return false;
+			return false;
 		});
 	} else if (formkey == 'leave_usertask2.html'){
 		getSprs();
@@ -264,11 +267,15 @@
 		            			  closeBtn:0,
 		            			  btn: ['确定'] //按钮
 		            			}, function(){
-		            			parent.window.closeTab(data.taskId);
+		            			//parent.window.closeTab(data.taskId);
+		            			index = parent.layer.getFrameIndex(window.name);
+						    	parent.layer.close(index);
 	            			});
 		            	}else if(data.code == "0" || data.code == "-1") {
 		            		layer.msg(data.msg, {offset: ['50%'], time: 2000},function(){
-		            			parent.window.closeTab(data.taskId);
+		            			//parent.window.closeTab(data.taskId);
+		            			index = parent.layer.getFrameIndex(window.name);
+						    	parent.layer.close(index);
 		            		});
 		            	}else {
 		            		layer.msg("审批失败", {offset: ['50%'], time: 2000});
@@ -312,11 +319,15 @@
 	            			  closeBtn:0,
 	            			  btn: ['确定'] //按钮
 	            			}, function(){
-	            			parent.window.closeTab(data.taskId);
+	            			//parent.window.closeTab(data.taskId);
+	            			index = parent.layer.getFrameIndex(window.name);
+					    	parent.layer.close(index);
             			});
 	            	}else if(data.code == "0" || data.code == "-1") {
 	            		layer.msg(data.msg, {offset: ['50%'], time: 2000},function(){
-	            			parent.window.closeTab(data.taskId);
+	            			//parent.window.closeTab(data.taskId);
+	            			index = parent.layer.getFrameIndex(window.name);
+					    	parent.layer.close(index);
 	            		});
 	            	}else {
 	            		layer.msg("审批失败", {offset: ['50%'], time: 2000});

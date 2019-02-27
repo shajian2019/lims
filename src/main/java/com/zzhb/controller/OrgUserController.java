@@ -31,20 +31,20 @@ public class OrgUserController {
 	@GetMapping("/zpOrwt")
 	@ResponseBody
 	public List<Map<String, Object>> zpOrwt(String chkDisabled) {
-		return orgUserService.zpOrwt(chkDisabled);
+		return orgUserService.zpOrwtZtree(chkDisabled);
 	}
 
 	// 授权人ztree
 	@GetMapping("/sqr")
 	@ResponseBody
 	public List<Map<String, Object>> sqr(String p_id) {
-		return orgUserService.sqr(p_id);
+		return orgUserService.sqrZtree(p_id);
 	}
 	
 	// 审批人ztree
 	@GetMapping("/spr")
 	@ResponseBody
 	public List<Map<String, Object>> spr(UserSpr userSpr) {
-		return orgUserService.sprList(userSpr);
+		return orgUserService.sprZtree(userSpr);
 	}
 }

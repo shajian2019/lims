@@ -100,7 +100,7 @@
         </where>
     </update>
     
-    <update id="updateUserStatus" parameterType="java.util.Map">
+    <update id="updateUserStatus" parameterType="com.zzhb.domain.User">
         UPDATE sys_t_user
         <set>
             <if test="status != null and status !='' ">
@@ -110,6 +110,20 @@
         <where>
             <if test="r_id != null and r_id !='' ">
               	AND r_id = #{r_id}
+            </if>
+        </where>
+    </update>
+    
+    <update id="updateUserLogin" parameterType="com.zzhb.domain.User">
+        UPDATE sys_t_user
+        <set>
+            <if test="login != null and login !='' ">
+                login = #{login}
+            </if>
+        </set>
+        <where>
+            <if test="u_id != null and u_id !='' ">
+              	AND u_id = #{u_id}
             </if>
         </where>
     </update>

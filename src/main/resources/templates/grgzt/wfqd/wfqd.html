@@ -278,7 +278,7 @@
             	layer.confirm('确定撤销该【'+data.processDefinitionName+'】吗?', function (index) {
             		$.ajax({
                         type: "post",
-                        data: {processInstanceId: data.processInstanceId},
+                        data: {key: data.processDefinitionKey,processInstanceId: data.processInstanceId},
                         url: "${ctx}/grgzt/wfqd/revoke",
                         beforeSend: function () {
                             index = layer.load(1);

@@ -49,15 +49,12 @@ public class FileController {
 	@ResponseBody
 	public JSONObject upload(@RequestParam("file") MultipartFile file, String bk) throws Exception {
 		JSONObject result = new JSONObject();
-		String contentType = file.getContentType();
 		String filename = file.getOriginalFilename();
 		String dir = props.getTempPath();
 		if (!new File(dir).exists()) {
 			new File(dir).mkdir();
 		}
-		if (contentType.indexOf(Constant.ATTACH_IMG) != -1) {
-			filename = Constant.ATTACH_IMG + "&" + bk + "&" + filename;
-		}
+		filename = Constant.ATTACH_FILE + "&" + bk + "&" + filename;
 		FileUtil.saveFileFromInputStream(file.getInputStream(), dir, filename);
 		result.put("filename", filename);
 		return result;

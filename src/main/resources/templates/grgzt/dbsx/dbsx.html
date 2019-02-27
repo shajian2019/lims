@@ -205,7 +205,7 @@
                     title: '序号',
                     width: 50
                 }, {
-                    field: 'bk',
+                    field: 'bk', //bk
                     title: '流程单号',
                    	width: 200,
                     align: 'center'
@@ -218,11 +218,11 @@
                     title: '流程节点',
                     align: 'center'
                 },{
-                    field: 'sqr',
+                    field: 'sqr', //sqr
                     title: '申请人',
                     align: 'center'
                 }, {
-                    field: 'sqrq',
+                    field: 'sqrq', //sqrq
                     title: '申请时间',
                     width: 200,
                     align: 'center'
@@ -391,11 +391,22 @@
     })
     
     function sprw(title,taskId,bk){
-    	var options = {};
+    	/* var options = {};
     	options.id = taskId;
     	options.title = title;
     	options.icon = "fa-pencil";
     	options.url = "${ctx}/grgzt/dbsx/viewTask/"+taskId+"?bk="+bk;
-    	parent.window.addTab(options);
+    	parent.window.addTab(options); */
+    	var url = "${ctx}/grgzt/dbsx/viewTask/"+taskId+"?bk="+bk;
+    	var index = layer.open({
+            title: title,
+            type: 2,
+            area: ['1038px', '500px'],
+            content: url,
+            end: function(){
+            	tableObj.reload();
+      	  	}
+     	});
+    	layer.full(index);
     }
 </script>

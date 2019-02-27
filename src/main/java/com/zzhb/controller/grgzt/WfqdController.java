@@ -57,8 +57,8 @@ public class WfqdController {
 
 	@PostMapping("/revoke")
 	@ResponseBody
-	public Integer revoke(String processInstanceId) {
-		return activitiService.deleteProcessInstance(processInstanceId, "申请人撤销流程");
+	public Integer revoke(String processInstanceId, String key) {
+		return activitiService.deleteProcessInstance(processInstanceId, "申请人撤销流程", key);
 	}
 
 	// 流程挂起与激活

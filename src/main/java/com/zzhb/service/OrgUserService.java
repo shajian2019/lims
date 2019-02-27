@@ -2,7 +2,6 @@ package com.zzhb.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,95 +37,63 @@ public class OrgUserService {
 
 	@Autowired
 	UserOrgJobMapper userOrgJobMapper;
-	
+
 	/**
 	 * 
-	 * @param chkDisabled radio 不能选择的用户ID
+	 * @param chkDisabled
+	 *            radio 不能选择的用户ID
 	 * @return
 	 */
-	public List<Map<String, Object>> zpOrwt(String chkDisabled) {
-		List<Map<String, Object>> listOrgUser = new ArrayList<>();
-		List<Map<String, Object>> listOrgUser2 = orgUserMapper.listOrgUser2();
+	public List<Map<String, Object>> zpOrwtZtree(String chkDisabled) {
+		List<String> lists = new ArrayList<>();
+		if (chkDisabled != null) {
+			lists = Arrays.asList(chkDisabled.split(","));
+		}
+		List<Map<String, Object>> listOrgUser2 = orgUserMapper.listOrgUser();
 		for (int i = 0; i < listOrgUser2.size(); i++) {
 			Map<String, Object> map = listOrgUser2.get(i);
-			if (i > 1) {
-				Map<String, Object> map2 = listOrgUser2.get(i - 1);
-				if (!map2.get("id").equals(map.get("id"))) {
-					listOrgUser.add(map);
-				}
-			} else {
-				listOrgUser.add(map);
-			}
+			String name = map.get("name").toString();
 			map.put("nocheck", true);
-			if (map.get("u_id") != null) {
-				Map<String, Object> map2 = new HashMap<>();
-				map2.put("id", map.get("id") + "#" + map.get("u_id"));
-				Object name = map.get("nickname");
-				if (map.get("j_name") != null) {
-					name += " 【" + map.get("j_name") + "】";
+			if (name.indexOf("#") != -1) {
+				map.put("nocheck", false);
+				String login = name.split("#")[2].equals("0") ? "离线" : "在线";
+				name = name.split("#")[0] + "【" + name.split("#")[1] + "】" + login;
+				map.put("name", name);
+				String userId = map.get("id").toString().split("#")[1];
+				if (lists.contains(userId)) {
+					map.put("chkDisabled", true);
 				}
-				map2.put("name", name);
-				map2.put("parentid", map.get("id"));
-				if (chkDisabled != null) {
-					String userId = map.get("u_id").toString();
-					List<String> lists = Arrays.asList(chkDisabled.split(","));
-					if (lists.contains(userId)) {
-						map2.put("chkDisabled", true);
-					}
-				}
-				map.remove("u_id");
-				map.remove("j_name");
-				map.remove("nickname");
-				listOrgUser.add(map2);
 			}
 		}
-		return ZtreeUtil.getStandardJSON(listOrgUser);
+		return ZtreeUtil.getStandardJSON(listOrgUser2);
 	}
 
-	public List<Map<String, Object>> sqr(String p_id) {
-		List<Map<String, Object>> listOrgUser = new ArrayList<>();
-		List<Map<String, Object>> listOrgUser2 = orgUserMapper.listOrgUser2();
+	public List<Map<String, Object>> sqrZtree(String p_id) {
+		List<Map<String, Object>> listOrgUser2 = orgUserMapper.listOrgUser();
 		List<String> usersIdByPId = new ArrayList<>();
 		if (p_id != null) {
 			usersIdByPId = userMapper.getUsersIdByPId(p_id);
 		}
 		for (int i = 0; i < listOrgUser2.size(); i++) {
 			Map<String, Object> map = listOrgUser2.get(i);
-			if (i > 1) {
-				Map<String, Object> map2 = listOrgUser2.get(i - 1);
-				if (!map2.get("id").equals(map.get("id"))) {
-					listOrgUser.add(map);
-				}
-			} else {
-				listOrgUser.add(map);
-			}
-			if (map.get("u_id") != null) {
-				Map<String, Object> map2 = new HashMap<>();
-				map2.put("id", map.get("id") + "#" + map.get("u_id"));
-				Object name = map.get("nickname");
-				if (map.get("j_name") != null) {
-					name += " 【" + map.get("j_name") + "】";
-				}
-				map2.put("name", name);
-				map2.put("parentid", map.get("id"));
+			String name = map.get("name").toString();
+			if (name.indexOf("#") != -1) {
+				String login = name.split("#")[2].equals("0") ? "离线" : "在线";
+				name = name.split("#")[0] + "【" + name.split("#")[1] + "】" + login;
+				map.put("name", name);
 				if (!usersIdByPId.isEmpty()) {
-					String oIdUid = map.get("id") + "#" + map.get("u_id");
+					String oIdUid = map.get("id").toString();
 					if (usersIdByPId.contains(oIdUid)) {
-						map2.put("checked", true);
+						map.put("checked", true);
 					}
 				}
-				map.remove("u_id");
-				map.remove("j_name");
-				map.remove("nickname");
-				listOrgUser.add(map2);
 			}
 		}
-		return ZtreeUtil.getStandardJSON(listOrgUser);
+		return ZtreeUtil.getStandardJSON(listOrgUser2);
 	}
 
-	public List<Map<String, Object>> sprList(UserSpr userSpr) {
-		List<Map<String, Object>> listOrgUser = new ArrayList<>();
-		List<Map<String, Object>> listOrgUser2 = orgUserMapper.listOrgUser2();
+	public List<Map<String, Object>> sprZtree(UserSpr userSpr) {
+		List<Map<String, Object>> listOrgUser2 = orgUserMapper.listOrgUser();
 		List<String> usersIdByPId = new ArrayList<>();
 		UserSpr userSprs = userSprMapper.getUserSprs(userSpr);
 		if (userSprs != null) {
@@ -135,41 +102,26 @@ public class OrgUserService {
 		List<String> userOrgs = userOrgJobMapper.getUserOrgs(userSpr.getUid());
 		for (int i = 0; i < listOrgUser2.size(); i++) {
 			Map<String, Object> map = listOrgUser2.get(i);
-			if (i > 1) {
-				Map<String, Object> map2 = listOrgUser2.get(i - 1);
-				if (!map2.get("id").equals(map.get("id"))) {
-					listOrgUser.add(map);
-				}
-			} else {
-				listOrgUser.add(map);
-			}
-			if (map.get("u_id") != null) {
-				Map<String, Object> map2 = new HashMap<>();
-				map2.put("id", map.get("id") + "#" + map.get("u_id"));
-				Object name = map.get("nickname");
-				if (map.get("j_name") != null) {
-					name += " 【" + map.get("j_name") + "】";
-				}
-				map2.put("name", name);
-				map2.put("parentid", map.get("id"));
+			String name = map.get("name").toString();
+			if (name.indexOf("#") != -1) {
+				String login = name.split("#")[2].equals("0") ? "离线" : "在线";
+				name = name.split("#")[0] + "【" + name.split("#")[1] + "】" + login;
+				map.put("name", name);
+				String oIdUid = map.get("id").toString();
 				if (!usersIdByPId.isEmpty()) {
-					String oIdUid = map.get("id") + "#" + map.get("u_id");
 					if (usersIdByPId.contains(oIdUid)) {
-						map2.put("checked", true);
+						map.put("checked", true);
 					}
 				}
 				if (!userOrgs.isEmpty()) {
-					String id = map.get("id").toString();
-					if (userOrgs.contains(id)) {
+					oIdUid = oIdUid.split("#")[1];
+					if (userOrgs.contains(oIdUid)) {
 						map.put("open", true);
 					}
 				}
-				map.remove("u_id");
-				map.remove("j_name");
-				map.remove("nickname");
-				listOrgUser.add(map2);
 			}
 		}
-		return ZtreeUtil.getStandardJSON(listOrgUser);
+		return ZtreeUtil.getStandardJSON(listOrgUser2);
 	}
+
 }
