@@ -150,10 +150,6 @@
 		$('input[name="yylx"]').click(function(){
 			ztree.getNodeByParam("id",1);
 		});
-		$('input[name="yylx"]').blur(function (e) {
-			 
-			e.preventDefault();			
-		});
 		function  treeInput(event,treeId,treeNode) { 
 			if(!treeNode.children){
 				$('input[name="yylx"]').val(treeNode.name);
