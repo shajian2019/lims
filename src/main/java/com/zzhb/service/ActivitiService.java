@@ -357,18 +357,20 @@ public class ActivitiService {
 		}
 
 		// 查询进行中的任务
-		Task ruTask = taskService.createTaskQuery().processInstanceBusinessKey(businessKey).singleResult();
-		if (ruTask != null) {
-			HistoricTaskInstanceVO vo = new HistoricTaskInstanceVO();
-			vo.setId(ruTask.getId());
-			vo.setDeleteReason(null);
-			vo.setName(ruTask.getName());
-			vo.setStartTime(TimeUtil.getTimeFromDate("yyyy-MM-dd HH:mm:ss", ruTask.getCreateTime()));
-			if (ruTask.getAssignee() != null) {
-				User user = userMapper.getUserById(ruTask.getAssignee());
-				vo.setAssignee(user.getNickname());
+		List<Task> ruTasks = taskService.createTaskQuery().processInstanceBusinessKey(businessKey).list();
+		if (ruTasks != null) {
+			for (Task ruTask : ruTasks) {
+				HistoricTaskInstanceVO vo = new HistoricTaskInstanceVO();
+				vo.setId(ruTask.getId());
+				vo.setDeleteReason(null);
+				vo.setName(ruTask.getName());
+				vo.setStartTime(TimeUtil.getTimeFromDate("yyyy-MM-dd HH:mm:ss", ruTask.getCreateTime()));
+				if (ruTask.getAssignee() != null) {
+					User user = userMapper.getUserById(ruTask.getAssignee());
+					vo.setAssignee(user.getNickname());
+				}
+				historicTaskInstanceVOs.add(vo);
 			}
-			historicTaskInstanceVOs.add(vo);
 		}
 
 		return LayUiUtil.pagination(historicTaskInstanceVOs.size(), historicTaskInstanceVOs);
@@ -438,7 +440,7 @@ public class ActivitiService {
 		// 更新审批人缓存表
 		userSprMapper.updateSprs(params);
 
-		Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
+		List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).list();
 
 		// 为下一个任务节点添加附件
 		List<String> readFilePath = FileUtil.readFilePath(props.getTempPath(), "&" + params.get("bk") + "&");
@@ -449,8 +451,10 @@ public class ActivitiService {
 			FileInputStream fileInputStream = null;
 			try {
 				fileInputStream = new FileInputStream(new File(filePath));
-				taskService.createAttachment(attachmentType, task.getId(), pi.getId(), attachmentName,
-						fileName.split("&")[1], fileInputStream);
+				for (Task task : tasks) {
+					taskService.createAttachment(attachmentType, task.getId(), pi.getId(), attachmentName,
+							fileName.split("&")[1], fileInputStream);
+				}
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 				logger.error("===附件文件未找到==" + e.getMessage());
@@ -467,16 +471,18 @@ public class ActivitiService {
 		}
 
 		// 更新历史表
-		params.put("assignee", task.getAssignee());
-		params.put("taskId", task.getId());
-		activitiMapper.updateHiTaskInst(params);
+		for (Task task : tasks) {
+			params.put("assignee", task.getAssignee());
+			params.put("taskId", task.getId());
+			activitiMapper.updateHiTaskInst(params);
+		}
 
 		// 保存业务数据
 		params.put("proid", pi.getId());
 		Integer saveBusiness = saveBusiness(key, params);
 
 		result.put("code", saveBusiness);
-		result.put("msg", task.getName());
+		result.put("msg", tasks.get(0).getName());
 		result.put("bk", params.get("bk"));
 		return result;
 	}

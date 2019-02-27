@@ -115,7 +115,7 @@
 		        //删除
 		        img.find('.img-close').on('click', function(){
 		           delete files[index]; //删除对应的文件
-		           var filename = "image&${(leave.bk)!''}&"+file.name;
+		           var filename = "file&${(leave.bk)!''}&"+file.name;
 		           $.ajax({
 			            type: "get",
 			            data: {filename:filename},

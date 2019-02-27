@@ -27,8 +27,8 @@ public class LcgyService {
 	public Integer removeProcessInstance(String processInstanceIds) {
 		List<String> list = Arrays.asList(processInstanceIds.split(","));
 		for (String processInstanceId : list) {
-			Task ruTask = ts.createTaskQuery().processInstanceId(processInstanceId).singleResult();
-			if (ruTask != null) {
+			List<Task> taskS = ts.createTaskQuery().processInstanceId(processInstanceId).list();
+			if (taskS != null) {
 				rs.deleteProcessInstance(processInstanceId, "流程干预刪除");
 			}
 			hs.deleteHistoricProcessInstance(processInstanceId);
