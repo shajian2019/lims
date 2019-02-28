@@ -61,4 +61,5 @@ public interface UserMapper {
 	@Delete("DELETE FROM oa_t_user_procdef WHERE u_id like #{0}")
 	public Integer delUserProcdefByUid(String u_id);
 
+	public List<User> getUsersInOneOrg(@Param("oname") String oname);
 }

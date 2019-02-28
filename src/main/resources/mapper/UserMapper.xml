@@ -234,4 +234,13 @@
 		SELECT u_id FROM oa_t_user_procdef WHERE p_id = #{p_id}
 	</select>
 	
+	<select id="getUsersInOneOrg" parameterType="java.lang.String" resultType="com.zzhb.domain.User">
+		SELECT
+			* 
+		FROM
+			sys_t_user 
+		WHERE
+			u_id IN ( SELECT uoj.u_id FROM sys_t_user_org_job uoj LEFT JOIN sys_t_org o ON uoj.o_id = o.o_id WHERE o.o_name = #{oname} )
+	</select>
+	
 </mapper>

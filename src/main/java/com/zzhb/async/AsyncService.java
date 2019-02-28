@@ -56,7 +56,7 @@ public class AsyncService {
 
 	// 异步生成消息
 	@Async
-	public void message(String bk) {
+	public void sendMessage(String bk) {
 		List<Message> messages = new ArrayList<>();
 		HistoricProcessInstance hpi = historyService.createHistoricProcessInstanceQuery().processInstanceBusinessKey(bk)
 				.singleResult();
@@ -68,6 +68,7 @@ public class AsyncService {
 				.processInstanceBusinessKey(bk).finished().orderByHistoricTaskInstanceEndTime().desc().list();
 
 		List<String> uIds = new ArrayList<>();
+		// 流程申请人消息
 		Message message0 = new Message();
 		message0.setTitle(processDefinition.getName());
 		message0.setContent("流程单号：" + bk + "->" + processDefinition.getName() + "->流程结束");
@@ -77,6 +78,7 @@ public class AsyncService {
 		uIds.add(createrId);
 		messages.add(message0);
 
+		// 流程参与者消息
 		User user = userMapper.getUserById(createrId);
 		for (HistoricTaskInstance hti : list) {
 			Message message = new Message();

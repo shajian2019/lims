@@ -170,13 +170,14 @@
 			 return false;
 		 });
 	} else if (formkey == 'docreadlist_usertask1.html'){
+		
+		//获取文件附件
 		fileList();
 		
 		form.on('submit(sp)', function(data){
-			data.field.id = "${USER.u_id}docreadlist${formkey!''}";
 			data.field.bk = "${bk!''}";
 			data.field.agree = "true";
-			
+			data.field.spyj = "已阅  "+data.field.spyj;
 			$.ajax({
 	            type: "post",
 	            data: data.field,
@@ -196,11 +197,13 @@
 					    	parent.layer.close(index);
             			});
 	            	}else if(data.code == "0" || data.code == "-1") {
-	            		layer.msg(data.msg, {offset: ['50%'], time: 2000},function(){
-	            			//parent.window.closeTab(data.taskId);
+	            		index = layer.confirm(data.msg, {
+	            			  closeBtn:0,
+	            			  btn: ['确定'] //按钮
+	            			}, function(){
 	            			index = parent.layer.getFrameIndex(window.name);
 					    	parent.layer.close(index);
-	            		});
+          				});
 	            	}else {
 	            		layer.msg("审批失败", {offset: ['50%'], time: 2000});
 	            	}

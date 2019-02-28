@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.UUID;
 import java.util.zip.ZipInputStream;
 
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.engine.FormService;
@@ -440,8 +442,6 @@ public class ActivitiService {
 		// 更新审批人缓存表
 		userSprMapper.updateSprs(params);
 
-		List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).list();
-
 		// 为下一个任务节点添加附件
 		List<String> readFilePath = FileUtil.readFilePath(props.getTempPath(), "&" + params.get("bk") + "&");
 		for (String fileName : readFilePath) {
@@ -466,6 +466,7 @@ public class ActivitiService {
 			}
 		}
 
+		List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).list();
 		// 更新历史表
 		for (Task task : tasks) {
 			params.put("assignee", task.getAssignee());
@@ -483,13 +484,12 @@ public class ActivitiService {
 		return result;
 	}
 
-	@Transactional
+	// @Transactional
 	public JSONObject submitTaskFormData(String taskId, Map<String, String> params) {
 		User user = SessionUtils.getUser();
 		JSONObject result = new JSONObject();
 		String bk = params.get("bk").toString();
 
-		// 保存审批备注表
 		Task ruTask = taskService.createTaskQuery().taskId(taskId).singleResult();
 		// 判断流程是否被挂起
 		if (!ruTask.isSuspended()) {
@@ -540,28 +540,40 @@ public class ActivitiService {
 			}
 			String processInstanceId = ruTask.getProcessInstanceId();
 			identityService.setAuthenticatedUserId(user.getU_id() + "");
+			// 保存审批备注表
 			taskService.addComment(taskId, processInstanceId, JSON.toJSONString(params));
 
 			// 完成当前任务
 			formService.submitTaskFormData(taskId, params);
 
-			// 更新历史UserTask表
+			// 更新已办任务的历史表
 			params.put("taskId", taskId);
 			activitiMapper.updateHiTaskInst(params);
 
+			String taskDefinitionKey1 = ruTask.getTaskDefinitionKey();
 			List<Task> tasks = taskService.createTaskQuery().processInstanceBusinessKey(bk).list();
 			if (tasks.size() == 1) {
-				Task task = tasks.get(0);
 				// 更新审批人缓存表
-				userSprMapper.updateSprs(params);
-				// 更新历史表
+				if (params.get("usersprs") != null && params.get("id") != null) {
+					userSprMapper.updateSprs(params);
+				}
+				Task task = tasks.get(0);
+
+				// 更新待办任务的历史表
 				params.clear();
 				params.put("assignee", task.getAssignee());
 				params.put("taskId", task.getId());
 				activitiMapper.updateHiTaskInst(params);
 
-				result.put("code", 1);
-				result.put("msg", task.getName());
+				String taskDefinitionKey2 = task.getTaskDefinitionKey();
+				if (taskDefinitionKey1.equals(taskDefinitionKey2)) {
+					// 会签用户任务
+					result.put("code", 0);
+					result.put("msg", "完成审批");
+				} else {
+					result.put("code", 1);
+					result.put("msg", task.getName());
+				}
 			} else if (tasks.size() == 0) {
 				String agree = params.get("agree");
 				if (agree != null) {
@@ -570,14 +582,15 @@ public class ActivitiService {
 					Table table = tableMapper.getTableByProcdefkey(processDefinitionId.split(":")[0]);
 					String sql = "UPDATE " + table.getPrefix().trim() + table.getProcdefkey().trim() + " SET spjg = '"
 							+ agree + "'" + " where bk = '" + bk + "'";
+					logger.debug("========更新业务表=========" + sql);
 					jdbcTemplate.update(sql);
 				}
-				asyncService.message(bk);
+				asyncService.sendMessage(bk);
 				result.put("code", 0);
 				result.put("msg", "流程结束");
 			} else {
 				result.put("code", 0);
-				result.put("msg", "流程结束");
+				result.put("msg", "完成审批");
 			}
 		} else {
 			result.put("code", -1);
@@ -614,6 +627,7 @@ public class ActivitiService {
 
 			String sql = "INSERT INTO " + table.getPrefix().trim() + table.getProcdefkey().trim() + cols + "VALUES"
 					+ values;
+			logger.debug("======saveBusiness=======" + sql);
 			return jdbcTemplate.update(sql);
 		} else {
 			return 0;
@@ -660,6 +674,10 @@ public class ActivitiService {
 				.getHistoricProcessInstanceVOs(hps);
 		for (HistoricProcessInstanceVO hio : historicProcessInstanceVOs) {
 			hio.setSuspended(false);
+
+			int size = taskService.getProcessInstanceAttachments(hio.getProcessInstanceId()).size();
+			hio.setAttachments(size + "");
+
 			Task ruTask = taskService.createTaskQuery().processInstanceId(hio.getProcessInstanceId()).suspended()
 					.singleResult();
 			if (ruTask != null) {
@@ -1073,6 +1091,45 @@ public class ActivitiService {
 						}
 					}
 				}
+			} else if ("docreadlist".equals(key)) {
+				List<User> usersInOneOrgs = userMapper.getUsersInOneOrg("局领导");
+				Map<String, Integer> tempMap = new HashMap<>();
+				for (int i = 0; i < usersInOneOrgs.size(); i++) {
+					data.put("spr" + i, usersInOneOrgs.get(i).getNickname());
+					tempMap.put(usersInOneOrgs.get(i).getU_id() + "", i);
+				}
+				data.put("swrq", map.get("swrq").toString());
+				data.put("fwjg", map.get("fwjg").toString());
+				data.put("lwzh", map.get("lwzh").toString());
+				data.put("lwxz", map.get("lwxz").toString());
+				data.put("lwbh", map.get("lwbh").toString());
+				data.put("wjbt", map.get("wjbt").toString());
+				data.put("nb", map.get("nb").toString());
+				String spyj = "";
+				for (HistoricTaskInstance hi : list) {
+					String endtime = TimeUtil.getTimeByCustom("MM/dd", hi.getEndTime());
+					String starttime = TimeUtil.getTimeByCustom("MM/dd", hi.getStartTime());
+					String assignee2 = hi.getAssignee();
+					if (tempMap.containsKey(assignee2)) {
+						data.put("spsj" + tempMap.get(assignee2), endtime);
+						data.put("sdsj" + tempMap.get(assignee2), starttime);
+					}
+					List<Comment> taskComments = taskService.getTaskComments(hi.getId(), "comment");
+					for (Comment comment : taskComments) {
+						JSONObject commentJ = JSON.parseObject(comment.getFullMessage());
+						Set<String> keySet = commentJ.keySet();
+						for (String string : keySet) {
+							if (string.endsWith("spyj")) {
+								String assignee = commentJ.getString("assignee");
+								User userById = userMapper.getUserById(assignee);
+								spyj += userById.getNickname() + ": " + commentJ.getString(string)
+										+ System.getProperty("line.separator");
+								break;
+							}
+						}
+					}
+				}
+				data.put("spyj", spyj);
 			}
 			String path = PdfUtil.createPdfByTemp(tempPath, outPdfPath, data);
 			if (path != null) {
