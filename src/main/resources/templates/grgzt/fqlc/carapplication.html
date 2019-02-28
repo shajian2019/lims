@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>用印流程</title>
+    <title>车辆使用流程</title>
 	<link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
 	<link rel="stylesheet" href="${ctx}/plugins/font-awesome/css/font-awesome.min.css" media="all" />
 	<link rel="stylesheet" href="${ctx}/plugins/ztree/css/zTreeStyle/zTreeStyle.css">
@@ -31,9 +31,8 @@
 </head>
 
 <body>
-		<h2>环保局用印申请表</h2>
+		<h2>环保局车辆使用申请表</h2>
 		${(form!'开发中')}
-
 </body>
 <script src="${ctx}/plugins/ztree/js/jquery-1.4.4.min.js"></script>
 <script src="${ctx}/plugins/ztree/js/jquery.ztree.all.js"></script>
@@ -43,15 +42,25 @@
 <script src="${ctx}/js/common/download.js"></script>
 <script type="text/javascript">
 	var $z = jQuery.noConflict();
-	var $ = layui.jquery,laydate = layui.laydate,form=layui.form,upload = layui.upload,laytpl=layui.laytpl,index=null,formFilter="chapter";
+	var $ = layui.jquery,laydate = layui.laydate,form=layui.form,upload = layui.upload,laytpl=layui.laytpl,index=null,formFilter="carapplication";
 	var formkey = "${formkey!''}";
 	var sprs = [];
 	var usersprs = [];
-	if(formkey == 'chapter_startevent1.html'){
+	if(formkey == 'carapplication_startevent1.html'){
+		
 		form.val(formFilter, {
 			  "u_id": "${(USER.u_id)!''}",
-			  "sqr": "${(chapter.sqr)!''}"
+			  "sqr": "${(carapplication.sqr)!''}"
 		})
+		
+		laydate.render({
+		   elem: '#ycrqq'
+		   ,type: 'datetime'
+		});
+		laydate.render({
+		   elem: '#ycrqz'
+		   ,type: 'datetime'
+		});
 		
 		$.ajax({
             type: "get",
@@ -70,55 +79,19 @@
 		
 		getSprs()
 		
-		//用印类型
-		var setting = {
-	    	async: {
-	            enable: true,
-	            url:"${ctx}/grgzt/fqlc/getZtreeChapter",
-	            type: "get"
-			},
-			view:{
-				selectedMulti: false
-			},
-			callback:{
-				onClick:treeInput
-			}
-		};
-	
-		var ztree =$z.fn.zTree.init($("#yylx"), setting);
-		$(".tree-yylx").hover(function () {
-			}, function () {
-				$('#yylx').hide();
-			}
-		);
-		
-		$('input[name="yylx"]').click(function(){
-			$('#yylx').show();
-		});
-		$('input[name="yylx"]').blur(function (e) {
-			e.preventDefault();			
-		});
-		
-		function treeInput(event,treeId,treeNode) { 
-			if(!treeNode.children){
-				$('input[name="yylx"]').val(treeNode.name);
-				$('#yylx').hide();
-			}
-		 }
-		
   		//申请
 		form.on('submit(sq)', function(data){
 			if(sprs.length > 0){
 				 data.field.sqrq = "${.now?string('yyyy-MM-dd HH:mm:ss')}";
 				 data.field.sprs = sprs.join(",")
 				 data.field.usersprs = usersprs.join(",")
-				 data.field.id = "${USER.u_id}chapter${formkey!''}";
-				 data.field.bk = "${(chapter.bk)!''}";
+				 data.field.id = "${USER.u_id}carapplication${formkey!''}";
+				 data.field.bk = "${(carapplication.bk)!''}";
 				 console.log(data.field)
 				 $.ajax({
 			            type: "post",
 			            data: data.field,
-			            url: "${ctx}/grgzt/fqlc/start/chapter",
+			            url: "${ctx}/grgzt/fqlc/start/carapplication",
 			            beforeSend: function () {
 			                index = layer.load(1);
 			            },
@@ -129,7 +102,7 @@
 			            			  closeBtn:0,
 			            			  btn: ['确定'] //按钮
 			            			}, function(){
-			            			 parent.window.closeTab("chapter");
+			            			 parent.window.closeTab("carapplication");
 		            			});
 			            	}else{
 			            		layer.msg("申请失败");
@@ -146,9 +119,9 @@
 			 return false;
 		 });
 	
-	} else if (formkey == 'chapter_usertask1.html'){
+	} else if (formkey == 'carapplication_usertask1.html'){
 		form.on('submit(sp)', function(data){
-			data.field.id = "${USER.u_id}chapter${formkey!''}";
+			data.field.id = "${USER.u_id}carapplication${formkey!''}";
 			data.field.bk = "${bk!''}";
 			
 			data.field.spyj = "同意  "+data.field.spyj
@@ -203,7 +176,7 @@
             area: ['722px', '516px'],
          	title: false,
             fixed: false, //不固定
-            content: '${ctx}/grgzt/fqlc/spr?key=chapter&formkey=${formkey!''}',
+            content: '${ctx}/grgzt/fqlc/spr?key=carapplication&formkey=${formkey!''}',
             end: function(){
             	getSprs();
        	    }
@@ -213,7 +186,7 @@
 	function getSprs(){
 		$.ajax({
             type: "post",
-            data: {id:"${USER.u_id}chapter${formkey!''}"},
+            data: {id:"${USER.u_id}carapplication${formkey!''}"},
             url: "${ctx}/grgzt/fqlc/getSprs",
             beforeSend: function () {
                 index = layer.load(1);

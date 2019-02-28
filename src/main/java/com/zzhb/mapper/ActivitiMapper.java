@@ -32,7 +32,7 @@ public interface ActivitiMapper {
 
 	public List<User> getAddUsers(Map<String, String> params);
 
-	@Select("SELECT * from ext_act_proctype")
+	@Select("SELECT * from ext_act_proctype ORDER BY sort")
 	public List<ProcessDefinitionType> getProcessDefinitionTypes();
 
 	@Select("SELECT rp.* FROM ext_act_proctype p LEFT JOIN ext_act_re_procdef rp on p.type = rp.protype WHERE p.type = #{0} and rp.key is not null and rp.version = (SELECT max(version) FROM	ext_act_re_procdef WHERE `key` = rp.`key`)")

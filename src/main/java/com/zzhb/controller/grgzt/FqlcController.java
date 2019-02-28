@@ -90,7 +90,6 @@ public class FqlcController {
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.put("sqr", user.getNickname());
 		data.put("bk", bk);
-		data.put("sqrq", TimeUtil.getTimeByCustom("yyyy-MM-dd HH:mm:ss"));
 		return data;
 	}
 

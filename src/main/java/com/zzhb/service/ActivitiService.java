@@ -153,6 +153,7 @@ public class ActivitiService {
 		JSONArray children = new JSONArray();
 		for (ProcessDefinitionType pt : processDefinitionTypes) {
 			JSONObject groupJ = new JSONObject();
+			groupJ.put("sort", pt.getSort());
 			groupJ.put("id", pt.getType());
 			groupJ.put("title", pt.getName());
 			groupJ.put("parentId", "0");
@@ -198,9 +199,7 @@ public class ActivitiService {
 	}
 
 	@Transactional
-	public Integer lcflAdd(String name) {
-		ProcessDefinitionType pt = new ProcessDefinitionType();
-		pt.setName(name);
+	public Integer lcflAdd(ProcessDefinitionType pt) {
 		String type = UUID.randomUUID().toString();
 		pt.setType(type);
 		return activitiMapper.addProcessDefinitionType(pt);
