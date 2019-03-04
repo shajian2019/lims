@@ -46,7 +46,7 @@
 		form.val(formFilter, {
 			  "u_id": "${(USER.u_id)!''}",
 			  "sqr": "${(docreadlist.sqr)!''}",
-			  "sqrq": "${(docreadlist.sqrq)!''}", 
+			  "sqrq": "${.now?string('yyyy-MM-dd HH:mm:ss')}"
 		})
 		
 		$.ajax({
