@@ -1,0 +1,43 @@
+<form class="layui-form main layui-upload" lay-filter="chapter">
+       <div class="layui-form-item">
+           <label class="layui-form-label"><span style="color:red;">*</span>经手人</label>
+           <div class="layui-input-inline">
+               <input type="text" name="sqr" lay-verify="required" readonly="readonly" placeholder="经手人" autocomplete="off" class="layui-input">
+           	   <input type="hidden" name="u_id">
+           </div>
+           <label class="layui-form-label"><span style="color:red;">*</span>部门名称</label>
+           <div class="layui-input-inline">
+	            <select class="layui-input" name="bmmc" id="bmmc" lay-verify="required" lay-search></select>
+        	</div>
+       </div>
+       <div class="layui-form-item">
+           <label class="layui-form-label"><span style="color:red;">*</span>用印类别</label>
+           <div class="layui-input-inline tree-yylx">
+			   <input type="text" name="yylx" placeholder="用印类别" readonly="readonly" lay-verify="required" autocomplete="off" class="layui-input">
+			   <ul id="yylx" class="ztree"></ul>
+		   </div>
+		   	<label class="layui-form-label"><span style="color:red;">*</span>用印份数</label>
+           <div class="layui-input-inline">
+               <input type="text" name="yyfs" placeholder="用印份数" lay-verify="required|number" autocomplete="off" class="layui-input">
+           </div>
+       </div>
+       <div class="layui-form-item layui-form-text">
+           <label class="layui-form-label">用印内容</label>
+           <div class="layui-input-block">
+               <textarea name="yynr" placeholder="用印内容" class="layui-textarea" style="width:500px;min-height: 70px;"></textarea>
+           </div>
+       </div>
+       <div class="layui-form-item layui-form-text">
+               <label class="layui-form-label"><span style="color:red;">*</span>审批人</label>
+			<div class="layui-inline" id="spr">
+				<div id="spr_add">
+					<i class="fa fa-plus"></i>
+				</div>
+			</div>
+       </div>
+       <div class="layui-form-item">
+           <div class="layui-input-block">
+               <button class="layui-btn layui-btn-primary" lay-submit lay-filter="sq" id="sq">申请</button>
+           </div>
+       </div>
+</form>
