@@ -2,7 +2,7 @@
 <pi:Diagram xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:al="http://eclipse.org/graphiti/mm/algorithms" xmlns:pi="http://eclipse.org/graphiti/mm/pictograms" visible="true" active="true" gridUnit="10" diagramTypeId="BPMNdiagram" name="mailregistration" snapToGrid="true" version="0.10.0">
   <graphicsAlgorithm xsi:type="al:Rectangle" background="//@colors.1" foreground="//@colors.0" lineWidth="1" transparency="0.0" width="1000" height="1000"/>
   <children xsi:type="pi:ContainerShape" visible="true" active="true">
-    <properties key="independentObject" value="240100370"/>
+    <properties key="independentObject" value="1147301934"/>
     <graphicsAlgorithm xsi:type="al:Ellipse" lineWidth="1" filled="false" lineVisible="false" transparency="0.0" width="35" height="35" x="80" y="100">
       <graphicsAlgorithmChildren xsi:type="al:Ellipse" lineWidth="1" transparency="0.0" width="35" height="35" style="//@styles.0"/>
     </graphicsAlgorithm>
@@ -12,7 +12,7 @@
     </anchors>
   </children>
   <children xsi:type="pi:ContainerShape" visible="true" active="true">
-    <properties key="independentObject" value="1985805501"/>
+    <properties key="independentObject" value="2071592701"/>
     <graphicsAlgorithm xsi:type="al:Rectangle" lineWidth="1" filled="false" lineVisible="false" transparency="0.0" width="105" height="55" x="190" y="90">
       <graphicsAlgorithmChildren xsi:type="al:RoundedRectangle" lineWidth="1" transparency="0.0" width="105" height="55" style="//@styles.1" cornerHeight="20" cornerWidth="20"/>
     </graphicsAlgorithm>
@@ -21,7 +21,7 @@
       <graphicsAlgorithm xsi:type="al:Ellipse" filled="false" lineVisible="false"/>
     </anchors>
     <children visible="true">
-      <properties key="independentObject" value="1985805501"/>
+      <properties key="independentObject" value="2071592701"/>
       <graphicsAlgorithm xsi:type="al:MultiText" lineWidth="1" filled="false" transparency="0.0" width="105" height="23" y="20" style="//@styles.1" font="//@fonts.0" horizontalAlignment="ALIGNMENT_CENTER" value="&#x5185;&#x5bb9;&#x7b54;&#x590d;"/>
     </children>
     <children visible="true">
@@ -29,7 +29,7 @@
     </children>
   </children>
   <children xsi:type="pi:ContainerShape" visible="true" active="true">
-    <properties key="independentObject" value="1579948511"/>
+    <properties key="independentObject" value="1824650028"/>
     <graphicsAlgorithm xsi:type="al:Rectangle" lineWidth="1" filled="false" lineVisible="false" transparency="0.0" width="105" height="55" x="363" y="90">
       <graphicsAlgorithmChildren xsi:type="al:RoundedRectangle" lineWidth="1" transparency="0.0" width="105" height="55" style="//@styles.1" cornerHeight="20" cornerWidth="20"/>
     </graphicsAlgorithm>
@@ -38,7 +38,7 @@
       <graphicsAlgorithm xsi:type="al:Ellipse" filled="false" lineVisible="false"/>
     </anchors>
     <children visible="true">
-      <properties key="independentObject" value="1579948511"/>
+      <properties key="independentObject" value="1824650028"/>
       <graphicsAlgorithm xsi:type="al:MultiText" lineWidth="1" filled="false" transparency="0.0" width="105" height="23" y="20" style="//@styles.1" font="//@fonts.0" horizontalAlignment="ALIGNMENT_CENTER" value="&#x5206;&#x7ba1;&#x9886;&#x5bfc;&#x5ba1;&#x6279;"/>
     </children>
     <children visible="true">
@@ -46,7 +46,7 @@
     </children>
   </children>
   <children xsi:type="pi:ContainerShape" visible="true" active="true">
-    <properties key="independentObject" value="1414173616"/>
+    <properties key="independentObject" value="1737516231"/>
     <graphicsAlgorithm xsi:type="al:Rectangle" lineWidth="1" filled="false" lineVisible="false" transparency="0.0" width="105" height="55" x="533" y="90">
       <graphicsAlgorithmChildren xsi:type="al:RoundedRectangle" lineWidth="1" transparency="0.0" width="105" height="55" style="//@styles.1" cornerHeight="20" cornerWidth="20"/>
     </graphicsAlgorithm>
@@ -55,7 +55,7 @@
       <graphicsAlgorithm xsi:type="al:Ellipse" filled="false" lineVisible="false"/>
     </anchors>
     <children visible="true">
-      <properties key="independentObject" value="1414173616"/>
+      <properties key="independentObject" value="1737516231"/>
       <graphicsAlgorithm xsi:type="al:MultiText" lineWidth="1" filled="false" transparency="0.0" width="105" height="23" y="20" style="//@styles.1" font="//@fonts.0" horizontalAlignment="ALIGNMENT_CENTER" value="&#x4e3b;&#x8981;&#x9886;&#x5bfc;&#x5ba1;&#x6279;"/>
     </children>
     <children visible="true">
@@ -63,7 +63,7 @@
     </children>
   </children>
   <children xsi:type="pi:ContainerShape" visible="true" active="true">
-    <properties key="independentObject" value="156727071"/>
+    <properties key="independentObject" value="969923934"/>
     <graphicsAlgorithm xsi:type="al:Ellipse" lineWidth="1" filled="false" lineVisible="false" transparency="0.0" width="35" height="35" x="710" y="100">
       <graphicsAlgorithmChildren xsi:type="al:Ellipse" lineWidth="3" transparency="0.0" width="35" height="35" style="//@styles.0"/>
     </graphicsAlgorithm>
@@ -143,7 +143,7 @@
   </styles>
   <styles background="//@colors.2" foreground="//@colors.2" lineWidth="1" id="BPMN-POLYGON-ARROW"/>
   <connections xsi:type="pi:FreeFormConnection" visible="true" active="true" start="//@children.0/@anchors.0" end="//@children.1/@anchors.0">
-    <properties key="independentObject" value="940600260"/>
+    <properties key="independentObject" value="1775040419"/>
     <graphicsAlgorithm xsi:type="al:Polyline" foreground="//@colors.2" lineWidth="1" filled="false" transparency="0.0"/>
     <connectionDecorators visible="true" active="true" location="0.5">
       <graphicsAlgorithm xsi:type="al:MultiText" lineWidth="1" filled="false" transparency="0.0" x="10" style="//@styles.1" font="//@fonts.0"/>
@@ -158,7 +158,7 @@
     </connectionDecorators>
   </connections>
   <connections xsi:type="pi:FreeFormConnection" visible="true" active="true" start="//@children.1/@anchors.0" end="//@children.2/@anchors.0">
-    <properties key="independentObject" value="50296453"/>
+    <properties key="independentObject" value="689331778"/>
     <graphicsAlgorithm xsi:type="al:Polyline" foreground="//@colors.2" lineWidth="1" filled="false" transparency="0.0"/>
     <connectionDecorators visible="true" active="true" location="0.5">
       <graphicsAlgorithm xsi:type="al:MultiText" lineWidth="1" filled="false" transparency="0.0" x="10" style="//@styles.1" font="//@fonts.0"/>
@@ -173,7 +173,7 @@
     </connectionDecorators>
   </connections>
   <connections xsi:type="pi:FreeFormConnection" visible="true" active="true" start="//@children.2/@anchors.0" end="//@children.3/@anchors.0">
-    <properties key="independentObject" value="410328425"/>
+    <properties key="independentObject" value="1206892258"/>
     <graphicsAlgorithm xsi:type="al:Polyline" foreground="//@colors.2" lineWidth="1" filled="false" transparency="0.0"/>
     <connectionDecorators visible="true" active="true" location="0.5">
       <graphicsAlgorithm xsi:type="al:MultiText" lineWidth="1" filled="false" transparency="0.0" x="10" style="//@styles.1" font="//@fonts.0"/>
@@ -188,7 +188,7 @@
     </connectionDecorators>
   </connections>
   <connections xsi:type="pi:FreeFormConnection" visible="true" active="true" start="//@children.3/@anchors.0" end="//@children.4/@anchors.0">
-    <properties key="independentObject" value="208422153"/>
+    <properties key="independentObject" value="550618296"/>
     <graphicsAlgorithm xsi:type="al:Polyline" foreground="//@colors.2" lineWidth="1" filled="false" transparency="0.0"/>
     <connectionDecorators visible="true" active="true" location="0.5">
       <graphicsAlgorithm xsi:type="al:MultiText" lineWidth="1" filled="false" transparency="0.0" x="10" style="//@styles.1" font="//@fonts.0"/>
