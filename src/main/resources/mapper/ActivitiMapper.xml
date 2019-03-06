@@ -68,9 +68,9 @@
 	</select>
 	
 	<insert id="addProcessDefinitionType" parameterType="com.zzhb.domain.activiti.ProcessDefinitionType">
-		REPLACE INTO ext_act_proctype (type,name)
+		REPLACE INTO ext_act_proctype (type,name,sort)
 		VALUES
-		(#{type},#{name})
+		(#{type},#{name},#{sort})
 	</insert>
 	
 	<select id="getTodoTaskAndToClaimTask" resultType="java.util.Map" parameterType="java.util.Map">

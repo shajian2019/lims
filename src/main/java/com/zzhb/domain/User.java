@@ -16,11 +16,20 @@ public class User implements Serializable {
 	private String email;
 	private String phone;
 	private String status;
+	private String login;
 	private String recentlogin;
 	private String bgdh;
 	private String bgxh;
 	private String phonexh;
 	private Integer r_id;
+
+	public String getLogin() {
+		return login;
+	}
+
+	public void setLogin(String login) {
+		this.login = login;
+	}
 
 	public String getBgdh() {
 		return bgdh;

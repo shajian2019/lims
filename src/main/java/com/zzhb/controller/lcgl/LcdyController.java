@@ -63,8 +63,8 @@ public class LcdyController {
 
 	@PostMapping("/lcfl/add")
 	@ResponseBody
-	public Integer lcflAdd(String name) {
-		return activitiService.lcflAdd(name);
+	public Integer lcflAdd(ProcessDefinitionType pt) {
+		return activitiService.lcflAdd(pt);
 	}
 
 	@PostMapping("/lcfl/edit")

@@ -6,6 +6,16 @@ public class ProcessDefinitionType {
 
 	private String name;
 
+	private Integer sort;
+
+	public Integer getSort() {
+		return sort;
+	}
+
+	public void setSort(Integer sort) {
+		this.sort = sort;
+	}
+
 	public String getType() {
 		return type;
 	}
@@ -24,7 +34,7 @@ public class ProcessDefinitionType {
 
 	@Override
 	public String toString() {
-		return "ProcessDefinitionType [type=" + type + ", name=" + name + "]";
+		return "ProcessDefinitionType [type=" + type + ", name=" + name + ", sort=" + sort + "]";
 	}
 
 }

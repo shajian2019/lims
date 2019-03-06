@@ -1,0 +1,68 @@
+<form class="layui-form main layui-upload" lay-filter="mailregistration">
+       <div class="layui-form-item">
+           <label class="layui-form-label"><span style="color:red;">*</span>申请人</label>
+           <div class="layui-input-inline">
+               <input type="text" name="sqr" lay-verify="required" readonly="readonly" placeholder="申请人" autocomplete="off" class="layui-input">
+           	   <input type="hidden" name="u_id">
+           </div>
+           <label class="layui-form-label"><span style="color:red;">*</span>部门名称</label>
+           <div class="layui-input-inline">
+	            <select class="layui-input" name="bmmc" id="bmmc" lay-verify="required" lay-search></select>
+        	</div>
+       </div>
+       <div class="layui-form-item">
+           <label class="layui-form-label"><span style="color:red;">*</span>信件标题</label>
+           <div class="layui-input-block" style="width: 500px">
+               <input type="text" name="xjbt" lay-verify="required" placeholder="信件标题" autocomplete="off" class="layui-input">
+           </div>
+       </div>
+       <div class="layui-form-item layui-form-text">
+           <label class="layui-form-label"><span style="color:red;">*</span>信件内容</label>
+           <div class="layui-input-block">
+               <textarea name="xjnr" lay-verify="required" placeholder="信件内容" class="layui-textarea" style="width:500px;min-height: 90px;"></textarea>
+           </div>
+       </div>
+       <div class="layui-form-item">
+           <label class="layui-form-label"><span style="color:red;">*</span>姓名</label>
+           <div class="layui-input-inline">
+               <input type="text" name="xm" lay-verify="required" placeholder="姓名" autocomplete="off" class="layui-input">
+           </div>
+           <label class="layui-form-label"><span style="color:red;">*</span>联系电话</label>
+           <div class="layui-input-inline">
+               <input type="text" name="lxdh" lay-verify="required" placeholder="联系电话" autocomplete="off" class="layui-input">
+           </div>
+       </div>
+       <div class="layui-form-item">
+           <label class="layui-form-label"><span style="color:red;">*</span>登记时间</label>
+           <div class="layui-input-inline">
+               <input type="text" id="djsj" name="djsj" lay-verify="required" placeholder="登记时间" autocomplete="off" class="layui-input">
+           </div>
+           <label class="layui-form-label"><span style="color:red;">*</span>信件类型</label>
+           <div class="layui-input-inline">
+               <input type="text" name="xjlx" lay-verify="required" placeholder="信件类型" autocomplete="off" class="layui-input">
+           </div>
+       </div>
+       <div class="layui-form-item">
+           <label class="layui-form-label"><span style="color:red;">*</span>办理期限</label>
+           <div class="layui-input-inline">
+               <input type="text" name="blqx" lay-verify="required|number" placeholder="办理期限（天）" autocomplete="off" class="layui-input">
+           </div>
+           <label class="layui-form-label"><span style="color:red;">*</span>信件来源</label>
+           <div class="layui-input-inline">
+               <input type="text" name="xjly" lay-verify="required" placeholder="信件来源" autocomplete="off" class="layui-input">
+           </div>
+       </div>
+       <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label"><span style="color:red;">*</span>审批人</label>
+			<div class="layui-inline" id="spr">
+				<div id="spr_add">
+					<i class="fa fa-plus"></i>
+				</div>
+			</div>
+       </div>
+       <div class="layui-form-item">
+           <div class="layui-input-block">
+               <button class="layui-btn layui-btn-primary" lay-submit lay-filter="sq" id="sq">申请</button>
+           </div>
+       </div>
+	</form>

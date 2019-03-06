@@ -2,10 +2,7 @@ package com.zzhb.async;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
@@ -13,15 +10,12 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.engine.task.Comment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.zzhb.domain.Message;
 import com.zzhb.domain.User;
 import com.zzhb.mapper.MessageMapper;
@@ -62,7 +56,7 @@ public class AsyncService {
 
 	// 异步生成消息
 	@Async
-	public void message(String bk) {
+	public void sendMessage(String bk) {
 		List<Message> messages = new ArrayList<>();
 		HistoricProcessInstance hpi = historyService.createHistoricProcessInstanceQuery().processInstanceBusinessKey(bk)
 				.singleResult();
@@ -72,35 +66,25 @@ public class AsyncService {
 				.processDefinitionId(processDefinitionId).singleResult();
 		List<HistoricTaskInstance> list = historyService.createHistoricTaskInstanceQuery()
 				.processInstanceBusinessKey(bk).finished().orderByHistoricTaskInstanceEndTime().desc().list();
-		HistoricTaskInstance historicTaskInstance = list.get(0);
-		String spyj = "";
-		Comment comment = taskService.getTaskComments(historicTaskInstance.getId(), "comment").get(0);
-		JSONObject commentJ = JSON.parseObject(comment.getFullMessage());
-		Set<String> keySet = commentJ.keySet();
-		for (String string : keySet) {
-			if (string.endsWith("spyj")) {
-				spyj = commentJ.getString(string);
-				break;
-			}
-		}
 
 		List<String> uIds = new ArrayList<>();
+		// 流程申请人消息
 		Message message0 = new Message();
 		message0.setTitle(processDefinition.getName());
-		message0.setContent("流程单号：" + bk + "->" + processDefinition.getName() + "->处理结果->" + spyj);
+		message0.setContent("流程单号：" + bk + "->" + processDefinition.getName() + "->流程结束");
 		message0.setType("1");
 		message0.setStatus("0");
 		message0.setRecipientId(createrId);
 		uIds.add(createrId);
 		messages.add(message0);
 
+		// 流程参与者消息
 		User user = userMapper.getUserById(createrId);
 		for (HistoricTaskInstance hti : list) {
 			Message message = new Message();
 			String title = processDefinition.getName() + "【" + user.getNickname() + "】";
 			message.setTitle(title);
-			String content = "流程单号：" + bk + "->" + user.getNickname() + "->" + processDefinition.getName() + "->处理结果->"
-					+ spyj;
+			String content = "流程单号：" + bk + "->" + user.getNickname() + "->" + processDefinition.getName() + "->流程结束";
 			message.setContent(content);
 			message.setType("1");
 			message.setStatus("0");

@@ -10,7 +10,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -49,15 +51,12 @@ public class FileController {
 	@ResponseBody
 	public JSONObject upload(@RequestParam("file") MultipartFile file, String bk) throws Exception {
 		JSONObject result = new JSONObject();
-		String contentType = file.getContentType();
 		String filename = file.getOriginalFilename();
 		String dir = props.getTempPath();
 		if (!new File(dir).exists()) {
 			new File(dir).mkdir();
 		}
-		if (contentType.indexOf(Constant.ATTACH_IMG) != -1) {
-			filename = Constant.ATTACH_IMG + "&" + bk + "&" + filename;
-		}
+		filename = Constant.ATTACH_FILE + "&" + bk + "&" + filename;
 		FileUtil.saveFileFromInputStream(file.getInputStream(), dir, filename);
 		result.put("filename", filename);
 		return result;
@@ -72,8 +71,8 @@ public class FileController {
 
 	@GetMapping("/taskAttachments/{taskId}")
 	@ResponseBody
-	public List<String> taskAttachments(@PathVariable("taskId") String taskId) {
-		List<String> fileNames = new ArrayList<>();
+	public Set<String> taskAttachments(@PathVariable("taskId") String taskId) {
+		Set<String> fileNames = new HashSet<>();
 		Task ruTask = taskService.createTaskQuery().taskId(taskId).singleResult();
 		List<Attachment> taskAttachments = taskService.getProcessInstanceAttachments(ruTask.getProcessInstanceId());
 		String dir = props.getTempPath();
@@ -98,12 +97,16 @@ public class FileController {
 		File[] listFiles = files.listFiles();
 		List<File> fileArr = new ArrayList<File>();
 		for (File file : listFiles) {
-			if (file.getName().indexOf("&" + bk + "&") != -1) {
-				fileArr.add(file);
+			String filename = file.getName();
+			if (filename.indexOf("&" + bk + "&") != -1) {
+				FileUtil.copyFile(dir + File.separator + filename,
+						dir + File.separator + filename.split("&" + bk + "&")[1]);
+				File newFile = new File(dir + File.separator + filename.split("&" + bk + "&")[1]);
+				fileArr.add(newFile);
 			}
 		}
 		try {
-			ZipUtils.toZip(fileArr, new FileOutputStream(new File(outFileFullName)));
+			ZipUtils.toZip(fileArr, new FileOutputStream(new File(outFileFullName)), true);
 		} catch (FileNotFoundException | RuntimeException e) {
 			e.printStackTrace();
 		}

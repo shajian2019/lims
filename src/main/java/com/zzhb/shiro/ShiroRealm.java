@@ -15,6 +15,7 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.zzhb.config.Props;
 import com.zzhb.domain.User;
 import com.zzhb.mapper.RoleMapper;
 import com.zzhb.mapper.UserMapper;
@@ -34,6 +35,9 @@ public class ShiroRealm extends AuthorizingRealm {
 	@Autowired
 	RoleMapper roleMapper;
 
+	@Autowired
+	Props props;
+
 	@Override
 	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
 		logger.debug("===ShiroRealm===");
@@ -42,6 +46,11 @@ public class ShiroRealm extends AuthorizingRealm {
 		User user = userMapper.getUser(account);
 		if (user == null) {
 			throw new UnknownAccountException("用户不存在");
+		}
+		if (props.isSingle()) {
+			if ("1".equals(user.getLogin())) {
+				throw new LockedAccountException("账号已登录");
+			}
 		}
 		if (!"0".equals(user.getStatus())) {
 			if ("1".equals(user.getStatus())) {

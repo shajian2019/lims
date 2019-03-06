@@ -19,14 +19,14 @@ public class PdfUtil {
 	public static void main(String[] args) {
 		String tempPath = "E:/leave_temp.pdf";
 		String outPdfPath = "E:/leave_bk.pdf";
-		Map<String,String> data = new HashMap<>();
+		Map<String, String> data = new HashMap<>();
 		data.put("ksrq_year", "2018");
 		data.put("ksrq_month", "12");
 		data.put("ksrq_day", "11");
 		data.put("jsrq_year", "2018");
 		data.put("jsrq_month", "12");
 		data.put("jsrq_day", "11");
-		createPdfByTemp(tempPath, outPdfPath,data);
+		createPdfByTemp(tempPath, outPdfPath, data);
 	}
 
 	/**

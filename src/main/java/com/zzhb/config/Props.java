@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "props")
 public class Props {
 
+	private boolean single;
+
 	private String loginUrl;
 
 	private String cookiename;
@@ -19,9 +21,9 @@ public class Props {
 	private String tempPath;
 
 	private String uploadPath;
-	
+
 	private List<String> flushkeys = new ArrayList<>();
-	
+
 	public List<String> getFlushkeys() {
 		return flushkeys;
 	}
@@ -69,4 +71,13 @@ public class Props {
 	public void setUploadPath(String uploadPath) {
 		this.uploadPath = uploadPath;
 	}
+
+	public boolean isSingle() {
+		return single;
+	}
+
+	public void setSingle(boolean single) {
+		this.single = single;
+	}
+
 }

@@ -2,7 +2,6 @@ package com.zzhb.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,14 +49,15 @@ public class OrgUserService {
 		if (chkDisabled != null) {
 			lists = Arrays.asList(chkDisabled.split(","));
 		}
-		List<Map<String, Object>> listOrgUser2 = orgUserMapper.listOrgUser2();
+		List<Map<String, Object>> listOrgUser2 = orgUserMapper.listOrgUser();
 		for (int i = 0; i < listOrgUser2.size(); i++) {
 			Map<String, Object> map = listOrgUser2.get(i);
 			String name = map.get("name").toString();
 			map.put("nocheck", true);
 			if (name.indexOf("#") != -1) {
 				map.put("nocheck", false);
-				name = name.split("#")[0] + "【" + name.split("#")[1] + "】";
+				String login = name.split("#")[2].equals("0") ? "离线" : "在线";
+				name = name.split("#")[0] + "【" + name.split("#")[1] + "】" + login;
 				map.put("name", name);
 				String userId = map.get("id").toString().split("#")[1];
 				if (lists.contains(userId)) {
@@ -69,7 +69,7 @@ public class OrgUserService {
 	}
 
 	public List<Map<String, Object>> sqrZtree(String p_id) {
-		List<Map<String, Object>> listOrgUser2 = orgUserMapper.listOrgUser2();
+		List<Map<String, Object>> listOrgUser2 = orgUserMapper.listOrgUser();
 		List<String> usersIdByPId = new ArrayList<>();
 		if (p_id != null) {
 			usersIdByPId = userMapper.getUsersIdByPId(p_id);
@@ -78,7 +78,8 @@ public class OrgUserService {
 			Map<String, Object> map = listOrgUser2.get(i);
 			String name = map.get("name").toString();
 			if (name.indexOf("#") != -1) {
-				name = name.split("#")[0] + "【" + name.split("#")[1] + "】";
+				String login = name.split("#")[2].equals("0") ? "离线" : "在线";
+				name = name.split("#")[0] + "【" + name.split("#")[1] + "】" + login;
 				map.put("name", name);
 				if (!usersIdByPId.isEmpty()) {
 					String oIdUid = map.get("id").toString();
@@ -92,7 +93,7 @@ public class OrgUserService {
 	}
 
 	public List<Map<String, Object>> sprZtree(UserSpr userSpr) {
-		List<Map<String, Object>> listOrgUser2 = orgUserMapper.listOrgUser2();
+		List<Map<String, Object>> listOrgUser2 = orgUserMapper.listOrgUser();
 		List<String> usersIdByPId = new ArrayList<>();
 		UserSpr userSprs = userSprMapper.getUserSprs(userSpr);
 		if (userSprs != null) {
@@ -103,7 +104,8 @@ public class OrgUserService {
 			Map<String, Object> map = listOrgUser2.get(i);
 			String name = map.get("name").toString();
 			if (name.indexOf("#") != -1) {
-				name = name.split("#")[0] + "【" + name.split("#")[1] + "】";
+				String login = name.split("#")[2].equals("0") ? "离线" : "在线";
+				name = name.split("#")[0] + "【" + name.split("#")[1] + "】" + login;
 				map.put("name", name);
 				String oIdUid = map.get("id").toString();
 				if (!usersIdByPId.isEmpty()) {

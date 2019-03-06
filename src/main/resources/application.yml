@@ -9,7 +9,7 @@ spring:
   datasource: 
     username: root
     password: 123456
-    url: jdbc:mysql://192.168.1.104:3306/zzoa?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&failOverReadOnly=false&useSSL=false
+    url: jdbc:mysql://192.168.1.253:3306/zzoa?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&failOverReadOnly=false&useSSL=false
     driver-class-name: com.mysql.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
     initialSize: 5
@@ -32,7 +32,7 @@ spring:
     initialization-mode: embedded
   redis:
     database: 2
-    host: 192.168.1.104
+    host: 192.168.1.253
     port: 6379
     password:
     timeout: 0
@@ -94,7 +94,7 @@ spring:
   profiles: local
   datasource:
     username: root
-    password: root
+    password: 123456
     url: jdbc:mysql://localhost:3306/zzoa?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&failOverReadOnly=false&useSSL=false
     driver-class-name: com.mysql.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource

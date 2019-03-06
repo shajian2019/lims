@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>文件阅办单</title>
+	<link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
+	<link rel="stylesheet" href="${ctx}/plugins/font-awesome/css/font-awesome.min.css" media="all" />
+	<link rel="stylesheet" href="${ctx}/plugins/ztree/css/zTreeStyle/zTreeStyle.css">
+	<style type="text/css">
+		.layui-form-item{margin-bottom: 10px;}
+    	.main{margin: 1% auto 0;width: 970px}
+		.img-up-box,#spr{max-width: 500px;height: auto;display:flex;align-items: flex-end;flex-wrap: wrap;}
+		.img-up-box .img-box{position: relative;display: inline-block;width: 80px;height:80px;border: 1px solid #e6e6e6;margin-right: 8px;margin-top: 8px;}
+		.img-up-box .img-box .img-close{position: absolute;top: -7px;right: -7px;font-size: 12px;color: #fff;border-radius: 20px;width: 16px;height: 16px;background-color: #000;text-align: center;line-height: 16px;}
+		.img-up-box .img-box>img{width: 100%;height:100%;}
+		#spr_add{width: 40px;height:40px;border: 1px solid #e6e6e6;text-align: center;line-height: 80px;font-size: 28px;color: #e6e6e6;background-color: #fff;}
+		#spr{align-items:flex-start;}
+		#spr_add{width: 70px;height: 70px;line-height: 70px;border-radius: 1000px;}
+		.spr-select{text-align: center;position: relative;margin-right: 15px;display: inline-block;}
+		.spr-box{color: #fff;text-align: center;background-color: cornflowerblue;border-radius: 1000px;font-size: 12px;width: 70px;height: 70px;display: flex;flex-direction: column;justify-content: center;}
+		.spr-close{cursor: pointer;position: absolute;top: 0;right: -7px;font-size: 12px;color: #fff;border-radius: 20px;width: 16px;background-color: #000;text-align: center;line-height: 16px;}
+		#layer-photos{display:flex;align-items: center;max-width: 500px;flex-wrap: wrap;}
+		#layer-photos img{width: 80px; height: 80px;display: block;margin-right: 5px;margin-bottom: 5px;}
+		.tree-yylx{position: relative;}
+		#yylx{position: absolute;z-index: 999;width: 178px;border:1px solid #e6e6e6;background-color: #fff;border-top:none;display: none;}
+		h2{text-align: center;margin-top: 10px;margin-bottom: 5px}
+		.layui-textarea {width: 808px;min-height: 70px;}
+		.img-box{display: flex;align-items: center;justify-content: space-between;padding: 0 10px;}
+		.img-box>p{margin-right: 5px;}
+	</style>
+</head>
+
+<body>
+		<h2>文件阅办单</h2>
+		${(form!'开发中')}
+</body>
+<script src="${ctx}/plugins/layui/layui.all.js"></script>
+<script src="${ctx}/js/common/download.js"></script>
+<script type="text/javascript">
+	var $ = layui.jquery,laydate = layui.laydate,form=layui.form,upload = layui.upload,laytpl=layui.laytpl,index=null,formFilter="docreadlist";
+	var formkey = "${formkey!''}";
+	if(formkey == 'docreadlist_startevent1.html'){
+		form.val(formFilter, {
+			  "u_id": "${(USER.u_id)!''}",
+			  "sqr": "${(docreadlist.sqr)!''}",
+			  "sqrq": "${.now?string('yyyy-MM-dd HH:mm:ss')}"
+		})
+		
+		$.ajax({
+            type: "get",
+            data: {"u_id":"${USER.u_id}"},
+            url: "${ctx}/grgzt/fqlc/getOrgs",
+            success: function (data) {
+				$.each(data, function (index, item) {
+                    $('#bmmc').append(new Option(item.name, item.name));// 下拉菜单里添加元素
+                });
+				form.render("select");
+            },
+            error: function (data) {
+                layer.msg("服务端异常");
+            }
+        });
+		
+		laydate.render({
+		   elem: '#swrq'
+		   ,format: 'yyyy年MM月dd日'
+		 });
+		
+		getSprs()
+		
+		var fileNameArray = [];
+	  	//多图片上传
+	  	var imgUpView = $('#file_up'),imgUpload=upload.render({
+		     elem: '#file_up'
+		     ,url: '${ctx}/file/upload'
+			 ,data:{"bk":"${(docreadlist.bk)!''}"}
+		     ,multiple: true
+			 ,auto: true
+			 ,accept:'file'
+			 ,size: parseInt("${(file_upload_max_size)!'4096'}")
+			 ,choose: function(obj){   
+			      var files = this.files = obj.pushFile(); //将每次选择的文件追加到文件队列
+			      //读取本地文件
+			      obj.preview(function(index, file, result){
+			    	if(fileNameArray.indexOf(file.name) != -1){
+			    		layer.msg("文件已存在");
+			    		return;
+			    	}
+					var img = $([
+						'<div class="img-box layui-btn layui-btn-primary">'+
+						'<p>'+file.name+'</p>'+
+						'<i class="fa fa-close img-close"></i>'+
+						'</div>'
+					].join(''));
+			        //删除
+			        img.find('.img-close').on('click', function(){
+			           delete files[index]; //删除对应的文件
+			           var filename = "file&${(docreadlist.bk)!''}&"+file.name;
+			           $.ajax({
+				            type: "get",
+				            data: {filename:filename},
+				            url: '${ctx}/file/del/',
+				            beforeSend: function () {
+				                index = layer.load(1);
+				            },
+				            success: function (data) {
+				            	fileNameArray.remove(file.name)
+				            	layer.close(index);
+				            },
+				            error: function (data) {
+				            	layer.close(index);
+				                layer.msg("服务端异常");
+				            }
+				       });
+			           img.remove();
+			           imgUpload.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
+			        });
+					imgUpView.before(img)
+					fileNameArray.push(file.name);
+			      });
+		     }
+		     ,done: function(res){
+			     //单张上传完毕
+		     }
+	    });
+		
+		//申请
+		form.on('submit(sq)', function(data){
+			if(sprs.length > 0){
+				 data.field.sprs = sprs.join(",")
+				 data.field.usersprs = usersprs.join(",")
+				 data.field.id = "${USER.u_id}docreadlist${formkey!''}";
+				 data.field.bk = "${(docreadlist.bk)!''}";
+				 data.field.sdsj = "${.now?string('yyyy年MM月dd')}";
+				 if(fileNameArray.length < 1){
+					 layer.msg("请先上传文件", {offset: ['50%'], time: 2000});
+				 }else{
+					 $.ajax({
+				            type: "post",
+				            data: data.field,
+				            url: "${ctx}/grgzt/fqlc/start/docreadlist",
+				            beforeSend: function () {
+				                index = layer.load(1);
+				            },
+				            success: function (data) {
+				            	layer.close(index);
+				            	if(data.code >0){
+				            		layer.confirm("申请成功,流程单号："+data.bk+",下一流程节点："+data.msg, {
+				            			  closeBtn:0,
+				            			  btn: ['确定'] //按钮
+				            			}, function(){
+				            			 parent.window.closeTab("docreadlist");
+			            			});
+				            	}else{
+				            		layer.msg("申请失败");
+				            	}
+				            },
+				            error: function (data) {
+				            	layer.close(index);
+				                layer.msg("服务端异常");
+				            }
+				      });
+				 }
+			 } else {
+				 layer.msg("请选择阅办领导", {offset: ['50%'], time: 2000});
+			 }
+			 return false;
+		 });
+	} else if (formkey == 'docreadlist_usertask1.html'){
+		
+		//获取文件附件
+		fileList();
+		
+		form.on('submit(sp)', function(data){
+			data.field.bk = "${bk!''}";
+			data.field.agree = "true";
+			data.field.spyj = "已阅  "+data.field.spyj;
+			$.ajax({
+	            type: "post",
+	            data: data.field,
+	            url: "${ctx}/grgzt/dbsx/complete/${taskId!''}",
+	            beforeSend: function () {
+	                index = layer.load(1);
+	            },
+	            success: function (data) {
+	            	layer.close(index);
+	            	if(data.code >0){
+	            		index = layer.confirm("审批成功,下一流程节点："+data.msg, {
+	            			  closeBtn:0,
+	            			  btn: ['确定'] //按钮
+	            			}, function(){
+	            			//parent.window.closeTab(data.taskId);
+	            			index = parent.layer.getFrameIndex(window.name);
+					    	parent.layer.close(index);
+            			});
+	            	}else if(data.code == "0" || data.code == "-1") {
+	            		index = layer.confirm(data.msg, {
+	            			  closeBtn:0,
+	            			  btn: ['确定'] //按钮
+	            			}, function(){
+	            			index = parent.layer.getFrameIndex(window.name);
+					    	parent.layer.close(index);
+          				});
+	            	}else {
+	            		layer.msg("审批失败", {offset: ['50%'], time: 2000});
+	            	}
+	            },
+	            error: function (data) {
+	            	layer.close(index);
+	                layer.msg("服务端异常");
+	            }
+	        });
+			return false;
+		});
+	}
+	
+    //数组对象对应删除
+    Array.prototype.remove = function (val) {
+        var index = this.indexOf(val);
+        if (index > -1) {
+            this.splice(index, 1);
+        }
+    };
+    
+	$("#spr_add").click(function(){
+		 layer.open({
+           type: 2,
+           area: ['722px', '516px'],
+        	title: false,
+           fixed: false, //不固定
+           content: '${ctx}/grgzt/fqlc/spr?key=docreadlist&formkey=${formkey!''}',
+           end: function(){
+           	 getSprs();
+      	   }
+  	   })
+	})
+	
+	function getSprs(){
+		$.ajax({
+            type: "post",
+            data: {id:"${USER.u_id}docreadlist${formkey!''}"},
+            url: "${ctx}/grgzt/fqlc/getSprs",
+            beforeSend: function () {
+                index = layer.load(1);
+            },
+            success: function (data) {
+            	layer.close(index);
+            	var html = ""
+        		sprs = [];
+            	usersprs = [];
+            	$.each(data,function(i,v){
+            		sprs.push(v.oiduid.split("#")[1]);
+            		usersprs.push(v.oiduid);
+            		html +='<div class="spr-select">';
+            			html +='<i class="fa fa-close spr-close" data-id="'+v.oiduid+'"></i>';
+						html +='<div class="spr-box">'
+							html +='<p>'+v.o_name+'</p>';
+							html +='<p>'+v.j_name+'</p>';
+						html +='</div>';
+						html +='<p>'+v.nickname+'</p>';
+					html +='</div>';
+            	})
+            	
+            	$("#spr_add").prevAll().remove();
+            	$("#spr_add").before(html);
+            	$("#spr .spr-select").on('click','.spr-close',function () { 
+            		var oiduid = $(this).attr("data-id");
+            		usersprs.remove(oiduid)
+            		sprs.remove(oiduid.split("#")[1])
+            		$(this).parent().remove();
+            	})
+            },
+            error: function (data) {
+            	layer.close(index);
+                layer.msg("服务端异常");
+            }
+      });
+	}
+	
+	function fileList(){
+		$.getJSON('${ctx}/file/taskAttachments/${taskId!''}', function(json){
+			console.log(json)
+			var bk = "";
+			var imgHtml = "";
+			$.each(json,function(i,v){
+				var detail = v.split("&");
+				if(bk == ""){
+					bk = v.split("&")[1];
+				}
+				imgHtml += '<div class="img-box layui-btn layui-btn-primary">'+
+				'<p>'+detail[2]+'</p>'+
+				'</div>'
+			})
+			
+			$("#fileDiv").html(imgHtml)
+			
+			if(json.length == 0){
+				$("#download").hide();
+			}else{
+				//绑定下载附件事件
+				$("#download").click(function(){
+					$.ajax({
+		                 type: "post",
+		                 data: {bk:bk},
+		                 url: "${ctx}/file/downloadAttachment",
+		                 beforeSend: function () {
+		                     index = layer.load(1);
+		                 },
+		                 success: function (data) {
+		                     layer.close(index);
+		                     var url = "${ctx}/file/downloadZip"
+		               		 var field = {};
+		                     field.fileName = data;
+		               		 formPost(url, field);
+		                 },
+		                 error: function (data) {
+		                     layer.msg("服务端异常");
+		                 }
+		             });
+				})
+			}
+		});
+		
+	}
+</script>
+</html>
