@@ -69,63 +69,6 @@
 		
 		getSprs()
 		
-	var fileNameArray = [];
-  	//多图片上传
-  	var imgUpView = $('#img_up'),imgUpload=upload.render({
-	     elem: '#img_up'
-	     ,url: '${ctx}/file/upload'
-		 ,data:{"bk":"${(mailregistration.bk)!''}"}
-	     ,multiple: true
-		 ,auto: true
-		 ,accept:'images'
-		 ,acceptMime:'image/*'
-		 ,size: parseInt("${(image_upload_max_size)!'4096'}")
-		 ,choose: function(obj){   
-		      var files = this.files = obj.pushFile(); //将每次选择的文件追加到文件队列
-		      //读取本地文件
-		      obj.preview(function(index, file, result){
-		    	if(fileNameArray.indexOf(file.name) != -1){
-		    		layer.msg("图片已存在");
-		    		return;
-		    	}
-				var img = $([
-					'<div class="img-box">'+
-					'<img src="'+result+'" alt="'+file.name+'" class="layui-upload-img">'+
-					'<i class="fa fa-close img-close"></i>'+
-					'</div>'
-				].join(''));
-		        //删除
-		        img.find('.img-close').on('click', function(){
-		           delete files[index]; //删除对应的文件
-		           var filename = "file&${(mailregistration.bk)!''}&"+file.name;
-		           $.ajax({
-			            type: "get",
-			            data: {filename:filename},
-			            url: '${ctx}/file/del/',
-			            beforeSend: function () {
-			                index = layer.load(1);
-			            },
-			            success: function (data) {
-			            	fileNameArray.remove(file.name)
-			            	layer.close(index);
-			            },
-			            error: function (data) {
-			            	layer.close(index);
-			                layer.msg("服务端异常");
-			            }
-			       });
-		           img.remove();
-		           imgUpload.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
-		        });
-				imgUpView.before(img)
-				fileNameArray.push(file.name);
-		      });
-	     }
-	     ,done: function(res){
-		     //单张上传完毕
-	     }
-    });
-  	
   	//申请
 	form.on('submit(sq)', function(data){
 		if(sprs.length > 0){
@@ -167,8 +110,13 @@
 	
 	} else if (formkey == 'mailregistration_usertask1.html'){
 		getSprs();
-		//图片预览
-		previewImage()
+		
+		laydate.render({
+		   elem: '#dfsj'
+		   ,type: 'date'
+		   ,value: new Date()
+		});
+		
 		//审批
 		form.on('submit(sp)', function(data){
 			if(sprs.length > 0){
@@ -176,12 +124,7 @@
 				data.field.usersprs = usersprs.join(",")
 				data.field.id = "${USER.u_id}mailregistration${formkey!''}";
 				data.field.bk = "${bk!''}";
-				
-				data.field.ks_spyj = "同意  "+data.field.ks_spyj
-				if(data.field.agree != "true"){
-					data.field.ks_spyj = "不"+data.field.ks_spyj;
-				}
-				
+				data.field.agree = "true";
 				$.ajax({
 		            type: "post",
 		            data: data.field,
@@ -219,61 +162,96 @@
 			}
 			return false;
 		});
-	} 
-	
-	function previewImage(){
-		$.getJSON('${ctx}/file/taskAttachments/${taskId!''}', function(json){
-			var bk = "";
-			var imgHtml = "";
-			$.each(json,function(i,v){
-				var detail = v.split("&");
-				if(bk == ""){
-					bk = v.split("&")[1];
-				}
-				imgHtml += "<img layer-src='/"+v+"' src='/"+v+"' alt='"+detail[2]+"''>"
-			})
-			$("#layer-photos").html(imgHtml)
-			layer.photos({
-			   photos: "#layer-photos"
-			   ,shade:[0.1, '#ffffff']
-			   ,anim: 5
-			});
-			
-			if(json.length == 0){
-				$("#download").hide();
-			}else{
-				//绑定下载附件事件
-				$("#download").click(function(){
-					$.ajax({
-		                 type: "post",
-		                 data: {bk:bk},
-		                 url: "${ctx}/file/downloadAttachment",
-		                 beforeSend: function () {
-		                     index = layer.load(1);
-		                 },
-		                 success: function (data) {
-		                     layer.close(index);
-		                     var url = "${ctx}/file/downloadZip"
-		               		 var field = {};
-		                     field.fileName = data;
-		               		 formPost(url, field);
-		                 },
-		                 error: function (data) {
-		                     layer.msg("服务端异常");
-		                 }
-		             });
-				})
-			}
-		});
+	} else if(formkey == 'mailregistration_usertask2.html'){
 		
+		getSprs();
+		
+		//审批
+		form.on('submit(sp)', function(data){
+			if(sprs.length > 0){
+				data.field.sprs = sprs.join(",")
+				data.field.usersprs = usersprs.join(",")
+				data.field.id = "${USER.u_id}mailregistration${formkey!''}";
+				data.field.bk = "${bk!''}";
+				data.field.agree = "true";
+				$.ajax({
+		            type: "post",
+		            data: data.field,
+		            url: "${ctx}/grgzt/dbsx/complete/${taskId!''}",
+		            beforeSend: function () {
+		                index = layer.load(1);
+		            },
+		            success: function (data) {
+		            	layer.close(index);
+		            	if(data.code >0){
+		            		index = layer.confirm("审批成功,下一流程节点："+data.msg, {
+		            			  closeBtn:0,
+		            			  btn: ['确定'] //按钮
+		            			}, function(){
+		            			index = parent.layer.getFrameIndex(window.name);
+						    	parent.layer.close(index);
+	            			});
+		            	}else if(data.code == "0" || data.code == "-1") {
+		            		layer.msg(data.msg, {offset: ['50%'], time: 2000},function(){
+		            			index = parent.layer.getFrameIndex(window.name);
+						    	parent.layer.close(index);
+		            		});
+		            	}else {
+		            		layer.msg("审批失败", {offset: ['50%'], time: 2000});
+		            	}
+		            },
+		            error: function (data) {
+		            	layer.close(index);
+		                layer.msg("服务端异常");
+		            }
+		      });
+			} else {
+				layer.msg("请选择审批人", {offset: ['50%'], time: 2000});
+			}
+			return false;
+		});
+	}else if(formkey == 'mailregistration_usertask3.html'){
+		
+		form.on('submit(sp)', function(data){
+			data.field.id = "${USER.u_id}mailregistration${formkey!''}";
+			data.field.bk = "${bk!''}";
+			data.field.agree = "true";
+			$.ajax({
+	            type: "post",
+	            data: data.field,
+	            url: "${ctx}/grgzt/dbsx/complete/${taskId!''}",
+	            beforeSend: function () {
+	                index = layer.load(1);
+	            },
+	            success: function (data) {
+	            	layer.close(index);
+	            	if(data.code >0){
+	            		index = layer.confirm("审批成功,下一流程节点："+data.msg, {
+	            			  closeBtn:0,
+	            			  btn: ['确定'] //按钮
+	            			}, function(){
+	            			//parent.window.closeTab(data.taskId);
+	            			index = parent.layer.getFrameIndex(window.name);
+					    	parent.layer.close(index);
+            			});
+	            	}else if(data.code == "0" || data.code == "-1") {
+	            		layer.msg(data.msg, {offset: ['50%'], time: 2000},function(){
+	            			//parent.window.closeTab(data.taskId);
+	            			index = parent.layer.getFrameIndex(window.name);
+					    	parent.layer.close(index);
+	            		});
+	            	}else {
+	            		layer.msg("审批失败", {offset: ['50%'], time: 2000});
+	            	}
+	            },
+	            error: function (data) {
+	            	layer.close(index);
+	                layer.msg("服务端异常");
+	            }
+	        });
+			return false;
+		});
 	}
-	  //数组对象对应删除
-    Array.prototype.remove = function (val) {
-        var index = this.indexOf(val);
-        if (index > -1) {
-            this.splice(index, 1);
-        }
-    };
     
 	$("#spr_add").click(function(){
 		 layer.open({

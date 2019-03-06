@@ -684,7 +684,8 @@ public class ActivitiService {
 			}
 			if (!"".endsWith(hio.getEndTime()) && hio.getDeleteReason() == null) {
 				List<Comment> comments = taskService.getProcessInstanceComments(hio.getProcessInstanceId(), "comment");
-				hio.setSftg(JSON.parseObject(comments.get(0).getFullMessage()).getBoolean("agree"));
+				hio.setSftg(JSON.parseObject(comments.get(0).getFullMessage()).getBoolean("agree") == null ? true
+						: JSON.parseObject(comments.get(0).getFullMessage()).getBoolean("agree"));
 			}
 			if (params.get("u_id") == null && hio.getOwerId() != null) {
 				User user = userMapper.getUserById(hio.getOwerId());
@@ -1018,7 +1019,7 @@ public class ActivitiService {
 		Table table = tableMapper.getTableByProcdefkey(key);
 		if (table == null) {
 			result.put("code", 0);
-			result.put("msg", "未维护sys_t_table表");
+			result.put("msg", key+"未维护sys_t_table表");
 		} else {
 			String sql = "SELECT * FROM " + table.getPrefix().trim() + table.getProcdefkey().trim();
 			sql += " WHERE bk = '" + bk + "'";
@@ -1072,6 +1073,7 @@ public class ActivitiService {
 				data.put("yynr", map.get("yynr").toString());
 				for (HistoricTaskInstance hi : list) {
 					String endtime = TimeUtil.getTimeByCustom("yyyy-MM-dd", hi.getEndTime());
+					// 查询审批意见
 					List<Comment> taskComments = taskService.getTaskComments(hi.getId(), "comment");
 					for (Comment comment : taskComments) {
 						JSONObject commentJ = JSON.parseObject(comment.getFullMessage());
@@ -1130,6 +1132,7 @@ public class ActivitiService {
 				}
 				data.put("spyj", spyj);
 			}
+			// 生成pdf
 			String path = PdfUtil.createPdfByTemp(tempPath, outPdfPath, data);
 			if (path != null) {
 				result.put("code", 1);

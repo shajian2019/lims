@@ -24,33 +24,59 @@
        <div class="layui-form-item">
            <label class="layui-form-label"><span style="color:red;">*</span>姓名</label>
            <div class="layui-input-inline">
-               <input type="text" value="${xm}" lay-verify="required" placeholder="姓名" autocomplete="off" class="layui-input">
+               <input type="text" value="${xm}" readonly="readonly" lay-verify="required" placeholder="姓名" autocomplete="off" class="layui-input">
            </div>
            <label class="layui-form-label"><span style="color:red;">*</span>联系电话</label>
            <div class="layui-input-inline">
-               <input type="text" value="${lxdh}" lay-verify="required" placeholder="联系电话" autocomplete="off" class="layui-input">
+               <input type="text" value="${lxdh}" readonly="readonly" lay-verify="required" placeholder="联系电话" autocomplete="off" class="layui-input">
            </div>
        </div>
        <div class="layui-form-item">
            <label class="layui-form-label"><span style="color:red;">*</span>登记时间</label>
            <div class="layui-input-inline">
-               <input type="text" value="${djsj}" lay-verify="required" placeholder="登记时间" autocomplete="off" class="layui-input">
+               <input type="text" value="${djsj}" readonly="readonly" lay-verify="required" placeholder="登记时间" autocomplete="off" class="layui-input">
            </div>
            <label class="layui-form-label"><span style="color:red;">*</span>信件类型</label>
            <div class="layui-input-inline">
-               <input type="text" value="${xjlx}" lay-verify="required" placeholder="信件类型" autocomplete="off" class="layui-input">
+               <input type="text" value="${xjlx}" readonly="readonly" lay-verify="required" placeholder="信件类型" autocomplete="off" class="layui-input">
            </div>
        </div>
        <div class="layui-form-item">
            <label class="layui-form-label"><span style="color:red;">*</span>办理期限</label>
            <div class="layui-input-inline">
-               <input type="text" value="${blqx}" lay-verify="required|number" placeholder="办理期限（天）" autocomplete="off" class="layui-input">
+               <input type="text" value="${blqx}" readonly="readonly" lay-verify="required|number" placeholder="办理期限（天）" autocomplete="off" class="layui-input">
            </div>
            <label class="layui-form-label"><span style="color:red;">*</span>信件来源</label>
            <div class="layui-input-inline">
-               <input type="text" value="${xjly}" lay-verify="required" placeholder="信件来源" autocomplete="off" class="layui-input">
+               <input type="text" value="${xjly}" readonly="readonly" lay-verify="required" placeholder="信件来源" autocomplete="off" class="layui-input">
            </div>
        </div>
+       <div class="layui-form-item layui-form-text">
+           <label class="layui-form-label"><span style="color:red;">*</span>答复内容</label>
+           <div class="layui-input-block">
+               <textarea lay-verify="required" readonly="readonly" placeholder="答复内容" class="layui-textarea" style="width:500px;min-height: 90px;">${dfnr}</textarea>
+           </div>
+       </div>
+        <div class="layui-form-item">
+           <label class="layui-form-label"><span style="color:red;">*</span>答复单位</label>
+           <div class="layui-input-inline">
+               <input type="text" value="${dfdw}" readonly="readonly"  lay-verify="required" placeholder="答复单位" autocomplete="off" class="layui-input">
+           </div>
+           <label class="layui-form-label"><span style="color:red;">*</span>答复时间</label>
+           <div class="layui-input-inline">
+               <input type="text" value="${dfsj}" readonly="readonly" lay-verify="required" placeholder="答复时间" autocomplete="off" class="layui-input">
+           </div>
+       </div>
+       
+       <div class="layui-form-item layui-form-text">
+           <label class="layui-form-label"><span style="color:red;">*</span>分管领导意见</label>
+           <div class="layui-input-block">
+               <textarea lay-verify="required" name="fgld_spyj" placeholder="分管领导意见" class="layui-textarea" style="width:500px;min-height: 90px;"></textarea>
+           </div>
+       </div>
+       
+       
+       
        <div class="layui-form-item layui-form-text">
             <label class="layui-form-label"><span style="color:red;">*</span>审批人</label>
 			<div class="layui-inline" id="spr">

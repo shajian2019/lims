@@ -23,7 +23,7 @@
        </div>
        <div class="layui-form-item">
            <label class="layui-form-label"><span style="color:red;">*</span>姓名</label>
-           <div class="layui-input-inline"> 
+           <div class="layui-input-inline">
                <input type="text" value="${xm}" readonly="readonly" lay-verify="required" placeholder="姓名" autocomplete="off" class="layui-input">
            </div>
            <label class="layui-form-label"><span style="color:red;">*</span>联系电话</label>
@@ -54,28 +54,35 @@
        <div class="layui-form-item layui-form-text">
            <label class="layui-form-label"><span style="color:red;">*</span>答复内容</label>
            <div class="layui-input-block">
-               <textarea lay-verify="required" name="dfnr" placeholder="答复内容" class="layui-textarea" style="width:500px;min-height: 90px;"></textarea>
+               <textarea lay-verify="required" readonly="readonly" placeholder="答复内容" class="layui-textarea" style="width:500px;min-height: 90px;">${dfnr}</textarea>
            </div>
        </div>
         <div class="layui-form-item">
            <label class="layui-form-label"><span style="color:red;">*</span>答复单位</label>
            <div class="layui-input-inline">
-               <input type="text" name="dfdw" lay-verify="required" placeholder="答复单位" autocomplete="off" class="layui-input">
+               <input type="text" value="${dfdw}" readonly="readonly"  lay-verify="required" placeholder="答复单位" autocomplete="off" class="layui-input">
            </div>
            <label class="layui-form-label"><span style="color:red;">*</span>答复时间</label>
            <div class="layui-input-inline">
-               <input type="text" name="dfsj" id="dfsj" lay-verify="required" placeholder="答复时间" autocomplete="off" class="layui-input">
+               <input type="text" value="${dfsj}" readonly="readonly" lay-verify="required" placeholder="答复时间" autocomplete="off" class="layui-input">
            </div>
        </div>
        
        <div class="layui-form-item layui-form-text">
-            <label class="layui-form-label"><span style="color:red;">*</span>审批人</label>
-			<div class="layui-inline" id="spr">
-				<div id="spr_add">
-					<i class="fa fa-plus"></i>
-				</div>
-			</div>
+           <label class="layui-form-label"><span style="color:red;">*</span>分管领导意见</label>
+           <div class="layui-input-block">
+               <textarea lay-verify="required" readonly="readonly" placeholder="分管领导意见" class="layui-textarea" style="width:500px;min-height: 90px;">${fgld_spyj}</textarea>
+           </div>
        </div>
+       
+       <div class="layui-form-item layui-form-text">
+           <label class="layui-form-label"><span style="color:red;">*</span>主管领导意见</label>
+           <div class="layui-input-block">
+               <textarea lay-verify="required" name="zgld_spyj" placeholder="主管领导意见" class="layui-textarea" style="width:500px;min-height: 90px;"></textarea>
+           </div>
+       </div>
+       
+      
        <div class="layui-form-item">
            <div class="layui-input-block">
                <button class="layui-btn layui-btn-primary" lay-submit lay-filter="sp" id="sp">审批</button>

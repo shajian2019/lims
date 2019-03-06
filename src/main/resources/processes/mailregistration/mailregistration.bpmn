@@ -18,7 +18,7 @@
       </extensionElements>
     </userTask>
     <sequenceFlow id="flow2" sourceRef="usertask1" targetRef="usertask2"></sequenceFlow>
-    <userTask id="usertask3" name="主要领导审批">
+    <userTask id="usertask3" name="主要领导审批" activiti:formKey="mailregistration_usertask3.html">
       <extensionElements>
         <activiti:taskListener event="create" class="com.zzhb.listener.activiti.UserTaskCreateListener"></activiti:taskListener>
       </extensionElements>
