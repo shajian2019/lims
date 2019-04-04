@@ -166,4 +166,9 @@ public class UserService {
 		user.setPassword(password.toString());
 		return userMapper.updateUser(user);
 	}
+	
+	public String getUserNameByUserId(String id) {
+		String userName=userMapper.getUserNameByUserId(id);
+		return userName;
+	}
 }

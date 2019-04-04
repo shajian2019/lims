@@ -1,0 +1,147 @@
+<form class="layui-form main layui-upload" lay-filter="assetsRecipients">
+	<table border="solid 1px;">
+		<tr class="trCss">
+			<td colspan="2"><span style="color:red;">*</span>申请人</td>
+			<td style="width: 16%;" colspan="2">
+			   <input type="text" name="sqr" lay-verify="required" readonly="readonly" placeholder="申请人" autocomplete="off" class="layui-input">
+           	   <input type="hidden" name="u_id">
+			</td>
+			<td style="width: 15%;"><span style="color:red;">*</span>科室(单位)</td>
+			<td style="width: 15%;">
+			   <select class="layui-input" name="bmmc" id="bmmc" lay-verify="required" lay-search>
+	            </select>
+			</td>
+			<td style="width: 12%;"><span style="color:red;">*</span>申请日期</td>
+			<td colspan="2" style="width: 510px;">
+			   <input type="text" name="sqrq" readonly="readonly" lay-verify="required" autocomplete="off" class="layui-input">
+			</td>
+		</tr>
+		<tr class="trCss">
+			<td style="width: 5%;">序号</td>
+			<td style="width: 17%;" colspan="2">资产名称</td>
+			<td colspan="2">型号配置</td>
+			<td>数量</td>
+			<td colspan="2" style="width: 20%;">用途</td>
+			<td style="width: 20%;">备注</td>
+		</tr>
+		<tr class="trCss">
+			<td>
+			   <input type="text" name="bha" value="1" style="border:none;" lay-verify="required" autocomplete="off" class="layui-input">
+			</td>
+			<td colspan="2">
+			   <input type="text" name="zcmca" lay-verify="required" autocomplete="off" class="layui-input">
+			</td>
+			<td colspan="2">
+			   <input type="text" name="xhpza" lay-verify="required" autocomplete="off" class="layui-input">
+			</td>
+			<td>
+			   <input type="text" name="sla" lay-verify="required" autocomplete="off" class="layui-input">
+			</td>
+			<td colspan="2">
+			   <input type="text" name="yta" lay-verify="required" autocomplete="off" class="layui-input">
+			</td>
+			<td>
+			   <input type="text" name="bza" lay-verify="required" autocomplete="off" class="layui-input">
+			</td>
+		</tr>
+		<tr class="trCss">
+			<td>
+			   <input type="text" name="bhb" value="2" style="border:none;" autocomplete="off" class="layui-input">
+			</td>
+			<td colspan="2">
+			   <input type="text" name="zcmcb" autocomplete="off" class="layui-input">
+			</td>
+			<td colspan="2">
+			   <input type="text" name="xhpzb" autocomplete="off" class="layui-input">
+			</td>
+			<td>
+			   <input type="text" name="slb"  autocomplete="off" class="layui-input">
+			</td>
+			<td colspan="2">
+			   <input type="text" name="ytb"  autocomplete="off" class="layui-input">
+			</td>
+			<td>
+			   <input type="text" name="bzb"  autocomplete="off" class="layui-input">
+			</td>
+		</tr>
+		<tr class="trCss">
+			<td>
+			   <input type="text" name="bhc" value="3" style="border:none;"  autocomplete="off" class="layui-input">
+			</td>
+			<td colspan="2">
+			   <input type="text" name="zcmcc"  autocomplete="off" class="layui-input">
+			</td>
+			<td colspan="2">
+			   <input type="text" name="xhpzc"  autocomplete="off" class="layui-input">
+			</td>
+			<td>
+			   <input type="text" name="slc"  autocomplete="off" class="layui-input">
+			</td>
+			<td colspan="2">
+			   <input type="text" name="ytc"  autocomplete="off" class="layui-input">
+			</td>
+			<td>
+			   <input type="text" name="bzc"  autocomplete="off" class="layui-input">
+			</td>
+		</tr>
+		<tr class="trCss">
+			<td>
+			   <input type="text" name="bhd" value="4" style="border:none;" autocomplete="off" class="layui-input">
+			</td>
+			<td colspan="2">
+			   <input type="text" name="zcmcd"  autocomplete="off" class="layui-input">
+			</td>
+			<td colspan="2">
+			   <input type="text" name="xhpzd"  autocomplete="off" class="layui-input">
+			</td>
+			<td>
+			   <input type="text" name="sld"  autocomplete="off" class="layui-input">
+			</td>
+			<td colspan="2">
+			   <input type="text" name="ytd"  autocomplete="off" class="layui-input">
+			</td>
+			<td>
+			   <input type="text" name="bzd"  autocomplete="off" class="layui-input">
+			</td>
+		</tr>
+		<tr class="trCss">
+			<td>
+			   <input type="text" name="bhe" value="5" style="border:none;"  autocomplete="off" class="layui-input">
+			</td>
+			<td colspan="2">
+			   <input type="text" name="zcmce"  autocomplete="off" class="layui-input">
+			</td>
+			<td colspan="2">
+			   <input type="text" name="xhpze"  autocomplete="off" class="layui-input">
+			</td>
+			<td>
+			   <input type="text" name="sle"  autocomplete="off" class="layui-input">
+			</td>
+			<td colspan="2">
+			   <input type="text" name="yte"  autocomplete="off" class="layui-input">
+			</td>
+			<td>
+			   <input type="text" name="bze"  autocomplete="off" class="layui-input">
+			</td>
+		</tr>
+		<tr class="trCss">
+			<td colspan="2"><span style="color:red;">*</span>审批人</td>
+			<td colspan="7" class="layui-form-item layui-form-text">
+				<div class="layui-inline" id="spr">
+					<div id="spr_add">
+						<i class="fa fa-plus" id="jia"></i><i id="lxr">添加审批人</i>
+					</div>
+				</div>
+			</td>
+		</tr>
+		<tr id="spys">
+			<td colspan="9">
+				<div class="layui-form-item">
+		           <div class="layui-input-block">
+		               <button class="layui-btn layui-btn-primary" lay-submit lay-filter="sq" id="sq">申请</button>
+		           </div>
+		       	</div>
+			</td>
+		</tr>
+	</table>
+</form>

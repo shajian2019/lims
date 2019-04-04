@@ -1,9 +1,12 @@
 package com.zzhb.controller.grgzt;
 
+import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.FormService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.zzhb.service.ActivitiService;
 import com.zzhb.service.DbsxService;
+import com.zzhb.service.UserService;
 
 @Controller
 @RequestMapping("/grgzt/dbsx")
@@ -36,6 +40,9 @@ public class DbsxController {
 
 	@Autowired
 	FormService formService;
+	
+	@Autowired
+	UserService userService;
 
 	@RequestMapping("/dbsx")
 	public String dbsx() {
@@ -77,6 +84,29 @@ public class DbsxController {
 	public String viewTask(String bk, @PathVariable("taskId") String taskId, ModelMap modelMap) {
 		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
 		String key = task.getProcessDefinitionId().split(":")[0];
+		String processInstanceId=task.getProcessInstanceId();
+		//判断当前流程的会签节点是否有意见
+		List<Comment> comments = taskService.getProcessInstanceComments(processInstanceId, "comment");
+		SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd");
+		 String countersignature="";
+			for(Comment comment : comments) {
+				String str= comment.getFullMessage();
+				String time = sdf.format(comment.getTime());
+				 Map maps = (Map)JSON.parse(str);  
+			        for (Object map : maps.entrySet()){  
+			        	String keyStr = map.toString();
+			        	//之前的会签意见
+			        	if(keyStr.contains("countersignature")) {
+			        		String assigneeId = (String) maps.get("assignee");
+			        		String assignName= userService.getUserNameByUserId(assigneeId);
+			        		countersignature += (String) maps.get("countersignature")+"("+assignName+"  "+time+")"+"\n";
+			        	}
+			        }  
+			}
+			if(countersignature != null && countersignature != "") {
+				modelMap.put("countersignature", countersignature);
+				taskService.addComment(taskId, processInstanceId, JSON.toJSONString(modelMap));
+			}
 		Object renderedTaskForm = formService.getRenderedTaskForm(taskId);
 		modelMap.put("form", renderedTaskForm);
 		modelMap.put("formkey", task.getFormKey());

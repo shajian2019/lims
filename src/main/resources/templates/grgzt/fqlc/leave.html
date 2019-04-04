@@ -17,19 +17,29 @@
 		.img-up-box .img-box>img{width: 100%;height:100%;}
 		#img_up,#spr_add{width: 80px;height:80px;border: 1px solid #e6e6e6;text-align: center;line-height: 80px;font-size: 28px;color: #e6e6e6;background-color: #fff;}
 		#spr{align-items:flex-start;}
-		#spr_add{width: 70px;height: 70px;line-height: 70px;border-radius: 1000px;}
-		.spr-select{text-align: center;position: relative;margin-right: 15px;display: inline-block;}
-		.spr-box{color: #fff;text-align: center;background-color: cornflowerblue;border-radius: 1000px;font-size: 12px;width: 70px;height: 70px;display: flex;flex-direction: column;justify-content: center;}
-		.spr-close{cursor: pointer;position: absolute;top: 0;right: -7px;font-size: 12px;color: #fff;border-radius: 20px;width: 16px;background-color: #000;text-align: center;line-height: 16px;}
+		#spr_add{width: 85px;height: 35px;line-height: 32px;margin-top: 5px;margin-left: 15px;background-color: #F2F2F2;font-size: 13px;text-align: center;}
+		.spr-select{text-align: center;position: relative;margin-left: 15px;margin-top: 5px;display: inline-block;}
+		.spr-box{text-align: center;background-color: #F2F2F2;font-size: 16px;width: 85px;height: 35px;display: flex;flex-direction: column;justify-content: center;}
+		.spr-close{cursor: pointer;position: absolute;top: 0;right: -7px;font-size: 12px;color: #000;border-radius: 20px;width: 38px;text-align: center;line-height: 36px;}
 		#layer-photos{display:flex;align-items: center;max-width: 500px;flex-wrap: wrap;}
 		#layer-photos img{width: 80px; height: 80px;display: block;margin-right: 5px;margin-bottom: 5px;}
-		h2{text-align: center;margin-top: 20px;margin-bottom: 20px}
+		h1{text-align: center;margin-top: 20px;margin-bottom: 20px}
+		.trCss{text-align: center; height: 60px;}
+		.trCssOnly{text-align: center; height: 60px;}
+		.trCss td input{padding-left: 5px;border:none; border-bottom:1px dashed #888;}
+		.trCssOnly td input{padding-left: 5px;}
+		#spys{border-left-style: hidden;border-right-style: hidden;border-bottom-style: hidden;}
+		#sq{background-color:#F2F2F2;}
+		#ps{background-color:#F2F2F2;}
+		.layui-input-block{text-align: center;margin-top: 10px;margin-left: 0px;}
+		#jia{font-size: 13px;color: #3FBD69;}
+		#lxr{font-size: 13px;font-style: normal;color: black;}
 	</style>
 </head>
 
 <body>
-		<h2>环保局请销假审批表</h2>
-		${(form!'开发中')}
+		<h1>环保局请销假审批表</h1>
+		 ${(form!'开发中')} 
 </body>
 <script src="${ctx}/plugins/layui/layui.all.js"></script>
 <script src="${ctx}/js/common/download.js"></script>
@@ -80,10 +90,26 @@
 		   elem: '#ksrq'
 		   ,type: 'datetime'
 		});
+		
 		laydate.render({
-		   elem: '#jsrq'
-		   ,type: 'datetime'
-		});
+			  elem: '#jsrq'
+			  ,type: 'datetime'
+			  ,done: function(value, date, endDate){
+				  var ksrq=$("#ksrq").val();
+				  $.ajax({
+			            type: "post",
+			            data: {startDate:ksrq,endDate:value},
+			            url: "${ctx}/grgzt/wfqd/getCount/",
+			            success: function (data) {
+			            	$("#leaveDate").val(data);
+			            },
+			            error: function (data) {
+			            	layer.close(index);
+			                layer.msg("服务端异常");
+			            }
+			      }); 
+			  }
+			});
 		
 		getSprs()
 		
@@ -151,7 +177,23 @@
 			 data.field.usersprs = usersprs.join(",")
 			 data.field.id = "${USER.u_id}leave${formkey!''}";
 			 data.field.bk = "${(leave.bk)!''}";
-			 $.ajax({
+			 data.field.sqrq = "${.now?string('yyyy-MM-dd HH:mm:ss')}";
+			 
+			 var blqxDate=GetDateStr(2);
+			 data.field.overDate=blqxDate;
+			 
+			 var leaveType;
+			 var leaveDate = $("#leaveDate").val();
+				if(leaveDate<='1'){
+	         		leaveType='1';
+	         	}else if(leaveDate >= '5'){
+	         		leaveType='3';
+	         	}else{
+	         		leaveType='2';
+	         	}
+			 data.field.leaveType=leaveType;
+			 
+			  $.ajax({
 		            type: "post",
 		            data: data.field,
 		            url: "${ctx}/grgzt/fqlc/start/leave",
@@ -175,7 +217,7 @@
 		            	layer.close(index);
 		                layer.msg("服务端异常");
 		            }
-		      });
+		      }); 
 		 } else {
 			 layer.msg("请选择审批人", {offset: ['50%'], time: 2000});
 		 }
@@ -183,164 +225,100 @@
 	 });
 	
 	} else if (formkey == 'leave_usertask1.html'){
-		getSprs();
-		//图片预览
-		previewImage()
-		//审批
-		form.on('submit(sp)', function(data){
-			if(sprs.length > 0){
-				data.field.sprs = sprs.join(",")
-				data.field.usersprs = usersprs.join(",")
-				data.field.id = "${USER.u_id}leave${formkey!''}";
-				data.field.bk = "${bk!''}";
-				
-				data.field.ks_spyj = "同意  "+data.field.ks_spyj
-				if(data.field.agree != "true"){
-					data.field.ks_spyj = "不"+data.field.ks_spyj;
-				}
-				
-				$.ajax({
-		            type: "post",
-		            data: data.field,
-		            url: "${ctx}/grgzt/dbsx/complete/${taskId!''}",
-		            beforeSend: function () {
-		                index = layer.load(1);
-		            },
-		            success: function (data) {
-		            	layer.close(index);
-		            	if(data.code >0){
-		            		index = layer.confirm("审批成功,下一流程节点："+data.msg, {
-		            			  closeBtn:0,
-		            			  btn: ['确定'] //按钮
-		            			}, function(){
-		            			index = parent.layer.getFrameIndex(window.name);
-						    	parent.layer.close(index);
-	            			});
-		            	}else if(data.code == "0" || data.code == "-1") {
-		            		layer.msg(data.msg, {offset: ['50%'], time: 2000},function(){
-		            			//parent.window.closeTab(data.taskId);
-		            			index = parent.layer.getFrameIndex(window.name);
-						    	parent.layer.close(index);
-		            		});
-		            	}else {
-		            		layer.msg("审批失败", {offset: ['50%'], time: 2000});
-		            	}
-		            },
-		            error: function (data) {
-		            	layer.close(index);
-		                layer.msg("服务端异常");
-		            }
-		      });
-			} else {
-				layer.msg("请选择审批人", {offset: ['50%'], time: 2000});
-			}
-			return false;
-		});
-	} else if (formkey == 'leave_usertask2.html'){
-		getSprs();
-		//图片预览
-		previewImage()
-		
-		form.on('submit(sp)', function(data){
-			if(sprs.length > 0){
-				data.field.sprs = sprs.join(",")
-				data.field.usersprs = usersprs.join(",")
-				data.field.id = "${USER.u_id}leave${formkey!''}";
-				data.field.bk = "${bk!''}";
-				
-				data.field.fg_spyj = "同意  "+data.field.fg_spyj
-				if(data.field.agree != "true"){
-					data.field.fg_spyj = "不"+data.field.fg_spyj;
-				}
-				
-				$.ajax({
-		            type: "post",
-		            data: data.field,
-		            url: "${ctx}/grgzt/dbsx/complete/${taskId!''}",
-		            beforeSend: function () {
-		                index = layer.load(1);
-		            },
-		            success: function (data) {
-		            	layer.close(index);
-		            	if(data.code >0){
-		            		index = layer.confirm("审批成功,下一流程节点："+data.msg, {
-		            			  closeBtn:0,
-		            			  btn: ['确定'] //按钮
-		            			}, function(){
-		            			//parent.window.closeTab(data.taskId);
-		            			index = parent.layer.getFrameIndex(window.name);
-						    	parent.layer.close(index);
-	            			});
-		            	}else if(data.code == "0" || data.code == "-1") {
-		            		layer.msg(data.msg, {offset: ['50%'], time: 2000},function(){
-		            			//parent.window.closeTab(data.taskId);
-		            			index = parent.layer.getFrameIndex(window.name);
-						    	parent.layer.close(index);
-		            		});
-		            	}else {
-		            		layer.msg("审批失败", {offset: ['50%'], time: 2000});
-		            	}
-		            },
-		            error: function (data) {
-		            	layer.close(index);
-		                layer.msg("服务端异常");
-		            }
-		      });
-			} else {
-				layer.msg("请选择审批人", {offset: ['50%'], time: 2000});
-			}
-			 return false;
-		});
-		
-	} else if (formkey == 'leave_usertask3.html'){
-		
-		previewImage();
-		
+		radioFunction();
+
 		form.on('submit(sp)', function(data){
 			data.field.id = "${USER.u_id}leave${formkey!''}";
 			data.field.bk = "${bk!''}";
 			
-			data.field.zg_spyj = "同意  "+data.field.zg_spyj
-			if(data.field.agree != "true"){
-				data.field.zg_spyj = "不"+data.field.zg_spyj;
+			var agree=data.field.agree;
+			if(agree != "true"){
+				data.field.ks_spyj = "不同意  "+data.field.ks_spyj;
+				confirmFunction(data);
+			}else{
+				if(sprs.length > 0){
+					data.field.sprs = sprs.join(",");
+					data.field.usersprs = usersprs.join(",");
+					data.field.ks_spyj = "同意  "+data.field.ks_spyj;
+					confirmFunction(data);
+				} else {
+					layer.msg("请选择审批人", {offset: ['50%'], time: 2000});
+				}
 			}
-			
-			$.ajax({
-	            type: "post",
-	            data: data.field,
-	            url: "${ctx}/grgzt/dbsx/complete/${taskId!''}",
-	            beforeSend: function () {
-	                index = layer.load(1);
-	            },
-	            success: function (data) {
-	            	layer.close(index);
-	            	if(data.code >0){
-	            		index = layer.confirm("审批成功,下一流程节点："+data.msg, {
-	            			  closeBtn:0,
-	            			  btn: ['确定'] //按钮
-	            			}, function(){
-	            			//parent.window.closeTab(data.taskId);
-	            			index = parent.layer.getFrameIndex(window.name);
-					    	parent.layer.close(index);
-            			});
-	            	}else if(data.code == "0" || data.code == "-1") {
-	            		layer.msg(data.msg, {offset: ['50%'], time: 2000},function(){
-	            			//parent.window.closeTab(data.taskId);
-	            			index = parent.layer.getFrameIndex(window.name);
-					    	parent.layer.close(index);
-	            		});
-	            	}else {
-	            		layer.msg("审批失败", {offset: ['50%'], time: 2000});
-	            	}
-	            },
-	            error: function (data) {
-	            	layer.close(index);
-	                layer.msg("服务端异常");
-	            }
-	        });
 			return false;
 		});
-		
+	} else if (formkey == 'leave_usertask2.html'){
+		radioFunction();
+		form.on('submit(sp)', function(data){
+			data.field.id = "${USER.u_id}leave${formkey!''}";
+			data.field.bk = "${bk!''}";
+			
+			 var leaveDate = $("#leaveDate").val();
+				if(leaveDate<='1'){
+					data.field.fg_spyj="";
+					data.field.zg_spyj="";
+	        	}else if(leaveDate >= '5'){
+					
+	        	}else{
+	        		data.field.zg_spyj="";
+	        	}
+			
+			var agree=data.field.agree;
+			if(agree != "true"){
+				data.field.fg_spyj = "不同意  "+data.field.fg_spyj;
+				confirmFunction(data);
+			}else{
+				if(sprs.length > 0){
+					data.field.sprs = sprs.join(",");
+					data.field.usersprs = usersprs.join(",");
+					data.field.fg_spyj = "同意  "+data.field.fg_spyj;
+					confirmFunction(data);
+				} else {
+					layer.msg("请选择审批人", {offset: ['50%'], time: 2000});
+				}
+			}
+			return false;
+		});
+	} else if (formkey == 'leave_usertask3.html'){
+		radioFunction();
+		form.on('submit(sp)', function(data){
+				data.field.id = "${USER.u_id}leave${formkey!''}";
+				data.field.bk = "${bk!''}";
+				
+				 var leaveDate = $("#leaveDate").val();
+					if(leaveDate<='1'){
+						data.field.fg_spyj="";
+						data.field.zg_spyj="";
+		        	}else if(leaveDate >= '5'){
+						
+		        	}else{
+		        		data.field.zg_spyj="";
+		        	}
+				
+				var agree=data.field.agree;
+				if(agree != "true"){
+					data.field.zg_spyj = "不同意  "+data.field.zg_spyj;
+					confirmFunction(data);
+				}else{
+					if(sprs.length > 0){
+						data.field.sprs = sprs.join(",");
+						data.field.usersprs = usersprs.join(",");
+						data.field.zg_spyj = "同意  "+data.field.zg_spyj;
+						confirmFunction(data);
+			} else {
+				layer.msg("请选择审批人", {offset: ['50%'], time: 2000});
+			}
+		}
+				return false;
+			});
+	}else if (formkey == 'leave_usertask4.html'){
+		form.on('submit(sp)', function(data){
+			data.field.id = "${USER.u_id}leave${formkey!''}";
+			data.field.bk = "${bk!''}";
+			data.field.agree = "true";
+			confirmFunction(data);
+			return false;
+		});
 	}
 	
 	function previewImage(){
@@ -429,10 +407,9 @@
             		html +='<div class="spr-select">';
             			html +='<i class="fa fa-close spr-close" data-id="'+v.oiduid+'"></i>';
 						html +='<div class="spr-box">'
-							html +='<p>'+v.o_name+'</p>';
-							html +='<p>'+v.j_name+'</p>';
+							html +='<p>'+v.nickname+'</p>';
 						html +='</div>';
-						html +='<p>'+v.nickname+'</p>';
+						html +='<p style="font-size:10px;">'+'('+v.o_name+v.j_name+')'+'</p>';
 					html +='</div>';
             	})
             	
@@ -451,5 +428,65 @@
             }
       });
 }
+	
+	function confirmFunction(data){
+		$.ajax({
+            type: "post",
+            data: data.field,
+            url: "${ctx}/grgzt/dbsx/complete/${taskId!''}",
+            beforeSend: function () {
+                index = layer.load(1);
+            },
+            success: function (data) {
+            	layer.close(index);
+            	if(data.code > 0){
+            		index = layer.confirm("审批成功,下一流程节点："+data.msg, {
+            			  closeBtn:0,
+            			  btn: ['确定'] //按钮
+            			}, function(){
+            			index = parent.layer.getFrameIndex(window.name);
+				    	parent.layer.close(index);
+        			});
+            	}else if(data.code == "0" || data.code == "-1") {
+            		layer.msg(data.msg, {offset: ['50%'], time: 2000},function(){
+            			index = parent.layer.getFrameIndex(window.name);
+				    	parent.layer.close(index);
+            		});
+            	}else {
+            		layer.msg("审批失败", {offset: ['50%'], time: 2000});
+            	}
+            },
+            error: function (data) {
+            	layer.close(index);
+                layer.msg("服务端异常");
+            }
+        });
+	}
+	
+	function radioFunction(){
+		//判断radio意见框，不同意，将审批人框隐藏
+		form.on('radio(filterAgree)',function(data){
+			/* alert(JSON.stringify(data)); //获取data数据的jaon值*/
+			var value=data.value;
+			if(value != 'true'){
+				$('#sprId').hide();
+			}else{
+				$('#sprId').show();
+			}
+		})
+	}
+	
+	/* document.write("<br />昨天："+GetDateStr(-1));
+	document.write("<br />今天："+GetDateStr(0));
+	document.write("<br />明天："+GetDateStr(1)); */
+	function GetDateStr(AddDayCount) {
+	    var dd = new Date();
+	    dd.setDate(dd.getDate()+AddDayCount);//获取AddDayCount天后的日期
+	    var y = dd.getFullYear();
+	    var m = dd.getMonth()+1;//获取当前月份的日期
+	    var d = dd.getDate();
+	    return y+"-"+m+"-"+d;
+	}
+	
 </script>
 </html>

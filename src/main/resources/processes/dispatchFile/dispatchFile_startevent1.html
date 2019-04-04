@@ -1,0 +1,133 @@
+<form class="layui-form main layui-upload" lay-filter="dispatchFile">
+	<table border="solid 1px;">
+		<input type="hidden" name="u_id">
+	 	<input type="hidden" name="bmmc">
+ 	    <input type="hidden" name="sqrq">
+		<tr class="trCssBottom">
+			<td colspan="9">
+				<span style="color:red;">*</span>标题：
+			</td>
+		</tr>
+		<tr class="trCss">
+			<td colspan="9">
+				<textarea name="title" class="layui-textarea" lay-verify="required" autocomplete="off" style="min-height: 100px;"></textarea>
+			</td>
+		</tr>
+		<tr class="trCssBottom">
+			<td colspan="9">
+				<span style="color:red;">*</span>主送：
+			</td>
+		</tr>
+		<tr class="trCss">
+			<td colspan="9">
+				<textarea name="zsMessage" class="layui-textarea" lay-verify="required" autocomplete="off" style="min-height: 100px;"></textarea>
+			</td>
+		</tr>
+		<tr class="trCssBottom">
+			<td colspan="6">
+				抄送：
+			</td>
+			<td colspan="3">
+				抄报：
+			</td>
+		</tr>
+		<tr class="trCss">
+			<td colspan="6">
+				<textarea name="csMessage" class="layui-textarea" style="min-height: 80px;"></textarea>
+			</td>
+			<td colspan="3">
+				<textarea name="copyMessage" class="layui-textarea" style="min-height: 80px;"></textarea>
+			</td>
+		</tr>
+		<tr class="trCssBottom">
+			<td colspan="6">
+				拟办意见：
+			</td>
+			<td colspan="3">
+				拟稿：
+			</td>
+		</tr>
+		<tr class="trCss">
+			<td colspan="6" rowspan="3">
+				<textarea name="" class="layui-textarea" readonly="readonly"style="height: 160px;"></textarea>
+			</td>
+			<td colspan="3">
+				<textarea name="sqr" class="layui-textarea" placeholder="拟稿人" style="min-height: 70px;"></textarea>
+			</td>
+		</tr>
+		<tr class="trCssBottom">
+			<td colspan="3">
+				核稿：
+			</td>
+		</tr>
+		<tr class="trCss">
+			<td colspan="3">
+				<textarea name="" class="layui-textarea" readonly="readonly" placeholder="核稿人" style="min-height: 70px;"></textarea>
+			</td>
+		</tr>
+		<tr class="trCssBottom">
+			<td colspan="6">
+				会签：
+			</td>
+			<td colspan="3">
+				签发：
+			</td>
+		</tr>
+		<tr class="trCss" style="height: 160px;">
+			<td colspan="6">
+				<textarea name="" class="layui-textarea" readonly="readonly" style="height: 150px;"></textarea>
+			</td>
+			<td colspan="3">
+				<textarea name="" class="layui-textarea" readonly="readonly" style="height: 150px;"></textarea>
+			</td>
+		</tr>
+		<tr class="trCss">
+			<td style="width: 25%;border-right-style: hidden;">
+				<input type="text" name="" readonly="readonly" placeholder="文种" autocomplete="off" class="layui-input">
+			</td>
+			<td style="width: 10px;border-right-style: hidden;">
+				[
+			</td>
+			<td style="width: 60px;border-right-style: hidden;">
+				<input type="text" name="" placeholder="年份" readonly="readonly" autocomplete="off" class="layui-input">
+			</td>
+			<td style="width: 10px;border-right-style: hidden;">
+				]
+			</td>
+			<td style="width: 45px;border-right-style: hidden;">
+				<input type="text" name="" placeholder="号" readonly="readonly" autocomplete="off" class="layui-input">
+			</td>
+			<td style="width: 25px;">
+				号
+			</td>
+			<td>
+				<input type="text" id="" name="" readonly="readonly" placeholder="签发日期" autocomplete="off" class="layui-input">
+			</td>
+			<td style="width: 45px;border-right-style: hidden;">
+				份数：
+			</td>
+			<td style="width: 80px;">
+				<input type="text" name="" readonly="readonly" autocomplete="off" class="layui-input">
+			</td>
+		</tr>
+		<tr class="trCss">
+			<td><span style="color:red;">*</span>审批人</td>
+			<td colspan="8" class="layui-form-item layui-form-text">
+				<div class="layui-inline" id="spr">
+					<div id="spr_add">
+						<i class="fa fa-plus" id="jia"></i><i id="lxr">添加审批人</i>
+					</div>
+				</div>
+			</td>
+		</tr>
+		<tr id="spys">
+			<td colspan="9">
+				<div class="layui-form-item">
+		           <div class="layui-input-block">
+		               <button class="layui-btn layui-btn-primary" lay-submit lay-filter="sq" id="sq">申请</button>
+		           </div>
+		       	</div>
+			</td>
+		</tr>
+	</table>	
+</form>

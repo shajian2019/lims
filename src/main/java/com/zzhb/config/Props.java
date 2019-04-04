@@ -19,10 +19,21 @@ public class Props {
 	private Long globalSessionTimeout;
 
 	private String tempPath;
-
+	
+	/**
+	 * 
+	 */
 	private String uploadPath;
 
 	private List<String> flushkeys = new ArrayList<>();
+
+	public boolean isSingle() {
+		return single;
+	}
+
+	public void setSingle(boolean single) {
+		this.single = single;
+	}
 
 	public List<String> getFlushkeys() {
 		return flushkeys;
@@ -71,13 +82,6 @@ public class Props {
 	public void setUploadPath(String uploadPath) {
 		this.uploadPath = uploadPath;
 	}
-
-	public boolean isSingle() {
-		return single;
-	}
-
-	public void setSingle(boolean single) {
-		this.single = single;
-	}
+	
 
 }

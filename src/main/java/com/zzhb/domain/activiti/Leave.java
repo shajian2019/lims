@@ -13,6 +13,8 @@ public class Leave {
 	private String jsrq;
 	private String qjly;
 	private String spjg;
+	private String baqk;
+	private String xjqk;
 
 	public String getSpjg() {
 		return spjg;
@@ -102,10 +104,28 @@ public class Leave {
 		this.qjly = qjly;
 	}
 
+	public String getBaqk() {
+		return baqk;
+	}
+
+	public void setBaqk(String baqk) {
+		this.baqk = baqk;
+	}
+
+	public String getXjqk() {
+		return xjqk;
+	}
+
+	public void setXjqk(String xjqk) {
+		this.xjqk = xjqk;
+	}
+
 	@Override
 	public String toString() {
 		return "Leave [proid=" + proid + ", bk=" + bk + ", u_id=" + u_id + ", sqr=" + sqr + ", bmmc=" + bmmc + ", sqrq="
-				+ sqrq + ", qjlx=" + qjlx + ", ksrq=" + ksrq + ", jsrq=" + jsrq + ", qjly=" + qjly + "]";
+				+ sqrq + ", qjlx=" + qjlx + ", ksrq=" + ksrq + ", jsrq=" + jsrq + ", qjly=" + qjly + ", spjg=" + spjg
+				+ ", baqk=" + baqk + ", xjqk=" + xjqk + "]";
 	}
+
 
 }

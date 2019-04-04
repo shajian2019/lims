@@ -62,4 +62,10 @@ public interface UserMapper {
 	public Integer delUserProcdefByUid(String u_id);
 
 	public List<User> getUsersInOneOrg(@Param("oname") String oname);
+	
+	@Select("SELECT nickname FROM sys_t_user WHERE u_id = #{0}")
+	public String getUserNameByUserId(String id);
+	
+	@Select("SELECT count(id) FROM dim_day WHERE day_short_desc >= #{startDateStr} and #{endDateStr} >= day_short_desc")
+	public Integer getWorkDays(Map<String, String> params);
 }

@@ -1,66 +1,74 @@
 <form class="layui-form main layui-upload" lay-filter="carapplication">
-       <div class="layui-form-item">
-           <label class="layui-form-label"><span style="color:red;">*</span>使用人</label>
-           <div class="layui-input-inline">
-               <input type="text" name="sqr" lay-verify="required" readonly="readonly" placeholder="使用人" autocomplete="off" class="layui-input">
-           	   <input type="hidden" name="u_id">
-           </div>
-           <label class="layui-form-label"><span style="color:red;">*</span>部门名称</label>
-           <div class="layui-input-inline">
-	            <select class="layui-input" name="bmmc" id="bmmc" lay-verify="required" lay-search></select>
-        	</div>
-       </div>
-       <div class="layui-form-item">
-           <label class="layui-form-label"><span style="color:red;">*</span>驾驶员</label>
-           <div class="layui-input-inline">
-               <input type="text" name="jsy" lay-verify="required" placeholder="驾驶员" autocomplete="off" class="layui-input">
-           </div>
-           <label class="layui-form-label">车辆型号</label>
-           <div class="layui-input-inline">
-               <input type="text" name="clxh" placeholder="车辆型号" autocomplete="off" class="layui-input">
-           </div>
-       </div>
-       <div class="layui-form-item">
-           <label class="layui-form-label"><span style="color:red;">*</span>用车日期起</label>
-           <div class="layui-input-inline">
-               <input type="text" id="ycrqq" name="ycrqq" lay-verify="required" placeholder="用车日期起" autocomplete="off"
+	<table border="solid 1px;">
+		<tr class="trCss">
+			<td style="width: 16%;"><span style="color:red;">*</span>申请人</td>
+			<td style="width: 25%;">
+				<input type="text" name="sqr" lay-verify="required" readonly="readonly" placeholder="使用人" autocomplete="off" class="layui-input">
+           	    <input type="hidden" name="u_id">
+			</td>
+			<td style="width: 16%;"><span style="color:red;">*</span>部门名称</td>
+			<td style="width: 25%;">
+				 <select class="layui-input" name="bmmc" id="bmmc" lay-verify="required" lay-search></select>
+			</td>
+		</tr>
+		<tr class="trCss">
+			<td><span style="color:red;">*</span>驾驶员</td>
+			<td>
+				<input type="text" name="jsy" lay-verify="required" placeholder="驾驶员" autocomplete="off" class="layui-input">
+			</td>
+			<td>车辆型号</td>
+			<td>
+				<input type="text" name="clxh" placeholder="车辆型号" autocomplete="off" class="layui-input">
+			</td>
+		</tr>
+		<tr class="trCss">
+			<td><span style="color:red;">*</span>用车日期起</td>
+			<td>
+					<input type="text" id="ycrqq" name="ycrqq" lay-verify="required" placeholder="用车日期起" autocomplete="off"
                    class="layui-input">
-           </div>
-           <label class="layui-form-label"><span style="color:red;">*</span>用车日期止</label>
-           <div class="layui-input-inline">
-               <input type="text" id="ycrqz" name="ycrqz" lay-verify="required" placeholder="用车日期止" autocomplete="off"
+			</td>
+			<td><span style="color:red;">*</span>用车日期止</td>
+			<td>
+				<input type="text" id="ycrqz" name="ycrqz" lay-verify="required" placeholder="用车日期止" autocomplete="off"
                    class="layui-input">
-           </div>
-       </div>
-       <div class="layui-form-item">
-           <label class="layui-form-label"><span style="color:red;">*</span>起点</label>
-           <div class="layui-input-inline">
-               <input type="text" name="qd" lay-verify="required" placeholder="起点" autocomplete="off"
+			</td>
+		</tr>
+		<tr class="trCss">
+			<td><span style="color:red;">*</span>起点</td>
+			<td>
+				 <input type="text" name="qd" lay-verify="required" placeholder="起点" autocomplete="off"
                    class="layui-input">
-           </div>
-           <label class="layui-form-label"><span style="color:red;">*</span>终点</label>
-           <div class="layui-input-inline">
-               <input type="text" name="zd" lay-verify="required" placeholder="终点" autocomplete="off"
+			</td>
+			<td><span style="color:red;">*</span>终点</td>
+			<td>
+				<input type="text" name="zd" lay-verify="required" placeholder="终点" autocomplete="off"
                    class="layui-input">
-           </div>
-       </div>
-       <div class="layui-form-item layui-form-text">
-           <label class="layui-form-label">用车事由</label>
-           <div class="layui-input-block">
-               <textarea name="ycsy" placeholder="用车事由" class="layui-textarea" style="width:500px;min-height: 70px;"></textarea>
-           </div>
-       </div>
-       <div class="layui-form-item layui-form-text">
-               <label class="layui-form-label"><span style="color:red;">*</span>审批人</label>
-			<div class="layui-inline" id="spr">
-				<div id="spr_add">
-					<i class="fa fa-plus"></i>
+			</td>
+		</tr>
+		<tr class="trCss">
+			<td><span style="color:red;">*</span>用车事由</td>
+			<td colspan="3">
+				<textarea name="ycsy" placeholder="用车事由" class="layui-textarea" style="width:500px;min-height: 70px;"></textarea>
+			</td>	
+		</tr>
+		<tr class="trCss">
+			<td><span style="color:red;">*</span>审批人</td>
+			<td colspan="3" class="layui-form-item layui-form-text">
+				<div class="layui-inline" id="spr">
+					<div id="spr_add">
+						<i class="fa fa-plus" id="jia"></i><i id="lxr">添加审批人</i>
+					</div>
 				</div>
-			</div>
-       </div>
-       <div class="layui-form-item">
-           <div class="layui-input-block">
-               <button class="layui-btn layui-btn-primary" lay-submit lay-filter="sq" id="sq">申请</button>
-           </div>
-       </div>
+			</td>
+		</tr>
+		<tr id="spys">
+			<td colspan="4">
+				<div class="layui-form-item">
+		           <div class="layui-input-block">
+		               <button class="layui-btn layui-btn-primary" lay-submit lay-filter="sq" id="sq">申请</button>
+		           </div>
+		       	</div>
+			</td>
+		</tr>
+	</table>
 </form>

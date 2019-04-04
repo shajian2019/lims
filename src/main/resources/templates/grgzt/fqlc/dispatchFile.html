@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>发文流程</title>
+    <link href="${ctx}/plugins/layui/css/layui.css" rel="stylesheet" />
+    <link rel="stylesheet" href="${ctx}/plugins/font-awesome/css/font-awesome.min.css" media="all" />
+    <style type="text/css">
+        .layui-form-item{margin-bottom: 10px;}
+    	.main{width:660px;margin: 1% auto 0;}
+		.img-up-box,#spr{max-width: 500px;height: auto;display:flex;align-items: flex-end;flex-wrap: wrap;}
+        .img-up-box,#spr2{max-width: 500px;height: auto;display:flex;align-items: flex-end;flex-wrap: wrap;}
+		.img-up-box .img-box{position: relative;display: inline-block;width: 80px;height:80px;border: 1px solid #e6e6e6;margin-right: 8px;margin-top: 8px;}
+		.img-up-box .img-box .img-close{position: absolute;top: -7px;right: -7px;font-size: 12px;color: #fff;border-radius: 20px;width: 16px;height: 16px;background-color: #000;text-align: center;line-height: 16px;}
+		.img-up-box .img-box>img{width: 100%;height:100%;}
+		#img_up,#spr_add{width: 80px;height:80px;border: 1px solid #e6e6e6;text-align: center;line-height: 80px;font-size: 28px;color: #e6e6e6;background-color: #fff;}
+        #img_up,#spr_add2{width: 80px;height:80px;border: 1px solid #e6e6e6;text-align: center;line-height: 80px;font-size: 28px;color: #e6e6e6;background-color: #fff;}
+		#spr{align-items:flex-start;}
+		 #spr2{align-items:flex-start;}
+		#spr_add{width: 85px;height: 35px;line-height: 32px;margin-top: 5px;margin-left: 15px;background-color: #F2F2F2;font-size: 13px;text-align: center;}
+        #spr_add2{width: 85px;height: 35px;line-height: 32px;margin-top: 5px;margin-left: 35px;background-color: #F2F2F2;font-size: 13px;text-align: center;}
+		.spr-select{text-align: center;position: relative;margin-left: 15px;margin-top: 5px;display: inline-block;}
+        .spr-select2{text-align: center;position: relative;margin-right: 15px;margin-top: 5px;display: inline-block;}
+		.spr-box{text-align: center;background-color: #F2F2F2;font-size: 16px;width: 85px;height: 35px;display: flex;flex-direction: column;justify-content: center;}
+        .spr-box2{text-align: center;background-color: #F2F2F2;font-size: 16px;width: 85px;height: 35px;display: flex;flex-direction: column;justify-content: center;}
+		.spr-close{cursor: pointer;position: absolute;top: 0;right: -7px;font-size: 12px;color: #000;border-radius: 20px;width: 38px;text-align: center;line-height: 36px;}
+        .spr-close2{cursor: pointer;position: absolute;top: 0;right: -7px;font-size: 12px;color: #000;border-radius: 20px;width: 38px;text-align: center;line-height: 36px;}
+		#layer-photos{display:flex;align-items: center;max-width: 500px;flex-wrap: wrap;}
+		#layer-photos img{width: 80px; height: 80px;display: block;margin-right: 5px;margin-bottom: 5px;}
+		h1{text-align: center;margin-top: 20px;margin-bottom: 20px}
+		.trCss{text-align: center; height: 60px;}
+		.trCssBottom{border-bottom-style: hidden;height: 30px;}
+		.trCssOnly{text-align: center; height: 60px;}
+		.trCss td input{padding-left: 5px;border:none; border-bottom:1px dashed #888;}
+		.trCssOnly td input{padding-left: 5px;}
+		#spys{border-left-style: hidden;border-right-style: hidden;border-bottom-style: hidden;}
+		#sq{background-color:#F2F2F2;}
+		#ps{background-color:#F2F2F2;}
+		#qf{background-color:#F2F2F2;}
+		.layui-input-block{text-align: center;margin-top: 10px;margin-left: 0px;}
+		#jia{font-size: 13px;color: #3FBD69;}
+		#lxr{font-size: 13px;font-style: normal;color: black;}
+    </style>
+</head>
+<body>
+	<div>
+<h1>江苏省邳州市环境保护局发文稿纸(<span><input type="text" name="btk" placeholder="标题框" style="width:100px"/></span>)</h1>
+	</div>
+${(form!'开发中')}
+</body>
+<script src="${ctx}/plugins/layui/layui.all.js"></script>
+<script src="${ctx}/js/common/download.js"></script>
+<script type="text/javascript">
+    var $ = layui.jquery,laydate = layui.laydate,form=layui.form,upload = layui.upload,laytpl=layui.laytpl,index=null,formFilter="dispatchFile";
+    var formkey = "${formkey!''}";
+    var sprs = [];
+    var usersprs = [];
+    if(formkey == 'dispatchFile_startevent1.html'){
+        form.val(formFilter, {
+            "u_id": "${(USER.u_id)!''}",
+            "sqr": "${(dispatchFile.sqr)!''}",
+            "sqrq": "${.now?string('yyyy-MM-dd HH:mm:ss')}",
+        })
+
+        $.ajax({
+            type: "get",
+            data: {"u_id":"${USER.u_id}"},
+            url: "${ctx}/grgzt/fqlc/getOrgs",
+            success: function (data) {
+                $.each(data, function (index, item) {
+                    $('#bmmc').append(new Option(item.name, item.name));// 下拉菜单里添加元素
+                });
+                form.render("select");
+            },
+            error: function (data) {
+                layer.msg("服务端异常");
+            }
+        });
+
+        laydate.render({
+ 		   elem: '#qfrq'
+ 		   ,type: 'datetime'
+ 		});
+        
+        //申请
+        form.on('submit(sq)', function(data){
+            if(sprs.length > 0){
+                data.field.sprs = sprs.join(",")
+                data.field.usersprs = usersprs.join(",")
+                data.field.id = "${USER.u_id}dispatchFile${formkey!''}";
+                data.field.bk = "${(dispatchFile.bk)!''}";
+                $.ajax({
+                    type: "post",
+                    data: data.field,
+                    url: "${ctx}/grgzt/fqlc/start/dispatchFile",
+                    beforeSend: function () {
+                        index = layer.load(1);
+                    },
+                    success: function (data) {
+                        layer.close(index);
+                        if(data.code >0){
+                            layer.confirm("申请成功,流程单号："+data.bk+",下一流程节点："+data.msg, {
+                                closeBtn:0,
+                                btn: ['确定'] //按钮
+                            }, function(){
+                                parent.window.closeTab("dispatchFile");
+                            });
+                        }else{
+                            layer.msg("申请失败");
+                        }
+                    },
+                    error: function (data) {
+                        layer.close(index);
+                        layer.msg("服务端异常");
+                    }
+                });
+            } else {
+                layer.msg("请选择审批人", {offset: ['50%'], time: 2000});
+            }
+            return false;
+        });
+    } else if (formkey == 'dispatchFile_usertask1.html'){
+    	form.val(formFilter, {
+            "hgr": "${(USER.nickname)!''}",
+        })
+        
+    	radioFunction();
+        
+	        form.on('submit(sp)', function(data){
+	            data.field.id = "${USER.u_id}dispatchFile${formkey!''}";
+	            data.field.bk = "${bk!''}";
+	            var agree=data.field.agree;
+	            if(agree != "true"){
+					data.field.nb_spyj = "不同意  "+data.field.nb_spyj;
+					confirmFunction(data);
+				}else{
+					if(sprs.length > 0){
+						data.field.sprs = sprs.join(",");
+						data.field.usersprs = usersprs.join(",");
+						data.field.nb_spyj = "同意  "+data.field.nb_spyj;
+						confirmFunction(data);
+					} else {
+						layer.msg("请选择审批人", {offset: ['50%'], time: 2000});
+					}
+				}
+	        return false;
+	    });
+    } else if (formkey == 'dispatchFile_usertask2.html'){
+        //图片预览
+        previewImage();
+        
+        radioFunction();
+		//会签
+        form.on('submit(sp)', function(data){
+                data.field.id = "${USER.u_id}dispatchFile${formkey!''}";
+                data.field.bk = "${bk!''}";
+                data.field.agree="true";
+                data.field.qfType="1";
+                if(sprs.length > 0){
+					data.field.sprs = sprs.join(",");
+					data.field.usersprs = usersprs.join(",");
+					data.field.nb_spyj = "同意  "+data.field.nb_spyj;
+					confirmFunction(data);
+				} else {
+					layer.msg("请选择审批人", {offset: ['50%'], time: 2000});
+				}
+            return false;
+        });
+        
+        //签发
+        form.on('submit(qf)', function(data){
+            data.field.id = "${USER.u_id}dispatchFile${formkey!''}";
+            data.field.bk = "${bk!''}";
+            data.field.agree="true";
+            data.field.qfType="2";
+            if(sprs.length > 0){
+				data.field.sprs = sprs.join(",");
+				data.field.usersprs = usersprs.join(",");
+				data.field.nb_spyj = "同意  "+data.field.nb_spyj;
+				confirmFunction(data);
+			} else {
+				layer.msg("请选择审批人", {offset: ['50%'], time: 2000});
+			}
+        return false;
+    });
+    } else if (formkey == 'dispatchFile_usertask3.html'){
+		//会签
+        previewImage();
+        
+        form.on('submit(sp)', function(data){
+        	//办公室人员
+            data.field.bgsPerson="10233";
+            data.field.id = "${USER.u_id}dispatchFile${formkey!''}";
+            data.field.bk = "${bk!''}";
+            data.field.agree = "true";
+            data.field.qfType="1";
+            data.field.qf_spyj="";
+            var hq_spyj=data.field.hq_spyj;
+			if(hq_spyj == null || hq_spyj == ""){
+    			data.field.hq_spyj = "已阅  ";
+			}else{
+    			data.field.hq_spyj = hq_spyj;
+			}
+			confirmFunction(data);
+            return false;
+        });
+    }else if (formkey == 'dispatchFile_usertask4.html'){
+		//签发
+        previewImage();
+        
+        form.on('submit(sp)', function(data){
+	        //办公室人员
+        	data.field.bgsPerson="10233";
+            data.field.id = "${USER.u_id}dispatchFile${formkey!''}";
+            data.field.bk = "${bk!''}";
+            data.field.agree = "true";
+            data.field.qfType="2";
+            data.field.hq_spyj="";
+            var qf_spyj=data.field.qf_spyj;
+			if(qf_spyj == null || qf_spyj == ""){
+    			data.field.qf_spyj = "已阅  ";
+			}else{
+    			data.field.qf_spyj = qf_spyj;
+			}
+			confirmFunction(data);
+            return false;
+        });
+    }else if (formkey == 'dispatchFile_usertask5.html'){
+
+        previewImage();
+        
+        form.on('submit(sp)', function(data){
+            data.field.id = "${USER.u_id}dispatchFile${formkey!''}";
+            data.field.bk = "${bk!''}";
+            data.field.agree = "true";
+			confirmFunction(data);
+            return false;
+        });
+    }
+
+    function previewImage(){
+    	$.getJSON('${ctx}/file/taskAttachments/${taskId!''}', function(json){
+            var bk = "";
+            var imgHtml = "";
+            $.each(json,function(i,v){
+                var detail = v.split("&");
+                if(bk == ""){
+                    bk = v.split("&")[1];
+                }
+                imgHtml += "<img layer-src='/"+v+"' src='/"+v+"' alt='"+detail[2]+"''>"
+            })
+            $("#layer-photos").html(imgHtml)
+            layer.photos({
+                photos: "#layer-photos"
+                ,shade:[0.1, '#ffffff']
+                ,anim: 5
+            });
+
+            if(json.length == 0){
+                $("#download").hide();
+            }else{
+                //绑定下载附件事件
+                $("#download").click(function(){
+                    $.ajax({
+                        type: "post",
+                        data: {bk:bk},
+                        url: "${ctx}/file/downloadAttachment",
+                        beforeSend: function () {
+                            index = layer.load(1);
+                        },
+                        success: function (data) {
+                            layer.close(index);
+                            var url = "${ctx}/file/downloadZip"
+                            var field = {};
+                            field.fileName = data;
+                            formPost(url, field);
+                        },
+                        error: function (data) {
+                            layer.msg("服务端异常");
+                        }
+                    });
+                })
+            }
+        });
+    }
+    //数组对象对应删除
+    Array.prototype.remove = function (val) {
+        var index = this.indexOf(val);
+        if (index > -1) {
+            this.splice(index, 1);
+        }
+    };
+
+    $("#spr_add").click(function(){
+        layer.open({
+            type: 2,
+            area: ['722px', '516px'],
+            title: false,
+            fixed: false, //不固定
+            content: '${ctx}/grgzt/fqlc/spr?key=dispatchFile&formkey=${formkey!''}',
+            end: function(){
+                getSprs();
+            }
+        })
+    })
+    
+    function getSprs(){
+		$.ajax({
+			type: "post",
+            data: {id:"${USER.u_id}dispatchFile${formkey!''}"},
+            url: "${ctx}/grgzt/fqlc/getSprs",
+            beforeSend: function () {
+                index = layer.load(1);
+            },
+            success: function (data) {
+            	layer.close(index);
+            	var html = ""
+        		sprs = [];
+            	usersprs = [];
+            	$.each(data,function(i,v){
+            		sprs.push(v.oiduid.split("#")[1]);
+            		usersprs.push(v.oiduid);
+            		html +='<div class="spr-select">';
+            			html +='<i class="fa fa-close spr-close" data-id="'+v.oiduid+'"></i>';
+						html +='<div class="spr-box">'
+							html +='<p>'+v.nickname+'</p>';
+						html +='</div>';
+						html +='<p style="font-size:10px;">'+'('+v.o_name+v.j_name+')'+'</p>';
+					html +='</div>';
+            	})
+            	
+            	$("#spr_add").prevAll().remove();
+            	$("#spr_add").before(html);
+            	$("#spr .spr-select").on('click','.spr-close',function () { 
+            		var oiduid = $(this).attr("data-id");
+            		usersprs.remove(oiduid)
+            		sprs.remove(oiduid.split("#")[1])
+            		$(this).parent().remove();
+            	})
+            },
+            error: function (data) {
+            	layer.close(index);
+                layer.msg("服务端异常");
+            }
+      });
+}
+
+    function confirmFunction(data){
+		$.ajax({
+            type: "post",
+            data: data.field,
+            url: "${ctx}/grgzt/dbsx/complete/${taskId!''}",
+            beforeSend: function () {
+                index = layer.load(1);
+            },
+            success: function (data) {
+            	layer.close(index);
+            	if(data.code > 0){
+            		index = layer.confirm("审批成功,下一流程节点："+data.msg, {
+            			  closeBtn:0,
+            			  btn: ['确定'] //按钮
+            			}, function(){
+            			index = parent.layer.getFrameIndex(window.name);
+				    	parent.layer.close(index);
+        			});
+            	}else if(data.code == "0" || data.code == "-1") {
+            		layer.msg(data.msg, {offset: ['50%'], time: 2000},function(){
+            			index = parent.layer.getFrameIndex(window.name);
+				    	parent.layer.close(index);
+            		});
+            	}else {
+            		layer.msg("审批失败", {offset: ['50%'], time: 2000});
+            	}
+            },
+            error: function (data) {
+            	layer.close(index);
+                layer.msg("服务端异常");
+            }
+        });
+	}
+	
+    function radioFunction(){
+		//判断radio意见框，不同意，将审批人框隐藏
+		form.on('radio(filterAgree)',function(data){
+			/* alert(JSON.stringify(data)); //获取data数据的jaon值*/
+			var value=data.value;
+			if(value != 'true'){
+				$('#sprId').hide();
+			}else{
+				$('#sprId').show();
+			}
+		})
+	}
+</script>
+</html>

@@ -1,8 +1,16 @@
 package com.zzhb.controller.grgzt;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.activiti.engine.FormService;
 import org.activiti.engine.IdentityService;
@@ -22,9 +30,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.zzhb.domain.Org;
+import com.zzhb.domain.Table;
 import com.zzhb.domain.User;
-import com.zzhb.domain.activiti.Leave;
 import com.zzhb.domain.activiti.UserSpr;
+import com.zzhb.mapper.TableMapper;
 import com.zzhb.service.ActivitiService;
 import com.zzhb.service.FqlcService;
 import com.zzhb.utils.SessionUtils;
@@ -65,6 +74,9 @@ public class FqlcController {
 
 	@Autowired
 	ActivitiService as;
+	
+	@Autowired
+	TableMapper tableMapper;
 
 	@RequestMapping("/beforeStart/{processDefinitionId}")
 	public String beforeStart(@PathVariable("processDefinitionId") String processDefinitionId, ModelMap modelMap) {
@@ -81,7 +93,7 @@ public class FqlcController {
 
 	@RequestMapping("/start/{key}")
 	@ResponseBody
-	public JSONObject start(@PathVariable("key") String key, @RequestParam Map<String, String> params) {
+	public JSONObject start(@PathVariable("key") String key, @RequestParam Map<String, String> params) throws Exception {
 		logger.info(key + "=" + JSON.toJSONString(params));
 		return as.startProcessInstance(key, params);
 	}

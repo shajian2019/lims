@@ -11,22 +11,33 @@
 	<link rel="stylesheet" href="${ctx}/plugins/ztree/css/zTreeStyle/zTreeStyle.css">
 	<style type="text/css">
 		.layui-form-item{margin-bottom: 10px;}
-    	.main{margin: 1% auto 0;width: 970px}
+    	.main{width:900px;margin: 1% auto 0;}
 		.img-up-box,#spr{max-width: 500px;height: auto;display:flex;align-items: flex-end;flex-wrap: wrap;}
 		.img-up-box .img-box{position: relative;display: inline-block;width: 80px;height:80px;border: 1px solid #e6e6e6;margin-right: 8px;margin-top: 8px;}
 		.img-up-box .img-box .img-close{position: absolute;top: -7px;right: -7px;font-size: 12px;color: #fff;border-radius: 20px;width: 16px;height: 16px;background-color: #000;text-align: center;line-height: 16px;}
 		.img-up-box .img-box>img{width: 100%;height:100%;}
-		#spr_add{width: 40px;height:40px;border: 1px solid #e6e6e6;text-align: center;line-height: 80px;font-size: 28px;color: #e6e6e6;background-color: #fff;}
+		#img_up,#spr_add{width: 80px;height:80px;border: 1px solid #e6e6e6;text-align: center;line-height: 80px;font-size: 28px;color: #e6e6e6;background-color: #fff;}
 		#spr{align-items:flex-start;}
-		#spr_add{width: 70px;height: 70px;line-height: 70px;border-radius: 1000px;}
-		.spr-select{text-align: center;position: relative;margin-right: 15px;display: inline-block;}
-		.spr-box{color: #fff;text-align: center;background-color: cornflowerblue;border-radius: 1000px;font-size: 12px;width: 70px;height: 70px;display: flex;flex-direction: column;justify-content: center;}
-		.spr-close{cursor: pointer;position: absolute;top: 0;right: -7px;font-size: 12px;color: #fff;border-radius: 20px;width: 16px;background-color: #000;text-align: center;line-height: 16px;}
+		#spr_add{width: 85px;height: 35px;line-height: 32px;margin-top: 5px;margin-left: 15px;background-color: #F2F2F2;font-size: 13px;text-align: center;}
+		.spr-select{text-align: center;position: relative;margin-left: 15px;margin-top: 5px;display: inline-block;}
+		.spr-box{text-align: center;background-color: #F2F2F2;font-size: 16px;width: 85px;height: 35px;display: flex;flex-direction: column;justify-content: center;}
+		.spr-close{cursor: pointer;position: absolute;top: 0;right: -7px;font-size: 12px;color: #000;border-radius: 20px;width: 38px;text-align: center;line-height: 36px;}
 		#layer-photos{display:flex;align-items: center;max-width: 500px;flex-wrap: wrap;}
 		#layer-photos img{width: 80px; height: 80px;display: block;margin-right: 5px;margin-bottom: 5px;}
+		h1{text-align: center;margin-top: 20px;margin-bottom: 20px}
 		.tree-yylx{position: relative;}
 		#yylx{position: absolute;z-index: 999;width: 178px;border:1px solid #e6e6e6;background-color: #fff;border-top:none;display: none;}
-		h2{text-align: center;margin-top: 10px;margin-bottom: 5px}
+		.trCss{text-align: center; height: 60px;}
+		.trCssOnly{text-align: center; height: 60px;}
+		.trCss td input{padding-left: 5px;border:none; border-bottom:1px dashed #888;}
+		.trCssOnly td input{padding-left: 5px;}
+		#spys{border-left-style: hidden;border-right-style: hidden;border-bottom-style: hidden;}
+		#sq{background-color:#F2F2F2;}
+		#download{background-color:#F2F2F2;}
+		#ps{background-color:#F2F2F2;}
+		.layui-input-block{text-align: center;margin-top: 10px;margin-left: 0px;}
+		#jia{font-size: 13px;color: #3FBD69;}
+		#lxr{font-size: 13px;font-style: normal;color: black;}
 		.layui-textarea {width: 808px;min-height: 70px;}
 		.img-box{display: flex;align-items: center;justify-content: space-between;padding: 0 10px;}
 		.img-box>p{margin-right: 5px;}
@@ -34,7 +45,7 @@
 </head>
 
 <body>
-		<h2>文件阅办单</h2>
+		<h1>文件阅办单</h1>
 		${(form!'开发中')}
 </body>
 <script src="${ctx}/plugins/layui/layui.all.js"></script>
@@ -68,8 +79,6 @@
 		   elem: '#swrq'
 		   ,format: 'yyyy年MM月dd日'
 		 });
-		
-		getSprs()
 		
 		var fileNameArray = [];
 	  	//多图片上传
@@ -174,45 +183,83 @@
 		//获取文件附件
 		fileList();
 		
+		radioFunction();
+		
 		form.on('submit(sp)', function(data){
+			data.field.id = "${USER.u_id}docreadlist${formkey!''}";
+			data.field.bk = "${bk!''}";
+			var agree=data.field.agree;
+			if(agree != "true"){
+				data.field.nb_spyj = "不同意  "+data.field.nb_spyj;
+				confirmFunction(data);
+			}else{
+				if(sprs.length > 0){
+					data.field.sprs = sprs.join(",");
+					data.field.usersprs = usersprs.join(",");
+					data.field.nb_spyj = "同意  "+data.field.nb_spyj;
+					confirmFunction(data);
+				} else {
+					layer.msg("请选择审批人", {offset: ['50%'], time: 2000});
+				}
+			}
+			return false;
+		});
+	}else if (formkey == 'docreadlist_usertask2.html'){
+		
+		//获取文件附件
+		fileList();
+		
+		radioFunction();
+		
+		form.on('submit(sp)', function(data){
+			data.field.id = "${USER.u_id}docreadlist${formkey!''}";
+			data.field.bk = "${bk!''}";
+			data.field.bgsPerson="10235";
+			data.field.agree = "true";
+			data.field.ldys_spyj = "同意  "+data.field.ldys_spyj;
+			confirmFunction(data);
+			return false;
+		});
+	}else if (formkey == 'docreadlist_usertask3.html'){
+		
+		//获取文件附件
+		fileList();
+		
+		form.on('submit(sp)', function(data){
+			data.field.id = "${USER.u_id}docreadlist${formkey!''}";
+			data.field.bk = "${bk!''}";
+			if(sprs.length > 0){
+				data.field.sprs = sprs.join(",");
+				data.field.usersprs = usersprs.join(",");
+				confirmFunction(data);
+			} else {
+				layer.msg("请选择审批人", {offset: ['50%'], time: 2000});
+			}
+			return false;
+		});
+	}else if (formkey == 'docreadlist_usertask4.html'){
+		
+		//获取文件附件
+		fileList();
+		
+		form.on('submit(sp)', function(data){
+			data.field.id = "${USER.u_id}docreadlist${formkey!''}";
 			data.field.bk = "${bk!''}";
 			data.field.agree = "true";
-			data.field.spyj = "已阅  "+data.field.spyj;
-			$.ajax({
-	            type: "post",
-	            data: data.field,
-	            url: "${ctx}/grgzt/dbsx/complete/${taskId!''}",
-	            beforeSend: function () {
-	                index = layer.load(1);
-	            },
-	            success: function (data) {
-	            	layer.close(index);
-	            	if(data.code >0){
-	            		index = layer.confirm("审批成功,下一流程节点："+data.msg, {
-	            			  closeBtn:0,
-	            			  btn: ['确定'] //按钮
-	            			}, function(){
-	            			//parent.window.closeTab(data.taskId);
-	            			index = parent.layer.getFrameIndex(window.name);
-					    	parent.layer.close(index);
-            			});
-	            	}else if(data.code == "0" || data.code == "-1") {
-	            		index = layer.confirm(data.msg, {
-	            			  closeBtn:0,
-	            			  btn: ['确定'] //按钮
-	            			}, function(){
-	            			index = parent.layer.getFrameIndex(window.name);
-					    	parent.layer.close(index);
-          				});
-	            	}else {
-	            		layer.msg("审批失败", {offset: ['50%'], time: 2000});
-	            	}
-	            },
-	            error: function (data) {
-	            	layer.close(index);
-	                layer.msg("服务端异常");
-	            }
-	        });
+			data.field.registerPerson="10235";
+			confirmFunction(data);
+			return false;
+		});
+	}else if (formkey == 'docreadlist_usertask5.html'){
+		
+		//获取文件附件
+		fileList();
+		
+		form.on('submit(sp)', function(data){
+			data.field.id = "${USER.u_id}docreadlist${formkey!''}";
+			data.field.bk = "${bk!''}";
+			data.field.agree = "true";
+			confirmFunction(data);
 			return false;
 		});
 	}
@@ -257,10 +304,9 @@
             		html +='<div class="spr-select">';
             			html +='<i class="fa fa-close spr-close" data-id="'+v.oiduid+'"></i>';
 						html +='<div class="spr-box">'
-							html +='<p>'+v.o_name+'</p>';
-							html +='<p>'+v.j_name+'</p>';
+							html +='<p>'+v.nickname+'</p>';
 						html +='</div>';
-						html +='<p>'+v.nickname+'</p>';
+						html +='<p style="font-size:10px;">'+'('+v.o_name+v.j_name+')'+'</p>';
 					html +='</div>';
             	})
             	
@@ -323,7 +369,53 @@
 				})
 			}
 		});
-		
+	}
+	
+	function confirmFunction(data){
+		$.ajax({
+            type: "post",
+            data: data.field,
+            url: "${ctx}/grgzt/dbsx/complete/${taskId!''}",
+            beforeSend: function () {
+                index = layer.load(1);
+            },
+            success: function (data) {
+            	layer.close(index);
+            	if(data.code > 0){
+            		index = layer.confirm("审批成功,下一流程节点："+data.msg, {
+            			  closeBtn:0,
+            			  btn: ['确定'] //按钮
+            			}, function(){
+            			index = parent.layer.getFrameIndex(window.name);
+				    	parent.layer.close(index);
+        			});
+            	}else if(data.code == "0" || data.code == "-1") {
+            		layer.msg(data.msg, {offset: ['50%'], time: 2000},function(){
+            			index = parent.layer.getFrameIndex(window.name);
+				    	parent.layer.close(index);
+            		});
+            	}else {
+            		layer.msg("审批失败", {offset: ['50%'], time: 2000});
+            	}
+            },
+            error: function (data) {
+            	layer.close(index);
+                layer.msg("服务端异常");
+            }
+        });
+	}
+	
+	function radioFunction(){
+		//判断radio意见框，不同意，将审批人框隐藏
+		form.on('radio(filterAgree)',function(data){
+			/* alert(JSON.stringify(data)); //获取data数据的jaon值*/
+			var value=data.value;
+			if(value != 'true'){
+				$('#sprId').hide();
+			}else{
+				$('#sprId').show();
+			}
+		})
 	}
 </script>
 </html>

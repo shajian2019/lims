@@ -1,0 +1,86 @@
+<form class="layui-form main layui-upload" lay-filter="carapplication">
+	<table border="solid 1px;">
+		<tr class="trCss">
+			<td style="width: 16%;"><span style="color:red;">*</span>申请人</td>
+			<td style="width: 25%;">
+				<input type="text" value="${sqr}" lay-verify="required" readonly="readonly" autocomplete="off" class="layui-input">
+			</td>
+			<td style="width: 16%;"><span style="color:red;">*</span>部门名称</td>
+			<td style="width: 25%;">
+				 <input type="text" value="${bmmc}" lay-verify="required" readonly="readonly" autocomplete="off" class="layui-input">
+			</td>
+		</tr>
+		<tr class="trCss">
+			<td><span style="color:red;">*</span>驾驶员</td>
+			<td>
+				 <input type="text" value="${jsy}" lay-verify="required" readonly="readonly" autocomplete="off" class="layui-input">
+			</td>
+			<td>车辆型号</td>
+			<td>
+				<input type="text" value="${clxh}" readonly="readonly" autocomplete="off" class="layui-input">
+			</td>
+		</tr>
+		<tr class="trCss">
+			<td><span style="color:red;">*</span>用车日期起</td>
+			<td>
+					<input type="text" value="${ycrqq}" lay-verify="required" readonly="readonly" autocomplete="off" class="layui-input">
+			</td>
+			<td><span style="color:red;">*</span>用车日期止</td>
+			<td>
+				 <input type="text" value="${ycrqz}" lay-verify="required" readonly="readonly" autocomplete="off" class="layui-input">
+			</td>
+		</tr>
+		<tr class="trCss">
+			<td><span style="color:red;">*</span>起点</td>
+			<td>
+				 <input type="text" value="${qd}" lay-verify="required" readonly="readonly" autocomplete="off" class="layui-input">
+			</td>
+			<td><span style="color:red;">*</span>终点</td>
+			<td>
+				<input type="text" value="${zd}" lay-verify="required" readonly="readonly" autocomplete="off" class="layui-input">
+			</td>
+		</tr>
+		<tr class="trCss">
+			<td><span style="color:red;">*</span>用车事由</td>
+			<td colspan="3">
+				 <textarea class="layui-textarea" readonly="readonly" style="width:500px;min-height: 70px;">${ycsy}</textarea>
+			</td>	
+		</tr>
+		<tr class="trCss">
+			<td>所在科室<br/>（单位）<br/>审批意见</td>
+			<td colspan="3" class="layui-form-item layui-form-text">
+               		 <textarea readonly="readonly" class="layui-textarea" style="min-height: 100px;">${ks_spyj}</textarea>
+			</td>
+		</tr>
+		<tr class="trCss">
+			<td>分管领导<br/>审批意见</td>
+			<td colspan="3" class="layui-form-item layui-form-text">
+               		 <textarea readonly="readonly" class="layui-textarea" style="min-height: 100px;">${fg_spyj}</textarea>
+			</td>
+		</tr>
+		<tr class="trCss">
+			<td><span style="color:red;">*</span>是否同意</td>
+			<td colspan="3" class="layui-form-item layui-form-text">
+				 <div class="layui-input-block">
+		            <input type="radio" name="agree" value="true" title="同意" checked="">
+		            <input type="radio" name="agree" value="false" title="不同意">
+	       		 </div>
+			</td>
+		</tr>
+		<tr class="trCss">
+			<td>主管领导<br/>审批意见</td>
+			<td colspan="3" class="layui-form-item layui-form-text">
+	               <textarea name="zg_spyj" placeholder="主管领导审批意见" class="layui-textarea" style="min-height: 100px;"></textarea>
+			</td>
+      	</tr>
+		<tr id="spys">
+			<td colspan="4">
+				<div class="layui-form-item">
+		           <div class="layui-input-block">
+		              <button class="layui-btn layui-btn-primary" lay-submit lay-filter="sp" id="sp">审批</button>
+		           </div>
+		       	</div>
+			</td>
+		</tr>
+	</table>
+</form>

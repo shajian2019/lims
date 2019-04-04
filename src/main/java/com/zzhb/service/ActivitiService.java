@@ -6,9 +6,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -34,6 +37,7 @@ import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricTaskInstanceQuery;
 import org.activiti.engine.impl.identity.Authentication;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -101,6 +105,9 @@ public class ActivitiService {
 
 	@Autowired
 	AsyncService asyncService;
+	
+	@Autowired
+	UserService userService;
 
 	@Transactional
 	public Integer deploy(Map<String, String> params, MultipartFile file) throws IOException {
@@ -487,9 +494,9 @@ public class ActivitiService {
 	public JSONObject submitTaskFormData(String taskId, Map<String, String> params) {
 		User user = SessionUtils.getUser();
 		JSONObject result = new JSONObject();
-		String bk = params.get("bk").toString();
+		String bk = params.get("bk").toString();//2019032914395010233
 
-		Task ruTask = taskService.createTaskQuery().taskId(taskId).singleResult();
+		Task ruTask = taskService.createTaskQuery().taskId(taskId).singleResult();//227838
 		// 判断流程是否被挂起
 		if (!ruTask.isSuspended()) {
 
@@ -539,9 +546,37 @@ public class ActivitiService {
 			}
 			String processInstanceId = ruTask.getProcessInstanceId();
 			identityService.setAuthenticatedUserId(user.getU_id() + "");
-			// 保存审批备注表
-			taskService.addComment(taskId, processInstanceId, JSON.toJSONString(params));
-
+			//判断当前流程的会签节点是否有意见
+			List<Comment> comments = taskService.getProcessInstanceComments(processInstanceId, "comment");
+			SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd");
+			 String countersignature="";
+			for(Comment comment : comments) {
+				String str= comment.getFullMessage();
+				String time = sdf.format(comment.getTime());
+				 Map maps = (Map)JSON.parse(str);  
+			        for (Object map : maps.entrySet()){  
+			        	String key = map.toString();
+			        	//之前的会签意见
+			        	if(key.contains("hq_spyj")) {
+			        		String assigneeId = (String) maps.get("assignee");
+			        		String assignName= userService.getUserNameByUserId(assigneeId);
+			        		countersignature += (String) maps.get("hq_spyj")+"("+assignName+"  "+time+")"+"\n";
+			        	}
+			        }  
+			}
+	        if(countersignature != null && countersignature != "") {
+	        	String message1=JSON.toJSONString(params);
+	        	Map mapNew = JSON.parseObject(message1,Map.class);
+	        	//新的会签意见
+	        	String countersignature1=(String) mapNew.get("hq_spyj")+"("+user.getNickname()+"  "+sdf.format(new Date())+")"+"\n";
+	        	countersignature1=countersignature+countersignature1;
+	        	params.put("hq_spyj", countersignature1);
+	        	taskService.addComment(taskId, processInstanceId, JSON.toJSONString(params));
+	        }else {
+	        	// 保存审批备注表
+	        	taskService.addComment(taskId, processInstanceId, JSON.toJSONString(params));
+	        }
+	        
 			// 完成当前任务
 			formService.submitTaskFormData(taskId, params);
 
@@ -568,7 +603,7 @@ public class ActivitiService {
 				if (taskDefinitionKey1.equals(taskDefinitionKey2)) {
 					// 会签用户任务
 					result.put("code", 0);
-					result.put("msg", "完成审批");
+					result.put("msg", "完成审批！");
 				} else {
 					result.put("code", 1);
 					result.put("msg", task.getName());
@@ -586,14 +621,14 @@ public class ActivitiService {
 				}
 				asyncService.sendMessage(bk);
 				result.put("code", 0);
-				result.put("msg", "流程结束");
+				result.put("msg", "完成审批！");
 			} else {
 				result.put("code", 0);
-				result.put("msg", "完成审批");
+				result.put("msg", "完成审批！");
 			}
 		} else {
 			result.put("code", -1);
-			result.put("msg", "流程已挂起");
+			result.put("msg", "流程已挂起！");
 		}
 		result.put("taskId", taskId);
 		return result;
@@ -1061,6 +1096,30 @@ public class ActivitiService {
 									logger.debug("===data===" + JSON.toJSONString(data));
 								}
 								break;
+							}else if (string.endsWith("baqk")) {
+								String assignee = commentJ.getString("assignee");
+								if (assignee != null) {
+									data.put(string, commentJ.getString(string));
+									String pre = "ba_";
+									data.put(pre + "year", endtime.substring(0, 4));
+									data.put(pre + "month", endtime.substring(5, 7));
+									data.put(pre + "day", endtime.substring(8, 10));
+									User userById = userMapper.getUserById(assignee);
+									data.put(pre + "spr", userById.getNickname());
+									logger.debug("===data===" + JSON.toJSONString(data));
+								}
+							}else if (string.endsWith("xjqk")) {
+								String assignee = commentJ.getString("assignee");
+								if (assignee != null) {
+									data.put(string, commentJ.getString(string));
+									String pre = "xj_";
+									data.put(pre + "year", endtime.substring(0, 4));
+									data.put(pre + "month", endtime.substring(5, 7));
+									data.put(pre + "day", endtime.substring(8, 10));
+									User userById = userMapper.getUserById(assignee);
+									data.put(pre + "spr", userById.getNickname());
+									logger.debug("===data===" + JSON.toJSONString(data));
+								}
 							}
 						}
 					}
@@ -1068,6 +1127,7 @@ public class ActivitiService {
 			} else if ("chapter".equals(key)) {
 				data.put("sqr", map.get("sqr").toString());
 				data.put("bmmc", map.get("bmmc").toString());
+				data.put("sqrq", map.get("sqrq").toString());
 				data.put("yylx", map.get("yylx").toString());
 				data.put("yyfs", map.get("yyfs").toString());
 				data.put("yynr", map.get("yynr").toString());
@@ -1080,13 +1140,17 @@ public class ActivitiService {
 						Set<String> keySet = commentJ.keySet();
 						for (String string : keySet) {
 							if (string.endsWith("spyj")) {
-								data.put(string, commentJ.getString(string));
-								data.put("year", endtime.substring(0, 4));
-								data.put("month", endtime.substring(5, 7));
-								data.put("day", endtime.substring(8, 10));
 								String assignee = commentJ.getString("assignee");
-								User userById = userMapper.getUserById(assignee);
-								data.put("spr", userById.getNickname());
+								if (assignee != null) {
+									data.put(string, commentJ.getString(string));
+									String pre = string.split("_")[0] + "_";
+									data.put(pre + "year", endtime.substring(0, 4));
+									data.put(pre + "month", endtime.substring(5, 7));
+									data.put(pre + "day", endtime.substring(8, 10));
+									User userById = userMapper.getUserById(assignee);
+									data.put(pre + "spr", userById.getNickname());
+									logger.debug("===data===" + JSON.toJSONString(data));
+								}
 								break;
 							}
 						}
@@ -1131,6 +1195,136 @@ public class ActivitiService {
 					}
 				}
 				data.put("spyj", spyj);
+			}else if ("assetsRecipients".equals(key)) {
+				data.put("sqr", map.get("sqr").toString());
+				data.put("bmmc", map.get("bmmc").toString());
+
+				data.put("sqrq", map.get("sqrq").toString());
+				data.put("bha", map.get("bha").toString());
+				data.put("zcmca", map.get("zcmca").toString());
+				data.put("xhpza", map.get("xhpza").toString());
+				data.put("sla", map.get("sla").toString());
+				data.put("yta", map.get("yta").toString());
+				data.put("bza", map.get("bza").toString());
+				
+				data.put("bhb", map.get("bhb").toString());
+				data.put("zcmcb", map.get("zcmcb").toString());
+				data.put("xhpzb", map.get("xhpzb").toString());
+				data.put("slb", map.get("slb").toString());
+				data.put("ytb", map.get("ytb").toString());
+				data.put("bzb", map.get("bzb").toString());
+				
+				data.put("bhc", map.get("bhc").toString());
+				data.put("zcmcc", map.get("zcmcc").toString());
+				data.put("xhpzc", map.get("xhpzc").toString());
+				data.put("slc", map.get("slc").toString());
+				data.put("ytc", map.get("ytc").toString());
+				data.put("bzc", map.get("bzc").toString());
+				
+				data.put("bhd", map.get("bhd").toString());
+				data.put("zcmcd", map.get("zcmcd").toString());
+				data.put("xhpzd", map.get("xhpzd").toString());
+				data.put("sld", map.get("sld").toString());
+				data.put("ytd", map.get("ytd").toString());
+				data.put("bzd", map.get("bzd").toString());
+				
+				data.put("bhe", map.get("bhe").toString());
+				data.put("zcmce", map.get("zcmce").toString());
+				data.put("xhpze", map.get("xhpze").toString());
+				data.put("sle", map.get("sle").toString());
+				data.put("yte", map.get("yte").toString());
+				data.put("bze", map.get("bze").toString());
+
+				for (HistoricTaskInstance hi : list) {
+					String endtime = TimeUtil.getTimeByCustom("yyyy-MM-dd", hi.getEndTime());
+					List<Comment> taskComments = taskService.getTaskComments(hi.getId(), "comment");
+					for (Comment comment : taskComments) {
+						JSONObject commentJ = JSON.parseObject(comment.getFullMessage());
+						Set<String> keySet = commentJ.keySet();
+						for (String string : keySet) {
+							if (string.endsWith("spyj")) {
+								String assignee = commentJ.getString("assignee");
+								if (assignee != null) {
+									data.put(string, commentJ.getString(string));
+									String pre = string.split("_")[0] + "_";
+									data.put(pre + "year", endtime.substring(0, 4));
+									data.put(pre + "month", endtime.substring(5, 7));
+									data.put(pre + "day", endtime.substring(8, 10));
+									User userById = userMapper.getUserById(assignee);
+									data.put(pre + "spr", userById.getNickname());
+									logger.debug("===data===" + JSON.toJSONString(data));
+								}
+								break;
+							}
+						}
+					}
+				}
+			} else if ("dispatchFile".equals(key)) {
+				data.put("sqr", map.get("sqr").toString());
+				data.put("bmmc", map.get("bmmc").toString());
+				data.put("title", map.get("title").toString());
+				data.put("copyMessage", map.get("copyMessage").toString());
+				for (HistoricTaskInstance hi : list) {
+					String endtime = TimeUtil.getTimeByCustom("yyyy-MM-dd", hi.getEndTime());
+					List<Comment> taskComments = taskService.getTaskComments(hi.getId(), "comment");
+					for (Comment comment : taskComments) {
+						JSONObject commentJ = JSON.parseObject(comment.getFullMessage());
+						Set<String> keySet = commentJ.keySet();
+						for (String string : keySet) {
+							if (string.endsWith("planOpinion")) {
+								String ag = commentJ.getString("assignee");
+								if (ag != null) {
+									String pre = string.split("_")[0] + "_";
+									data.put(string, commentJ.getString(string));
+									data.put(pre + "year", endtime.substring(0, 4));
+									data.put(pre + "day", endtime.substring(8, 10));
+									data.put(pre + "month", endtime.substring(5, 7));
+									User userById = userMapper.getUserById(ag);
+									data.put(pre + "spr", userById.getNickname());
+									logger.debug("===data===" + JSON.toJSONString(data));
+								}
+								break;
+							}
+						}
+					}
+				}
+			}else if ("carapplication".equals(key)) {
+				data.put("sqr", map.get("sqr").toString());
+				data.put("bmmc", map.get("bmmc").toString());
+				data.put("jsy", map.get("jsy").toString());
+				data.put("clxh", map.get("clxh").toString());
+				String ycrqq=map.get("ycrqq").toString();
+				String ycrqz=map.get("ycrqz").toString();
+				data.put("ycrqq", ycrqq !=null ? ycrqq.substring(0, 11):ycrqq);
+				data.put("ycrqz", ycrqz !=null ? ycrqz.substring(0, 11):ycrqz);
+				data.put("qd", map.get("qd").toString());
+				data.put("zd", map.get("zd").toString());
+				data.put("ycsy", map.get("ycsy").toString());
+
+				for (HistoricTaskInstance hi : list) {
+					String endtime = TimeUtil.getTimeByCustom("yyyy-MM-dd", hi.getEndTime());
+					List<Comment> taskComments = taskService.getTaskComments(hi.getId(), "comment");
+					for (Comment comment : taskComments) {
+						JSONObject commentJ = JSON.parseObject(comment.getFullMessage());
+						Set<String> keySet = commentJ.keySet();
+						for (String string : keySet) {
+							if (string.endsWith("spyj")) {
+								String assignee = commentJ.getString("assignee");
+								if (assignee != null) {
+									data.put(string, commentJ.getString(string));
+									String pre = string.split("_")[0] + "_";
+									data.put(pre + "year", endtime.substring(0, 4));
+									data.put(pre + "month", endtime.substring(5, 7));
+									data.put(pre + "day", endtime.substring(8, 10));
+									User userById = userMapper.getUserById(assignee);
+									data.put(pre + "spr", userById.getNickname());
+									logger.debug("===data===" + JSON.toJSONString(data));
+								}
+								break;
+							}
+						}
+					}
+				}
 			}
 			// 生成pdf
 			String path = PdfUtil.createPdfByTemp(tempPath, outPdfPath, data);
@@ -1144,4 +1338,70 @@ public class ActivitiService {
 		}
 		return result;
 	}
+
+		//统计请假总天数，以0.5天为单位,startDate为开始日期，endDate为结束日期，startId为开始上下午，"1"代表是上午，“2”代表下午，endId代表结束的上下午
+		@Transactional
+		public float getCount(Map<String, String> params) throws Exception{
+			String startDate = params.get("startDate");
+			String endDate = params.get("endDate");
+			float count = 0;
+			Calendar startCalendar = Calendar.getInstance();
+			Calendar endCalendar = Calendar.getInstance();
+			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+			Date startDat = df.parse(startDate);
+			startCalendar.setTime(startDat);
+			Date endDat = df.parse(endDate);
+			endCalendar.setTime(endDat);
+			
+			String startDateStr=startDate.substring(0, 10);
+			String endDateStr=endDate.substring(0, 10);
+			String startDateMM=startDate.substring(11,13);
+			String startId="";
+			if(startDateMM.compareTo("12")<0) {
+				startId="1";
+			}else {
+				startId="2";
+			}
+			String endId="";
+			String endDateMM=endDate.substring(11,13);
+			if(endDateMM.compareTo("12")<0) {
+				endId="1";
+			}else {
+				endId="2";
+			}
+			
+			if(startDateStr.equals(endDateStr)) {
+				//同一天
+				if(startId.equals(1) && endId.equals(2)) {
+					count = 1;
+				}else {
+					count = (float)0.5;
+				}
+			}else if(startCalendar.getTimeInMillis() < endCalendar.getTimeInMillis()) {
+				//不是同一天，获取从开始到结束时间间有几天工作日
+				Map<String, String> params2 = new HashMap<>();
+				params2.put("startDateStr", startDateStr);
+				params2.put("endDateStr", endDateStr);
+				int leaveDays=userMapper.getWorkDays(params2);
+				if(leaveDays == 2) {
+					if(startId.equals(1) && endId.equals(2)) {
+						count = 2;
+					}else if(startId.equals(2) && endId.equals(1)){
+						count = 1;
+					}else {
+						count = (float)1.5;
+					}
+				}else{
+					int moreDay=leaveDays-2;
+					if(startId.equals("1") && endId.equals("2")) {
+						count = moreDay+2;
+					}else if(startId.equals("2") && endId.equals("1")){
+						count = moreDay+1;
+					}else {
+						count = moreDay+(float)1.5;
+					}
+				}
+			}
+			return count;
+		}
 }

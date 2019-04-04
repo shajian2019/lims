@@ -18,21 +18,31 @@
 		.img-up-box .img-box>img{width: 100%;height:100%;}
 		#img_up,#spr_add{width: 80px;height:80px;border: 1px solid #e6e6e6;text-align: center;line-height: 80px;font-size: 28px;color: #e6e6e6;background-color: #fff;}
 		#spr{align-items:flex-start;}
-		#spr_add{width: 70px;height: 70px;line-height: 70px;border-radius: 1000px;}
-		.spr-select{text-align: center;position: relative;margin-right: 15px;display: inline-block;}
-		.spr-box{color: #fff;text-align: center;background-color: cornflowerblue;border-radius: 1000px;font-size: 12px;width: 70px;height: 70px;display: flex;flex-direction: column;justify-content: center;}
-		.spr-close{cursor: pointer;position: absolute;top: 0;right: -7px;font-size: 12px;color: #fff;border-radius: 20px;width: 16px;background-color: #000;text-align: center;line-height: 16px;}
+		#spr_add{width: 85px;height: 35px;line-height: 32px;margin-top: 5px;margin-left: 15px;background-color: #F2F2F2;font-size: 13px;text-align: center;}
+		.spr-select{text-align: center;position: relative;margin-left: 15px;margin-top: 5px;display: inline-block;}
+		.spr-box{text-align: center;background-color: #F2F2F2;font-size: 16px;width: 85px;height: 35px;display: flex;flex-direction: column;justify-content: center;}
+		.spr-close{cursor: pointer;position: absolute;top: 0;right: -7px;font-size: 12px;color: #000;border-radius: 20px;width: 38px;text-align: center;line-height: 36px;}
 		#layer-photos{display:flex;align-items: center;max-width: 500px;flex-wrap: wrap;}
 		#layer-photos img{width: 80px; height: 80px;display: block;margin-right: 5px;margin-bottom: 5px;}
+		h1{text-align: center;margin-top: 20px;margin-bottom: 20px}
 		.tree-yylx{position: relative;}
 		#yylx{position: absolute;z-index: 999;width: 178px;border:1px solid #e6e6e6;background-color: #fff;border-top:none;display: none;}
-		h2{text-align: center;margin-top: 20px;margin-bottom: 20px}
+		.trCss{text-align: center; height: 60px;}
+		.trCssOnly{text-align: center; height: 60px;}
+		.trCss td input{padding-left: 5px;border:none; border-bottom:1px dashed #888;}
+		.trCssOnly td input{padding-left: 5px;}
+		#spys{border-left-style: hidden;border-right-style: hidden;border-bottom-style: hidden;}
+		#sq{background-color:#F2F2F2;}
+		#ps{background-color:#F2F2F2;}
+		.layui-input-block{text-align: center;margin-top: 10px;margin-left: 0px;}
+		#jia{font-size: 13px;color: #3FBD69;}
+		#lxr{font-size: 13px;font-style: normal;color: black;}
 	</style>
 </head>
 
 <body>
-		<h2>环保局用印申请表</h2>
-		${(form!'开发中')}
+		<h1>环保局用印申请表</h1>
+		${(form!'开发中')} 
 
 </body>
 <script src="${ctx}/plugins/ztree/js/jquery-1.4.4.min.js"></script>
@@ -67,6 +77,11 @@
                 layer.msg("服务端异常");
             }
         });
+		
+		laydate.render({
+			   elem: '#sqrq'
+			   ,type: 'datetime'
+			});
 		
 		getSprs()
 		
@@ -147,48 +162,61 @@
 		 });
 	
 	} else if (formkey == 'chapter_usertask1.html'){
+		radioFunction();
 		form.on('submit(sp)', function(data){
 			data.field.id = "${USER.u_id}chapter${formkey!''}";
 			data.field.bk = "${bk!''}";
 			
-			data.field.spyj = "同意  "+data.field.spyj
-			if(data.field.agree != "true"){
-				data.field.spyj = "不"+data.field.spyj;
+			var agree=data.field.agree;
+			if(agree != "true"){
+				data.field.ks_spyj = "不同意  "+data.field.ks_spyj;
+				confirmFunction(data);
+			}else{
+				if(sprs.length > 0){
+					data.field.sprs = sprs.join(",");
+					data.field.usersprs = usersprs.join(",");
+					data.field.ks_spyj = "同意  "+data.field.ks_spyj;
+					confirmFunction(data);
+				} else {
+					layer.msg("请选择审批人", {offset: ['50%'], time: 2000});
+				}
 			}
-			$.ajax({
-	            type: "post",
-	            data: data.field,
-	            url: "${ctx}/grgzt/dbsx/complete/${taskId!''}",
-	            beforeSend: function () {
-	                index = layer.load(1);
-	            },
-	            success: function (data) {
-	            	layer.close(index);
-	            	if(data.code > 0){
-	            		index = layer.confirm("审批成功,下一流程节点："+data.msg, {
-	            			  closeBtn:0,
-	            			  btn: ['确定'] //按钮
-	            			}, function(){
-	            			index = parent.layer.getFrameIndex(window.name);
-					    	parent.layer.close(index);
-            			});
-	            	}else if(data.code == "0" || data.code == "-1") {
-	            		layer.msg(data.msg, {offset: ['50%'], time: 2000},function(){
-	            			index = parent.layer.getFrameIndex(window.name);
-					    	parent.layer.close(index);
-	            		});
-	            	}else {
-	            		layer.msg("审批失败", {offset: ['50%'], time: 2000});
-	            	}
-	            },
-	            error: function (data) {
-	            	layer.close(index);
-	                layer.msg("服务端异常");
-	            }
-	        });
 			return false;
 		});
-	}
+	} else if (formkey == 'chapter_usertask2.html'){
+		radioFunction();
+		form.on('submit(sp)', function(data){
+				data.field.id = "${USER.u_id}chapter${formkey!''}";
+				data.field.bk = "${bk!''}";
+				
+				var agree=data.field.agree;
+				if(agree != "true"){
+					data.field.fg_spyj = "不同意  "+data.field.fg_spyj;
+					confirmFunction(data);
+				}else{
+					if(sprs.length > 0){
+						data.field.sprs = sprs.join(",");
+						data.field.usersprs = usersprs.join(",");
+						data.field.fg_spyj = "同意  "+data.field.fg_spyj;
+						confirmFunction(data);
+			} else {
+				layer.msg("请选择审批人", {offset: ['50%'], time: 2000});
+			}
+		}
+				return false;
+			});
+		} else if (formkey == 'chapter_usertask3.html'){
+			form.on('submit(sp)', function(data){
+					data.field.id = "${USER.u_id}chapter${formkey!''}";
+					data.field.bk = "${bk!''}";
+					data.field.zg_spyj = "同意  "+data.field.zg_spyj;
+					if(data.field.agree != "true"){
+						data.field.zg_spyj = "不"+data.field.zg_spyj;
+					}
+					confirmFunction(data);
+					return false;
+				});
+			}
 	  //数组对象对应删除
     Array.prototype.remove = function (val) {
         var index = this.indexOf(val);
@@ -229,10 +257,9 @@
             		html +='<div class="spr-select">';
             			html +='<i class="fa fa-close spr-close" data-id="'+v.oiduid+'"></i>';
 						html +='<div class="spr-box">'
-							html +='<p>'+v.o_name+'</p>';
-							html +='<p>'+v.j_name+'</p>';
+							html +='<p>'+v.nickname+'</p>';
 						html +='</div>';
-						html +='<p>'+v.nickname+'</p>';
+						html +='<p style="font-size:10px;">'+'('+v.o_name+v.j_name+')'+'</p>';
 					html +='</div>';
             	})
             	
@@ -251,5 +278,52 @@
             }
       });
 }
+	
+	function confirmFunction(data){
+		$.ajax({
+            type: "post",
+            data: data.field,
+            url: "${ctx}/grgzt/dbsx/complete/${taskId!''}",
+            beforeSend: function () {
+                index = layer.load(1);
+            },
+            success: function (data) {
+            	layer.close(index);
+            	if(data.code > 0){
+            		index = layer.confirm("审批成功,下一流程节点："+data.msg, {
+            			  closeBtn:0,
+            			  btn: ['确定'] //按钮
+            			}, function(){
+            			index = parent.layer.getFrameIndex(window.name);
+				    	parent.layer.close(index);
+        			});
+            	}else if(data.code == "0" || data.code == "-1") {
+            		layer.msg(data.msg, {offset: ['50%'], time: 2000},function(){
+            			index = parent.layer.getFrameIndex(window.name);
+				    	parent.layer.close(index);
+            		});
+            	}else {
+            		layer.msg("审批失败", {offset: ['50%'], time: 2000});
+            	}
+            },
+            error: function (data) {
+            	layer.close(index);
+                layer.msg("服务端异常");
+            }
+        });
+	}
+	
+	function radioFunction(){
+		//判断radio意见框，不同意，将审批人框隐藏
+		form.on('radio(filterAgree)',function(data){
+			/* alert(JSON.stringify(data)); //获取data数据的jaon值*/
+			var value=data.value;
+			if(value != 'true'){
+				$('#sprId').hide();
+			}else{
+				$('#sprId').show();
+			}
+		})
+	}
 </script>
 </html>

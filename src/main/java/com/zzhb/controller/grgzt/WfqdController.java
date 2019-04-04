@@ -74,4 +74,11 @@ public class WfqdController {
 	public JSONObject createPdf(@RequestParam Map<String, String> params) {
 		return activitiService.createPdf(params);
 	}
+	
+	// 流程实例生成PDF文件
+	@PostMapping("/getCount")
+	@ResponseBody
+	public float getCount(@RequestParam Map<String, String> params) throws Exception {
+		return activitiService.getCount(params);
+	}
 }

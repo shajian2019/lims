@@ -1,0 +1,169 @@
+<form class="layui-form main layui-upload" lay-filter="assetsRecipients">
+	<table border="solid 1px;">
+		<tr class="trCss">
+			<td colspan="2"><span style="color:red;">*</span>申请人</td>
+			<td style="width: 16%;" colspan="2">
+			    <input type="text" value="${sqr}" readonly="readonly" autocomplete="off" class="layui-input">
+           	   <input type="hidden" value="${u_id}">
+			</td>
+			<td style="width: 15%;"><span style="color:red;">*</span>科室(单位)</td>
+			<td style="width: 15%;">
+			   <input type="text" value="${bmmc}" readonly="readonly" placeholder="部门名称" autocomplete="off" class="layui-input">
+        	</td>
+			<td style="width: 12%;"><span style="color:red;">*</span>申请日期</td>
+			<td colspan="2" style="width: 510px;">
+			   <input type="text" value="${sqrq}" readonly="readonly" autocomplete="off" class="layui-input">
+           </td>
+		</tr>
+		<tr class="trCss">
+			<td>序号</td>
+			<td style="width: 15%;" colspan="2">资产名称</td>
+			<td colspan="2">型号配置</td>
+			<td>数量</td>
+			<td colspan="2" style="width: 20%;">用途</td>
+			<td style="width: 20%;">备注</td>
+		</tr>
+		<tr class="trCssOnly">
+			<td>
+               <input type="text" value="${bha}" readonly="readonly" autocomplete="off" class="layui-input">
+			</td>
+			<td colspan="2">
+               <input type="text" value="${zcmca}" readonly="readonly" autocomplete="off" class="layui-input">
+ 			</td>
+			<td colspan="2">
+               <input type="text" value="${xhpza}" readonly="readonly" autocomplete="off" class="layui-input">
+ 			</td>
+			<td>
+	            <input type="text" value="${sla}" readonly="readonly" autocomplete="off" class="layui-input">
+ 		   </td>
+			<td colspan="2">
+               <input type="text" value="${yta}" readonly="readonly" autocomplete="off" class="layui-input">
+ 			</td>
+			<td>
+               <input type="text" value="${bza}" readonly="readonly" autocomplete="off" class="layui-input">
+ 			</td>
+		</tr>
+		<tr class="trCssOnly">
+			<td>
+               <input type="text" value="${bhb}" readonly="readonly" autocomplete="off" class="layui-input">
+			</td>
+			<td colspan="2">
+               <input type="text" value="${zcmcb}" readonly="readonly" autocomplete="off" class="layui-input">
+ 			</td>
+			<td colspan="2">
+               <input type="text" value="${xhpzb}" readonly="readonly" autocomplete="off" class="layui-input">
+ 			</td>
+			<td>
+	            <input type="text" value="${slb}" readonly="readonly" autocomplete="off" class="layui-input">
+ 		   </td>
+			<td colspan="2">
+               <input type="text" value="${ytb}" readonly="readonly" autocomplete="off" class="layui-input">
+ 			</td>
+			<td>
+               <input type="text" value="${bzb}" readonly="readonly" autocomplete="off" class="layui-input">
+ 			</td>
+		</tr>
+		<tr class="trCssOnly">
+			<td>
+               <input type="text" value="${bhc}" readonly="readonly" autocomplete="off" class="layui-input">
+			</td>
+			<td colspan="2">
+               <input type="text" value="${zcmcc}" readonly="readonly" autocomplete="off" class="layui-input">
+ 			</td>
+			<td colspan="2">
+               <input type="text" value="${xhpzc}" readonly="readonly" autocomplete="off" class="layui-input">
+ 			</td>
+			<td>
+	            <input type="text" value="${slc}" readonly="readonly" autocomplete="off" class="layui-input">
+ 		   </td>
+			<td colspan="2">
+               <input type="text" value="${ytc}" readonly="readonly" autocomplete="off" class="layui-input">
+ 			</td>
+			<td>
+               <input type="text" value="${bzc}" readonly="readonly" autocomplete="off" class="layui-input">
+ 			</td>
+		</tr>
+		<tr class="trCssOnly">
+			<td>
+               <input type="text" value="${bhd}" readonly="readonly" autocomplete="off" class="layui-input">
+			</td>
+			<td colspan="2">
+               <input type="text" value="${zcmcd}" readonly="readonly" autocomplete="off" class="layui-input">
+ 			</td>
+			<td colspan="2">
+               <input type="text" value="${xhpzd}" readonly="readonly" autocomplete="off" class="layui-input">
+ 			</td>
+			<td>
+	            <input type="text" value="${sld}" readonly="readonly" autocomplete="off" class="layui-input">
+ 		   </td>
+			<td colspan="2">
+               <input type="text" value="${ytd}" readonly="readonly" autocomplete="off" class="layui-input">
+ 			</td>
+			<td>
+               <input type="text" value="${bzd}" readonly="readonly" autocomplete="off" class="layui-input">
+ 			</td>
+		</tr>
+		<tr class="trCssOnly">
+			<td>
+               <input type="text" value="${bhe}" readonly="readonly" autocomplete="off" class="layui-input">
+			</td>
+			<td colspan="2">
+               <input type="text" value="${zcmce}" readonly="readonly" autocomplete="off" class="layui-input">
+ 			</td>
+			<td colspan="2">
+               <input type="text" value="${xhpze}" readonly="readonly" autocomplete="off" class="layui-input">
+ 			</td>
+			<td>
+	            <input type="text" value="${sle}" readonly="readonly" autocomplete="off" class="layui-input">
+ 		   </td>
+			<td colspan="2">
+               <input type="text" value="${yte}" readonly="readonly" autocomplete="off" class="layui-input">
+ 			</td>
+			<td>
+               <input type="text" value="${bze}" readonly="readonly" autocomplete="off" class="layui-input">
+ 			</td>
+		</tr>
+		<tr class="trCss">
+			<td colspan="2">所在科室（单位）审批意见</td>
+			<td colspan="7" class="layui-form-item layui-form-text">
+				 <div class="layui-input-inline">
+               		<textarea readonly="readonly" placeholder="所在科室（单位）审批意见" class="layui-textarea" style="width:500px;min-height: 70px;">${ks_spyj}</textarea>
+               </div>
+			</td>
+		</tr>
+		<tr class="trCss">
+			<td colspan="2">分管领导审批意见</td>
+			<td colspan="7" class="layui-form-item layui-form-text">
+				 <div class="layui-input-inline">
+               		 <textarea readonly="readonly" placeholder="分管领导审批意见" class="layui-textarea" style="width:500px;min-height: 70px;">${fg_spyj}</textarea>
+           		 </div>
+			</td>
+		</tr>
+		<tr class="trCss">
+			<td colspan="2"><span style="color:red;">*</span>是否同意</td>
+			<td colspan="7" class="layui-form-item layui-form-text">
+				 <div class="layui-input-block">
+		            <input type="radio" name="agree" value="true" title="同意" checked="">
+		            <input type="radio" name="agree" value="false" title="不同意">
+	       		 </div>
+			</td>
+		</tr>
+		<tr class="trCss">
+			<td colspan="2">主管领导审批意见</td>
+			<td colspan="7" class="layui-form-item layui-form-text">
+	           <div class="layui-input-inline">
+	               <textarea name="zg_spyj" placeholder="主管领导审批意见" class="layui-textarea" style="width:500px;min-height: 70px;"></textarea>
+	           </div>
+			</td>
+		</tr>
+		<tr id="spys">
+			<td colspan="9">
+				<div class="layui-form-item">
+		           <div class="layui-input-block">
+		              <button class="layui-btn layui-btn-primary" lay-submit lay-filter="sp" id="sp">审批</button>
+		           </div>
+		       	</div>
+			</td>
+		</tr>
+	</table>
+</form>

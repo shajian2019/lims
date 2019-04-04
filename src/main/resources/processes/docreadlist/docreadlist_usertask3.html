@@ -1,0 +1,120 @@
+<form class="layui-form main layui-upload" lay-filter="docreadlist">
+		<table border="solid 1px;">
+				<input type="hidden" name="u_id" value="${u_id}">
+			 	<input type="hidden" name="bmmc" value="${bmmc}">
+		 	    <input type="hidden" name="sqrq" value="${sqrq}">
+			<tr class="trCss">
+				<td style="width: 10%;">发文<br/>机关</td>
+				<td colspan="2">
+					<input type="text" name="fwjg" value="${fwjg}" readonly="readonly" autocomplete="off" class="layui-input">
+				</td>
+				<td style="width: 8%;">来文<br/>字号</td>
+				<td colspan="2">
+					<input type="text" name="lwzh" value="${lwzh}" readonly="readonly" autocomplete="off" class="layui-input">
+				</td>
+				<td style="width: 8%;">文件<br/>性质</td>
+				<td colspan="2">
+					<input type="text" name="lwxz" value="${lwxz}" readonly="readonly" autocomplete="off" class="layui-input">
+				</td>
+				<td style="width: 8%;">文件<br/>编号</td>
+				<td style="width: 15%;">
+					<input type="text" name="lwbh" value="${lwbh}" readonly="readonly" autocomplete="off" class="layui-input">
+				</td>
+			</tr>
+			<tr class="trCss">
+				<td>文件<br/>标题</td>
+				<td colspan="10">
+					<textarea name="wjbt" class="layui-textarea" readonly="readonly" style="min-height: 100px">${wjbt}</textarea>
+				</td>
+			</tr>
+			<tr class="trCss">
+				<td>收文<br/>日期</td>
+				<td colspan="10">
+					<input type="text" name="swrq" value="${swrq}" id="swrq" readonly="readonly" autocomplete="off" class="layui-input">
+				</td>
+			</tr>
+			<tr class="trCss">
+				<td>正文及附件</td>
+				<td colspan="10" class="layui-inline" style="display: flex;align-items: center;">
+					<div id="fileDiv" class="layui-inline" style="display: flex;align-items: center;"></div> 
+				</td>
+			</tr>
+			<tr class="trCss">
+				<td>拟办</td>
+				<td colspan="10">
+					<textarea name="nb_spyj" class="layui-textarea" style="min-height: 160px">${nb_spyj}</textarea>
+				</td>
+			</tr>
+			<tr class="trCss">
+				<td>领<br/>导<br/>阅<br/>示</td>
+				<td colspan="10">
+					<textarea name="ldys_spyj" class="layui-textarea" style="min-height: 120px">${ldys_spyj}</textarea>
+				</td>
+			</tr>
+			<tr class="trCss">
+				<td>领导<br/>签阅</td>
+				<td>袁<br/>翊<br/>清</td>
+				<td>杨<br/>仲<br/>刚</td>
+				<td>冯<br/>健<br/>超</td>
+				<td>陈<br/><br/>浩</td>
+				<td>戴<br/><br/>旭</td>
+				<td>王<br/>志<br/>国</td>
+				<td>龚<br/>培<br/>峰</td>
+				<td>刘<br/>传<br/>松</td>
+				<td>王<br/><br/>超</td>
+				<td></td>
+			</tr>
+			<tr class="trCss">
+				<td>签阅<br/>时间</td>
+				<td><input type="text" name="" readonly="readonly" autocomplete="off" class="layui-input"></td>
+				<td><input type="text" name="" readonly="readonly" autocomplete="off" class="layui-input"></td>
+				<td><input type="text" name="" readonly="readonly" autocomplete="off" class="layui-input"></td>
+				<td><input type="text" name="" readonly="readonly" autocomplete="off" class="layui-input"></td>
+				<td><input type="text" name="" readonly="readonly" autocomplete="off" class="layui-input"></td>
+				<td><input type="text" name="" readonly="readonly" autocomplete="off" class="layui-input"></td>
+				<td><input type="text" name="" readonly="readonly" autocomplete="off" class="layui-input"></td>
+				<td><input type="text" name="" readonly="readonly" autocomplete="off" class="layui-input"></td>
+				<td><input type="text" name="" readonly="readonly" autocomplete="off" class="layui-input"></td>
+				<td></td>
+			</tr>
+			<tr class="trCss">
+				<td>送达<br/>时间</td>
+				<td><input type="text" name="" readonly="readonly" autocomplete="off" class="layui-input"></td>
+				<td><input type="text" name="" readonly="readonly" autocomplete="off" class="layui-input"></td>
+				<td><input type="text" name="" readonly="readonly" autocomplete="off" class="layui-input"></td>
+				<td><input type="text" name="" readonly="readonly" autocomplete="off" class="layui-input"></td>
+				<td><input type="text" name="" readonly="readonly" autocomplete="off" class="layui-input"></td>
+				<td><input type="text" name="" readonly="readonly" autocomplete="off" class="layui-input"></td>
+				<td><input type="text" name="" readonly="readonly" autocomplete="off" class="layui-input"></td>
+				<td><input type="text" name="" readonly="readonly" autocomplete="off" class="layui-input"></td>
+				<td><input type="text" name="" readonly="readonly" autocomplete="off" class="layui-input"></td>
+				<td></td>
+			</tr>
+			<tr class="trCss">
+				<td>承办<br/>落实<br/>情况</td>
+				<td colspan="10">
+					<textarea name="" readonly="readonly" class="layui-textarea" placeholder="承办落实情况" style="min-height: 100px"></textarea>
+				</td>
+			</tr>
+		<tr class="trCss">
+			<td><span style="color:red;">*</span>审批人</td>
+			<td colspan="10" class="layui-form-item layui-form-text">
+				<div class="layui-inline" id="spr">
+					<div id="spr_add">
+						<i class="fa fa-plus" id="jia"></i><i id="lxr">添加审批人</i>
+					</div>
+				</div>
+			</td>
+		</tr>
+		<tr id="spys">
+			<td colspan="11">
+				<div class="layui-form-item">
+		           <div class="layui-input-block">
+		              <button class="layui-btn layui-btn-primary" lay-submit lay-filter="sp" id="sp">审批</button>
+		               <button type="button" class="layui-btn layui-btn-primary" id="download">下载附件</button>
+		           </div>
+		       	</div>
+			</td>
+		</tr>
+		</table>
+</form>

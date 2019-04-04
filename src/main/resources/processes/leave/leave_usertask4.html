@@ -1,0 +1,101 @@
+<form class="layui-form main layui-upload" lay-filter="leave">
+	<table border="solid 1px;">
+		<tr class="trCss">
+			<td style="width: 15%;">
+				<span style="color:red;">*</span>姓名
+			</td>
+			<td colspan="2" style="width: 25%;">
+				<input type="text" value="${sqr}" lay-verify="required" readonly="readonly" placeholder="申请人" autocomplete="off" class="layui-input">
+			</td>
+			<td style="width: 15%;">
+				<span style="color:red;">*</span>科&nbsp;室<br/>(单位)
+			</td>
+			<td style="width: 25%;">
+				 <input type="text" value="${bmmc}" lay-verify="required" readonly="readonly" placeholder="部门名称" autocomplete="off" class="layui-input">
+			</td>
+		</tr>
+		<tr class="trCss">
+			<td rowspan="2">
+				<span style="color:red;">*</span>请假起止<br/>时&nbsp;&nbsp;间
+			</td>
+			<td style="border-bottom-style: hidden;">
+				 <input type="text" id="ksrq" value="${ksrq}" lay-verify="required" placeholder="开始日期" autocomplete="off"
+                 class="layui-input">
+			</td>
+			<td style="border-left-style: hidden;border-bottom-style: hidden;width: 6%;">
+				至
+			</td>
+						<td>
+				请假时长
+			</td>
+			<td>
+				<input type="text" value="${leaveDate}" readonly="readonly" lay-verify="required" autocomplete="off" class="layui-input">
+			</td>
+		</tr>
+		<tr class="trCss">
+			<td>
+				 <input type="text" id="jsrq" value="${jsrq}" lay-verify="required" placeholder="结束日期" autocomplete="off"
+                 class="layui-input">
+			</td>
+			<td style="border-left-style: hidden;">
+				止
+			</td>
+			<td>
+				<span style="color:red;">*</span>请假类别
+			</td>
+			<td>
+				<input type="text" value="${qjlx}" readonly="readonly" lay-verify="required" autocomplete="off" class="layui-input">
+			</td>
+		</tr>
+		<tr class="trCss">
+			<td>
+				<span style="color:red;">*</span>请假理由
+			</td>
+			<td colspan="4">
+				 <textarea readonly="readonly" class="layui-textarea" style="min-height: 100px;">${qjly}</textarea>
+			</td>
+		</tr>
+		<tr class="trCss">
+			<td>所在科室<br/>（单位）<br/>审批意见</td>
+			<td colspan="4" class="layui-form-item layui-form-text">
+               		 <textarea readonly="readonly" class="layui-textarea" style="min-height: 100px;">${ks_spyj}</textarea>
+			</td>
+		</tr>
+		<tr class="trCss">
+			<td>分管领导<br/>审批意见</td>
+			<td colspan="4" class="layui-form-item layui-form-text">
+               		 <textarea readonly="readonly" class="layui-textarea" style="min-height: 100px;">${fg_spyj}</textarea>
+			</td>
+		</tr>
+		<tr class="trCss">
+			<td>主管领导<br/>审批意见</td>
+			<td colspan="4" class="layui-form-item layui-form-text">
+	           		<textarea readonly="readonly" class="layui-textarea" style="min-height: 100px;">${zg_spyj}</textarea>
+			</td>
+      	</tr>
+      	<tr class="trCss">
+			<td colspan="5" style="text-align: center;">以下内容由办公室填写</td>
+      	</tr>
+      	<tr class="trCss">
+			<td>备案情况</td>
+			<td colspan="4" class="layui-form-item layui-form-text">
+	           		<textarea name="baqk" placeholder="备案情况" class="layui-textarea" style="min-height: 70px;"></textarea>
+			</td>
+      	</tr>
+      	<tr class="trCss">
+			<td>销假情况</td>
+			<td colspan="4" class="layui-form-item layui-form-text">
+	           		<textarea name="xjqk" placeholder="销假情况" class="layui-textarea" style="min-height: 70px;"></textarea>
+			</td>
+      	</tr>
+		<tr id="spys">
+			<td colspan="5">
+				<div class="layui-form-item">
+		           <div class="layui-input-block">
+		              <button class="layui-btn layui-btn-primary" lay-submit lay-filter="sp" id="sp">办结</button>
+		           </div>
+		       	</div>
+			</td>
+		</tr>
+		</table>
+</form>

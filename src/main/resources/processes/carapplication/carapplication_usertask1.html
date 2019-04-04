@@ -1,66 +1,86 @@
 <form class="layui-form main layui-upload" lay-filter="carapplication">
-       <div class="layui-form-item">
-           <label class="layui-form-label"><span style="color:red;">*</span>使用人</label>
-           <div class="layui-input-inline">
-               <input type="text" value="${sqr}" lay-verify="required" readonly="readonly" autocomplete="off" class="layui-input">
-           </div>
-           <label class="layui-form-label"><span style="color:red;">*</span>部门名称</label>
-           <div class="layui-input-inline">
-               <input type="text" value="${bmmc}" lay-verify="required" readonly="readonly" autocomplete="off" class="layui-input">
-        	</div>
-       </div>
-       <div class="layui-form-item">
-           <label class="layui-form-label"><span style="color:red;">*</span>驾驶员</label>
-           <div class="layui-input-inline">
-               <input type="text" value="${jsy}" lay-verify="required" readonly="readonly" autocomplete="off" class="layui-input">
-           </div>
-           <label class="layui-form-label">车辆型号</label>
-           <div class="layui-input-inline">
-               <input type="text" value="${clxh}" lay-verify="required" readonly="readonly" autocomplete="off" class="layui-input">
-           </div>
-       </div>
-       <div class="layui-form-item">
-           <label class="layui-form-label"><span style="color:red;">*</span>用车日期起</label>
-           <div class="layui-input-inline">
-               <input type="text" value="${ycrqq}" lay-verify="required" readonly="readonly" autocomplete="off" class="layui-input">
-           </div>
-           <label class="layui-form-label"><span style="color:red;">*</span>用车日期止</label>
-           <div class="layui-input-inline">
-               <input type="text" value="${ycrqz}" lay-verify="required" readonly="readonly" autocomplete="off" class="layui-input">
-           </div>
-       </div>
-       <div class="layui-form-item">
-           <label class="layui-form-label"><span style="color:red;">*</span>起点</label>
-           <div class="layui-input-inline">
-               <input type="text" value="${qd}" lay-verify="required" readonly="readonly" autocomplete="off" class="layui-input">
-           </div>
-           <label class="layui-form-label"><span style="color:red;">*</span>终点</label>
-           <div class="layui-input-inline">
-               <input type="text" value="${zd}" lay-verify="required" readonly="readonly" autocomplete="off" class="layui-input">
-           </div>
-       </div>
-       <div class="layui-form-item layui-form-text">
-           <label class="layui-form-label">用车事由</label>
-           <div class="layui-input-block">
-               <textarea class="layui-textarea" readonly="readonly" style="width:500px;min-height: 70px;">${ycsy}</textarea>
-           </div>
-       </div>
-       <div class="layui-form-item layui-form-text">
-		    <label class="layui-form-label"><span style="color:red;">*</span>是否同意</label>
-		    <div class="layui-input-block">
-		      <input type="radio" name="agree" value="true" title="同意" checked="">
-		      <input type="radio" name="agree" value="false" title="不同意">
-		    </div>
-  	 </div>
-		<div class="layui-form-item layui-form-text">
-         <label class="layui-form-label">审批意见</label>
-         <div class="layui-input-block">
-             <textarea name="spyj" placeholder="审批意见" class="layui-textarea" style="width:500px;min-height: 70px;"></textarea>
-         </div>
-	     </div>
-	     <div class="layui-form-item">
-	           <div class="layui-input-block">
-	               <button class="layui-btn layui-btn-primary" lay-submit lay-filter="sp" id="sp">审批</button>
-	           </div>
-	      </div>       
+	<table border="solid 1px;">
+		<tr class="trCss">
+			<td style="width: 16%;"><span style="color:red;">*</span>申请人</td>
+			<td style="width: 25%;">
+				<input type="text" value="${sqr}" lay-verify="required" readonly="readonly" autocomplete="off" class="layui-input">
+			</td>
+			<td style="width: 16%;"><span style="color:red;">*</span>部门名称</td>
+			<td style="width: 25%;">
+				 <input type="text" value="${bmmc}" lay-verify="required" readonly="readonly" autocomplete="off" class="layui-input">
+			</td>
+		</tr>
+		<tr class="trCss">
+			<td><span style="color:red;">*</span>驾驶员</td>
+			<td>
+				 <input type="text" value="${jsy}" lay-verify="required" readonly="readonly" autocomplete="off" class="layui-input">
+			</td>
+			<td>车辆型号</td>
+			<td>
+				<input type="text" value="${clxh}" readonly="readonly" autocomplete="off" class="layui-input">
+			</td>
+		</tr>
+		<tr class="trCss">
+			<td><span style="color:red;">*</span>用车日期起</td>
+			<td>
+					<input type="text" value="${ycrqq}" lay-verify="required" readonly="readonly" autocomplete="off" class="layui-input">
+			</td>
+			<td><span style="color:red;">*</span>用车日期止</td>
+			<td>
+				 <input type="text" value="${ycrqz}" lay-verify="required" readonly="readonly" autocomplete="off" class="layui-input">
+			</td>
+		</tr>
+		<tr class="trCss">
+			<td><span style="color:red;">*</span>起点</td>
+			<td>
+				 <input type="text" value="${qd}" lay-verify="required" readonly="readonly" autocomplete="off" class="layui-input">
+			</td>
+			<td><span style="color:red;">*</span>终点</td>
+			<td>
+				<input type="text" value="${zd}" lay-verify="required" readonly="readonly" autocomplete="off" class="layui-input">
+			</td>
+		</tr>
+		<tr class="trCss">
+			<td><span style="color:red;">*</span>用车事由</td>
+			<td colspan="3">
+				 <textarea class="layui-textarea" readonly="readonly" style="width:500px;min-height: 70px;">${ycsy}</textarea>
+			</td>	
+		</tr>
+		<tr class="trCss">
+			<td><span style="color:red;">*</span>是否同意</td>
+			<td colspan="3" class="layui-form-item layui-form-text">
+				 <div class="layui-input-block">
+		            <input type="radio" name="agree" value="true" title="同意" checked="" lay-filter="filterAgree">
+		            <input type="radio" name="agree" value="false" title="不同意" lay-filter="filterAgree">
+	       		 </div>
+			</td>
+		</tr>
+		<tr class="trCss">
+			<td>所在科室<br/>（单位）<br/>审批意见</td>
+			<td colspan="3" class="layui-form-item layui-form-text">
+				 <div class="layui-input-inline">
+               		<textarea name="ks_spyj" placeholder="所在科室（单位）审批意见" class="layui-textarea" style="width:500px;min-height: 70px;"></textarea>
+           		</div>
+			</td>
+		</tr>
+		<tr class="trCss" id="sprId">
+			<td><span style="color:red;">*</span>审批人</td>
+			<td colspan="3" class="layui-form-item layui-form-text">
+				<div class="layui-inline" id="spr">
+					<div id="spr_add">
+						<i class="fa fa-plus" id="jia"></i><i id="lxr">添加审批人</i>
+					</div>
+				</div>
+			</td>
+		</tr>
+		<tr id="spys">
+			<td colspan="4">
+				<div class="layui-form-item">
+		           <div class="layui-input-block">
+		              <button class="layui-btn layui-btn-primary" lay-submit lay-filter="sp" id="sp">审批</button>
+		           </div>
+		       	</div>
+			</td>
+		</tr>
+	</table>
 </form>
