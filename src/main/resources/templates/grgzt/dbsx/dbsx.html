@@ -117,38 +117,27 @@
     <div class="layui-btn-group">
 		{{#  if(d.ASSIGNEE_){ }}
  			{{#  if(d.SUSPENSION_STATE_ == 2){ }}
-				<a class="layui-btn layui-btn-primary layui-btn-xs layui-btn-disabled">
-					<i class="fa fa-pencil" title="审批任务"></i>
-        		</a>
+				<button class="layui-btn layui-btn-sm layui-btn-disabled" style="background-color: #00a2d4">审批</button>
    			{{#  } else { }}
-				<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="sprw">
-					<i class="fa fa-pencil" title="审批任务"></i>
-        		</a>
+				<button class="layui-btn layui-btn-sm" style="background-color: #00a2d4" lay-event="sprw">审批</button>
 				{{#  if(!(d.DESCRIPTION_ && d.OWNER_ && d.ASSIGNEE_)){ }}
 					{{#  if(d.CLAIM_TIME_ && d.ASSIGNEE_){ }}
-						<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="cxlq">
-							<i class="fa fa-undo" title="放弃处理"></i>
-        				</a>
+						<button class="layui-btn layui-btn-sm" style="background-color: #FF5722" lay-event="cxlq">放弃处理</button>
 					{{#  } }}
-					<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="wt">
-						<i class="fa fa-hand-stop-o" title="委托"></i>
-        			</a>
-					<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="zp">
-						<i class="fa fa-hand-o-right" title="指派"></i>
-        			</a>
+						<button class="layui-btn layui-btn-sm" style="background-color: #FFA021" lay-event="wt">委托</button>
+						<button class="layui-btn layui-btn-sm" style="background-color: #90989b" lay-event="zp">指派</button>
 				{{#  } }}
    			{{#  } }}
 		{{#  } else { }}
 			{{#  if(d.SUSPENSION_STATE_ == 2){ }}
-				<a class="layui-btn layui-btn-primary layui-btn-xs layui-btn-disabled">
-					<i class="fa fa-check-square" title="领取任务"></i>
-        		</a>
+				<button class="layui-btn layui-btn-sm layui-btn-disabled" style="background-color: #00a2d4">领取</button>
    			{{#  } else { }}
-				<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="lqrw">
-					<i class="fa fa-check-square" title="领取任务"></i>
-        		</a>
+				<button class="layui-btn layui-btn-sm" style="background-color: #00a2d4" lay-event="lqrw">领取</button>
    			{{#  } }}
         {{#  } }}
+		{{#  if(d.deleteReason == null){ }}
+			<button class="layui-btn layui-btn-sm" style="background-color: #46D27A" lay-event="preview">流程图</button>
+		{{#  } }}
     </div>
 </script>
 <script type="text/html" id="lczt">
@@ -238,7 +227,7 @@
                     templet: '#rwlx'
                 },{
                     title: '操作', align: 'center',
-                    width: 140,
+                    width: 300,
                     templet: '#rightBar'
                 }]
             ],
@@ -250,13 +239,14 @@
         table.on('tool(tableBox)', function (obj) {
             var data = obj.data;
             if (obj.event == 'sprw') {
-            	sprw(data.NAME_,data.ID_,data.bk)
+            	var userId="${USER.u_id}";
+            	sprw(data.NAME_,data.ID_,data.bk,userId)
             } else if("preview" == obj.event){
             	index = layer.open({
              		  type: 2,
              		  title: '流程图',
                       maxmin: true,
-             		  content: '${ctx}/grgzt/wfqd/history/preview?businessKey='+data.businessKey
+             		  content: '${ctx}/grgzt/wfqd/history/preview?businessKey='+data.bk
         		 });
                  layer.full(index);
             } else if("lqrw" == obj.event){
@@ -390,14 +380,14 @@
         
     })
     
-    function sprw(title,taskId,bk){
+    function sprw(title,taskId,bk,userId){
     	/* var options = {};
     	options.id = taskId;
     	options.title = title;
     	options.icon = "fa-pencil";
     	options.url = "${ctx}/grgzt/dbsx/viewTask/"+taskId+"?bk="+bk;
     	parent.window.addTab(options); */
-    	var url = "${ctx}/grgzt/dbsx/viewTask/"+taskId+"?bk="+bk;
+    	var url = "${ctx}/grgzt/dbsx/viewTask/"+taskId+"?bk="+bk+"&userId="+userId;
     	var index = layer.open({
             title: title,
             type: 2,

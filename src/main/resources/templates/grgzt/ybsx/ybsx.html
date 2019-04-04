@@ -97,14 +97,13 @@
 <script type="text/html" id="rightBar">
     <div class="layui-btn-group">
 		{{#  if(!d.lcsfjs){ }}
-			<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="revoke">
-            	<i class="fa fa-reply" title="撤销"></i>
-        	</a>
+			<button class="layui-btn layui-btn-sm" style="background-color: #FF5722" lay-event="revoke">撤销</button>
    		{{#  } else { }}
-        	<a class="layui-btn layui-btn-primary layui-btn-xs layui-btn-disabled" >
-            	<i class="fa fa-reply" title="撤销"></i>
-        	</a>
+			<button class="layui-btn layui-btn-sm layui-btn-disabled" style="background-color: #FF5722">撤销</button>
    		{{#  } }}
+		{{#  if(d.deleteReason == null){ }}
+			<button class="layui-btn layui-btn-sm" style="background-color: #46D27A" lay-event="preview">流程图</button>
+		{{#  } }}
     </div>
 </script>
 <script type="text/html" id="lczt">
@@ -248,7 +247,15 @@
                         }
                     });
             	})
-            } 
+            }else if("preview" == obj.event){
+            	index = layer.open({
+           		  type: 2,
+           		  title: '流程图',
+                    maxmin: true,
+           		  content: '${ctx}/grgzt/wfqd/history/preview?businessKey='+data.businessKey
+      		 });
+               layer.full(index);
+          } 
         })
         
         form.on('submit(query)', function (data) {

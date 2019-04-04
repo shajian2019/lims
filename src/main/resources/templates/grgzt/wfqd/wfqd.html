@@ -119,32 +119,20 @@
 <script type="text/html" id="rightBar">
     <div class="layui-btn-group">
 		{{#  if(d.deleteReason == null){ }}
-        	<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="details">
-            	<i class="fa fa-file-pdf-o" title="pdf"></i>
-        	</a>
+			<button class="layui-btn layui-btn-sm" style="background-color: #00a2d4" lay-event="details">查看pdf</button>
 		{{#  } }}
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="preview">
-            <i class="fa fa-image" title="流程图"></i>
-        </a>
+			<button class="layui-btn layui-btn-sm" style="background-color: #46D27A" lay-event="preview">流程图</button>
 		{{#  if(d.endTime == ''){ }}
 			 {{#  if(d.suspended){ }}
-				<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="play">
-					<i class="fa fa-play" title="激活"></i>
-				</a>
+				<button class="layui-btn layui-btn-sm" style="background-color: #FFA021" lay-event="play">激活</button>
    			 {{#  } else { }}
-				<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="pause">
-					<i class="fa fa-pause" title="挂起"></i>
-				</a>
+				<button class="layui-btn layui-btn-sm" style="background-color: #3086FF" lay-event="pause">挂起</button>
    			 {{#  } }}
-			 	<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del">
-            		<i class="fa fa-reply-all" title="撤销"></i>
-        		</a>
+				<button class="layui-btn layui-btn-sm" style="background-color: #FF5722" lay-event="del">撤销</button>
         {{#  } }}
 
 		{{#  if(d.attachments > 0){ }}
-			<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="download">
-            	<i class="fa fa-download" title="下载附件"></i>
-        	</a>
+			<button class="layui-btn layui-btn-sm" style="background-color: #90989b" lay-event="download">下载附件</button>
 		{{#  } }}
     </div>
 </script>
@@ -237,7 +225,7 @@
                     templet: '#lczt'
                 }, {
                     title: '操作', align: 'center',
-                    width: 160,
+                    width: 300,
                     templet: '#rightBar'
                 }]
             ],

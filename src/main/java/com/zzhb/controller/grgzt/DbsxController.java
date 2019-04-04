@@ -1,12 +1,11 @@
 package com.zzhb.controller.grgzt;
 
 import java.text.SimpleDateFormat;
-import java.util.List;
+import java.util.Date;
 import java.util.Map;
 
 import org.activiti.engine.FormService;
 import org.activiti.engine.TaskService;
-import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,11 +80,11 @@ public class DbsxController {
 	DbsxService dbsxService;
 
 	@GetMapping("/viewTask/{taskId}")
-	public String viewTask(String bk, @PathVariable("taskId") String taskId, ModelMap modelMap) {
+	public String viewTask(String bk, @PathVariable("taskId") String taskId,String userId, ModelMap modelMap) {
 		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
 		String key = task.getProcessDefinitionId().split(":")[0];
-		String processInstanceId=task.getProcessInstanceId();
 		//判断当前流程的会签节点是否有意见
+		/*String processInstanceId=task.getProcessInstanceId();
 		List<Comment> comments = taskService.getProcessInstanceComments(processInstanceId, "comment");
 		SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd");
 		 String countersignature="";
@@ -106,12 +105,21 @@ public class DbsxController {
 			if(countersignature != null && countersignature != "") {
 				modelMap.put("countersignature", countersignature);
 				taskService.addComment(taskId, processInstanceId, JSON.toJSONString(modelMap));
-			}
+			}*/
+		
+		//获取当前月-日
+		SimpleDateFormat sdf= new SimpleDateFormat("MM-dd");
+		Date d = new Date();
+		String nowDay=sdf.format(d);
+		
 		Object renderedTaskForm = formService.getRenderedTaskForm(taskId);
 		modelMap.put("form", renderedTaskForm);
 		modelMap.put("formkey", task.getFormKey());
 		modelMap.put("taskId", taskId);
 		modelMap.put("bk", bk);
+		//传入当前登录人
+		modelMap.put("userId", userId);
+		modelMap.put("nowDay", nowDay);
 		return "grgzt/fqlc/" + key;
 	}
 

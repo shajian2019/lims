@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://www.activiti.org/test" xmlns:xsd="http://www.w3.org/2001/XMLSchema" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
-  <process id="dispatchFile" name="发文流程" isExecutable="true" isClosed="false" processType="None">
+  <process id="dispatchFile" name="发文稿纸" isExecutable="true" isClosed="false" processType="None">
     <extensionElements>
       <activiti:executionListener event="start" class="com.zzhb.listener.activiti.ProcessExecutionListener"></activiti:executionListener>
       <activiti:executionListener event="end" class="com.zzhb.listener.activiti.ProcessExecutionListener"></activiti:executionListener>
@@ -96,7 +96,7 @@
         <omgdi:waypoint x="552.0" y="130.0"></omgdi:waypoint>
         <omgdi:waypoint x="742.0" y="105.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="16.0" width="100.0" x="567.0" y="95.0"></omgdc:Bounds>
+          <omgdc:Bounds height="16.0" width="32.0" x="567.0" y="95.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow28" id="BPMNEdge_flow28">
@@ -111,14 +111,14 @@
         <omgdi:waypoint x="552.0" y="185.0"></omgdi:waypoint>
         <omgdi:waypoint x="751.0" y="211.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="16.0" width="100.0" x="567.0" y="206.0"></omgdc:Bounds>
+          <omgdc:Bounds height="16.0" width="32.0" x="567.0" y="206.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow31" id="BPMNEdge_flow31">
         <omgdi:waypoint x="440.0" y="157.0"></omgdi:waypoint>
         <omgdi:waypoint x="510.0" y="157.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="16.0" width="100.0" x="449.0" y="132.0"></omgdc:Bounds>
+          <omgdc:Bounds height="16.0" width="32.0" x="449.0" y="132.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow32" id="BPMNEdge_flow32">
@@ -126,7 +126,7 @@
         <omgdi:waypoint x="420.0" y="345.0"></omgdi:waypoint>
         <omgdi:waypoint x="905.0" y="347.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="16.0" width="100.0" x="420.0" y="210.0"></omgdc:Bounds>
+          <omgdc:Bounds height="16.0" width="48.0" x="420.0" y="210.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>

@@ -11,7 +11,7 @@
 	<link rel="stylesheet" href="${ctx}/plugins/ztree/css/zTreeStyle/zTreeStyle.css">
 	<style type="text/css">
 		.layui-form-item{margin-bottom: 10px;}
-    	.main{width:900px;margin: 1% auto 0;}
+    	.main{width:1000px;margin: 1% auto 0;}
 		.img-up-box,#spr{max-width: 500px;height: auto;display:flex;align-items: flex-end;flex-wrap: wrap;}
 		.img-up-box .img-box{position: relative;display: inline-block;width: 80px;height:80px;border: 1px solid #e6e6e6;margin-right: 8px;margin-top: 8px;}
 		.img-up-box .img-box .img-close{position: absolute;top: -7px;right: -7px;font-size: 12px;color: #fff;border-radius: 20px;width: 16px;height: 16px;background-color: #000;text-align: center;line-height: 16px;}
@@ -38,7 +38,6 @@
 		.layui-input-block{text-align: center;margin-top: 10px;margin-left: 0px;}
 		#jia{font-size: 13px;color: #3FBD69;}
 		#lxr{font-size: 13px;font-style: normal;color: black;}
-		.layui-textarea {width: 808px;min-height: 70px;}
 		.img-box{display: flex;align-items: center;justify-content: space-between;padding: 0 10px;}
 		.img-box>p{margin-right: 5px;}
 	</style>
@@ -46,7 +45,7 @@
 
 <body>
 		<h1>文件阅办单</h1>
-		${(form!'开发中')}
+	    ${(form!'开发中')}  
 </body>
 <script src="${ctx}/plugins/layui/layui.all.js"></script>
 <script src="${ctx}/js/common/download.js"></script>
@@ -99,7 +98,7 @@
 			    		return;
 			    	}
 					var img = $([
-						'<div class="img-box layui-btn layui-btn-primary">'+
+						'<div class="img-box layui-btn layui-btn-primary" style="background-color: #F2F2F2;">'+
 						'<p>'+file.name+'</p>'+
 						'<i class="fa fa-close img-close"></i>'+
 						'</div>'
@@ -239,8 +238,113 @@
 		});
 	}else if (formkey == 'docreadlist_usertask4.html'){
 		
+		var userId="${userId!''}";
+		var nowDay="${nowDay!''}";
+		if(userId == "10575"){
+			//袁翊清
+			$("#yyq").val(nowDay);
+		}else if(userId == "10576"){
+			//杨仲刚
+			$("#yzg").val(nowDay);
+		}else if(userId == "10577"){
+			//冯建超
+			$("#fyc").val(nowDay);
+		}else if(userId == "10578"){
+			//陈浩
+			$("#ch").val(nowDay);
+		}else if(userId == "10579"){
+			//戴旭
+			$("#dx").val(nowDay);
+		}else if(userId == "10580"){
+			//王志国
+			$("#wzg").val(nowDay);
+		}else if(userId == "10581"){
+			//龚培峰
+			$("#gpf").val(nowDay);
+		}else if(userId == "10582"){
+			//刘传松
+			$("#lcs").val(nowDay);
+		}else if(userId == "10583"){
+			//王超
+			$("#wc").val(nowDay);
+		}
+		
 		//获取文件附件
 		fileList();
+		
+		laydate.render({
+			   elem: '#yyq'
+			   ,format: 'MM-dd'
+			 });
+		laydate.render({
+			   elem: '#yzg'
+			   ,format: 'MM-dd'
+			 });
+		laydate.render({
+			   elem: '#fyc'
+			   ,format: 'MM-dd'
+			 });
+		laydate.render({
+			   elem: '#ch'
+			   ,format: 'MM-dd'
+			 });
+		laydate.render({
+			   elem: '#dx'
+			   ,format: 'MM-dd'
+			 });
+		laydate.render({
+			   elem: '#wzg'
+			   ,format: 'MM-dd'
+			 });
+		laydate.render({
+			   elem: '#gpf'
+			   ,format: 'MM-dd'
+			 });
+		laydate.render({
+			   elem: '#lcs'
+			   ,format: 'MM-dd'
+			 });
+		laydate.render({
+			   elem: '#wc'
+			   ,format: 'MM-dd'
+			 }); 
+		
+		laydate.render({
+			   elem: '#yyqTime'
+			   ,format: 'MM-dd'
+			 });
+		laydate.render({
+			   elem: '#yzgTime'
+			   ,format: 'MM-dd'
+			 });
+		laydate.render({
+			   elem: '#fycTime'
+			   ,format: 'MM-dd'
+			 });
+		laydate.render({
+			   elem: '#chTime'
+			   ,format: 'MM-dd'
+			 });
+		laydate.render({
+			   elem: '#dxTime'
+			   ,format: 'MM-dd'
+			 });
+		laydate.render({
+			   elem: '#wzgTime'
+			   ,format: 'MM-dd'
+			 });
+		laydate.render({
+			   elem: '#gpf'
+			   ,format: 'MM-dd'
+			 });
+		laydate.render({
+			   elem: '#lcsTime'
+			   ,format: 'MM-dd'
+			 });
+		laydate.render({
+			   elem: '#wcTime'
+			   ,format: 'MM-dd'
+			 });
 		
 		form.on('submit(sp)', function(data){
 			data.field.id = "${USER.u_id}docreadlist${formkey!''}";
@@ -336,7 +440,7 @@
 				if(bk == ""){
 					bk = v.split("&")[1];
 				}
-				imgHtml += '<div class="img-box layui-btn layui-btn-primary">'+
+				imgHtml += '<div class="img-box layui-btn layui-btn-primary" style="background-color: #F2F2F2;">'+
 				'<p>'+detail[2]+'</p>'+
 				'</div>'
 			})

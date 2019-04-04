@@ -47,7 +47,7 @@
 </head>
 <body>
 	<div>
-<h1>江苏省邳州市环境保护局发文稿纸(<span><input type="text" name="btk" placeholder="标题框" style="width:100px"/></span>)</h1>
+<h1>江苏省邳州市环境保护局发文稿纸(<span><input type="text" name="btk" id="btk" placeholder="标题框" style="width:100px"/></span>)</h1>
 	</div>
 ${(form!'开发中')}
 </body>
@@ -79,11 +79,6 @@ ${(form!'开发中')}
                 layer.msg("服务端异常");
             }
         });
-
-        laydate.render({
- 		   elem: '#qfrq'
- 		   ,type: 'datetime'
- 		});
         
         //申请
         form.on('submit(sq)', function(data){
@@ -92,6 +87,7 @@ ${(form!'开发中')}
                 data.field.usersprs = usersprs.join(",")
                 data.field.id = "${USER.u_id}dispatchFile${formkey!''}";
                 data.field.bk = "${(dispatchFile.bk)!''}";
+                data.field.btk = $("#btk").val();
                 $.ajax({
                     type: "post",
                     data: data.field,
@@ -125,7 +121,13 @@ ${(form!'开发中')}
     } else if (formkey == 'dispatchFile_usertask1.html'){
     	form.val(formFilter, {
             "hgr": "${(USER.nickname)!''}",
+            "btk":"${(btk)!''}"
         })
+        
+        laydate.render({
+ 		   elem: '#nf'
+ 		   ,type: 'yyyy'
+ 		});
         
     	radioFunction();
         
@@ -149,6 +151,9 @@ ${(form!'开发中')}
 	        return false;
 	    });
     } else if (formkey == 'dispatchFile_usertask2.html'){
+    	form.val(formFilter, {
+            "btk":"${(btk)!''}"
+        })
         //图片预览
         previewImage();
         
@@ -187,6 +192,9 @@ ${(form!'开发中')}
         return false;
     });
     } else if (formkey == 'dispatchFile_usertask3.html'){
+    	form.val(formFilter, {
+            "btk":"${(btk)!''}"
+        })
 		//会签
         previewImage();
         
@@ -208,6 +216,9 @@ ${(form!'开发中')}
             return false;
         });
     }else if (formkey == 'dispatchFile_usertask4.html'){
+    	form.val(formFilter, {
+            "btk":"${(btk)!''}"
+        })
 		//签发
         previewImage();
         
@@ -229,8 +240,16 @@ ${(form!'开发中')}
             return false;
         });
     }else if (formkey == 'dispatchFile_usertask5.html'){
-
+    	form.val(formFilter, {
+            "btk":"${(btk)!''}"
+        })
+    	
         previewImage();
+
+        laydate.render({
+ 		   elem: '#qfrq'
+ 		   ,type: 'yyyy年MM月dd日'
+ 		});
         
         form.on('submit(sp)', function(data){
             data.field.id = "${USER.u_id}dispatchFile${formkey!''}";
